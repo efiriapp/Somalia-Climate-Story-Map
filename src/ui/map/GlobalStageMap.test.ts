@@ -21,7 +21,9 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('FLIGHT_MS');
     expect(source).toContain('POPUP_HOLD_MS');
     expect(source).toContain('GLOBE_VIEW');
-    expect(source).toContain('line-trim-offset');
+    expect(source).toContain('slicePath');
+    expect(source).toContain('line-dasharray');
+    expect(source).not.toContain('line-trim-offset');
     expect(source).toContain('CAMERA_MS');
     expect(source).toContain('cruiseThenArrive');
     expect(source).toContain('followFlight');

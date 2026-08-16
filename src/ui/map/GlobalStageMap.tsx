@@ -21,6 +21,7 @@ import {
   greatCircle,
   pathCoordinates,
   pointAlong,
+  slicePath,
   type LngLat,
 } from '../../application/flight-path';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
@@ -99,57 +100,49 @@ const ensureFlightLayers = (map: Map) => {
       type: 'geojson',
       data: { type: 'FeatureCollection', features: [] },
     });
-    map.addSource('flight-route', { type: 'geojson', data: EMPTY_LINE, lineMetrics: true });
-    map.addSource('flight-progress', { type: 'geojson', data: EMPTY_LINE, lineMetrics: true });
+    map.addSource('flight-route', { type: 'geojson', data: EMPTY_LINE });
+    map.addSource('flight-progress', { type: 'geojson', data: EMPTY_LINE });
   }
   if (!map.getLayer('flight-history')) {
     map.addLayer({
       id: 'flight-history',
       type: 'line',
       source: 'flight-history',
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      layout: { 'line-cap': 'butt', 'line-join': 'round' },
       paint: {
-        'line-color': '#4CAF7D',
-        'line-width': 3.5,
-        'line-opacity': 0.45,
+        'line-color': '#063D39',
+        'line-width': 4,
+        'line-opacity': 0.55,
+        'line-dasharray': [3, 2],
       },
     });
     map.addLayer({
       id: 'flight-route',
       type: 'line',
       source: 'flight-route',
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
-      paint: {
-        'line-color': '#d7ece3',
-        'line-width': 4,
-        'line-opacity': 0.9,
-        'line-dasharray': [2.2, 1.4],
-      },
-    });
-    map.addLayer({
-      id: 'flight-progress-case',
-      type: 'line',
-      source: 'flight-progress',
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      layout: { 'line-cap': 'butt', 'line-join': 'round' },
       paint: {
         'line-color': '#063D39',
-        'line-width': 10,
-        'line-opacity': 0.95,
-        'line-trim-offset': [0, 1],
+        'line-width': 4,
+        'line-opacity': 0.35,
+        'line-dasharray': [3, 2],
       },
     });
     map.addLayer({
       id: 'flight-progress',
       type: 'line',
       source: 'flight-progress',
-      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      layout: { 'line-cap': 'butt', 'line-join': 'round' },
       paint: {
-        'line-color': '#4CAF7D',
-        'line-width': 6,
+        'line-color': '#063D39',
+        'line-width': 5,
         'line-opacity': 1,
-        'line-trim-offset': [0, 1],
+        'line-dasharray': [3, 2],
       },
     });
+  }
+  if (map.getLayer('flight-progress')) {
+    map.moveLayer('flight-progress');
   }
 };
 
@@ -170,14 +163,8 @@ const setLineData = (map: Map, sourceId: string, path: LngLat[]) => {
   source?.setData(path.length >= 2 ? lineFeature(path) : EMPTY_LINE);
 };
 
-const setTravelTrim = (map: Map, traveled: number) => {
-  const hidden: [number, number] = [Math.min(Math.max(traveled, 0), 1), 1];
-  if (map.getLayer('flight-progress-case')) {
-    map.setPaintProperty('flight-progress-case', 'line-trim-offset', hidden);
-  }
-  if (map.getLayer('flight-progress')) {
-    map.setPaintProperty('flight-progress', 'line-trim-offset', hidden);
-  }
+const setTravelLine = (map: Map, path: LngLat[], traveled: number) => {
+  setLineData(map, 'flight-progress', slicePath(path, Math.max(traveled, 0.02)));
 };
 
 const createPlaneMarker = (): Marker => {
@@ -215,7 +202,7 @@ const followFlight = (
 ) => {
   const here = pointAlong(path, t);
   parkPlane(plane, here, arriveHeading(path, t));
-  setTravelTrim(map, t);
+  setTravelLine(map, path, t);
   if (!moveCamera) {
     return;
   }
@@ -428,8 +415,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
     const path = greatCircle(origin, dest, 96);
     setLineData(map, 'flight-route', path);
-    setLineData(map, 'flight-progress', path);
-    setTravelTrim(map, 0);
+    setTravelLine(map, path, 0);
     const startZoom = map.getZoom();
     const startPitch = map.getPitch();
     const startBearing = map.getBearing();
@@ -444,7 +430,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         padding: GLOBE_PADDING,
       });
       parkPlane(plane, origin, arriveHeading(path, 0));
-      setTravelTrim(map, 0);
+      setTravelLine(map, path, 0);
     } else {
       followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing, true);
     }
@@ -462,7 +448,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       flightTickRef.current = null;
       window.cancelAnimationFrame(flightRef.current);
       parkPlane(plane, dest, arriveHeading(path, 1));
-      setTravelTrim(map, 1);
+      setTravelLine(map, path, 1);
       tracesRef.current = [...tracesRef.current, pathCoordinates(path)];
       setHistory(map, tracesRef.current);
       applyStopView(map, stop);
