@@ -24,6 +24,14 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.date-reel[\s\S]{0,120}top:\s*0/);
     expect(css).toMatch(/\.date-reel[\s\S]{0,280}#063D39/);
     expect(css).toMatch(/\.tour-title[\s\S]{0,140}left:\s*50%/);
+    expect(css).toMatch(/\.tour-title[\s\S]{0,280}background:\s*(#063D39|var\(--forest\))/);
+  });
+
+  it('keeps Global Stage calendar text fully white', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.date-reel-kicker[\s\S]{0,140}color:\s*(#fff|#ffffff|var\(--white\))/i);
+    expect(css).toMatch(/\.date-reel-label[\s\S]{0,180}color:\s*(#fff|#ffffff|var\(--white\))/i);
+    expect(css).toMatch(/\.date-reel-item[\s\S]{0,200}color:\s*(#fff|#ffffff|var\(--white\))/i);
   });
 
   it('keeps the centered tour popup fully visible', () => {
