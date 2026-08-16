@@ -46,7 +46,7 @@ describe('GlobalStageMap airplane marker', () => {
 
   it('uses a fullscreen map with icon controls and a rolling date card', () => {
     expect(source).toContain('DateReel');
-    expect(source).toContain('isoDate={stop.date}');
+    expect(source).toContain('isoDate={calendarDate}');
     expect(source).toContain('tour-icon-bar');
     expect(source).toContain('ICE at Global Stage');
     expect(source).toContain('Back to main');
@@ -76,5 +76,16 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('queueNextIfPlaying');
     expect(source).toMatch(/setPopupOpen\(true\)[\s\S]{0,80}queueNextIfPlaying\(POPUP_HOLD_MS\)/);
     expect(source).not.toMatch(/setInterval\(/);
+  });
+
+  it('updates the calendar only when the airplane arrives home', () => {
+    expect(source).toContain('isoDate={calendarDate}');
+    expect(source).toMatch(/if \(stop\.kind === 'home'\)[\s\S]{0,80}setCalendarDate\(stop\.date\)/);
+  });
+
+  it('freezes the airplane in place when the tour is paused', () => {
+    expect(source).toMatch(/if \(!playingRef\.current\)/);
+    expect(source).toContain('flightTickRef');
+    expect(source).toContain('pauseMs');
   });
 });

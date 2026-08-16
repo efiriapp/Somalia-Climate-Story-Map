@@ -299,6 +299,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const autoStartedRef = useRef(false);
   const playingRef = useRef(false);
   const playAdvanceRef = useRef(0);
+  const flightTickRef = useRef<((now: number) => void) | null>(null);
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -307,6 +308,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
   const stop: TourStop | undefined = tour[index];
+  const [calendarDate, setCalendarDate] = useState(tour[0]?.date ?? '2023-01-01');
   playingRef.current = playing;
 
   const queueNextIfPlaying = (delay: number) => {
@@ -402,6 +404,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     window.clearTimeout(playAdvanceRef.current);
     setPopupOpen(false);
     const afterArrive = () => {
+      if (stop.kind === 'home') {
+        setCalendarDate(stop.date);
+      }
       if (stop.kind === 'event') {
         popupTimerRef.current = window.setTimeout(() => {
           setPopupOpen(true);
@@ -445,6 +450,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing, true);
     }
     const started = performance.now();
+    let pauseMs = 0;
+    let pausedAt = 0;
     let lastCamera = started;
     let cityLocked = false;
 
@@ -453,6 +460,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         return;
       }
       cityLocked = true;
+      flightTickRef.current = null;
       window.cancelAnimationFrame(flightRef.current);
       parkPlane(plane, dest, arriveHeading(path, 1));
       setTravelTrim(map, 1);
@@ -463,7 +471,18 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     };
 
     const tick = (now: number) => {
-      const t = easeInOut(Math.min(1, (now - started) / FLIGHT_MS));
+      if (!playingRef.current) {
+        if (!pausedAt) {
+          pausedAt = now;
+        }
+        flightTickRef.current = tick;
+        return;
+      }
+      if (pausedAt) {
+        pauseMs += now - pausedAt;
+        pausedAt = 0;
+      }
+      const t = easeInOut(Math.min(1, (now - started - pauseMs) / FLIGHT_MS));
       if (t >= 1) {
         followFlight(map, plane, path, stop, 1, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, false);
         lockCityView();
@@ -474,11 +493,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         lastCamera = now;
       }
       followFlight(map, plane, path, stop, t, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, moveCamera);
+      flightTickRef.current = tick;
       flightRef.current = window.requestAnimationFrame(tick);
     };
+    flightTickRef.current = tick;
     flightRef.current = window.requestAnimationFrame(tick);
 
     return () => {
+      flightTickRef.current = null;
       window.cancelAnimationFrame(flightRef.current);
       window.clearTimeout(popupTimerRef.current);
       window.clearTimeout(playAdvanceRef.current);
@@ -507,7 +529,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     playingRef.current = playing;
     if (!playing) {
       window.clearTimeout(playAdvanceRef.current);
+      mapRef.current?.stop();
       return;
+    }
+    if (flightTickRef.current) {
+      flightRef.current = window.requestAnimationFrame(flightTickRef.current);
     }
     if (popupOpen) {
       queueNextIfPlaying(POPUP_HOLD_MS);
@@ -587,7 +613,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             ) : null}
           </div>
         </div>
-        <DateReel isoDate={stop.date} />
+        <DateReel isoDate={calendarDate} />
         {popupOpen && stop.kind === 'event' ? (
           <article
             className="tour-popup-card"
