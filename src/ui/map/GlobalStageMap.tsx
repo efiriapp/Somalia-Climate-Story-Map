@@ -10,6 +10,7 @@ import {
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
   FLIGHT_MS,
+  POPUP_DELAY_MS,
   TOUR_STEP_MS,
   greatCircle,
   headingDegrees,
@@ -78,10 +79,10 @@ const ensureFlightLayers = (map: Map) => {
       source: 'flight-route',
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#4CAF7D',
-        'line-width': 2.8,
-        'line-opacity': 0.55,
-        'line-dasharray': [1.2, 1.6],
+        'line-color': '#94a8a3',
+        'line-width': 2.4,
+        'line-opacity': 0.7,
+        'line-dasharray': [2.2, 1.8],
       },
     });
     map.addLayer({
@@ -147,6 +148,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const planeRef = useRef<Marker | null>(null);
   const lastIndexRef = useRef(0);
   const flightRef = useRef(0);
+  const popupTimerRef = useRef(0);
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -163,6 +165,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.on('load', () => setReady(true));
     return () => {
       window.cancelAnimationFrame(flightRef.current);
+      window.clearTimeout(popupTimerRef.current);
       markerRef.current?.remove();
       homeMarkerRef.current?.remove();
       planeRef.current?.remove();
@@ -219,8 +222,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               closeOnClick: false,
             }).setHTML(html),
           )
-          .addTo(map)
-          .togglePopup();
+          .addTo(map);
       } else {
         marker.addTo(map);
       }
@@ -235,6 +237,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
     map.stop();
     window.cancelAnimationFrame(flightRef.current);
+    window.clearTimeout(popupTimerRef.current);
     if (!moved) {
       setLineData(map, 'flight-route', []);
       setLineData(map, 'flight-progress', []);
@@ -247,6 +250,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         duration: 1200,
         essential: true,
       });
+      if (stop.kind === 'event') {
+        popupTimerRef.current = window.setTimeout(() => {
+          markerRef.current?.togglePopup();
+        }, POPUP_DELAY_MS);
+      }
       return;
     }
 
@@ -286,10 +294,18 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         pitch: stop.pitch,
         bearing: stop.bearing,
       });
+      if (stop.kind === 'event') {
+        popupTimerRef.current = window.setTimeout(() => {
+          markerRef.current?.togglePopup();
+        }, POPUP_DELAY_MS);
+      }
     };
     flightRef.current = window.requestAnimationFrame(tick);
 
-    return () => window.cancelAnimationFrame(flightRef.current);
+    return () => {
+      window.cancelAnimationFrame(flightRef.current);
+      window.clearTimeout(popupTimerRef.current);
+    };
   }, [index, ready, stop, tour]);
 
   useEffect(() => {

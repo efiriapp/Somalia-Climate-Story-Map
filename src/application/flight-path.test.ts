@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   FLIGHT_MS,
+  POPUP_DELAY_MS,
   TOUR_STEP_MS,
   flightLeg,
   greatCircle,
@@ -87,7 +88,8 @@ describe('pathCoordinates', () => {
 describe('flight timing', () => {
   it('uses one slow duration for the airplane, camera, and tracking line', () => {
     expect(FLIGHT_MS).toBeGreaterThanOrEqual(6500);
-    expect(TOUR_STEP_MS).toBe(FLIGHT_MS + 3000);
+    expect(POPUP_DELAY_MS).toBe(3000);
+    expect(TOUR_STEP_MS).toBe(FLIGHT_MS + POPUP_DELAY_MS + 4000);
   });
 });
 
