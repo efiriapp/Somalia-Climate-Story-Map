@@ -2,6 +2,7 @@ type Bounds = { minLat: number; maxLat: number; minLng: number; maxLng: number }
 
 const COUNTRY_BOUNDS: Record<string, Bounds> = {
   Somalia: { minLat: -2.0, maxLat: 12.2, minLng: 40.8, maxLng: 51.6 },
+  Egypt: { minLat: 22.0, maxLat: 31.7, minLng: 24.6, maxLng: 37.0 },
   Qatar: { minLat: 24.4, maxLat: 26.3, minLng: 50.6, maxLng: 51.8 },
   Rwanda: { minLat: -2.9, maxLat: -1.0, minLng: 28.8, maxLng: 31.0 },
   Azerbaijan: { minLat: 38.3, maxLat: 42.0, minLng: 44.7, maxLng: 50.6 },
