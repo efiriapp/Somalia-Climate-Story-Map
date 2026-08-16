@@ -494,9 +494,9 @@ select {
   border-radius: 10px;
   color: var(--white);
   background: var(--forest);
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-align: center;
   box-shadow: 0 6px 16px rgba(6, 61, 57, 0.35);
   pointer-events: none;

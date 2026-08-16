@@ -48,7 +48,7 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('DateReel');
     expect(source).toContain('isoDate={calendarDate}');
     expect(source).toContain('tour-icon-bar');
-    expect(source).toContain('ICE at Global Stage');
+    expect(source).toContain('ICE Institute at Global Stage');
     expect(source).toContain('Back to main');
     expect(source).toContain('tour-play-bar');
     expect(source).toContain('SkipBackIcon');
@@ -87,5 +87,10 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toMatch(/if \(!playingRef\.current\)/);
     expect(source).toContain('flightTickRef');
     expect(source).toContain('pauseMs');
+  });
+
+  it('starts still and only animates after the user presses play', () => {
+    expect(source).not.toContain('autoStartedRef');
+    expect(source).not.toMatch(/setPlaying\(true\)/);
   });
 });

@@ -296,7 +296,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const flightRef = useRef(0);
   const popupTimerRef = useRef(0);
   const tracesRef = useRef<[number, number][][]>([]);
-  const autoStartedRef = useRef(false);
   const playingRef = useRef(false);
   const playAdvanceRef = useRef(0);
   const flightTickRef = useRef<((now: number) => void) | null>(null);
@@ -508,14 +507,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   }, [index, ready, stop, tour]);
 
   useEffect(() => {
-    if (!ready || autoStartedRef.current || tour.length < 2) {
-      return;
-    }
-    autoStartedRef.current = true;
-    setPlaying(true);
-  }, [ready, tour.length]);
-
-  useEffect(() => {
     if (!playing || index !== 0) {
       return;
     }
@@ -548,7 +539,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
       <div className="global-stage-scene">
         <div className="global-stage-map" ref={host} />
-        <h1 className="tour-title">ICE at Global Stage</h1>
+        <h1 className="tour-title">ICE Institute at Global Stage</h1>
         <div className="tour-icon-bar">
           <button type="button" className="tour-back" aria-label="Back to main" onClick={onClose}>
             <Icon d="M15 18l-6-6 6-6" />
