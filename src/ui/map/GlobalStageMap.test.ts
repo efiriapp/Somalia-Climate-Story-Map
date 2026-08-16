@@ -7,6 +7,10 @@ const source = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), 'GlobalStageMap.tsx'),
   'utf8',
 );
+const dateReel = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), 'DateReel.tsx'),
+  'utf8',
+);
 
 describe('GlobalStageMap airplane marker', () => {
   it('sets a LngLat on the plane before adding it to the map', () => {
@@ -44,9 +48,15 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('DateReel');
     expect(source).toContain('isoDate={stop.date}');
     expect(source).toContain('tour-icon-bar');
+    expect(source).toContain('ICE at Global Stage');
+    expect(source).toContain('Back to main');
     expect(source).not.toContain('global-stage-bar');
     expect(source).not.toContain('NavigationControl');
     expect(source).toContain('flight-history');
+  });
+
+  it("labels the date card as ICE Institute's calendar", () => {
+    expect(dateReel).toContain("ICE Institute's calendar");
   });
 
   it('opens the event popup 1 second after city zoom, as a centered card', () => {

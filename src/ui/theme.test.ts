@@ -18,11 +18,12 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.maplibregl-marker:has\(\.tour-plane\)[\s\S]{0,40}z-index:\s*[3-9]/);
   });
 
-  it('places the rolling date card in the bottom-right corner', () => {
+  it('places the ICE calendar in the top-right corner', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.date-reel[\s\S]{0,80}right:\s*0/);
-    expect(css).toMatch(/\.date-reel[\s\S]{0,120}bottom:\s*0/);
+    expect(css).toMatch(/\.date-reel[\s\S]{0,120}top:\s*0/);
     expect(css).toMatch(/\.date-reel[\s\S]{0,280}#063D39/);
+    expect(css).toMatch(/\.tour-title[\s\S]{0,140}left:\s*50%/);
   });
 
   it('keeps the centered tour popup fully visible', () => {

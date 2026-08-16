@@ -10,7 +10,7 @@ export const GLOBE_VIEW = {
   maxZoom: 12.5,
 };
 
-export const GLOBE_PADDING = { top: 16, bottom: 28, left: 16, right: 24 };
+export const GLOBE_PADDING = { top: 72, bottom: 28, left: 16, right: 24 };
 
 export const CITY_ZOOM = 11;
 

@@ -58,7 +58,7 @@ const applyStopView = (map: Map, stop: TourStop) => {
     bearing: stop.bearing,
     duration: CITY_EASE_MS,
     essential: true,
-    padding: stop.kind === 'home' ? GLOBE_PADDING : { top: 72, bottom: 160, left: 32, right: 260 },
+    padding: stop.kind === 'home' ? GLOBE_PADDING : { top: 88, bottom: 72, left: 32, right: 260 },
   });
 };
 
@@ -226,6 +226,19 @@ const followFlight = (
     bearing: cruiseThenArrive(t, startBearing, GLOBE_VIEW.bearing, stop.bearing),
   });
 };
+
+const Icon = ({ d, filled = false }: { d: string; filled?: boolean }) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d={d}
+      fill={filled ? 'currentColor' : 'none'}
+      stroke={filled ? 'none' : 'currentColor'}
+      strokeWidth={filled ? undefined : 2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
@@ -463,11 +476,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
       <div className="global-stage-scene">
         <div className="global-stage-map" ref={host} />
+        <h1 className="tour-title">ICE at Global Stage</h1>
         <div className="tour-icon-bar">
-          <button type="button" aria-label="Back to stories" onClick={onClose}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+          <button type="button" className="tour-back" aria-label="Back to main" onClick={onClose}>
+            <Icon d="M15 18l-6-6 6-6" />
+            Back to main
           </button>
           <button
             type="button"
@@ -477,9 +490,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               setIndex((current) => prevTourIndex(current));
             }}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Icon d="M6 6h2v12H6zm3.5 6L18 18V6z" filled />
           </button>
           <button
             type="button"
@@ -488,13 +499,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             onClick={() => setPlaying((current) => !current)}
           >
             {playing ? (
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8 6h3v12H8zm5 0h3v12h-3z" fill="currentColor" />
-              </svg>
+              <Icon d="M6 5h4v14H6zm8 0h4v14h-4z" filled />
             ) : (
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8 6l11 6-11 6V6z" fill="currentColor" />
-              </svg>
+              <Icon d="M8 5v14l11-7z" filled />
             )}
           </button>
           <button
@@ -505,9 +512,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               setIndex((current) => nextTourIndex(current, tour.length));
             }}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Icon d="M16 6h2v12h-2zm-10 12l8.5-6L6 6z" filled />
           </button>
           <div className="tour-layer-wrap">
             <button
@@ -516,9 +521,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               aria-expanded={layersOpen}
               onClick={() => setLayersOpen((open) => !open)}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-              </svg>
+              <Icon d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" />
             </button>
             {layersOpen ? (
               <div className="tour-layer-menu" role="menu">

@@ -39,8 +39,8 @@ type Props = {
 export function DateReel({ isoDate }: Props) {
   const parts = tourDateParts(isoDate);
   return (
-    <aside className="date-reel" aria-label={`ICE Institute travel date ${parts.year} ${parts.month} ${parts.day}`}>
-      <p className="date-reel-kicker">ICE Institute</p>
+    <aside className="date-reel" aria-label={`ICE Institute's calendar ${parts.year} ${parts.month} ${parts.day}`}>
+      <p className="date-reel-kicker">ICE Institute's calendar</p>
       <div className="date-reel-face">
         <ReelColumn label="Year" value={parts.year} items={YEARS} />
         <ReelColumn label="Month" value={parts.month} items={MONTHS} />
