@@ -1,0 +1,104 @@
+import { useMemo, useState } from 'react';
+import { filterCatalog } from '../application/filter-catalog';
+import { resolveMapView } from '../application/resolve-map-view';
+import { stories as catalog } from '../content/stories';
+import { defaultFilterCriteria, type FilterCriteria } from '../domain/story';
+import { FilterPanel } from './chrome/FilterPanel';
+import { StoryList } from './catalog/StoryList';
+import { MapPane } from './map/MapPane';
+
+export default function App() {
+  const [draft, setDraft] = useState<FilterCriteria>(defaultFilterCriteria);
+  const [applied, setApplied] = useState<FilterCriteria>(defaultFilterCriteria);
+  const [advancedOpen, setAdvancedOpen] = useState(true);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const matches = useMemo(() => filterCatalog(catalog, applied), [applied]);
+  const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
+  const detail = selectedId ? catalog.find((story) => story.id === selectedId) : undefined;
+
+  const applyNav = (type: FilterCriteria['type']) => {
+    const next = { ...defaultFilterCriteria(), type, query: draft.query };
+    setDraft(next);
+    setApplied(next);
+    setSelectedId(null);
+  };
+
+  return (
+    <div>
+      <header className="topbar">
+        <img className="topbar-logo" src="/logos/simad.webp" alt="SIMAD University" />
+        <div className="topbar-title">Climate Story Map | Somalia</div>
+        <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
+      </header>
+      <nav className="nav" aria-label="Primary">
+        <button type="button" className={applied.type === 'ice-story' ? 'active' : ''} onClick={() => applyNav('ice-story')}>
+          Stories
+        </button>
+        <button type="button" className={applied.type === 'global-stage' ? 'active' : ''} onClick={() => applyNav('global-stage')}>
+          Global stage
+        </button>
+        <button type="button" className={applied.type === 'all' ? 'active' : ''} onClick={() => applyNav('all')}>
+          The map
+        </button>
+      </nav>
+
+      {detail ? (
+        <article className="detail">
+          <button className="back" type="button" onClick={() => setSelectedId(null)}>
+            ← Back to catalog
+          </button>
+          <p className="story-type">{detail.type === 'ice-story' ? 'Story' : 'Global stage'}</p>
+          <h1>{detail.title}</h1>
+          <p className="story-meta">
+            {detail.date} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
+          </p>
+          <p>{detail.body}</p>
+        </article>
+      ) : (
+        <>
+          <div className="search-wrap">
+            <p className="kicker">Search</p>
+            <input
+              className="search-input"
+              value={draft.query}
+              placeholder="Search by keywords"
+              onChange={(event) => setDraft({ ...draft, query: event.target.value })}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  setApplied(draft);
+                }
+              }}
+            />
+            <button
+              className="advanced-toggle"
+              type="button"
+              onClick={() => setAdvancedOpen((open) => !open)}
+            >
+              {advancedOpen ? '▼' : '►'} Advanced options
+            </button>
+            {advancedOpen ? (
+              <FilterPanel
+                stories={catalog}
+                draft={draft}
+                onDraftChange={setDraft}
+                onApply={() => {
+                  setApplied(draft);
+                  setSelectedId(null);
+                }}
+                onClearType={() => setDraft({ ...draft, type: 'all' })}
+              />
+            ) : null}
+            <h2 className="section-title">Latest stories</h2>
+          </div>
+          <div className="catalog">
+            <MapPane stories={matches} view={view} selectedId={selectedId} onSelect={setSelectedId} />
+            <div className="list-pane">
+              <StoryList stories={matches} selectedId={selectedId} onSelect={setSelectedId} />
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
