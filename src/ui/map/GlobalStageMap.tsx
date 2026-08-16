@@ -1,13 +1,35 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Map, Marker, NavigationControl, Popup, type StyleSpecification } from 'maplibre-gl';
+import {
+  Map,
+  Marker,
+  NavigationControl,
+  Popup,
+  type GeoJSONSource,
+  type StyleSpecification,
+} from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { buildGlobalTour, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
+import {
+  greatCircle,
+  headingDegrees,
+  pathCoordinates,
+  pointAlong,
+  slicePath,
+  type LngLat,
+} from '../../application/flight-path';
+import { buildGlobalTour, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
 import type { Story } from '../../domain/story';
 
 type Props = {
   stories: Story[];
   onClose: () => void;
+};
+
+const FLIGHT_MS = 2800;
+const EMPTY_LINE: GeoJSON.Feature<GeoJSON.LineString> = {
+  type: 'Feature',
+  properties: {},
+  geometry: { type: 'LineString', coordinates: [] },
 };
 
 const applyGlobe = (map: Map) => {
@@ -31,10 +53,94 @@ const createMap = (container: HTMLDivElement, style: StyleSpecification): Map =>
   return map;
 };
 
+const lineFeature = (path: LngLat[]): GeoJSON.Feature<GeoJSON.LineString> => ({
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'LineString',
+    coordinates: pathCoordinates(path.length >= 2 ? path : path.concat(path)),
+  },
+});
+
+const ensureFlightLayers = (map: Map) => {
+  if (!map.getSource('flight-route')) {
+    map.addSource('flight-route', { type: 'geojson', data: EMPTY_LINE, lineMetrics: true });
+    map.addSource('flight-progress', { type: 'geojson', data: EMPTY_LINE, lineMetrics: true });
+  }
+  if (!map.getLayer('flight-route')) {
+    map.addLayer({
+      id: 'flight-route',
+      type: 'line',
+      source: 'flight-route',
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: {
+        'line-color': '#4CAF7D',
+        'line-width': 2.2,
+        'line-opacity': 0.4,
+        'line-dasharray': [1.5, 1.8],
+      },
+    });
+    map.addLayer({
+      id: 'flight-progress-glow',
+      type: 'line',
+      source: 'flight-progress',
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: {
+        'line-color': '#4CAF7D',
+        'line-width': 9,
+        'line-opacity': 0.28,
+        'line-blur': 2.5,
+      },
+    });
+    map.addLayer({
+      id: 'flight-progress',
+      type: 'line',
+      source: 'flight-progress',
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: {
+        'line-color': '#2E7D57',
+        'line-width': 3.6,
+        'line-opacity': 0.95,
+      },
+    });
+  }
+};
+
+const setLineData = (map: Map, sourceId: string, path: LngLat[]) => {
+  const source = map.getSource(sourceId) as GeoJSONSource | undefined;
+  source?.setData(path.length >= 2 ? lineFeature(path) : EMPTY_LINE);
+};
+
+const createPlaneMarker = (): Marker => {
+  const el = document.createElement('div');
+  el.className = 'tour-plane';
+  el.setAttribute('aria-hidden', 'true');
+  el.innerHTML = `<svg viewBox="0 0 24 24" focusable="false">
+    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+  </svg>`;
+  return new Marker({
+    element: el,
+    anchor: 'center',
+    rotationAlignment: 'map',
+    pitchAlignment: 'viewport',
+  });
+};
+
+const easeInOut = (t: number): number =>
+  t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+
+const parkPlane = (plane: Marker, at: LngLat, heading: number) => {
+  plane.setLngLat([at.lng, at.lat]).setRotation(heading);
+};
+
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const markerRef = useRef<Marker | null>(null);
+  const homeMarkerRef = useRef<Marker | null>(null);
+  const planeRef = useRef<Marker | null>(null);
+  const lastIndexRef = useRef(0);
+  const flightRef = useRef(0);
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -50,7 +156,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     mapRef.current = map;
     map.on('load', () => setReady(true));
     return () => {
+      window.cancelAnimationFrame(flightRef.current);
       markerRef.current?.remove();
+      homeMarkerRef.current?.remove();
+      planeRef.current?.remove();
       map.remove();
       mapRef.current = null;
     };
@@ -74,34 +183,87 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!ready || !map || !stop) {
       return;
     }
+    ensureFlightLayers(map);
+    if (!homeMarkerRef.current) {
+      homeMarkerRef.current = new Marker({ color: '#063D39' })
+        .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
+        .addTo(map);
+    }
+    if (!planeRef.current) {
+      planeRef.current = createPlaneMarker().addTo(map);
+    }
+    const plane = planeRef.current;
+    markerRef.current?.remove();
+    markerRef.current = null;
+    if (stop.kind === 'event') {
+      const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]);
+      const html = tourPopupHtml(stop);
+      if (html) {
+        marker
+          .setPopup(
+            new Popup({
+              offset: 28,
+              maxWidth: '320px',
+              className: 'tour-popup',
+              closeOnClick: false,
+            }).setHTML(html),
+          )
+          .addTo(map)
+          .togglePopup();
+      } else {
+        marker.addTo(map);
+      }
+      markerRef.current = marker;
+    }
+
+    const originStop = tour[lastIndexRef.current] ?? stop;
+    const origin: LngLat = { lng: originStop.lng, lat: originStop.lat };
+    const dest: LngLat = { lng: stop.lng, lat: stop.lat };
+    const moved = origin.lat !== dest.lat || origin.lng !== dest.lng;
+    lastIndexRef.current = index;
+
     map.flyTo({
       center: [stop.lng, stop.lat],
       zoom: stop.zoom,
       pitch: stop.pitch,
       bearing: stop.bearing,
-      duration: 2800,
+      duration: moved ? FLIGHT_MS : 1200,
       essential: true,
     });
-    markerRef.current?.remove();
-    const marker = new Marker({ color: '#063D39' }).setLngLat([stop.lng, stop.lat]);
-    const html = tourPopupHtml(stop);
-    if (html) {
-      marker
-        .setPopup(
-          new Popup({
-            offset: 28,
-            maxWidth: '320px',
-            className: 'tour-popup',
-            closeOnClick: false,
-          }).setHTML(html),
-        )
-        .addTo(map)
-        .togglePopup();
-    } else {
-      marker.addTo(map);
+
+    window.cancelAnimationFrame(flightRef.current);
+    if (!moved) {
+      setLineData(map, 'flight-route', []);
+      setLineData(map, 'flight-progress', []);
+      parkPlane(plane, dest, 12);
+      return;
     }
-    markerRef.current = marker;
-  }, [index, ready, stop]);
+
+    const path = greatCircle(origin, dest, 96);
+    setLineData(map, 'flight-route', path);
+    parkPlane(plane, origin, headingDegrees(origin, dest));
+    const started = performance.now();
+
+    const tick = (now: number) => {
+      const t = easeInOut(Math.min(1, (now - started) / FLIGHT_MS));
+      const here = pointAlong(path, t);
+      const ahead = pointAlong(path, Math.min(1, t + 0.02));
+      parkPlane(plane, here, headingDegrees(here, ahead));
+      setLineData(map, 'flight-progress', slicePath(path, t));
+      const dash = ((now - started) / 90) % 6;
+      if (map.getLayer('flight-route')) {
+        map.setPaintProperty('flight-route', 'line-dasharray', [0, dash, 1.6, 1.4]);
+      }
+      if (t < 1) {
+        flightRef.current = window.requestAnimationFrame(tick);
+        return;
+      }
+      setLineData(map, 'flight-progress', path);
+    };
+    flightRef.current = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(flightRef.current);
+  }, [index, ready, stop, tour]);
 
   useEffect(() => {
     if (!playing) {
@@ -115,7 +277,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         }
         return next;
       });
-    }, 5000);
+    }, 5200);
     return () => window.clearInterval(timer);
   }, [playing, tour.length]);
 
