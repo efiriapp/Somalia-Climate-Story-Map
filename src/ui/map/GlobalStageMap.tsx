@@ -13,10 +13,9 @@ import {
   POPUP_DELAY_MS,
   TOUR_STEP_MS,
   greatCircle,
-  headingDegrees,
+  headingAlong,
   pathCoordinates,
   pointAlong,
-  slicePath,
   type LngLat,
 } from '../../application/flight-path';
 import { buildGlobalTour, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
@@ -31,7 +30,13 @@ type Props = {
 const EMPTY_LINE: GeoJSON.Feature<GeoJSON.LineString> = {
   type: 'Feature',
   properties: {},
-  geometry: { type: 'LineString', coordinates: [] },
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+      [MOGADISHU_HOME.lng, MOGADISHU_HOME.lat],
+      [MOGADISHU_HOME.lng + 0.01, MOGADISHU_HOME.lat],
+    ],
+  },
 };
 
 const applyGlobe = (map: Map) => {
@@ -79,22 +84,22 @@ const ensureFlightLayers = (map: Map) => {
       source: 'flight-route',
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#94a8a3',
-        'line-width': 2.4,
-        'line-opacity': 0.7,
-        'line-dasharray': [2.2, 1.8],
+        'line-color': '#8aa39c',
+        'line-width': 3,
+        'line-opacity': 0.85,
+        'line-dasharray': [2.4, 1.6],
       },
     });
     map.addLayer({
-      id: 'flight-progress-glow',
+      id: 'flight-progress-case',
       type: 'line',
       source: 'flight-progress',
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#4CAF7D',
-        'line-width': 9,
-        'line-opacity': 0.28,
-        'line-blur': 2.5,
+        'line-color': '#063D39',
+        'line-width': 8,
+        'line-opacity': 0.95,
+        'line-trim-offset': [0, 1],
       },
     });
     map.addLayer({
@@ -104,8 +109,9 @@ const ensureFlightLayers = (map: Map) => {
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
         'line-color': '#4CAF7D',
-        'line-width': 4.4,
+        'line-width': 5,
         'line-opacity': 1,
+        'line-trim-offset': [0, 1],
       },
     });
   }
@@ -114,6 +120,33 @@ const ensureFlightLayers = (map: Map) => {
 const setLineData = (map: Map, sourceId: string, path: LngLat[]) => {
   const source = map.getSource(sourceId) as GeoJSONSource | undefined;
   source?.setData(path.length >= 2 ? lineFeature(path) : EMPTY_LINE);
+};
+
+const setTravelTrim = (map: Map, traveled: number) => {
+  const hidden: [number, number] = [Math.min(Math.max(traveled, 0), 1), 1];
+  if (map.getLayer('flight-progress-case')) {
+    map.setPaintProperty('flight-progress-case', 'line-trim-offset', hidden);
+  }
+  if (map.getLayer('flight-progress')) {
+    map.setPaintProperty('flight-progress', 'line-trim-offset', hidden);
+  }
+};
+
+const frameRoute = (map: Map, from: LngLat, to: LngLat) => {
+  map.fitBounds(
+    [
+      [Math.min(from.lng, to.lng), Math.min(from.lat, to.lat)],
+      [Math.max(from.lng, to.lng), Math.max(from.lat, to.lat)],
+    ],
+    {
+      padding: 100,
+      maxZoom: 3.1,
+      duration: 900,
+      pitch: 28,
+      bearing: 0,
+      essential: true,
+    },
+  );
 };
 
 const createPlaneMarker = (): Marker => {
@@ -126,15 +159,13 @@ const createPlaneMarker = (): Marker => {
   return new Marker({
     element: el,
     anchor: 'center',
-    rotationAlignment: 'map',
+    rotationAlignment: 'viewport',
     pitchAlignment: 'viewport',
   });
 };
 
 const easeInOut = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-
-const lerp = (from: number, to: number, t: number): number => from + (to - from) * t;
 
 const parkPlane = (plane: Marker, at: LngLat, heading: number) => {
   plane.setLngLat([at.lng, at.lat]).setRotation(heading);
@@ -260,39 +291,29 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
     const path = greatCircle(origin, dest, 96);
     setLineData(map, 'flight-route', path);
-    setLineData(map, 'flight-progress', slicePath(path, 0.02));
-    parkPlane(plane, origin, headingDegrees(origin, dest));
-    const startZoom = Math.min(map.getZoom(), 3);
-    const startPitch = map.getPitch();
-    const startBearing = map.getBearing();
+    setLineData(map, 'flight-progress', path);
+    setTravelTrim(map, 0);
+    parkPlane(plane, origin, headingAlong(path, 0));
+    frameRoute(map, origin, dest);
     const started = performance.now();
 
     const tick = (now: number) => {
       const t = easeInOut(Math.min(1, (now - started) / FLIGHT_MS));
-      const here = pointAlong(path, t);
-      const ahead = pointAlong(path, Math.min(1, t + 0.02));
-      parkPlane(plane, here, headingDegrees(here, ahead));
-      setLineData(map, 'flight-progress', slicePath(path, Math.max(t, 0.02)));
-      map.jumpTo({
-        center: [here.lng, here.lat],
-        zoom: lerp(startZoom, stop.zoom, t),
-        pitch: lerp(startPitch, stop.pitch, t),
-        bearing: lerp(startBearing, stop.bearing, t),
-      });
-      const dash = ((now - started) / 140) % 6;
-      if (map.getLayer('flight-route')) {
-        map.setPaintProperty('flight-route', 'line-dasharray', [0, dash, 1.6, 1.4]);
-      }
+      parkPlane(plane, pointAlong(path, t), headingAlong(path, t));
+      setTravelTrim(map, t);
       if (t < 1) {
         flightRef.current = window.requestAnimationFrame(tick);
         return;
       }
-      setLineData(map, 'flight-progress', path);
-      map.jumpTo({
+      setTravelTrim(map, 1);
+      parkPlane(plane, dest, headingAlong(path, 1));
+      map.easeTo({
         center: [stop.lng, stop.lat],
         zoom: stop.zoom,
         pitch: stop.pitch,
         bearing: stop.bearing,
+        duration: 1400,
+        essential: true,
       });
       if (stop.kind === 'event') {
         popupTimerRef.current = window.setTimeout(() => {

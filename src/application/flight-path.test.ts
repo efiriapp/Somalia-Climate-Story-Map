@@ -5,6 +5,7 @@ import {
   TOUR_STEP_MS,
   flightLeg,
   greatCircle,
+  headingAlong,
   headingDegrees,
   pathCoordinates,
   pointAlong,
@@ -82,6 +83,15 @@ describe('pathCoordinates', () => {
     const coords = pathCoordinates(greatCircle(mogadishu, doha, 4));
     expect(coords[0]).toEqual([mogadishu.lng, mogadishu.lat]);
     expect(coords.at(-1)?.[0]).toBeCloseTo(doha.lng, 5);
+  });
+});
+
+describe('headingAlong', () => {
+  it('stays stable near the destination instead of flipping', () => {
+    const path = greatCircle(mogadishu, doha, 32);
+    const early = headingAlong(path, 0.1);
+    const late = headingAlong(path, 0.99);
+    expect(Math.abs(late - early)).toBeLessThan(40);
   });
 });
 

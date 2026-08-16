@@ -81,6 +81,12 @@ export const headingDegrees = (from: LngLat, to: LngLat): number => {
   return (toDegrees(Math.atan2(y, x)) + 360) % 360;
 };
 
+export const headingAlong = (path: LngLat[], t: number): number => {
+  const fromT = Math.max(0, Math.min(0.9, t) - 0.05);
+  const toT = Math.min(1, Math.max(t, 0.1) + 0.05);
+  return headingDegrees(pointAlong(path, fromT), pointAlong(path, toT));
+};
+
 export const pathCoordinates = (path: LngLat[]): [number, number][] =>
   path.map((point) => [point.lng, point.lat]);
 

@@ -13,10 +13,12 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toMatch(/createPlaneMarker\(\)[\s\S]{0,120}\.setLngLat\([\s\S]{0,80}\)\s*\.addTo\(map\)/);
   });
 
-  it('moves the camera and tracking line on the same slow flight clock as the airplane', () => {
+  it('moves the airplane and travel line on the same slow clock without camera shake', () => {
     expect(source).toContain('FLIGHT_MS');
     expect(source).toContain('TOUR_STEP_MS');
-    expect(source).toContain('jumpTo');
+    expect(source).toContain('fitBounds');
+    expect(source).toContain('line-trim-offset');
+    expect(source).not.toContain('jumpTo');
     expect(source).not.toMatch(/duration:\s*moved \? FLIGHT_MS/);
   });
 
