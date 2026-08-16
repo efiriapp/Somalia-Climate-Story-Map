@@ -18,7 +18,7 @@ import {
   pointAlong,
   type LngLat,
 } from '../../application/flight-path';
-import { buildGlobalTour, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
+import { buildGlobalTour, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
 import type { Story } from '../../domain/story';
 
@@ -44,16 +44,27 @@ const applyGlobe = (map: Map) => {
   globeMap.setProjection?.({ type: 'globe' });
 };
 
+const applyGlobeView = (map: Map) => {
+  map.easeTo({
+    center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
+    zoom: GLOBE_VIEW.zoom,
+    pitch: GLOBE_VIEW.pitch,
+    bearing: GLOBE_VIEW.bearing,
+    duration: 900,
+    essential: true,
+  });
+};
+
 const createMap = (container: HTMLDivElement, style: StyleSpecification): Map => {
   const map = new Map({
     container,
     style,
-    center: [20, 10],
-    zoom: 2.4,
-    pitch: 32,
-    bearing: 0,
-    minZoom: 1.6,
-    maxZoom: 4.6,
+    center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
+    zoom: GLOBE_VIEW.zoom,
+    pitch: GLOBE_VIEW.pitch,
+    bearing: GLOBE_VIEW.bearing,
+    minZoom: GLOBE_VIEW.minZoom,
+    maxZoom: GLOBE_VIEW.maxZoom,
   });
   map.addControl(new NavigationControl({ visualizePitch: true }), 'bottom-right');
   map.on('load', () => {
@@ -130,23 +141,6 @@ const setTravelTrim = (map: Map, traveled: number) => {
   if (map.getLayer('flight-progress')) {
     map.setPaintProperty('flight-progress', 'line-trim-offset', hidden);
   }
-};
-
-const frameRoute = (map: Map, from: LngLat, to: LngLat) => {
-  map.fitBounds(
-    [
-      [Math.min(from.lng, to.lng), Math.min(from.lat, to.lat)],
-      [Math.max(from.lng, to.lng), Math.max(from.lat, to.lat)],
-    ],
-    {
-      padding: 100,
-      maxZoom: 3.1,
-      duration: 900,
-      pitch: 28,
-      bearing: 0,
-      essential: true,
-    },
-  );
 };
 
 const createPlaneMarker = (): Marker => {
@@ -273,14 +267,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       setLineData(map, 'flight-route', []);
       setLineData(map, 'flight-progress', []);
       parkPlane(plane, dest, 12);
-      map.easeTo({
-        center: [stop.lng, stop.lat],
-        zoom: stop.zoom,
-        pitch: stop.pitch,
-        bearing: stop.bearing,
-        duration: 1200,
-        essential: true,
-      });
+      applyGlobeView(map);
       if (stop.kind === 'event') {
         popupTimerRef.current = window.setTimeout(() => {
           markerRef.current?.togglePopup();
@@ -294,7 +281,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setLineData(map, 'flight-progress', path);
     setTravelTrim(map, 0);
     parkPlane(plane, origin, headingAlong(path, 0));
-    frameRoute(map, origin, dest);
+    applyGlobeView(map);
     const started = performance.now();
 
     const tick = (now: number) => {
@@ -307,14 +294,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       }
       setTravelTrim(map, 1);
       parkPlane(plane, dest, headingAlong(path, 1));
-      map.easeTo({
-        center: [stop.lng, stop.lat],
-        zoom: stop.zoom,
-        pitch: stop.pitch,
-        bearing: stop.bearing,
-        duration: 1400,
-        essential: true,
-      });
+      applyGlobeView(map);
       if (stop.kind === 'event') {
         popupTimerRef.current = window.setTimeout(() => {
           markerRef.current?.togglePopup();

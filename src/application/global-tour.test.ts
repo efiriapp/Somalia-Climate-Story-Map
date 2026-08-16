@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildGlobalTour, nextTourIndex, prevTourIndex, tourPopupHtml } from './global-tour';
+import { buildGlobalTour, GLOBE_VIEW, nextTourIndex, prevTourIndex, tourPopupHtml } from './global-tour';
 import type { Story } from '../domain/story';
 
 const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' | 'type'>): Story => ({
@@ -80,11 +80,13 @@ describe('buildGlobalTour', () => {
     }
   });
 
-  it('keeps home and event cameras at country level so the globe stays visible', () => {
+  it('keeps the globe at Africa-hemisphere size', () => {
     const tour = buildGlobalTour(catalog);
     for (const stop of tour) {
-      expect(stop.zoom).toBeLessThanOrEqual(4.6);
-      expect(stop.zoom).toBeGreaterThanOrEqual(3.4);
+      expect(stop.zoom).toBe(GLOBE_VIEW.zoom);
+      expect(stop.pitch).toBe(GLOBE_VIEW.pitch);
+      expect(stop.zoom).toBeLessThanOrEqual(2.2);
+      expect(stop.zoom).toBeGreaterThanOrEqual(1.6);
     }
   });
 });
