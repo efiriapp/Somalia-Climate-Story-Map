@@ -10,7 +10,7 @@ export const GLOBE_VIEW = {
   maxZoom: 12.5,
 };
 
-export const GLOBE_PADDING = { top: 28, bottom: 130, left: 24, right: 24 };
+export const GLOBE_PADDING = { top: 16, bottom: 28, left: 16, right: 24 };
 
 export const CITY_ZOOM = 11;
 
@@ -123,6 +123,25 @@ export const formatTourDate = (iso: string): string => {
     year: 'numeric',
     timeZone: 'UTC',
   }).format(date);
+};
+
+export type TourDateParts = {
+  iso: string;
+  year: string;
+  month: string;
+  day: string;
+  weekday: string;
+};
+
+export const tourDateParts = (iso: string): TourDateParts => {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return {
+    iso,
+    year: String(date.getUTCFullYear()),
+    month: date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase(),
+    day: String(date.getUTCDate()).padStart(2, '0'),
+    weekday: date.toLocaleString('en-US', { weekday: 'short', timeZone: 'UTC' }).toUpperCase(),
+  };
 };
 
 export const tourPopupHtml = (stop: TourStop): string | null => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildGlobalTour, CITY_ZOOM, GLOBE_VIEW, formatTourDate, nextTourIndex, prevTourIndex, tourPopupHtml } from './global-tour';
+import { buildGlobalTour, CITY_ZOOM, GLOBE_VIEW, formatTourDate, nextTourIndex, prevTourIndex, tourDateParts, tourPopupHtml } from './global-tour';
 import type { Story } from '../domain/story';
 
 const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' | 'type'>): Story => ({
@@ -104,6 +104,20 @@ describe('tour popup', () => {
     const home = buildGlobalTour(catalog).find((stop) => stop.kind === 'home');
     expect(home).toBeDefined();
     expect(tourPopupHtml(home!)).toBeNull();
+  });
+
+  it('splits actual document dates into rolling year, month, and day parts', () => {
+    expect(tourDateParts('2023-07-01')).toMatchObject({
+      year: '2023',
+      month: 'JUL',
+      day: '01',
+    });
+    expect(tourDateParts('2023-03-03')).toMatchObject({
+      year: '2023',
+      month: 'MAR',
+      day: '03',
+      weekday: 'FRI',
+    });
   });
 
   it('builds a centered popup with title, date, country, and source link', () => {

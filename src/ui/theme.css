@@ -402,59 +402,161 @@ select {
   flex-direction: column;
 }
 
-.global-stage-bar {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  padding: 0.7rem 1.2rem;
-  background: var(--forest);
-  color: var(--white);
-}
-
-.global-stage-bar h2 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.global-stage-bar .kicker {
-  color: var(--mint);
-  margin: 0 0 0.15rem;
-}
-
-.global-stage-back {
-  background: var(--leaf);
-  color: var(--white);
-  border: 0;
-  padding: 0.55rem 0.9rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.layer-switch {
-  margin-left: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mint);
-  font-weight: 700;
-}
-
-.layer-switch select {
-  background: var(--white);
-  color: var(--forest);
-  border: 0;
-  padding: 0.45rem 0.6rem;
-  font-weight: 700;
-  min-width: 180px;
-}
-
 .global-stage-scene {
   flex: 1;
   min-height: 0;
   position: relative;
+}
+
+.tour-icon-bar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 45;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.tour-icon-bar button {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(6, 61, 57, 0.92);
+  color: var(--white);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 16px rgba(6, 61, 57, 0.28);
+}
+
+.tour-icon-bar button svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tour-icon-bar .play {
+  background: var(--mint);
+  color: var(--forest);
+}
+
+.tour-layer-wrap {
+  position: relative;
+}
+
+.tour-layer-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  min-width: 180px;
+  display: grid;
+  background: rgba(6, 61, 57, 0.96);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(6, 61, 57, 0.3);
+}
+
+.tour-layer-menu button {
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  display: block;
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--white);
+  background: transparent;
+  box-shadow: none;
+}
+
+.tour-layer-menu button.active,
+.tour-layer-menu button:hover {
+  background: var(--leaf);
+}
+
+.date-reel {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  width: 248px;
+  padding: 0.7rem 0.8rem 0.9rem;
+  border-radius: 14px;
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 42%),
+    linear-gradient(90deg, #141a18, #2a322f 45%, #101614);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.date-reel-kicker {
+  margin: 0 0 0.45rem;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9aa7a3;
+  font-weight: 700;
+}
+
+.date-reel-face {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.35rem;
+  position: relative;
+}
+
+.date-reel-label {
+  display: block;
+  text-align: center;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8b9894;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+}
+
+.date-reel-window {
+  position: relative;
+  height: 6.45rem;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #0b100f;
+  mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+}
+
+.date-reel-window::after {
+  content: '';
+  position: absolute;
+  inset: 2.15rem 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.date-reel-track {
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.date-reel-item {
+  height: 2.15rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.38);
+  filter: blur(0.7px);
+}
+
+.date-reel-item.active {
+  color: #fff;
+  filter: none;
 }
 
 .global-stage-map {
@@ -528,28 +630,4 @@ select {
 .tour-popup-card a {
   color: var(--leaf);
   word-break: break-all;
-}
-
-.global-stage-controls {
-  display: flex;
-  gap: 0.4rem;
-  background: transparent;
-  padding: 0;
-}
-
-.global-stage-controls button {
-  width: 40px;
-  height: 40px;
-  border: 0;
-  background: var(--leaf);
-  color: var(--white);
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.global-stage-controls .play {
-  width: 48px;
-  background: var(--mint);
-  color: var(--forest);
 }

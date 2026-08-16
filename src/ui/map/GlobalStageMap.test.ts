@@ -40,6 +40,15 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toMatch(/if \(t >= 1\)/);
   });
 
+  it('uses a fullscreen map with icon controls and a rolling date card', () => {
+    expect(source).toContain('DateReel');
+    expect(source).toContain('isoDate={stop.date}');
+    expect(source).toContain('tour-icon-bar');
+    expect(source).not.toContain('global-stage-bar');
+    expect(source).not.toContain('NavigationControl');
+    expect(source).toContain('flight-history');
+  });
+
   it('opens the event popup 1 second after city zoom, as a centered card', () => {
     expect(source).toContain('POPUP_DELAY_MS');
     expect(source).toContain('tour-popup-card');

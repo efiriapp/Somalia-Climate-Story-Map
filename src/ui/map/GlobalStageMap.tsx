@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AttributionControl,
   Map,
   Marker,
-  NavigationControl,
   type GeoJSONSource,
   type StyleSpecification,
 } from 'maplibre-gl';
@@ -25,6 +25,7 @@ import {
 } from '../../application/flight-path';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
+import { DateReel } from './DateReel';
 import type { Story } from '../../domain/story';
 
 type Props = {
@@ -57,7 +58,7 @@ const applyStopView = (map: Map, stop: TourStop) => {
     bearing: stop.bearing,
     duration: CITY_EASE_MS,
     essential: true,
-    padding: stop.kind === 'home' ? GLOBE_PADDING : { top: 72, bottom: 72, left: 32, right: 32 },
+    padding: stop.kind === 'home' ? GLOBE_PADDING : { top: 72, bottom: 160, left: 32, right: 260 },
   });
 };
 
@@ -72,9 +73,10 @@ const createMap = (container: HTMLDivElement, style: StyleSpecification): Map =>
     minZoom: GLOBE_VIEW.minZoom,
     maxZoom: GLOBE_VIEW.maxZoom,
     fadeDuration: 0,
+    attributionControl: false,
     padding: GLOBE_PADDING,
   });
-  map.addControl(new NavigationControl({ visualizePitch: true }), 'bottom-right');
+  map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
   map.on('load', () => {
     applyGlobe(map);
     map.resize();
@@ -92,21 +94,36 @@ const lineFeature = (path: LngLat[]): GeoJSON.Feature<GeoJSON.LineString> => ({
 });
 
 const ensureFlightLayers = (map: Map) => {
-  if (!map.getSource('flight-route')) {
+  if (!map.getSource('flight-history')) {
+    map.addSource('flight-history', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    });
     map.addSource('flight-route', { type: 'geojson', data: EMPTY_LINE, lineMetrics: true });
     map.addSource('flight-progress', { type: 'geojson', data: EMPTY_LINE, lineMetrics: true });
   }
-  if (!map.getLayer('flight-route')) {
+  if (!map.getLayer('flight-history')) {
+    map.addLayer({
+      id: 'flight-history',
+      type: 'line',
+      source: 'flight-history',
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: {
+        'line-color': '#4CAF7D',
+        'line-width': 3.5,
+        'line-opacity': 0.45,
+      },
+    });
     map.addLayer({
       id: 'flight-route',
       type: 'line',
       source: 'flight-route',
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#8aa39c',
-        'line-width': 3,
-        'line-opacity': 0.85,
-        'line-dasharray': [2.4, 1.6],
+        'line-color': '#d7ece3',
+        'line-width': 4,
+        'line-opacity': 0.9,
+        'line-dasharray': [2.2, 1.4],
       },
     });
     map.addLayer({
@@ -116,7 +133,7 @@ const ensureFlightLayers = (map: Map) => {
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
         'line-color': '#063D39',
-        'line-width': 8,
+        'line-width': 10,
         'line-opacity': 0.95,
         'line-trim-offset': [0, 1],
       },
@@ -128,12 +145,24 @@ const ensureFlightLayers = (map: Map) => {
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
         'line-color': '#4CAF7D',
-        'line-width': 5,
+        'line-width': 6,
         'line-opacity': 1,
         'line-trim-offset': [0, 1],
       },
     });
   }
+};
+
+const setHistory = (map: Map, traces: [number, number][][]) => {
+  const source = map.getSource('flight-history') as GeoJSONSource | undefined;
+  source?.setData({
+    type: 'FeatureCollection',
+    features: traces.map((coordinates) => ({
+      type: 'Feature',
+      properties: {},
+      geometry: { type: 'LineString', coordinates },
+    })),
+  });
 };
 
 const setLineData = (map: Map, sourceId: string, path: LngLat[]) => {
@@ -207,10 +236,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const lastIndexRef = useRef(0);
   const flightRef = useRef(0);
   const popupTimerRef = useRef(0);
+  const tracesRef = useRef<[number, number][][]>([]);
+  const autoStartedRef = useRef(false);
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [layersOpen, setLayersOpen] = useState(false);
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
   const stop: TourStop | undefined = tour[index];
@@ -261,6 +293,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     ensureFlightLayers(map);
+    setHistory(map, tracesRef.current);
     if (!homeMarkerRef.current) {
       homeMarkerRef.current = new Marker({ color: '#063D39' })
         .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
@@ -335,6 +368,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       window.cancelAnimationFrame(flightRef.current);
       parkPlane(plane, dest, arriveHeading(path, 1));
       setTravelTrim(map, 1);
+      tracesRef.current = [...tracesRef.current, pathCoordinates(path)];
+      setHistory(map, tracesRef.current);
       applyStopView(map, stop);
       if (stop.kind === 'event') {
         popupTimerRef.current = window.setTimeout(() => {
@@ -366,6 +401,24 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   }, [index, ready, stop, tour]);
 
   useEffect(() => {
+    if (!ready || autoStartedRef.current || tour.length < 2) {
+      return;
+    }
+    autoStartedRef.current = true;
+    setPlaying(true);
+  }, [ready, tour.length]);
+
+  useEffect(() => {
+    if (!playing || index !== 0) {
+      return;
+    }
+    const kickoff = window.setTimeout(() => {
+      setIndex((current) => nextTourIndex(current, tour.length));
+    }, 1800);
+    return () => window.clearTimeout(kickoff);
+  }, [playing, index, tour.length]);
+
+  useEffect(() => {
     if (!playing) {
       return;
     }
@@ -387,15 +440,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   return (
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
-      <header className="global-stage-bar">
-        <button type="button" className="global-stage-back" onClick={onClose}>
-          ← Back
-        </button>
-        <div>
-          <p className="kicker">ICE Institute at Global Stage</p>
-          <h2>2023 – 2026</h2>
-        </div>
-        <div className="global-stage-controls">
+      <div className="global-stage-scene">
+        <div className="global-stage-map" ref={host} />
+        <div className="tour-icon-bar">
+          <button type="button" aria-label="Back to stories" onClick={onClose}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
           <button
             type="button"
             aria-label="Previous stop"
@@ -404,7 +456,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               setIndex((current) => prevTourIndex(current));
             }}
           >
-            ←
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
           <button
             type="button"
@@ -412,7 +466,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             aria-label={playing ? 'Pause tour' : 'Play tour'}
             onClick={() => setPlaying((current) => !current)}
           >
-            {playing ? '❚❚' : '▶'}
+            {playing ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 6h3v12H8zm5 0h3v12h-3z" fill="currentColor" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 6l11 6-11 6V6z" fill="currentColor" />
+              </svg>
+            )}
           </button>
           <button
             type="button"
@@ -422,22 +484,42 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               setIndex((current) => nextTourIndex(current, tour.length));
             }}
           >
-            →
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
+          <div className="tour-layer-wrap">
+            <button
+              type="button"
+              aria-label="Map layers"
+              aria-expanded={layersOpen}
+              onClick={() => setLayersOpen((open) => !open)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+              </svg>
+            </button>
+            {layersOpen ? (
+              <div className="tour-layer-menu" role="menu">
+                {MAP_LAYERS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="menuitem"
+                    className={item.id === layer ? 'active' : undefined}
+                    onClick={() => {
+                      setLayer(item.id);
+                      setLayersOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
-        <label className="layer-switch">
-          3D map layers
-          <select value={layer} onChange={(event) => setLayer(event.target.value as MapLayerId)}>
-            {MAP_LAYERS.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      </header>
-      <div className="global-stage-scene">
-        <div className="global-stage-map" ref={host} />
+        <DateReel isoDate={stop.date} />
         {popupOpen && stop.kind === 'event' ? (
           <article
             className="tour-popup-card"
