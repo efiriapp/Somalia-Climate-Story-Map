@@ -3,9 +3,9 @@ import type { Story } from '../domain/story';
 export const MOGADISHU_HOME = {
   lat: 2.0469,
   lng: 45.3182,
-  zoom: 11,
-  pitch: 58,
-  bearing: 20,
+  zoom: 4.1,
+  pitch: 38,
+  bearing: 12,
   title: 'Mogadishu, Somalia',
 };
 
@@ -62,9 +62,9 @@ const eventStop = (story: Story): TourStop => ({
   images: story.images,
   lat: story.location.lat,
   lng: story.location.lng,
-  zoom: 6.2,
-  pitch: 52,
-  bearing: 12,
+  zoom: 4.2,
+  pitch: 38,
+  bearing: 8,
 });
 
 export const buildGlobalTour = (stories: Story[]): TourStop[] => {
@@ -93,3 +93,25 @@ export const nextTourIndex = (current: number, length: number): number =>
   Math.min(current + 1, Math.max(length - 1, 0));
 
 export const prevTourIndex = (current: number): number => Math.max(current - 1, 0);
+
+const escapeHtml = (value: string): string =>
+  value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+
+export const tourPopupHtml = (stop: TourStop): string | null => {
+  if (stop.kind === 'home') {
+    return null;
+  }
+  const image = stop.images[0]
+    ? `<img src="${escapeHtml(stop.images[0])}" alt="${escapeHtml(stop.title)}" />`
+    : '';
+  return `${image}
+    <p><strong>Title:</strong> ${escapeHtml(stop.title)}</p>
+    <p><strong>Country:</strong> ${escapeHtml(stop.country)}</p>
+    <p><strong>Description:</strong> ${escapeHtml(stop.summary)}</p>
+    <p><strong>More information:</strong> <a href="${escapeHtml(stop.website)}" target="_blank" rel="noreferrer">${escapeHtml(stop.website)}</a></p>`;
+};
+

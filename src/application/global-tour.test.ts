@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildGlobalTour, nextTourIndex, prevTourIndex } from './global-tour';
+import { buildGlobalTour, nextTourIndex, prevTourIndex, tourPopupHtml } from './global-tour';
 import type { Story } from '../domain/story';
 
 const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' | 'type'>): Story => ({
@@ -78,6 +78,32 @@ describe('buildGlobalTour', () => {
         expect(tour[i + 1]?.kind).toBe('home');
       }
     }
+  });
+
+  it('keeps home and event cameras at country level so the globe stays visible', () => {
+    const tour = buildGlobalTour(catalog);
+    for (const stop of tour) {
+      expect(stop.zoom).toBeLessThanOrEqual(4.6);
+      expect(stop.zoom).toBeGreaterThanOrEqual(3.4);
+    }
+  });
+});
+
+describe('tour popup', () => {
+  it('does not build a popup for Somalia home stops', () => {
+    const home = buildGlobalTour(catalog).find((stop) => stop.kind === 'home');
+    expect(home).toBeDefined();
+    expect(tourPopupHtml(home!)).toBeNull();
+  });
+
+  it('builds an on-map popup for event stops', () => {
+    const event = buildGlobalTour(catalog).find((stop) => stop.storyId === 'doha');
+    const html = tourPopupHtml(event!);
+    expect(html).toContain('Title:');
+    expect(html).toContain('Country:');
+    expect(html).toContain('Qatar');
+    expect(html).toContain('More information:');
+    expect(html).toContain('ldc5-doha.png');
   });
 });
 
