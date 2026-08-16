@@ -1,14 +1,16 @@
 import type { Story } from '../domain/story';
 
 export const GLOBE_VIEW = {
-  lng: 20,
-  lat: 8,
-  zoom: 1.85,
-  pitch: 12,
-  bearing: 0,
-  minZoom: 1.5,
-  maxZoom: 2.15,
+  lng: 45.3182,
+  lat: 5.2,
+  zoom: 2.25,
+  pitch: 16,
+  bearing: 8,
+  minZoom: 1.4,
+  maxZoom: 12.5,
 };
+
+export const CITY_ZOOM = 11;
 
 export const MOGADISHU_HOME = {
   lat: 2.0469,
@@ -72,9 +74,9 @@ const eventStop = (story: Story): TourStop => ({
   images: story.images,
   lat: story.location.lat,
   lng: story.location.lng,
-  zoom: GLOBE_VIEW.zoom,
-  pitch: GLOBE_VIEW.pitch,
-  bearing: GLOBE_VIEW.bearing,
+  zoom: CITY_ZOOM,
+  pitch: 42,
+  bearing: 12,
 });
 
 export const buildGlobalTour = (stories: Story[]): TourStop[] => {

@@ -23,6 +23,11 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).not.toMatch(/duration:\s*moved \? FLIGHT_MS/);
   });
 
+  it('zooms to city level after the airplane reaches a country', () => {
+    expect(source).toContain('applyStopView');
+    expect(source).toMatch(/applyStopView\(map,\s*stop\)/);
+  });
+
   it('opens the event popup 3 seconds after the airplane arrives', () => {
     expect(source).toContain('POPUP_DELAY_MS');
     expect(source).not.toMatch(/\.addTo\(map\)\s*\n\s*\.togglePopup\(\)/);
