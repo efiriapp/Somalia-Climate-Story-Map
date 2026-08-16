@@ -49,7 +49,10 @@ const createMap = (container: HTMLDivElement, style: StyleSpecification): Map =>
     maxZoom: 4.6,
   });
   map.addControl(new NavigationControl({ visualizePitch: true }), 'bottom-right');
-  map.on('load', () => applyGlobe(map));
+  map.on('load', () => {
+    applyGlobe(map);
+    map.resize();
+  });
   return map;
 };
 
@@ -160,6 +163,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       markerRef.current?.remove();
       homeMarkerRef.current?.remove();
       planeRef.current?.remove();
+      markerRef.current = null;
+      homeMarkerRef.current = null;
+      planeRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -190,7 +196,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         .addTo(map);
     }
     if (!planeRef.current) {
-      planeRef.current = createPlaneMarker().addTo(map);
+      planeRef.current = createPlaneMarker()
+        .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
+        .addTo(map);
     }
     const plane = planeRef.current;
     markerRef.current?.remove();

@@ -14,6 +14,7 @@ describe('map layers', () => {
   it('builds a Carto Voyager style', () => {
     const style = styleForLayer('carto-voyager');
     expect(JSON.stringify(style)).toContain('basemaps.cartocdn.com');
+    expect(JSON.stringify(style)).toContain('#063D39');
   });
 
   it('builds a satellite style', () => {

@@ -24,7 +24,10 @@ const rasterStyle = (tiles: string[], attribution: string): StyleSpecification =
       attribution,
     },
   },
-  layers: [{ id: 'basemap', type: 'raster', source: 'basemap' }],
+  layers: [
+    { id: 'background', type: 'background', paint: { 'background-color': '#063D39' } },
+    { id: 'basemap', type: 'raster', source: 'basemap' },
+  ],
 });
 
 export const styleForLayer = (id: MapLayerId): StyleSpecification => {
