@@ -308,9 +308,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const startZoom = map.getZoom();
     const startPitch = map.getPitch();
     const startBearing = map.getBearing();
-    const startZoom = map.getZoom();
-    const startPitch = map.getPitch();
-    const startBearing = map.getBearing();
     if (startZoom >= FOLLOW_MAX_ZOOM) {
       map.easeTo({
         center: [origin.lng, origin.lat],
