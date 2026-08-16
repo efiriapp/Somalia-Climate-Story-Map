@@ -623,6 +623,17 @@ select {
   position: relative;
 }
 
+.global-stage-map .maplibregl-canvas-container {
+  position: relative;
+}
+
+.flight-trail-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .global-stage-map .maplibregl-canvas-container,
 .global-stage-map .maplibregl-canvas {
   width: 100% !important;

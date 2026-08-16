@@ -22,7 +22,9 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('POPUP_HOLD_MS');
     expect(source).toContain('GLOBE_VIEW');
     expect(source).toContain('slicePath');
-    expect(source).toContain('line-dasharray');
+    expect(source).toContain('flight-trail-canvas');
+    expect(source).toContain('setLineDash');
+    expect(source).toMatch(/onTrail[\s\S]{0,220}paintTrail\(map/);
     expect(source).not.toContain('line-trim-offset');
     expect(source).toContain('CAMERA_MS');
     expect(source).toContain('cruiseThenArrive');
@@ -58,7 +60,7 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('PlayCircleIcon');
     expect(source).not.toContain('global-stage-bar');
     expect(source).not.toContain('NavigationControl');
-    expect(source).toContain('flight-history');
+    expect(source).toContain('flight-trail-canvas');
   });
 
   it("labels the date card as ICE Institute's calendar", () => {

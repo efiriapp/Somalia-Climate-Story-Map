@@ -3,7 +3,6 @@ import {
   AttributionControl,
   Map,
   Marker,
-  type GeoJSONSource,
   type StyleSpecification,
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -34,21 +33,83 @@ type Props = {
   onClose: () => void;
 };
 
-const EMPTY_LINE: GeoJSON.Feature<GeoJSON.LineString> = {
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    type: 'LineString',
-    coordinates: [
-      [MOGADISHU_HOME.lng, MOGADISHU_HOME.lat],
-      [MOGADISHU_HOME.lng + 0.01, MOGADISHU_HOME.lat],
-    ],
-  },
-};
-
 const applyGlobe = (map: Map) => {
   const globeMap = map as Map & { setProjection?: (projection: { type: string }) => void };
   globeMap.setProjection?.({ type: 'globe' });
+};
+
+const attachTrailCanvas = (map: Map): HTMLCanvasElement => {
+  const host = map.getCanvasContainer();
+  const existing = host.querySelector('.flight-trail-canvas') as HTMLCanvasElement | null;
+  if (existing) {
+    return existing;
+  }
+  const canvas = document.createElement('canvas');
+  canvas.className = 'flight-trail-canvas';
+  const gl = map.getCanvas();
+  host.insertBefore(canvas, gl.nextSibling);
+  return canvas;
+};
+
+const paintTrail = (
+  map: Map,
+  canvas: HTMLCanvasElement,
+  traces: [number, number][][],
+  current: LngLat[],
+) => {
+  const view = map.getCanvas();
+  const dpr = window.devicePixelRatio || 1;
+  const width = view.clientWidth;
+  const height = view.clientHeight;
+  if (canvas.width !== Math.floor(width * dpr) || canvas.height !== Math.floor(height * dpr)) {
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+  }
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    return;
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  const stroke = (points: LngLat[]) => {
+    if (points.length < 2) {
+      return;
+    }
+    ctx.beginPath();
+    let drawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    for (const point of points) {
+      const pixel = map.project([point.lng, point.lat]);
+      if (drawing && Math.hypot(pixel.x - lastX, pixel.y - lastY) > 220) {
+        drawing = false;
+      }
+      if (!drawing) {
+        ctx.moveTo(pixel.x, pixel.y);
+        drawing = true;
+      } else {
+        ctx.lineTo(pixel.x, pixel.y);
+      }
+      lastX = pixel.x;
+      lastY = pixel.y;
+    }
+    ctx.setLineDash([]);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.92)';
+    ctx.lineWidth = 7;
+    ctx.stroke();
+    ctx.setLineDash([12, 8]);
+    ctx.strokeStyle = '#063D39';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+  };
+  for (const coords of traces) {
+    stroke(coords.map(([lng, lat]) => ({ lng, lat })));
+  }
+  stroke(current);
 };
 
 const applyStopView = (map: Map, stop: TourStop) => {
@@ -85,88 +146,6 @@ const createMap = (container: HTMLDivElement, style: StyleSpecification): Map =>
   return map;
 };
 
-const lineFeature = (path: LngLat[]): GeoJSON.Feature<GeoJSON.LineString> => ({
-  type: 'Feature',
-  properties: {},
-  geometry: {
-    type: 'LineString',
-    coordinates: pathCoordinates(path.length >= 2 ? path : path.concat(path)),
-  },
-});
-
-const ensureFlightLayers = (map: Map) => {
-  if (!map.getSource('flight-history')) {
-    map.addSource('flight-history', {
-      type: 'geojson',
-      data: { type: 'FeatureCollection', features: [] },
-    });
-    map.addSource('flight-route', { type: 'geojson', data: EMPTY_LINE });
-    map.addSource('flight-progress', { type: 'geojson', data: EMPTY_LINE });
-  }
-  if (!map.getLayer('flight-history')) {
-    map.addLayer({
-      id: 'flight-history',
-      type: 'line',
-      source: 'flight-history',
-      layout: { 'line-cap': 'butt', 'line-join': 'round' },
-      paint: {
-        'line-color': '#063D39',
-        'line-width': 4,
-        'line-opacity': 0.55,
-        'line-dasharray': [3, 2],
-      },
-    });
-    map.addLayer({
-      id: 'flight-route',
-      type: 'line',
-      source: 'flight-route',
-      layout: { 'line-cap': 'butt', 'line-join': 'round' },
-      paint: {
-        'line-color': '#063D39',
-        'line-width': 4,
-        'line-opacity': 0.35,
-        'line-dasharray': [3, 2],
-      },
-    });
-    map.addLayer({
-      id: 'flight-progress',
-      type: 'line',
-      source: 'flight-progress',
-      layout: { 'line-cap': 'butt', 'line-join': 'round' },
-      paint: {
-        'line-color': '#063D39',
-        'line-width': 5,
-        'line-opacity': 1,
-        'line-dasharray': [3, 2],
-      },
-    });
-  }
-  if (map.getLayer('flight-progress')) {
-    map.moveLayer('flight-progress');
-  }
-};
-
-const setHistory = (map: Map, traces: [number, number][][]) => {
-  const source = map.getSource('flight-history') as GeoJSONSource | undefined;
-  source?.setData({
-    type: 'FeatureCollection',
-    features: traces.map((coordinates) => ({
-      type: 'Feature',
-      properties: {},
-      geometry: { type: 'LineString', coordinates },
-    })),
-  });
-};
-
-const setLineData = (map: Map, sourceId: string, path: LngLat[]) => {
-  const source = map.getSource(sourceId) as GeoJSONSource | undefined;
-  source?.setData(path.length >= 2 ? lineFeature(path) : EMPTY_LINE);
-};
-
-const setTravelLine = (map: Map, path: LngLat[], traveled: number) => {
-  setLineData(map, 'flight-progress', slicePath(path, Math.max(traveled, 0.02)));
-};
-
 const createPlaneMarker = (): Marker => {
   const el = document.createElement('div');
   el.className = 'tour-plane';
@@ -199,10 +178,11 @@ const followFlight = (
   startPitch: number,
   startBearing: number,
   moveCamera: boolean,
+  onTrail: (path: LngLat[], traveled: number) => void,
 ) => {
   const here = pointAlong(path, t);
   parkPlane(plane, here, arriveHeading(path, t));
-  setTravelLine(map, path, t);
+  onTrail(path, t);
   if (!moveCamera) {
     return;
   }
@@ -283,6 +263,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const flightRef = useRef(0);
   const popupTimerRef = useRef(0);
   const tracesRef = useRef<[number, number][][]>([]);
+  const currentTrailRef = useRef<LngLat[]>([]);
+  const trailCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const playingRef = useRef(false);
   const playAdvanceRef = useRef(0);
   const flightTickRef = useRef<((now: number) => void) | null>(null);
@@ -320,13 +302,23 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const map = createMap(host.current, styleForLayer(layer));
     mapRef.current = map;
     const fitScreen = () => map.resize();
+    const redrawTrail = () => {
+      const canvas = trailCanvasRef.current;
+      if (!canvas) {
+        return;
+      }
+      paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+    };
     map.on('load', () => {
+      trailCanvasRef.current = attachTrailCanvas(map);
       fitScreen();
       setReady(true);
     });
+    map.on('render', redrawTrail);
     window.addEventListener('resize', fitScreen);
     return () => {
       window.removeEventListener('resize', fitScreen);
+      map.off('render', redrawTrail);
       window.cancelAnimationFrame(flightRef.current);
       window.clearTimeout(popupTimerRef.current);
       window.clearTimeout(playAdvanceRef.current);
@@ -336,6 +328,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       markerRef.current = null;
       homeMarkerRef.current = null;
       planeRef.current = null;
+      trailCanvasRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -350,6 +343,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.setStyle(styleForLayer(layer));
     map.once('style.load', () => {
       applyGlobe(map);
+      trailCanvasRef.current = attachTrailCanvas(map);
       setReady(true);
     });
   }, [layer]);
@@ -359,8 +353,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!ready || !map || !stop) {
       return;
     }
-    ensureFlightLayers(map);
-    setHistory(map, tracesRef.current);
+    const onTrail = (path: LngLat[], traveled: number) => {
+      currentTrailRef.current = slicePath(path, Math.max(traveled, 0.02));
+      const canvas = trailCanvasRef.current;
+      if (canvas) {
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+      }
+    };
     if (!homeMarkerRef.current) {
       homeMarkerRef.current = new Marker({ color: '#063D39' })
         .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
@@ -405,8 +404,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       }
     };
     if (!moved) {
-      setLineData(map, 'flight-route', []);
-      setLineData(map, 'flight-progress', []);
+      currentTrailRef.current = [];
+      const canvas = trailCanvasRef.current;
+      if (canvas) {
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+      }
       parkPlane(plane, dest, 12);
       applyStopView(map, stop);
       afterArrive();
@@ -414,8 +416,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
 
     const path = greatCircle(origin, dest, 96);
-    setLineData(map, 'flight-route', path);
-    setTravelLine(map, path, 0);
+    onTrail(path, 0);
     const startZoom = map.getZoom();
     const startPitch = map.getPitch();
     const startBearing = map.getBearing();
@@ -430,9 +431,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         padding: GLOBE_PADDING,
       });
       parkPlane(plane, origin, arriveHeading(path, 0));
-      setTravelLine(map, path, 0);
+      onTrail(path, 0);
     } else {
-      followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing, true);
+      followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing, true, onTrail);
     }
     const started = performance.now();
     let pauseMs = 0;
@@ -448,9 +449,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       flightTickRef.current = null;
       window.cancelAnimationFrame(flightRef.current);
       parkPlane(plane, dest, arriveHeading(path, 1));
-      setTravelLine(map, path, 1);
+      onTrail(path, 1);
       tracesRef.current = [...tracesRef.current, pathCoordinates(path)];
-      setHistory(map, tracesRef.current);
+      const canvas = trailCanvasRef.current;
+      if (canvas) {
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+      }
       applyStopView(map, stop);
       afterArrive();
     };
@@ -469,7 +473,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       }
       const t = easeInOut(Math.min(1, (now - started - pauseMs) / FLIGHT_MS));
       if (t >= 1) {
-        followFlight(map, plane, path, stop, 1, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, false);
+        followFlight(map, plane, path, stop, 1, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, false, onTrail);
         lockCityView();
         return;
       }
@@ -477,7 +481,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       if (moveCamera) {
         lastCamera = now;
       }
-      followFlight(map, plane, path, stop, t, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, moveCamera);
+      followFlight(map, plane, path, stop, t, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, moveCamera, onTrail);
       flightTickRef.current = tick;
       flightRef.current = window.requestAnimationFrame(tick);
     };
