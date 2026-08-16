@@ -34,6 +34,16 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.date-reel-item[\s\S]{0,200}color:\s*(#fff|#ffffff|var\(--white\))/i);
   });
 
+  it('makes calendar title, dates, and labels large and bold', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.date-reel-kicker[\s\S]{0,160}font-size:\s*1[2-9]px/);
+    expect(css).toMatch(/\.date-reel-kicker[\s\S]{0,180}font-weight:\s*(800|900)/);
+    expect(css).toMatch(/\.date-reel-label[\s\S]{0,200}font-size:\s*1[1-9]px/);
+    expect(css).toMatch(/\.date-reel-label[\s\S]{0,220}font-weight:\s*(800|900)/);
+    expect(css).toMatch(/\.date-reel-item[\s\S]{0,220}font-size:\s*1\.45rem/);
+    expect(css).toMatch(/\.date-reel-item[\s\S]{0,240}font-weight:\s*900/);
+  });
+
   it('keeps the centered tour popup fully visible', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.tour-popup-card[\s\S]{0,120}left:\s*50%/);

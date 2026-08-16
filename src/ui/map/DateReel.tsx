@@ -3,7 +3,7 @@ import { tourDateParts } from '../../application/global-tour';
 const YEARS = ['2023', '2024', '2025', '2026'];
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 const DAYS = Array.from({ length: 31 }, (_, index) => String(index + 1).padStart(2, '0'));
-const ITEM_HEIGHT = 2.15;
+const ITEM_HEIGHT = 2.7;
 
 type ColumnProps = {
   label: string;
