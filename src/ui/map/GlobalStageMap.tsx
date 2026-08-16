@@ -9,9 +9,13 @@ import {
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
+  CAMERA_MS,
+  CRUISE_PITCH,
+  CRUISE_ZOOM,
   FLIGHT_MS,
   POPUP_DELAY_MS,
   TOUR_STEP_MS,
+  cruiseThenArrive,
   greatCircle,
   headingAlong,
   pathCoordinates,
@@ -65,6 +69,7 @@ const createMap = (container: HTMLDivElement, style: StyleSpecification): Map =>
     bearing: GLOBE_VIEW.bearing,
     minZoom: GLOBE_VIEW.minZoom,
     maxZoom: GLOBE_VIEW.maxZoom,
+    fadeDuration: 0,
   });
   map.addControl(new NavigationControl({ visualizePitch: true }), 'bottom-right');
   map.on('load', () => {
@@ -161,8 +166,6 @@ const createPlaneMarker = (): Marker => {
 const easeInOut = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
 
-const lerp = (from: number, to: number, t: number): number => from + (to - from) * t;
-
 const parkPlane = (plane: Marker, at: LngLat, heading: number) => {
   plane.setLngLat([at.lng, at.lat]).setRotation(heading);
 };
@@ -176,15 +179,19 @@ const followFlight = (
   startZoom: number,
   startPitch: number,
   startBearing: number,
+  moveCamera: boolean,
 ) => {
   const here = pointAlong(path, t);
   parkPlane(plane, here, headingAlong(path, t));
   setTravelTrim(map, t);
+  if (!moveCamera) {
+    return;
+  }
   map.jumpTo({
     center: [here.lng, here.lat],
-    zoom: lerp(startZoom, stop.zoom, t),
-    pitch: lerp(startPitch, stop.pitch, t),
-    bearing: lerp(startBearing, stop.bearing, t),
+    zoom: cruiseThenArrive(t, startZoom, CRUISE_ZOOM, stop.zoom),
+    pitch: cruiseThenArrive(t, startPitch, CRUISE_PITCH, stop.pitch),
+    bearing: cruiseThenArrive(t, startBearing, GLOBE_VIEW.bearing, stop.bearing),
   });
 };
 
@@ -313,17 +320,22 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const startZoom = map.getZoom();
     const startPitch = map.getPitch();
     const startBearing = map.getBearing();
-    followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing);
+    followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing, true);
     const started = performance.now();
+    let lastCamera = started;
 
     const tick = (now: number) => {
       const t = easeInOut(Math.min(1, (now - started) / FLIGHT_MS));
-      followFlight(map, plane, path, stop, t, startZoom, startPitch, startBearing);
+      const moveCamera = t >= 1 || now - lastCamera >= CAMERA_MS;
+      if (moveCamera) {
+        lastCamera = now;
+      }
+      followFlight(map, plane, path, stop, t, startZoom, startPitch, startBearing, moveCamera);
       if (t < 1) {
         flightRef.current = window.requestAnimationFrame(tick);
         return;
       }
-      followFlight(map, plane, path, stop, 1, startZoom, startPitch, startBearing);
+      followFlight(map, plane, path, stop, 1, startZoom, startPitch, startBearing, true);
       if (stop.kind === 'event') {
         popupTimerRef.current = window.setTimeout(() => {
           markerRef.current?.togglePopup();

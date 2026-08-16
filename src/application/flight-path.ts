@@ -2,12 +2,34 @@ import type { TourStop } from './global-tour';
 
 export type LngLat = { lng: number; lat: number };
 
-export const FLIGHT_MS = 7000;
+export const FLIGHT_MS = 16000;
+export const CAMERA_MS = 150;
+export const CRUISE_ZOOM = 3.1;
+export const CRUISE_PITCH = 16;
 export const POPUP_DELAY_MS = 3000;
 export const TOUR_STEP_MS = FLIGHT_MS + POPUP_DELAY_MS + 4000;
 
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 const toDegrees = (radians: number): number => (radians * 180) / Math.PI;
+
+const lerp = (from: number, to: number, t: number): number => from + (to - from) * t;
+
+export const cruiseThenArrive = (t: number, start: number, cruise: number, stop: number): number => {
+  const clamped = Math.min(1, Math.max(0, t));
+  if (clamped === 0) {
+    return start;
+  }
+  if (clamped === 1) {
+    return stop;
+  }
+  if (clamped < 0.18) {
+    return lerp(start, cruise, clamped / 0.18);
+  }
+  if (clamped < 0.74) {
+    return cruise;
+  }
+  return lerp(cruise, stop, (clamped - 0.74) / 0.26);
+};
 
 export const greatCircle = (from: LngLat, to: LngLat, steps = 64): LngLat[] => {
   const count = Math.max(steps, 2);

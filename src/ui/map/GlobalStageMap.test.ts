@@ -18,15 +18,17 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('TOUR_STEP_MS');
     expect(source).toContain('GLOBE_VIEW');
     expect(source).toContain('line-trim-offset');
-    expect(source).toContain('jumpTo');
+    expect(source).toContain('CAMERA_MS');
+    expect(source).toContain('cruiseThenArrive');
     expect(source).toContain('followFlight');
     expect(source).not.toContain('fitBounds');
     expect(source).not.toMatch(/duration:\s*moved \? FLIGHT_MS/);
   });
 
-  it('zooms with the airplane instead of after it lands', () => {
-    expect(source).toContain('followFlight');
-    expect(source).toMatch(/followFlight\(map, plane, path, stop, t/);
+  it('keeps cruise zoom so map layers stay clear until the airplane arrives', () => {
+    expect(source).toContain('CRUISE_ZOOM');
+    expect(source).toContain('fadeDuration: 0');
+    expect(source).toMatch(/now - lastCamera[\s\S]{0,80}CAMERA_MS/);
   });
 
   it('opens the event popup 3 seconds after the airplane arrives', () => {

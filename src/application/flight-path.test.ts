@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CAMERA_MS,
+  CRUISE_ZOOM,
   FLIGHT_MS,
   POPUP_DELAY_MS,
   TOUR_STEP_MS,
+  cruiseThenArrive,
   flightLeg,
   greatCircle,
   headingAlong,
@@ -96,10 +99,22 @@ describe('headingAlong', () => {
 });
 
 describe('flight timing', () => {
-  it('uses one slow duration for the airplane, camera, and tracking line', () => {
-    expect(FLIGHT_MS).toBeGreaterThanOrEqual(6500);
+  it('flies slowly so globe tiles can stay loaded and clear', () => {
+    expect(FLIGHT_MS).toBeGreaterThanOrEqual(16000);
+    expect(CAMERA_MS).toBeGreaterThanOrEqual(120);
+    expect(CRUISE_ZOOM).toBeGreaterThanOrEqual(2.8);
+    expect(CRUISE_ZOOM).toBeLessThan(5);
     expect(POPUP_DELAY_MS).toBe(3000);
     expect(TOUR_STEP_MS).toBe(FLIGHT_MS + POPUP_DELAY_MS + 4000);
+  });
+});
+
+describe('cruiseThenArrive', () => {
+  it('holds cruise zoom through most of the flight, then eases to the stop', () => {
+    expect(cruiseThenArrive(0, 2.25, CRUISE_ZOOM, 11)).toBeCloseTo(2.25);
+    expect(cruiseThenArrive(0.45, 2.25, CRUISE_ZOOM, 11)).toBeCloseTo(CRUISE_ZOOM);
+    expect(cruiseThenArrive(0.99, 2.25, CRUISE_ZOOM, 11)).toBeGreaterThan(8);
+    expect(cruiseThenArrive(1, 2.25, CRUISE_ZOOM, 11)).toBe(11);
   });
 });
 
