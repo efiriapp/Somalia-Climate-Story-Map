@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  FLIGHT_MS,
+  TOUR_STEP_MS,
   flightLeg,
   greatCircle,
   headingDegrees,
@@ -79,6 +81,13 @@ describe('pathCoordinates', () => {
     const coords = pathCoordinates(greatCircle(mogadishu, doha, 4));
     expect(coords[0]).toEqual([mogadishu.lng, mogadishu.lat]);
     expect(coords.at(-1)?.[0]).toBeCloseTo(doha.lng, 5);
+  });
+});
+
+describe('flight timing', () => {
+  it('uses one slow duration for the airplane, camera, and tracking line', () => {
+    expect(FLIGHT_MS).toBeGreaterThanOrEqual(6500);
+    expect(TOUR_STEP_MS).toBe(FLIGHT_MS + 3000);
   });
 });
 

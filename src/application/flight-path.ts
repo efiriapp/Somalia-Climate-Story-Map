@@ -2,6 +2,9 @@ import type { TourStop } from './global-tour';
 
 export type LngLat = { lng: number; lat: number };
 
+export const FLIGHT_MS = 7000;
+export const TOUR_STEP_MS = FLIGHT_MS + 3000;
+
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 const toDegrees = (radians: number): number => (radians * 180) / Math.PI;
 

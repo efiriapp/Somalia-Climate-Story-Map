@@ -9,6 +9,8 @@ import {
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
+  FLIGHT_MS,
+  TOUR_STEP_MS,
   greatCircle,
   headingDegrees,
   pathCoordinates,
@@ -25,7 +27,6 @@ type Props = {
   onClose: () => void;
 };
 
-const FLIGHT_MS = 2800;
 const EMPTY_LINE: GeoJSON.Feature<GeoJSON.LineString> = {
   type: 'Feature',
   properties: {},
@@ -78,9 +79,9 @@ const ensureFlightLayers = (map: Map) => {
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
         'line-color': '#4CAF7D',
-        'line-width': 2.2,
-        'line-opacity': 0.4,
-        'line-dasharray': [1.5, 1.8],
+        'line-width': 2.8,
+        'line-opacity': 0.55,
+        'line-dasharray': [1.2, 1.6],
       },
     });
     map.addLayer({
@@ -101,9 +102,9 @@ const ensureFlightLayers = (map: Map) => {
       source: 'flight-progress',
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#2E7D57',
-        'line-width': 3.6,
-        'line-opacity': 0.95,
+        'line-color': '#4CAF7D',
+        'line-width': 4.4,
+        'line-opacity': 1,
       },
     });
   }
@@ -131,6 +132,8 @@ const createPlaneMarker = (): Marker => {
 
 const easeInOut = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+
+const lerp = (from: number, to: number, t: number): number => from + (to - from) * t;
 
 const parkPlane = (plane: Marker, at: LngLat, heading: number) => {
   plane.setLngLat([at.lng, at.lat]).setRotation(heading);
@@ -230,26 +233,30 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const moved = origin.lat !== dest.lat || origin.lng !== dest.lng;
     lastIndexRef.current = index;
 
-    map.flyTo({
-      center: [stop.lng, stop.lat],
-      zoom: stop.zoom,
-      pitch: stop.pitch,
-      bearing: stop.bearing,
-      duration: moved ? FLIGHT_MS : 1200,
-      essential: true,
-    });
-
+    map.stop();
     window.cancelAnimationFrame(flightRef.current);
     if (!moved) {
       setLineData(map, 'flight-route', []);
       setLineData(map, 'flight-progress', []);
       parkPlane(plane, dest, 12);
+      map.easeTo({
+        center: [stop.lng, stop.lat],
+        zoom: stop.zoom,
+        pitch: stop.pitch,
+        bearing: stop.bearing,
+        duration: 1200,
+        essential: true,
+      });
       return;
     }
 
     const path = greatCircle(origin, dest, 96);
     setLineData(map, 'flight-route', path);
+    setLineData(map, 'flight-progress', slicePath(path, 0.02));
     parkPlane(plane, origin, headingDegrees(origin, dest));
+    const startZoom = Math.min(map.getZoom(), 3);
+    const startPitch = map.getPitch();
+    const startBearing = map.getBearing();
     const started = performance.now();
 
     const tick = (now: number) => {
@@ -257,8 +264,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       const here = pointAlong(path, t);
       const ahead = pointAlong(path, Math.min(1, t + 0.02));
       parkPlane(plane, here, headingDegrees(here, ahead));
-      setLineData(map, 'flight-progress', slicePath(path, t));
-      const dash = ((now - started) / 90) % 6;
+      setLineData(map, 'flight-progress', slicePath(path, Math.max(t, 0.02)));
+      map.jumpTo({
+        center: [here.lng, here.lat],
+        zoom: lerp(startZoom, stop.zoom, t),
+        pitch: lerp(startPitch, stop.pitch, t),
+        bearing: lerp(startBearing, stop.bearing, t),
+      });
+      const dash = ((now - started) / 140) % 6;
       if (map.getLayer('flight-route')) {
         map.setPaintProperty('flight-route', 'line-dasharray', [0, dash, 1.6, 1.4]);
       }
@@ -267,6 +280,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         return;
       }
       setLineData(map, 'flight-progress', path);
+      map.jumpTo({
+        center: [stop.lng, stop.lat],
+        zoom: stop.zoom,
+        pitch: stop.pitch,
+        bearing: stop.bearing,
+      });
     };
     flightRef.current = window.requestAnimationFrame(tick);
 
@@ -285,7 +304,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         }
         return next;
       });
-    }, 5200);
+    }, TOUR_STEP_MS);
     return () => window.clearInterval(timer);
   }, [playing, tour.length]);
 
