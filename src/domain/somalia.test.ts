@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DISTRICTS, REGIONS, districtsForRegion } from './somalia';
+import { DISTRICTS, REGIONS, districtsForRegion, searchByLabel } from './somalia';
 
 describe('Somalia administrative units', () => {
   it('lists the 18 official regions', () => {
@@ -20,7 +20,26 @@ describe('Somalia administrative units', () => {
     expect(banaadir.every((district) => district.region === 'banaadir')).toBe(true);
   });
 
-  it('returns every district when no region is selected', () => {
-    expect(districtsForRegion('all')).toHaveLength(DISTRICTS.length);
+  it('returns only Bari districts when Bari is selected', () => {
+    const bari = districtsForRegion('bari');
+    expect(bari.map((district) => district.slug).sort()).toEqual([
+      'bandarbayla',
+      'bossaso',
+      'caluula',
+      'iskushuban',
+      'qandala',
+      'qardho',
+    ]);
+    expect(bari.every((district) => district.region === 'bari')).toBe(true);
+  });
+
+  it('searches regions by typed name', () => {
+    expect(searchByLabel(REGIONS, 'bari').map((region) => region.slug)).toEqual(['bari']);
+  });
+
+  it('searches only the districts of the chosen region', () => {
+    const results = searchByLabel(districtsForRegion('bari'), 'bo');
+    expect(results.map((district) => district.slug)).toEqual(['bossaso']);
+    expect(results.every((district) => district.region === 'bari')).toBe(true);
   });
 });

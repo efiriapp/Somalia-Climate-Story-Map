@@ -146,3 +146,11 @@ export const districtsForRegion = (region: RegionSlug | 'all'): District[] => {
   const list = region === 'all' ? DISTRICTS : DISTRICTS.filter((district) => district.region === region);
   return [...list].sort((a, b) => a.label.localeCompare(b.label));
 };
+
+export const searchByLabel = <T extends { label: string }>(items: T[], query: string): T[] => {
+  const needle = query.trim().toLowerCase();
+  if (!needle) {
+    return items;
+  }
+  return items.filter((item) => item.label.toLowerCase().includes(needle));
+};

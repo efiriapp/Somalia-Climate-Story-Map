@@ -68,7 +68,10 @@ export default function App() {
               <FilterPanel
                 stories={catalog}
                 draft={draft}
-                onDraftChange={setDraft}
+                onDraftChange={(next) => {
+                  setDraft(next);
+                  setApplied(next);
+                }}
                 onApply={() => {
                   setApplied(draft);
                   setSelectedId(null);

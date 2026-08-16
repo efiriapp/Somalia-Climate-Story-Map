@@ -1,6 +1,7 @@
 import { THEMES } from '../../domain/themes';
 import { districtsForRegion, REGIONS, type RegionSlug } from '../../domain/somalia';
 import { type FilterCriteria, type SortKey, type Story } from '../../domain/story';
+import { SearchSelect } from './SearchSelect';
 
 type Props = {
   stories: Story[];
@@ -24,48 +25,33 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
   return (
     <div>
       <div className="filter-grid">
-        <label>
-          <select
-            className="filter-control"
-            value={draft.region}
-            onChange={(event) => {
-              const nextRegion = event.target.value || 'all';
-              const allowed = districtsForRegion(nextRegion === 'all' ? 'all' : (nextRegion as RegionSlug));
-              const districtStillValid = allowed.some((item) => item.slug === draft.district);
-              onDraftChange({
-                ...draft,
-                region: nextRegion,
-                district: districtStillValid ? draft.district : 'all',
-              });
-            }}
-          >
-            <option value="all">Region</option>
-            {REGIONS.map((item) => (
-              <option key={item.slug} value={item.slug}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <select
-            className="filter-control"
-            value={draft.district}
-            onChange={(event) =>
-              onDraftChange({
-                ...draft,
-                district: event.target.value || 'all',
-              })
-            }
-          >
-            <option value="all">District</option>
-            {districts.map((item) => (
-              <option key={item.slug} value={item.slug}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <SearchSelect
+          label="Region"
+          allLabel="All regions"
+          value={draft.region}
+          options={REGIONS}
+          onChange={(nextRegion) => {
+            const allowed = districtsForRegion(nextRegion === 'all' ? 'all' : (nextRegion as RegionSlug));
+            const districtStillValid = allowed.some((item) => item.slug === draft.district);
+            onDraftChange({
+              ...draft,
+              region: nextRegion,
+              district: districtStillValid ? draft.district : 'all',
+            });
+          }}
+        />
+        <SearchSelect
+          label="District"
+          allLabel="All districts"
+          value={draft.district}
+          options={districts}
+          onChange={(nextDistrict) =>
+            onDraftChange({
+              ...draft,
+              district: nextDistrict,
+            })
+          }
+        />
         <label>
           <select
             className="filter-control"
