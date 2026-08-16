@@ -13,6 +13,8 @@ const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title'>): Story =
   summary: 'A climate story.',
   body: 'Body text.',
   images: [],
+  country: 'Somalia',
+  website: 'https://ice.simad.edu.so/',
   ...overrides,
 });
 

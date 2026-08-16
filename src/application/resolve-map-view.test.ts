@@ -15,6 +15,8 @@ const pin = (id: string, region: string): Story => ({
   summary: '',
   body: '',
   images: [],
+  country: 'Somalia',
+  website: 'https://ice.simad.edu.so/',
 });
 
 describe('resolveMapView', () => {

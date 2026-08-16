@@ -22,6 +22,8 @@ export type Story = {
   summary: string;
   body: string;
   images: string[];
+  country: string;
+  website: string;
 };
 
 export type SortKey = 'newest' | 'oldest' | 'title' | 'keywords';

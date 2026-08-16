@@ -15,7 +15,10 @@ export type TourStop = {
   title: string;
   date: string;
   place: string;
+  country: string;
   summary: string;
+  website: string;
+  images: string[];
   lat: number;
   lng: number;
   zoom: number;
@@ -25,13 +28,21 @@ export type TourStop = {
 
 const yearOf = (iso: string): number => Number.parseInt(iso.slice(0, 4), 10);
 
+export const countryFromPlace = (place: string): string => {
+  const parts = place.split(',').map((part) => part.trim()).filter(Boolean);
+  return parts.at(-1) ?? place;
+};
+
 const homeStop = (date: string): TourStop => ({
   kind: 'home',
   storyId: null,
   title: MOGADISHU_HOME.title,
   date,
   place: MOGADISHU_HOME.title,
+  country: 'Somalia',
   summary: 'ICE Institute, SIMAD University — home base in Mogadishu.',
+  website: 'https://ice.simad.edu.so/',
+  images: ['/logos/ice-lockup.png'],
   lat: MOGADISHU_HOME.lat,
   lng: MOGADISHU_HOME.lng,
   zoom: MOGADISHU_HOME.zoom,
@@ -45,7 +56,10 @@ const eventStop = (story: Story): TourStop => ({
   title: story.title,
   date: story.date,
   place: story.location.name,
+  country: story.country || countryFromPlace(story.location.name),
   summary: story.summary,
+  website: story.website,
+  images: story.images,
   lat: story.location.lat,
   lng: story.location.lng,
   zoom: 6.2,

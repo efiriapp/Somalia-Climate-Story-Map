@@ -11,6 +11,8 @@ const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' |
   summary: '',
   body: '',
   images: [],
+  country: 'Somalia',
+  website: 'https://ice.simad.edu.so/',
   ...overrides,
 });
 
@@ -35,6 +37,9 @@ const catalog: Story[] = [
     title: 'LDC5 Doha',
     type: 'global-stage',
     date: '2023-03-20',
+    country: 'Qatar',
+    website: 'https://ice.simad.edu.so/',
+    images: ['/images/global-stage/ldc5-doha.png'],
   }),
   story({
     id: 'cop30',
@@ -50,6 +55,16 @@ describe('buildGlobalTour', () => {
     const tour = buildGlobalTour(catalog);
     const events = tour.filter((stop) => stop.kind === 'event');
     expect(events.map((stop) => stop.storyId)).toEqual(['doha', 'cop30']);
+  });
+
+  it('puts title, country, website, and images on each event stop', () => {
+    const event = buildGlobalTour(catalog).find((stop) => stop.storyId === 'doha');
+    expect(event).toMatchObject({
+      title: 'LDC5 Doha',
+      country: 'Qatar',
+      website: 'https://ice.simad.edu.so/',
+      images: ['/images/global-stage/ldc5-doha.png'],
+    });
   });
 
   it('starts in Mogadishu, returns to Mogadishu after every event, and ends there', () => {
