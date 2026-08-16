@@ -345,12 +345,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
     const tick = (now: number) => {
       const t = easeInOut(Math.min(1, (now - started) / FLIGHT_MS));
-      const zoom = cruiseThenArrive(t, Math.min(startZoom, CRUISE_ZOOM), CRUISE_ZOOM, stop.zoom);
-      if ((stop.kind === 'event' && zoom >= FOLLOW_MAX_ZOOM) || t >= 1) {
+      if (t >= 1) {
+        followFlight(map, plane, path, stop, 1, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, false);
         lockCityView();
         return;
       }
-      const moveCamera = zoom < FOLLOW_MAX_ZOOM && now - lastCamera >= CAMERA_MS;
+      const moveCamera = now - lastCamera >= CAMERA_MS;
       if (moveCamera) {
         lastCamera = now;
       }

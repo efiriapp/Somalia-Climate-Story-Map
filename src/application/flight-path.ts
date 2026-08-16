@@ -28,10 +28,10 @@ export const cruiseThenArrive = (t: number, start: number, cruise: number, stop:
   if (clamped < 0.18) {
     return lerp(start, cruise, clamped / 0.18);
   }
-  if (clamped < ARRIVE_T) {
+  if (clamped < 1) {
     return cruise;
   }
-  return lerp(cruise, stop, (clamped - ARRIVE_T) / (1 - ARRIVE_T));
+  return stop;
 };
 
 export const greatCircle = (from: LngLat, to: LngLat, steps = 64): LngLat[] => {

@@ -490,6 +490,10 @@ select {
   z-index: 1;
 }
 
+.global-stage-map .maplibregl-marker:has(.tour-plane) {
+  z-index: 4;
+}
+
 .tour-popup-card {
   position: absolute;
   left: 50%;

@@ -31,11 +31,13 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toMatch(/now - lastCamera[\s\S]{0,80}CAMERA_MS/);
   });
 
-  it('locks the camera with one easeTo at city zoom so the plane does not shake', () => {
+  it('keeps the airplane visible until it lands, then eases to city zoom', () => {
     expect(source).toContain('FOLLOW_MAX_ZOOM');
     expect(source).toContain('arriveHeading');
     expect(source).toContain('cityLocked');
     expect(source).toContain('CITY_EASE_MS');
+    expect(source).not.toMatch(/stop\.kind === 'event' && zoom >= FOLLOW_MAX_ZOOM/);
+    expect(source).toMatch(/if \(t >= 1\)/);
   });
 
   it('opens the event popup 1 second after city zoom, as a centered card', () => {

@@ -114,10 +114,10 @@ describe('flight timing', () => {
 });
 
 describe('cruiseThenArrive', () => {
-  it('holds cruise zoom through most of the flight, then eases to the stop', () => {
+  it('holds cruise zoom for the whole flight, then lands at the stop zoom', () => {
     expect(cruiseThenArrive(0, 2.25, CRUISE_ZOOM, 11)).toBeCloseTo(2.25);
     expect(cruiseThenArrive(0.45, 2.25, CRUISE_ZOOM, 11)).toBeCloseTo(CRUISE_ZOOM);
-    expect(cruiseThenArrive(0.99, 2.25, CRUISE_ZOOM, 11)).toBeGreaterThan(8);
+    expect(cruiseThenArrive(0.99, 2.25, CRUISE_ZOOM, 11)).toBeCloseTo(CRUISE_ZOOM);
     expect(cruiseThenArrive(1, 2.25, CRUISE_ZOOM, 11)).toBe(11);
   });
 });

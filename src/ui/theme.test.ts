@@ -13,6 +13,11 @@ describe('ICE green brand', () => {
     expect(css).not.toMatch(/#003399|#0047AB|#0A3161|#1B4F9C|#0033cc/i);
   });
 
+  it('keeps the airplane marker above country pins', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.maplibregl-marker:has\(\.tour-plane\)[\s\S]{0,40}z-index:\s*[3-9]/);
+  });
+
   it('keeps the centered tour popup fully visible', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.tour-popup-card[\s\S]{0,120}left:\s*50%/);
