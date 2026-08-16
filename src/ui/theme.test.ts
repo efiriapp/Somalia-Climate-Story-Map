@@ -15,13 +15,19 @@ describe('ICE green brand', () => {
 
   it('keeps the airplane marker above country pins', () => {
     const css = readFileSync(themePath, 'utf8');
-    expect(css).toMatch(/\.maplibregl-marker:has\(\.tour-plane\)[\s\S]{0,40}z-index:\s*[3-9]/);
+    expect(css).toMatch(/\.tour-plane[\s\S]{0,220}z-index:\s*[2-9][0-9]\s*!important/);
+  });
+
+  it('places continent visit cards below the ICE calendar', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,80}right:\s*0/);
+    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,120}top:\s*0/);
+    expect(css).toContain('.continent-board');
+    expect(css).toContain('.continent-card');
   });
 
   it('places the ICE calendar in the top-right corner', () => {
     const css = readFileSync(themePath, 'utf8');
-    expect(css).toMatch(/\.date-reel[\s\S]{0,80}right:\s*0/);
-    expect(css).toMatch(/\.date-reel[\s\S]{0,120}top:\s*0/);
     expect(css).toMatch(/\.date-reel[\s\S]{0,280}#063D39/);
     expect(css).toMatch(/\.tour-title[\s\S]{0,140}left:\s*50%/);
     expect(css).toMatch(/\.tour-title[\s\S]{0,280}background:\s*(#063D39|var\(--forest\))/);

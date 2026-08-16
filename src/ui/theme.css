@@ -414,7 +414,9 @@ select {
   left: 1rem;
   z-index: 45;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
+  max-width: 46%;
 }
 
 .tour-icon-bar button {
@@ -433,6 +435,11 @@ select {
 .tour-icon-bar button svg {
   width: 22px;
   height: 22px;
+}
+
+.tour-icon-bar button.active,
+.tour-icon-bar button[aria-pressed='true'] {
+  background: var(--leaf);
 }
 
 .tour-play-bar {
@@ -538,12 +545,72 @@ select {
   background: var(--leaf);
 }
 
-.date-reel {
+.tour-search-panel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: 280px;
+  max-height: min(52vh, 420px);
+  overflow: auto;
+  display: grid;
+  background: rgba(6, 61, 57, 0.96);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(6, 61, 57, 0.3);
+}
+
+.tour-search-input {
+  width: 100%;
+  border: 0;
+  padding: 0.6rem 0.75rem;
+  background: #042e2b;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tour-search-panel button {
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  display: block;
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--white);
+  background: transparent;
+  box-shadow: none;
+}
+
+.tour-search-panel button:hover {
+  background: var(--leaf);
+}
+
+.tour-search-panel p {
+  margin: 0;
+  padding: 0.55rem 0.75rem 0.7rem;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tour-right-stack {
   position: absolute;
   right: 0;
   top: 0;
   z-index: 40;
   width: 300px;
+  max-height: calc(100% - 0.6rem);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.date-reel {
+  position: relative;
+  z-index: 40;
+  width: 100%;
   padding: 0.85rem 1rem 1.05rem;
   border-radius: 0 0 0 16px;
   color: #fff;
@@ -617,6 +684,83 @@ select {
   color: #fff;
 }
 
+.continent-board {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.4rem 0 0.55rem;
+}
+
+.continent-card {
+  padding: 0.65rem 0.85rem 0.75rem;
+  color: #fff;
+  background: #063D39;
+  border: 1px solid var(--leaf);
+  border-radius: 0 0 0 14px;
+  box-shadow: 0 8px 18px rgba(6, 61, 57, 0.28);
+}
+
+.continent-card h2 {
+  margin: 0 0 0.35rem;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.continent-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0 0 0.45rem;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.continent-countries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.continent-countries button {
+  border: 0;
+  border-radius: 999px;
+  background: #042e2b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0.28rem 0.55rem;
+  cursor: pointer;
+}
+
+.continent-countries button small {
+  margin-left: 0.28rem;
+  color: #4caf7d;
+  font-weight: 800;
+}
+
+.continent-countries button:hover {
+  background: var(--leaf);
+}
+
+.tour-measure-badge {
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  transform: translateX(-50%);
+  z-index: 45;
+  margin: 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: #063D39;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(6, 61, 57, 0.3);
+}
+
 .global-stage-map {
   width: 100%;
   height: 100%;
@@ -641,6 +785,7 @@ select {
 }
 
 .tour-plane {
+  z-index: 40 !important;
   width: 38px;
   height: 38px;
   display: grid;
@@ -661,8 +806,9 @@ select {
   z-index: 1;
 }
 
-.global-stage-map .maplibregl-marker:has(.tour-plane) {
-  z-index: 4;
+.global-stage-map .maplibregl-marker:has(.tour-plane),
+.global-stage-map .tour-plane {
+  z-index: 40 !important;
 }
 
 .tour-popup-card {

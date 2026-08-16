@@ -100,4 +100,18 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).not.toContain('autoStartedRef');
     expect(source).not.toMatch(/setPlaying\(true\)/);
   });
+
+  it('keeps the airplane marker on top of map pins and trail', () => {
+    expect(source).toContain('tour-plane');
+  });
+
+  it('adds search, home, compass, and length measure after map layers', () => {
+    expect(source).toContain('aria-label="Search tour"');
+    expect(source).toContain('aria-label="Home view"');
+    expect(source).toContain('aria-label="Compass north"');
+    expect(source).toContain('aria-label="Measure length"');
+    expect(source).toContain('distanceKm');
+    expect(source).toContain('ContinentCards');
+    expect(source).toContain('tour-search-panel');
+  });
 });

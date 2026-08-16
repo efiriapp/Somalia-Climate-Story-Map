@@ -18,6 +18,7 @@ import {
   pathCoordinates,
   pointAlong,
   slicePath,
+  distanceKm,
   type LngLat,
 } from './flight-path';
 import { buildGlobalTour, MOGADISHU_HOME } from './global-tour';
@@ -75,6 +76,14 @@ describe('pointAlong and slicePath', () => {
     expect(raced.length).toBeGreaterThan(1);
     expect(raced.length).toBeLessThan(path.length);
     expect(raced.at(-1)?.lat).toBeCloseTo(pointAlong(path, 0.5).lat, 5);
+  });
+});
+
+describe('distanceKm', () => {
+  it('measures the great-circle length from Mogadishu to Doha', () => {
+    const km = distanceKm(mogadishu, doha);
+    expect(km).toBeGreaterThan(2600);
+    expect(km).toBeLessThan(2900);
   });
 });
 

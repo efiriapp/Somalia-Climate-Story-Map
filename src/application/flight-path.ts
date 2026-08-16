@@ -15,6 +15,7 @@ export const TOUR_STEP_MS = FLIGHT_MS + CITY_EASE_MS + POPUP_DELAY_MS + POPUP_HO
 
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 const toDegrees = (radians: number): number => (radians * 180) / Math.PI;
+const EARTH_KM = 6371;
 
 const lerp = (from: number, to: number, t: number): number => from + (to - from) * t;
 
@@ -118,6 +119,16 @@ export const arriveHeading = (path: LngLat[], t: number): number =>
 
 export const pathCoordinates = (path: LngLat[]): [number, number][] =>
   path.map((point) => [point.lng, point.lat]);
+
+export const distanceKm = (from: LngLat, to: LngLat): number => {
+  const φ1 = toRadians(from.lat);
+  const φ2 = toRadians(to.lat);
+  const Δφ = toRadians(to.lat - from.lat);
+  const Δλ = toRadians(to.lng - from.lng);
+  const a =
+    Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+  return 2 * EARTH_KM * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
 
 export const flightLeg = (
   tour: TourStop[],

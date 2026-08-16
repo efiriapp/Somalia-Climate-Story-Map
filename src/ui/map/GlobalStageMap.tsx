@@ -17,14 +17,17 @@ import {
   POPUP_HOLD_MS,
   arriveHeading,
   cruiseThenArrive,
+  distanceKm,
   greatCircle,
   pathCoordinates,
   pointAlong,
   slicePath,
   type LngLat,
 } from '../../application/flight-path';
+import { continentVisits, firstEventIndexByCountry, searchTourStops } from '../../application/continent-visits';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
+import { ContinentCards } from './ContinentCards';
 import { DateReel } from './DateReel';
 import type { Story } from '../../domain/story';
 
@@ -56,6 +59,7 @@ const paintTrail = (
   canvas: HTMLCanvasElement,
   traces: [number, number][][],
   current: LngLat[],
+  measure: LngLat[] = [],
 ) => {
   const view = map.getCanvas();
   const dpr = window.devicePixelRatio || 1;
@@ -110,6 +114,30 @@ const paintTrail = (
     stroke(coords.map(([lng, lat]) => ({ lng, lat })));
   }
   stroke(current);
+  if (measure.length >= 2) {
+    ctx.beginPath();
+    let drawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    for (const point of measure) {
+      const pixel = map.project([point.lng, point.lat]);
+      if (drawing && Math.hypot(pixel.x - lastX, pixel.y - lastY) > 220) {
+        drawing = false;
+      }
+      if (!drawing) {
+        ctx.moveTo(pixel.x, pixel.y);
+        drawing = true;
+      } else {
+        ctx.lineTo(pixel.x, pixel.y);
+      }
+      lastX = pixel.x;
+      lastY = pixel.y;
+    }
+    ctx.setLineDash([8, 6]);
+    ctx.strokeStyle = '#4CAF7D';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+  }
 };
 
 const applyStopView = (map: Map, stop: TourStop) => {
@@ -166,6 +194,7 @@ const easeInOut = (t: number): number =>
 
 const parkPlane = (plane: Marker, at: LngLat, heading: number) => {
   plane.setLngLat([at.lng, at.lat]).setRotation(heading);
+  plane.getElement().style.zIndex = '40';
 };
 
 const followFlight = (
@@ -253,6 +282,21 @@ const PauseCircleIcon = () => (
   </svg>
 );
 
+const SearchIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="11" cy="11" r="6.2" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path d="M20 20l-3.6-3.6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+const HomeIcon = () => <Icon d="M4 11.5 12 4l8 7.5V20H15v-6H9v6H4z" />;
+const CompassIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="9.1" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path d="m12 6 2.4 6.4L12 18l-2.4-5.6Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+  </svg>
+);
+const MeasureIcon = () => <Icon d="M4 8h16v8H4zm3 0v4m3-4v3m3-3v4m3-4v3" />;
+
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -265,6 +309,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const tracesRef = useRef<[number, number][][]>([]);
   const currentTrailRef = useRef<LngLat[]>([]);
   const trailCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const measurePointsRef = useRef<LngLat[]>([]);
+  const measuringRef = useRef(false);
   const playingRef = useRef(false);
   const playAdvanceRef = useRef(0);
   const flightTickRef = useRef<((now: number) => void) | null>(null);
@@ -273,11 +319,18 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [playing, setPlaying] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [layersOpen, setLayersOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [measuring, setMeasuring] = useState(false);
+  const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
+  const continents = useMemo(() => continentVisits(stories), [stories]);
+  const searchHits = useMemo(() => searchTourStops(tour, searchQuery), [tour, searchQuery]);
   const stop: TourStop | undefined = tour[index];
   const [calendarDate, setCalendarDate] = useState(tour[0]?.date ?? '2023-01-01');
   playingRef.current = playing;
+  measuringRef.current = measuring;
 
   const queueNextIfPlaying = (delay: number) => {
     window.clearTimeout(playAdvanceRef.current);
@@ -307,7 +360,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       if (!canvas) {
         return;
       }
-      paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+      paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
     };
     map.on('load', () => {
       trailCanvasRef.current = attachTrailCanvas(map);
@@ -350,6 +403,33 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map || !ready) {
+      return;
+    }
+    map.getCanvas().style.cursor = measuring ? 'crosshair' : '';
+    const onClick = (event: { lngLat: { lng: number; lat: number } }) => {
+      if (!measuringRef.current) {
+        return;
+      }
+      const point = { lng: event.lngLat.lng, lat: event.lngLat.lat };
+      const previous = measurePointsRef.current;
+      const next = previous.length >= 2 ? [point] : [...previous, point];
+      measurePointsRef.current = next;
+      setMeasureKm(next.length === 2 ? distanceKm(next[0], next[1]) : null);
+      const canvas = trailCanvasRef.current;
+      if (canvas) {
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, next);
+      }
+    };
+    map.on('click', onClick);
+    return () => {
+      map.off('click', onClick);
+      map.getCanvas().style.cursor = '';
+    };
+  }, [ready, measuring]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!ready || !map || !stop) {
       return;
     }
@@ -357,7 +437,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       currentTrailRef.current = slicePath(path, Math.max(traveled, 0.02));
       const canvas = trailCanvasRef.current;
       if (canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
       }
     };
     if (!homeMarkerRef.current) {
@@ -407,7 +487,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       currentTrailRef.current = [];
       const canvas = trailCanvasRef.current;
       if (canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
       }
       parkPlane(plane, dest, 12);
       applyStopView(map, stop);
@@ -453,7 +533,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       tracesRef.current = [...tracesRef.current, pathCoordinates(path)];
       const canvas = trailCanvasRef.current;
       if (canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current);
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
       }
       applyStopView(map, stop);
       afterArrive();
@@ -521,6 +601,52 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
   }, [playing]);
 
+  const goHomeView = () => {
+    const map = mapRef.current;
+    if (!map) {
+      return;
+    }
+    setPlaying(false);
+    map.easeTo({
+      center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
+      zoom: GLOBE_VIEW.zoom,
+      pitch: GLOBE_VIEW.pitch,
+      bearing: GLOBE_VIEW.bearing,
+      duration: 1200,
+      essential: true,
+      padding: GLOBE_PADDING,
+    });
+  };
+
+  const goNorth = () => {
+    mapRef.current?.easeTo({ bearing: 0, duration: 800, essential: true });
+  };
+
+  const toggleMeasure = () => {
+    const next = !measuring;
+    setMeasuring(next);
+    setLayersOpen(false);
+    setSearchOpen(false);
+    if (!next) {
+      measurePointsRef.current = [];
+      setMeasureKm(null);
+      const map = mapRef.current;
+      const canvas = trailCanvasRef.current;
+      if (map && canvas) {
+        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, []);
+      }
+    }
+  };
+
+  const goToStop = (nextIndex: number) => {
+    if (nextIndex < 0) {
+      return;
+    }
+    setPlaying(false);
+    setSearchOpen(false);
+    setIndex(nextIndex);
+  };
+
   if (!stop) {
     return null;
   }
@@ -570,7 +696,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               type="button"
               aria-label="Map layers"
               aria-expanded={layersOpen}
-              onClick={() => setLayersOpen((open) => !open)}
+              onClick={() => {
+                setLayersOpen((open) => !open);
+                setSearchOpen(false);
+              }}
             >
               <Icon d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" />
             </button>
@@ -593,8 +722,68 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               </div>
             ) : null}
           </div>
+          <div className="tour-layer-wrap">
+            <button
+              type="button"
+              aria-label="Search tour"
+              aria-expanded={searchOpen}
+              onClick={() => {
+                setSearchOpen((open) => !open);
+                setLayersOpen(false);
+              }}
+            >
+              <SearchIcon />
+            </button>
+            {searchOpen ? (
+              <div className="tour-search-panel">
+                <input
+                  className="tour-search-input"
+                  value={searchQuery}
+                  autoFocus
+                  placeholder="Search country or event..."
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                />
+                {searchHits.map((hit) => (
+                  <button
+                    key={hit.storyId ?? hit.title}
+                    type="button"
+                    onClick={() => goToStop(tour.findIndex((item) => item.storyId === hit.storyId))}
+                  >
+                    {hit.country} — {hit.title}
+                  </button>
+                ))}
+                {searchHits.length === 0 ? <p>No matches</p> : null}
+              </div>
+            ) : null}
+          </div>
+          <button type="button" aria-label="Home view" onClick={goHomeView}>
+            <HomeIcon />
+          </button>
+          <button type="button" aria-label="Compass north" onClick={goNorth}>
+            <CompassIcon />
+          </button>
+          <button
+            type="button"
+            className={measuring ? 'active' : undefined}
+            aria-label="Measure length"
+            aria-pressed={measuring}
+            onClick={toggleMeasure}
+          >
+            <MeasureIcon />
+          </button>
         </div>
-        <DateReel isoDate={calendarDate} />
+        <div className="tour-right-stack">
+          <DateReel isoDate={calendarDate} />
+          <ContinentCards
+            cards={continents}
+            onCountry={(country) => goToStop(firstEventIndexByCountry(tour, country))}
+          />
+        </div>
+        {measuring ? (
+          <p className="tour-measure-badge">
+            {measureKm == null ? 'Click two points' : `${Math.round(measureKm).toLocaleString('en-GB')} km`}
+          </p>
+        ) : null}
         {popupOpen && stop.kind === 'event' ? (
           <article
             className="tour-popup-card"
