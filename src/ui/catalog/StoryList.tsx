@@ -1,8 +1,5 @@
 import type { Story } from '../../domain/story';
 
-const typeLabel = (type: Story['type']): string =>
-  type === 'ice-story' ? 'Story' : 'Global stage';
-
 type Props = {
   stories: Story[];
   selectedId: string | null;
@@ -31,7 +28,7 @@ export function StoryList({ stories, selectedId, onSelect }: Props) {
             {story.title.slice(0, 2).toUpperCase()}
           </div>
           <div>
-            <div className="story-type">{typeLabel(story.type)}</div>
+            <div className="story-type">Story</div>
             <h3>{story.title}</h3>
             <div className="story-meta">
               {story.date} · {story.location.name}

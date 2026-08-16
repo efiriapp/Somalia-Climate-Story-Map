@@ -31,7 +31,10 @@ export const filterCatalog = (stories: Story[], criteria: FilterCriteria): Story
   const query = criteria.query.trim().toLowerCase();
 
   const matched = stories.filter((story) => {
-    if (criteria.type !== 'all' && story.type !== criteria.type) {
+    if (criteria.region !== 'all' && story.region !== criteria.region) {
+      return false;
+    }
+    if (criteria.district !== 'all' && story.district !== criteria.district) {
       return false;
     }
     if (query && !haystack(story).includes(query)) {

@@ -1,17 +1,12 @@
 import { THEMES } from '../../domain/themes';
-import {
-  type ContentType,
-  type FilterCriteria,
-  type SortKey,
-  type Story,
-} from '../../domain/story';
+import { districtsForRegion, REGIONS, type RegionSlug } from '../../domain/somalia';
+import { type FilterCriteria, type SortKey, type Story } from '../../domain/story';
 
 type Props = {
   stories: Story[];
   draft: FilterCriteria;
   onDraftChange: (next: FilterCriteria) => void;
   onApply: () => void;
-  onClearType: () => void;
 };
 
 const yearsIn = (stories: Story[]): number[] =>
@@ -22,42 +17,54 @@ const yearsIn = (stories: Story[]): number[] =>
 const sdgsIn = (stories: Story[]) =>
   [...new Set(stories.flatMap((story) => story.sdgs))].sort((a, b) => a - b);
 
-export function FilterPanel({ stories, draft, onDraftChange, onApply, onClearType }: Props) {
+export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
+  const region = (draft.region === 'all' ? 'all' : draft.region) as RegionSlug | 'all';
+  const districts = districtsForRegion(region);
+
   return (
     <div>
       <div className="filter-grid">
         <label>
           <select
             className="filter-control"
-            value={draft.type}
+            value={draft.region}
+            onChange={(event) => {
+              const nextRegion = event.target.value || 'all';
+              const allowed = districtsForRegion(nextRegion === 'all' ? 'all' : (nextRegion as RegionSlug));
+              const districtStillValid = allowed.some((item) => item.slug === draft.district);
+              onDraftChange({
+                ...draft,
+                region: nextRegion,
+                district: districtStillValid ? draft.district : 'all',
+              });
+            }}
+          >
+            <option value="all">Region</option>
+            {REGIONS.map((item) => (
+              <option key={item.slug} value={item.slug}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <select
+            className="filter-control"
+            value={draft.district}
             onChange={(event) =>
-              onDraftChange({ ...draft, type: event.target.value as ContentType | 'all' })
+              onDraftChange({
+                ...draft,
+                district: event.target.value || 'all',
+              })
             }
           >
-            <option value="all">Content type</option>
-            <option value="ice-story">Stories</option>
-            <option value="global-stage">Global stage</option>
+            <option value="all">District</option>
+            {districts.map((item) => (
+              <option key={item.slug} value={item.slug}>
+                {item.label}
+              </option>
+            ))}
           </select>
-          {draft.type === 'ice-story' ? (
-            <div className="chips">
-              <span className="chip">
-                Stories
-                <button type="button" aria-label="Remove Stories filter" onClick={onClearType}>
-                  ×
-                </button>
-              </span>
-            </div>
-          ) : null}
-          {draft.type === 'global-stage' ? (
-            <div className="chips">
-              <span className="chip">
-                Global stage
-                <button type="button" aria-label="Remove Global Stage filter" onClick={onClearType}>
-                  ×
-                </button>
-              </span>
-            </div>
-          ) : null}
         </label>
         <label>
           <select

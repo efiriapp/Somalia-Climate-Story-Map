@@ -16,6 +16,8 @@ export type Story = {
   date: string;
   themes: string[];
   sdgs: SdgNumber[];
+  region: string;
+  district: string;
   location: GeoLocation;
   summary: string;
   body: string;
@@ -26,7 +28,8 @@ export type SortKey = 'newest' | 'oldest' | 'title' | 'keywords';
 
 export type FilterCriteria = {
   query: string;
-  type: ContentType | 'all';
+  region: string;
+  district: string;
   themes: string[];
   year: number | 'all';
   sdgs: SdgNumber[];
@@ -35,7 +38,8 @@ export type FilterCriteria = {
 
 export const defaultFilterCriteria = (): FilterCriteria => ({
   query: '',
-  type: 'ice-story',
+  region: 'all',
+  district: 'all',
   themes: [],
   year: 'all',
   sdgs: [],

@@ -15,11 +15,8 @@ export const WORLD_VIEW: MapView = {
   zoom: 2,
 };
 
-export const resolveMapView = (criteria: FilterCriteria, matches: Story[]): MapView => {
-  if (criteria.type === 'global-stage') {
-    return WORLD_VIEW;
-  }
-  if (criteria.type === 'all' && matches.length > 0 && matches.every((story) => story.type === 'global-stage')) {
+export const resolveMapView = (_criteria: FilterCriteria, matches: Story[]): MapView => {
+  if (matches.length > 0 && matches.every((story) => story.region === '')) {
     return WORLD_VIEW;
   }
   return SOMALIA_VIEW;

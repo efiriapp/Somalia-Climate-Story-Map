@@ -17,13 +17,6 @@ export default function App() {
   const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
   const detail = selectedId ? catalog.find((story) => story.id === selectedId) : undefined;
 
-  const applyNav = (type: FilterCriteria['type']) => {
-    const next = { ...defaultFilterCriteria(), type, query: draft.query };
-    setDraft(next);
-    setApplied(next);
-    setSelectedId(null);
-  };
-
   return (
     <div>
       <header className="topbar">
@@ -32,14 +25,8 @@ export default function App() {
         <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
       </header>
       <nav className="nav" aria-label="Primary">
-        <button type="button" className={applied.type === 'ice-story' ? 'active' : ''} onClick={() => applyNav('ice-story')}>
+        <button type="button" className="active">
           Stories
-        </button>
-        <button type="button" className={applied.type === 'global-stage' ? 'active' : ''} onClick={() => applyNav('global-stage')}>
-          Global stage
-        </button>
-        <button type="button" className={applied.type === 'all' ? 'active' : ''} onClick={() => applyNav('all')}>
-          The map
         </button>
       </nav>
 
@@ -48,7 +35,7 @@ export default function App() {
           <button className="back" type="button" onClick={() => setSelectedId(null)}>
             ← Back to catalog
           </button>
-          <p className="story-type">{detail.type === 'ice-story' ? 'Story' : 'Global stage'}</p>
+          <p className="story-type">Story</p>
           <h1>{detail.title}</h1>
           <p className="story-meta">
             {detail.date} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
@@ -86,7 +73,6 @@ export default function App() {
                   setApplied(draft);
                   setSelectedId(null);
                 }}
-                onClearType={() => setDraft({ ...draft, type: 'all' })}
               />
             ) : null}
             <h2 className="section-title">Latest stories</h2>
