@@ -50,6 +50,10 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('tour-icon-bar');
     expect(source).toContain('ICE at Global Stage');
     expect(source).toContain('Back to main');
+    expect(source).toContain('tour-play-bar');
+    expect(source).toContain('SkipBackIcon');
+    expect(source).toContain('SkipForthIcon');
+    expect(source).toContain('PlayCircleIcon');
     expect(source).not.toContain('global-stage-bar');
     expect(source).not.toContain('NavigationControl');
     expect(source).toContain('flight-history');

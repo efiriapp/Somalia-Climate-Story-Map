@@ -435,9 +435,40 @@ select {
   height: 22px;
 }
 
-.tour-icon-bar .play {
+.tour-play-bar {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--forest);
+  box-shadow: 0 6px 16px rgba(6, 61, 57, 0.28);
+}
+
+.tour-play-bar button {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--white);
+}
+
+.tour-play-bar button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.tour-play-bar .play {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
   background: var(--mint);
   color: var(--white);
+}
+
+.tour-play-bar .play svg {
+  width: 30px;
+  height: 30px;
 }
 
 .tour-icon-bar .tour-back {

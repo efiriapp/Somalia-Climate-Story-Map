@@ -240,6 +240,52 @@ const Icon = ({ d, filled = false }: { d: string; filled?: boolean }) => (
   </svg>
 );
 
+const SkipBackIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M13.6 7.1 6.9 12l6.7 4.9Z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.1"
+      strokeLinejoin="round"
+    />
+    <path d="M14.2 12H20" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
+  </svg>
+);
+
+const SkipForthIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M10.4 7.1 17.1 12l-6.7 4.9Z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.1"
+      strokeLinejoin="round"
+    />
+    <path d="M9.8 12H4" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
+  </svg>
+);
+
+const PlayCircleIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="9.1" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path
+      d="M10.3 8.5 16.3 12l-6 3.5Z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const PauseCircleIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="9.1" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path d="M9.5 8.6v6.8M14.5 8.6v6.8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+  </svg>
+);
+
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -482,38 +528,36 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             <Icon d="M15 18l-6-6 6-6" />
             Back to main
           </button>
-          <button
-            type="button"
-            aria-label="Previous stop"
-            onClick={() => {
-              setPlaying(false);
-              setIndex((current) => prevTourIndex(current));
-            }}
-          >
-            <Icon d="M6 6h2v12H6zm3.5 6L18 18V6z" filled />
-          </button>
-          <button
-            type="button"
-            className="play"
-            aria-label={playing ? 'Pause tour' : 'Play tour'}
-            onClick={() => setPlaying((current) => !current)}
-          >
-            {playing ? (
-              <Icon d="M6 5h4v14H6zm8 0h4v14h-4z" filled />
-            ) : (
-              <Icon d="M8 5v14l11-7z" filled />
-            )}
-          </button>
-          <button
-            type="button"
-            aria-label="Next stop"
-            onClick={() => {
-              setPlaying(false);
-              setIndex((current) => nextTourIndex(current, tour.length));
-            }}
-          >
-            <Icon d="M16 6h2v12h-2zm-10 12l8.5-6L6 6z" filled />
-          </button>
+          <div className="tour-play-bar">
+            <button
+              type="button"
+              aria-label="Previous stop"
+              onClick={() => {
+                setPlaying(false);
+                setIndex((current) => prevTourIndex(current));
+              }}
+            >
+              <SkipBackIcon />
+            </button>
+            <button
+              type="button"
+              className="play"
+              aria-label={playing ? 'Pause tour' : 'Play tour'}
+              onClick={() => setPlaying((current) => !current)}
+            >
+              {playing ? <PauseCircleIcon /> : <PlayCircleIcon />}
+            </button>
+            <button
+              type="button"
+              aria-label="Next stop"
+              onClick={() => {
+                setPlaying(false);
+                setIndex((current) => nextTourIndex(current, tour.length));
+              }}
+            >
+              <SkipForthIcon />
+            </button>
+          </div>
           <div className="tour-layer-wrap">
             <button
               type="button"
