@@ -2,13 +2,15 @@ import type { Story } from '../domain/story';
 
 export const GLOBE_VIEW = {
   lng: 45.3182,
-  lat: 5.2,
-  zoom: 2.25,
-  pitch: 16,
-  bearing: 8,
-  minZoom: 1.4,
+  lat: 8.4,
+  zoom: 2.7,
+  pitch: 8,
+  bearing: 0,
+  minZoom: 2.0,
   maxZoom: 12.5,
 };
+
+export const GLOBE_PADDING = { top: 28, bottom: 130, left: 24, right: 24 };
 
 export const CITY_ZOOM = 11;
 
@@ -113,6 +115,16 @@ const escapeHtml = (value: string): string =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;');
 
+export const formatTourDate = (iso: string): string => {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
+};
+
 export const tourPopupHtml = (stop: TourStop): string | null => {
   if (stop.kind === 'home') {
     return null;
@@ -122,6 +134,7 @@ export const tourPopupHtml = (stop: TourStop): string | null => {
     : '';
   return `${image}
     <p><strong>Title:</strong> ${escapeHtml(stop.title)}</p>
+    <p><strong>Date:</strong> ${escapeHtml(formatTourDate(stop.date))}</p>
     <p><strong>Country:</strong> ${escapeHtml(stop.country)}</p>
     <p><strong>Description:</strong> ${escapeHtml(stop.summary)}</p>
     <p><strong>More information:</strong> <a href="${escapeHtml(stop.website)}" target="_blank" rel="noreferrer">${escapeHtml(stop.website)}</a></p>`;

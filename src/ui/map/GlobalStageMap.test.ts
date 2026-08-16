@@ -31,15 +31,18 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toMatch(/now - lastCamera[\s\S]{0,80}CAMERA_MS/);
   });
 
-  it('keeps the airplane glued to a still heading at city zoom', () => {
+  it('locks the camera with one easeTo at city zoom so the plane does not shake', () => {
     expect(source).toContain('FOLLOW_MAX_ZOOM');
     expect(source).toContain('arriveHeading');
-    expect(source).toMatch(/zoom >= FOLLOW_MAX_ZOOM/);
+    expect(source).toContain('cityLocked');
+    expect(source).toContain('CITY_EASE_MS');
   });
 
-  it('opens the event popup 3 seconds after the airplane arrives', () => {
+  it('opens the event popup 1 second after city zoom, as a centered card', () => {
     expect(source).toContain('POPUP_DELAY_MS');
+    expect(source).toContain('tour-popup-card');
+    expect(source).toContain('setPopupOpen');
     expect(source).not.toMatch(/\.addTo\(map\)\s*\n\s*\.togglePopup\(\)/);
-    expect(source).toMatch(/setTimeout\([\s\S]{0,180}togglePopup[\s\S]{0,80}POPUP_DELAY_MS/);
+    expect(source).toMatch(/setTimeout\([\s\S]{0,220}setPopupOpen\(true\)[\s\S]{0,80}POPUP_DELAY_MS/);
   });
 });

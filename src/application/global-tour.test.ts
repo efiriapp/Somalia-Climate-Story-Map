@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildGlobalTour, CITY_ZOOM, GLOBE_VIEW, nextTourIndex, prevTourIndex, tourPopupHtml } from './global-tour';
+import { buildGlobalTour, CITY_ZOOM, GLOBE_VIEW, formatTourDate, nextTourIndex, prevTourIndex, tourPopupHtml } from './global-tour';
 import type { Story } from '../domain/story';
 
 const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' | 'type'>): Story => ({
@@ -51,9 +51,9 @@ const catalog: Story[] = [
 ];
 
 describe('buildGlobalTour', () => {
-  it('uses global-stage stories from 2023 to 2026, newest last', () => {
-    const tour = buildGlobalTour(catalog);
-    const events = tour.filter((stop) => stop.kind === 'event');
+  it('orders events from the earliest date', () => {
+    const events = buildGlobalTour(catalog).filter((stop) => stop.kind === 'event');
+    expect(events.map((stop) => stop.date)).toEqual(['2023-03-20', '2026-01-01']);
     expect(events.map((stop) => stop.storyId)).toEqual(['doha', 'cop30']);
   });
 
@@ -80,11 +80,12 @@ describe('buildGlobalTour', () => {
     }
   });
 
-  it('centers the globe on Somalia and zooms to city level at event stops', () => {
+  it('fills the map with a Somalia-centered globe and zooms to city level at event stops', () => {
     expect(GLOBE_VIEW.lng).toBeCloseTo(45.32, 1);
     expect(GLOBE_VIEW.lat).toBeGreaterThan(0);
     expect(GLOBE_VIEW.lat).toBeLessThan(12);
-    expect(GLOBE_VIEW.zoom).toBeGreaterThanOrEqual(2);
+    expect(GLOBE_VIEW.zoom).toBeGreaterThanOrEqual(2.5);
+    expect(GLOBE_VIEW.pitch).toBeLessThanOrEqual(12);
     expect(GLOBE_VIEW.maxZoom).toBeGreaterThanOrEqual(11);
     const tour = buildGlobalTour(catalog);
     for (const stop of tour) {
@@ -105,10 +106,12 @@ describe('tour popup', () => {
     expect(tourPopupHtml(home!)).toBeNull();
   });
 
-  it('builds an on-map popup for event stops', () => {
+  it('builds a centered popup with title, date, country, and source link', () => {
     const event = buildGlobalTour(catalog).find((stop) => stop.storyId === 'doha');
     const html = tourPopupHtml(event!);
     expect(html).toContain('Title:');
+    expect(html).toContain('Date:');
+    expect(html).toContain(formatTourDate('2023-03-20'));
     expect(html).toContain('Country:');
     expect(html).toContain('Qatar');
     expect(html).toContain('More information:');

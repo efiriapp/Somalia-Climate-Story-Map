@@ -451,9 +451,13 @@ select {
   min-width: 180px;
 }
 
-.global-stage-map {
+.global-stage-scene {
   flex: 1;
   min-height: 0;
+  position: relative;
+}
+
+.global-stage-map {
   width: 100%;
   height: 100%;
   position: relative;
@@ -471,7 +475,6 @@ select {
   display: grid;
   place-items: center;
   pointer-events: none;
-  will-change: transform;
   filter: drop-shadow(0 2px 6px rgba(6, 61, 57, 0.55));
 }
 
@@ -487,32 +490,38 @@ select {
   z-index: 1;
 }
 
-.global-stage-map .maplibregl-popup,
-.tour-popup {
+.tour-popup-card {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
   z-index: 50;
+  width: min(380px, calc(100% - 2rem));
+  max-height: min(70vh, 520px);
+  overflow: auto;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(6, 61, 57, 0.28);
+  padding: 0 0.9rem 0.9rem;
 }
 
-.tour-popup .maplibregl-popup-content {
-  padding: 0 0.8rem 0.8rem;
-  max-width: 320px;
-}
-
-.tour-popup img {
+.tour-popup-card img {
   display: block;
-  width: calc(100% + 1.6rem);
-  margin: 0 -0.8rem 0.6rem;
+  width: calc(100% + 1.8rem);
+  margin: 0 -0.9rem 0.6rem;
   max-height: 150px;
   object-fit: cover;
 }
 
-.tour-popup p {
+.tour-popup-card p {
   margin: 0.4rem 0 0;
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink);
 }
 
-.tour-popup a {
+.tour-popup-card a {
   color: var(--leaf);
   word-break: break-all;
 }

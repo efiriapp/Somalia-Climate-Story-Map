@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   ARRIVE_T,
   CAMERA_MS,
+  CITY_EASE_MS,
   CRUISE_ZOOM,
   FLIGHT_MS,
   FOLLOW_MAX_ZOOM,
@@ -107,8 +108,8 @@ describe('flight timing', () => {
     expect(CAMERA_MS).toBeGreaterThanOrEqual(120);
     expect(CRUISE_ZOOM).toBeGreaterThanOrEqual(2.8);
     expect(CRUISE_ZOOM).toBeLessThan(5);
-    expect(POPUP_DELAY_MS).toBe(3000);
-    expect(TOUR_STEP_MS).toBe(FLIGHT_MS + POPUP_DELAY_MS + 4000);
+    expect(POPUP_DELAY_MS).toBe(1000);
+    expect(TOUR_STEP_MS).toBe(FLIGHT_MS + CITY_EASE_MS + POPUP_DELAY_MS + 4000);
   });
 });
 
@@ -128,7 +129,7 @@ describe('city-zoom airplane stability', () => {
     expect(arriveHeading(path, 0.99)).toBe(arriveHeading(path, 1));
   });
 
-  it('follows the camera every frame once zoom is city-close', () => {
+  it('locks the camera with one easeTo at city zoom so the plane does not shake', () => {
     expect(FOLLOW_MAX_ZOOM).toBeGreaterThan(CRUISE_ZOOM);
     expect(FOLLOW_MAX_ZOOM).toBeLessThan(11);
   });

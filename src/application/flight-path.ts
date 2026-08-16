@@ -5,11 +5,12 @@ export type LngLat = { lng: number; lat: number };
 export const FLIGHT_MS = 16000;
 export const CAMERA_MS = 150;
 export const CRUISE_ZOOM = 3.1;
-export const CRUISE_PITCH = 16;
+export const CRUISE_PITCH = 8;
 export const ARRIVE_T = 0.74;
 export const FOLLOW_MAX_ZOOM = 5.5;
-export const POPUP_DELAY_MS = 3000;
-export const TOUR_STEP_MS = FLIGHT_MS + POPUP_DELAY_MS + 4000;
+export const CITY_EASE_MS = 2000;
+export const POPUP_DELAY_MS = 1000;
+export const TOUR_STEP_MS = FLIGHT_MS + CITY_EASE_MS + POPUP_DELAY_MS + 4000;
 
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 const toDegrees = (radians: number): number => (radians * 180) / Math.PI;

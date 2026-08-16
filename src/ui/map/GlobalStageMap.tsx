@@ -3,13 +3,13 @@ import {
   Map,
   Marker,
   NavigationControl,
-  Popup,
   type GeoJSONSource,
   type StyleSpecification,
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
   CAMERA_MS,
+  CITY_EASE_MS,
   CRUISE_PITCH,
   CRUISE_ZOOM,
   FLIGHT_MS,
@@ -23,7 +23,7 @@ import {
   pointAlong,
   type LngLat,
 } from '../../application/flight-path';
-import { buildGlobalTour, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
+import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
 import type { Story } from '../../domain/story';
 
@@ -55,8 +55,9 @@ const applyStopView = (map: Map, stop: TourStop) => {
     zoom: stop.zoom,
     pitch: stop.pitch,
     bearing: stop.bearing,
-    duration: 1800,
+    duration: CITY_EASE_MS,
     essential: true,
+    padding: stop.kind === 'home' ? GLOBE_PADDING : { top: 72, bottom: 72, left: 32, right: 32 },
   });
 };
 
@@ -71,6 +72,7 @@ const createMap = (container: HTMLDivElement, style: StyleSpecification): Map =>
     minZoom: GLOBE_VIEW.minZoom,
     maxZoom: GLOBE_VIEW.maxZoom,
     fadeDuration: 0,
+    padding: GLOBE_PADDING,
   });
   map.addControl(new NavigationControl({ visualizePitch: true }), 'bottom-right');
   map.on('load', () => {
@@ -208,6 +210,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
   const stop: TourStop | undefined = tour[index];
@@ -272,24 +275,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     markerRef.current?.remove();
     markerRef.current = null;
     if (stop.kind === 'event') {
-      const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]);
-      const html = tourPopupHtml(stop);
-      if (html) {
-        marker
-          .setPopup(
-            new Popup({
-              offset: 56,
-              anchor: 'bottom',
-              maxWidth: '320px',
-              className: 'tour-popup',
-              closeOnClick: false,
-            }).setHTML(html),
-          )
-          .addTo(map);
-      } else {
-        marker.addTo(map);
-      }
-      markerRef.current = marker;
+      markerRef.current = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
     }
 
     const originStop = tour[lastIndexRef.current] ?? stop;
@@ -301,6 +287,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.stop();
     window.cancelAnimationFrame(flightRef.current);
     window.clearTimeout(popupTimerRef.current);
+    setPopupOpen(false);
     if (!moved) {
       setLineData(map, 'flight-route', []);
       setLineData(map, 'flight-progress', []);
@@ -308,8 +295,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       applyStopView(map, stop);
       if (stop.kind === 'event') {
         popupTimerRef.current = window.setTimeout(() => {
-          markerRef.current?.togglePopup();
-        }, POPUP_DELAY_MS);
+          setPopupOpen(true);
+        }, CITY_EASE_MS + POPUP_DELAY_MS);
       }
       return;
     }
@@ -321,28 +308,57 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const startZoom = map.getZoom();
     const startPitch = map.getPitch();
     const startBearing = map.getBearing();
-    followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing, true);
+    const startZoom = map.getZoom();
+    const startPitch = map.getPitch();
+    const startBearing = map.getBearing();
+    if (startZoom >= FOLLOW_MAX_ZOOM) {
+      map.easeTo({
+        center: [origin.lng, origin.lat],
+        zoom: CRUISE_ZOOM,
+        pitch: CRUISE_PITCH,
+        bearing: GLOBE_VIEW.bearing,
+        duration: 1200,
+        essential: true,
+        padding: GLOBE_PADDING,
+      });
+      parkPlane(plane, origin, arriveHeading(path, 0));
+      setTravelTrim(map, 0);
+    } else {
+      followFlight(map, plane, path, stop, 0, startZoom, startPitch, startBearing, true);
+    }
     const started = performance.now();
     let lastCamera = started;
+    let cityLocked = false;
+
+    const lockCityView = () => {
+      if (cityLocked) {
+        return;
+      }
+      cityLocked = true;
+      window.cancelAnimationFrame(flightRef.current);
+      parkPlane(plane, dest, arriveHeading(path, 1));
+      setTravelTrim(map, 1);
+      applyStopView(map, stop);
+      if (stop.kind === 'event') {
+        popupTimerRef.current = window.setTimeout(() => {
+          setPopupOpen(true);
+        }, CITY_EASE_MS + POPUP_DELAY_MS);
+      }
+    };
 
     const tick = (now: number) => {
       const t = easeInOut(Math.min(1, (now - started) / FLIGHT_MS));
-      const zoom = cruiseThenArrive(t, startZoom, CRUISE_ZOOM, stop.zoom);
-      const moveCamera = t >= 1 || zoom >= FOLLOW_MAX_ZOOM || now - lastCamera >= CAMERA_MS;
+      const zoom = cruiseThenArrive(t, Math.min(startZoom, CRUISE_ZOOM), CRUISE_ZOOM, stop.zoom);
+      if ((stop.kind === 'event' && zoom >= FOLLOW_MAX_ZOOM) || t >= 1) {
+        lockCityView();
+        return;
+      }
+      const moveCamera = zoom < FOLLOW_MAX_ZOOM && now - lastCamera >= CAMERA_MS;
       if (moveCamera) {
         lastCamera = now;
       }
-      followFlight(map, plane, path, stop, t, startZoom, startPitch, startBearing, moveCamera);
-      if (t < 1) {
-        flightRef.current = window.requestAnimationFrame(tick);
-        return;
-      }
-      followFlight(map, plane, path, stop, 1, startZoom, startPitch, startBearing, true);
-      if (stop.kind === 'event') {
-        popupTimerRef.current = window.setTimeout(() => {
-          markerRef.current?.togglePopup();
-        }, POPUP_DELAY_MS);
-      }
+      followFlight(map, plane, path, stop, t, Math.min(startZoom, CRUISE_ZOOM), startPitch, startBearing, moveCamera);
+      flightRef.current = window.requestAnimationFrame(tick);
     };
     flightRef.current = window.requestAnimationFrame(tick);
 
@@ -423,7 +439,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </select>
         </label>
       </header>
-      <div className="global-stage-map" ref={host} />
+      <div className="global-stage-scene">
+        <div className="global-stage-map" ref={host} />
+        {popupOpen && stop.kind === 'event' ? (
+          <article
+            className="tour-popup-card"
+            dangerouslySetInnerHTML={{ __html: tourPopupHtml(stop) ?? '' }}
+          />
+        ) : null}
+      </div>
     </section>
   );
 }
