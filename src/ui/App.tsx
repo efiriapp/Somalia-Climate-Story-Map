@@ -6,12 +6,14 @@ import { defaultFilterCriteria, type FilterCriteria } from '../domain/story';
 import { FilterPanel } from './chrome/FilterPanel';
 import { StoryList } from './catalog/StoryList';
 import { MapPane } from './map/MapPane';
+import { GlobalStageMap } from './map/GlobalStageMap';
 
 export default function App() {
   const [draft, setDraft] = useState<FilterCriteria>(defaultFilterCriteria);
   const [applied, setApplied] = useState<FilterCriteria>(defaultFilterCriteria);
   const [advancedOpen, setAdvancedOpen] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [screen, setScreen] = useState<'stories' | 'global-stage'>('stories');
 
   const matches = useMemo(() => filterCatalog(catalog, applied), [applied]);
   const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
@@ -25,12 +27,25 @@ export default function App() {
         <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
       </header>
       <nav className="nav" aria-label="Primary">
-        <button type="button" className="active">
+        <button
+          type="button"
+          className={screen === 'stories' ? 'active' : ''}
+          onClick={() => setScreen('stories')}
+        >
           Stories
+        </button>
+        <button
+          type="button"
+          className={screen === 'global-stage' ? 'active' : ''}
+          onClick={() => setScreen('global-stage')}
+        >
+          ICE Institute at Global Stage
         </button>
       </nav>
 
-      {detail ? (
+      {screen === 'global-stage' ? (
+        <GlobalStageMap stories={catalog} onClose={() => setScreen('stories')} />
+      ) : detail ? (
         <article className="detail">
           <button className="back" type="button" onClick={() => setSelectedId(null)}>
             ← Back to catalog

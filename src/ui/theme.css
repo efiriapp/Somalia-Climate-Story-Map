@@ -391,3 +391,103 @@ select {
     height: 50vh;
   }
 }
+
+.global-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--forest);
+  display: flex;
+  flex-direction: column;
+}
+
+.global-stage-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.7rem 1.2rem;
+  background: var(--forest);
+  color: var(--white);
+}
+
+.global-stage-bar h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.global-stage-bar .kicker {
+  color: var(--mint);
+  margin: 0 0 0.15rem;
+}
+
+.global-stage-back {
+  background: var(--leaf);
+  color: var(--white);
+  border: 0;
+  padding: 0.55rem 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.global-stage-map {
+  flex: 1;
+  min-height: 0;
+}
+
+.global-stage-card {
+  position: absolute;
+  left: 1.2rem;
+  bottom: 5.5rem;
+  width: min(380px, calc(100% - 2.4rem));
+  background: var(--white);
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+}
+
+.global-stage-date {
+  margin: 0.2rem 0;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.global-stage-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+}
+
+.global-stage-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.global-stage-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.6rem;
+  background: var(--forest);
+  padding: 0.4rem;
+}
+
+.global-stage-controls button {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: var(--leaf);
+  color: var(--white);
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.global-stage-controls .play {
+  width: 56px;
+  background: var(--mint);
+  color: var(--forest);
+}
