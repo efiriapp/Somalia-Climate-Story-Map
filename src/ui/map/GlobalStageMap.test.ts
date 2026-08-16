@@ -36,6 +36,7 @@ describe('GlobalStageMap airplane marker', () => {
   it('keeps cruise zoom so map layers stay clear until the airplane arrives', () => {
     expect(source).toContain('CRUISE_ZOOM');
     expect(source).toContain('fadeDuration: 0');
+    expect(source).toContain('setPadding(GLOBE_PADDING)');
     expect(source).toMatch(/now - lastCamera[\s\S]{0,80}CAMERA_MS/);
   });
 

@@ -136,8 +136,8 @@ const createMap = (container: HTMLDivElement, style: StyleSpecification): Map =>
     maxZoom: GLOBE_VIEW.maxZoom,
     fadeDuration: 0,
     attributionControl: false,
-    padding: GLOBE_PADDING,
   });
+  map.setPadding(GLOBE_PADDING);
   map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
   map.on('load', () => {
     applyGlobe(map);
