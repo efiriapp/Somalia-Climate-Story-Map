@@ -44,7 +44,7 @@ export function DateReel({ isoDate }: Props) {
       <div className="date-reel-face">
         <ReelColumn label="Year" value={parts.year} items={YEARS} />
         <ReelColumn label="Month" value={parts.month} items={MONTHS} />
-        <ReelColumn label="Date" value={parts.day} items={DAYS} />
+        <ReelColumn label="DAY" value={parts.day} items={DAYS} />
       </div>
     </aside>
   );

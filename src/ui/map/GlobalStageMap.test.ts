@@ -61,6 +61,8 @@ describe('GlobalStageMap airplane marker', () => {
 
   it("labels the date card as ICE Institute's calendar", () => {
     expect(dateReel).toContain("ICE Institute's calendar");
+    expect(dateReel).toContain('label="DAY"');
+    expect(dateReel).not.toContain('label="Date"');
   });
 
   it('opens the event popup 1 second after city zoom, as a centered card', () => {
