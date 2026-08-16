@@ -483,6 +483,15 @@ select {
   stroke-width: 0.7;
 }
 
+.global-stage-map .maplibregl-marker {
+  z-index: 1;
+}
+
+.global-stage-map .maplibregl-popup,
+.tour-popup {
+  z-index: 50;
+}
+
 .tour-popup .maplibregl-popup-content {
   padding: 0 0.8rem 0.8rem;
   max-width: 320px;

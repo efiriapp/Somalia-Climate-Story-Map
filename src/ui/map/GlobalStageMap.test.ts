@@ -13,19 +13,20 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toMatch(/createPlaneMarker\(\)[\s\S]{0,120}\.setLngLat\([\s\S]{0,80}\)\s*\.addTo\(map\)/);
   });
 
-  it('moves the airplane and travel line on the same slow clock without camera shake', () => {
+  it('moves the airplane, travel line, and map tour on the same slow clock', () => {
     expect(source).toContain('FLIGHT_MS');
     expect(source).toContain('TOUR_STEP_MS');
     expect(source).toContain('GLOBE_VIEW');
     expect(source).toContain('line-trim-offset');
-    expect(source).not.toContain('jumpTo');
+    expect(source).toContain('jumpTo');
+    expect(source).toContain('followFlight');
     expect(source).not.toContain('fitBounds');
     expect(source).not.toMatch(/duration:\s*moved \? FLIGHT_MS/);
   });
 
-  it('zooms to city level after the airplane reaches a country', () => {
-    expect(source).toContain('applyStopView');
-    expect(source).toMatch(/applyStopView\(map,\s*stop\)/);
+  it('zooms with the airplane instead of after it lands', () => {
+    expect(source).toContain('followFlight');
+    expect(source).toMatch(/followFlight\(map, plane, path, stop, t/);
   });
 
   it('opens the event popup 3 seconds after the airplane arrives', () => {
