@@ -6,6 +6,8 @@ export const FLIGHT_MS = 16000;
 export const CAMERA_MS = 150;
 export const CRUISE_ZOOM = 3.1;
 export const CRUISE_PITCH = 16;
+export const ARRIVE_T = 0.74;
+export const FOLLOW_MAX_ZOOM = 5.5;
 export const POPUP_DELAY_MS = 3000;
 export const TOUR_STEP_MS = FLIGHT_MS + POPUP_DELAY_MS + 4000;
 
@@ -25,10 +27,10 @@ export const cruiseThenArrive = (t: number, start: number, cruise: number, stop:
   if (clamped < 0.18) {
     return lerp(start, cruise, clamped / 0.18);
   }
-  if (clamped < 0.74) {
+  if (clamped < ARRIVE_T) {
     return cruise;
   }
-  return lerp(cruise, stop, (clamped - 0.74) / 0.26);
+  return lerp(cruise, stop, (clamped - ARRIVE_T) / (1 - ARRIVE_T));
 };
 
 export const greatCircle = (from: LngLat, to: LngLat, steps = 64): LngLat[] => {
@@ -108,6 +110,9 @@ export const headingAlong = (path: LngLat[], t: number): number => {
   const toT = Math.min(1, Math.max(t, 0.1) + 0.05);
   return headingDegrees(pointAlong(path, fromT), pointAlong(path, toT));
 };
+
+export const arriveHeading = (path: LngLat[], t: number): number =>
+  headingAlong(path, Math.min(t, ARRIVE_T));
 
 export const pathCoordinates = (path: LngLat[]): [number, number][] =>
   path.map((point) => [point.lng, point.lat]);

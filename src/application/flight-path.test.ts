@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ARRIVE_T,
   CAMERA_MS,
   CRUISE_ZOOM,
   FLIGHT_MS,
+  FOLLOW_MAX_ZOOM,
   POPUP_DELAY_MS,
   TOUR_STEP_MS,
+  arriveHeading,
   cruiseThenArrive,
   flightLeg,
   greatCircle,
@@ -115,6 +118,19 @@ describe('cruiseThenArrive', () => {
     expect(cruiseThenArrive(0.45, 2.25, CRUISE_ZOOM, 11)).toBeCloseTo(CRUISE_ZOOM);
     expect(cruiseThenArrive(0.99, 2.25, CRUISE_ZOOM, 11)).toBeGreaterThan(8);
     expect(cruiseThenArrive(1, 2.25, CRUISE_ZOOM, 11)).toBe(11);
+  });
+});
+
+describe('city-zoom airplane stability', () => {
+  it('freezes heading after arrive so the plane does not rotate at city zoom', () => {
+    const path = greatCircle(mogadishu, doha, 32);
+    expect(arriveHeading(path, ARRIVE_T)).toBe(arriveHeading(path, 0.99));
+    expect(arriveHeading(path, 0.99)).toBe(arriveHeading(path, 1));
+  });
+
+  it('follows the camera every frame once zoom is city-close', () => {
+    expect(FOLLOW_MAX_ZOOM).toBeGreaterThan(CRUISE_ZOOM);
+    expect(FOLLOW_MAX_ZOOM).toBeLessThan(11);
   });
 });
 

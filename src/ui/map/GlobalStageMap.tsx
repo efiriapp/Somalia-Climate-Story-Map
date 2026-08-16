@@ -13,11 +13,12 @@ import {
   CRUISE_PITCH,
   CRUISE_ZOOM,
   FLIGHT_MS,
+  FOLLOW_MAX_ZOOM,
   POPUP_DELAY_MS,
   TOUR_STEP_MS,
+  arriveHeading,
   cruiseThenArrive,
   greatCircle,
-  headingAlong,
   pathCoordinates,
   pointAlong,
   type LngLat,
@@ -182,7 +183,7 @@ const followFlight = (
   moveCamera: boolean,
 ) => {
   const here = pointAlong(path, t);
-  parkPlane(plane, here, headingAlong(path, t));
+  parkPlane(plane, here, arriveHeading(path, t));
   setTravelTrim(map, t);
   if (!moveCamera) {
     return;
@@ -326,7 +327,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
     const tick = (now: number) => {
       const t = easeInOut(Math.min(1, (now - started) / FLIGHT_MS));
-      const moveCamera = t >= 1 || now - lastCamera >= CAMERA_MS;
+      const zoom = cruiseThenArrive(t, startZoom, CRUISE_ZOOM, stop.zoom);
+      const moveCamera = t >= 1 || zoom >= FOLLOW_MAX_ZOOM || now - lastCamera >= CAMERA_MS;
       if (moveCamera) {
         lastCamera = now;
       }

@@ -31,6 +31,12 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toMatch(/now - lastCamera[\s\S]{0,80}CAMERA_MS/);
   });
 
+  it('keeps the airplane glued to a still heading at city zoom', () => {
+    expect(source).toContain('FOLLOW_MAX_ZOOM');
+    expect(source).toContain('arriveHeading');
+    expect(source).toMatch(/zoom >= FOLLOW_MAX_ZOOM/);
+  });
+
   it('opens the event popup 3 seconds after the airplane arrives', () => {
     expect(source).toContain('POPUP_DELAY_MS');
     expect(source).not.toMatch(/\.addTo\(map\)\s*\n\s*\.togglePopup\(\)/);
