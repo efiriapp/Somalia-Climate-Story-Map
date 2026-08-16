@@ -15,7 +15,7 @@ import {
   FLIGHT_MS,
   FOLLOW_MAX_ZOOM,
   POPUP_DELAY_MS,
-  TOUR_STEP_MS,
+  POPUP_HOLD_MS,
   arriveHeading,
   cruiseThenArrive,
   greatCircle,
@@ -238,6 +238,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const popupTimerRef = useRef(0);
   const tracesRef = useRef<[number, number][][]>([]);
   const autoStartedRef = useRef(false);
+  const playingRef = useRef(false);
+  const playAdvanceRef = useRef(0);
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -246,6 +248,23 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
   const stop: TourStop | undefined = tour[index];
+  playingRef.current = playing;
+
+  const queueNextIfPlaying = (delay: number) => {
+    window.clearTimeout(playAdvanceRef.current);
+    playAdvanceRef.current = window.setTimeout(() => {
+      if (!playingRef.current) {
+        return;
+      }
+      setIndex((current) => {
+        const next = nextTourIndex(current, tour.length);
+        if (next === current) {
+          setPlaying(false);
+        }
+        return next;
+      });
+    }, delay);
+  };
 
   useEffect(() => {
     if (!host.current) {
@@ -263,6 +282,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       window.removeEventListener('resize', fitScreen);
       window.cancelAnimationFrame(flightRef.current);
       window.clearTimeout(popupTimerRef.current);
+      window.clearTimeout(playAdvanceRef.current);
       markerRef.current?.remove();
       homeMarkerRef.current?.remove();
       planeRef.current?.remove();
@@ -320,17 +340,26 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.stop();
     window.cancelAnimationFrame(flightRef.current);
     window.clearTimeout(popupTimerRef.current);
+    window.clearTimeout(playAdvanceRef.current);
     setPopupOpen(false);
+    const afterArrive = () => {
+      if (stop.kind === 'event') {
+        popupTimerRef.current = window.setTimeout(() => {
+          setPopupOpen(true);
+          queueNextIfPlaying(POPUP_HOLD_MS);
+        }, CITY_EASE_MS + POPUP_DELAY_MS);
+        return;
+      }
+      if (index > 0) {
+        queueNextIfPlaying(CITY_EASE_MS);
+      }
+    };
     if (!moved) {
       setLineData(map, 'flight-route', []);
       setLineData(map, 'flight-progress', []);
       parkPlane(plane, dest, 12);
       applyStopView(map, stop);
-      if (stop.kind === 'event') {
-        popupTimerRef.current = window.setTimeout(() => {
-          setPopupOpen(true);
-        }, CITY_EASE_MS + POPUP_DELAY_MS);
-      }
+      afterArrive();
       return;
     }
 
@@ -371,11 +400,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       tracesRef.current = [...tracesRef.current, pathCoordinates(path)];
       setHistory(map, tracesRef.current);
       applyStopView(map, stop);
-      if (stop.kind === 'event') {
-        popupTimerRef.current = window.setTimeout(() => {
-          setPopupOpen(true);
-        }, CITY_EASE_MS + POPUP_DELAY_MS);
-      }
+      afterArrive();
     };
 
     const tick = (now: number) => {
@@ -397,6 +422,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     return () => {
       window.cancelAnimationFrame(flightRef.current);
       window.clearTimeout(popupTimerRef.current);
+      window.clearTimeout(playAdvanceRef.current);
     };
   }, [index, ready, stop, tour]);
 
@@ -419,20 +445,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   }, [playing, index, tour.length]);
 
   useEffect(() => {
+    playingRef.current = playing;
     if (!playing) {
+      window.clearTimeout(playAdvanceRef.current);
       return;
     }
-    const timer = window.setInterval(() => {
-      setIndex((current) => {
-        const next = nextTourIndex(current, tour.length);
-        if (next === current) {
-          setPlaying(false);
-        }
-        return next;
-      });
-    }, TOUR_STEP_MS);
-    return () => window.clearInterval(timer);
-  }, [playing, tour.length]);
+    if (popupOpen) {
+      queueNextIfPlaying(POPUP_HOLD_MS);
+    }
+  }, [playing]);
 
   if (!stop) {
     return null;

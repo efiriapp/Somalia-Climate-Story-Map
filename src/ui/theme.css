@@ -477,20 +477,16 @@ select {
 
 .date-reel {
   position: absolute;
-  right: 1rem;
-  bottom: 1rem;
+  right: 0;
+  bottom: 0;
   z-index: 40;
   width: 248px;
-  padding: 0.7rem 0.8rem 0.9rem;
-  border-radius: 14px;
+  padding: 0.75rem 0.85rem 0.95rem;
+  border-radius: 16px 0 0 0;
   color: #fff;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 42%),
-    linear-gradient(90deg, #141a18, #2a322f 45%, #101614);
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #063D39;
+  box-shadow: 0 12px 28px rgba(6, 61, 57, 0.4);
+  border: 1px solid var(--leaf);
 }
 
 .date-reel-kicker {
@@ -498,7 +494,7 @@ select {
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #9aa7a3;
+  color: var(--mint);
   font-weight: 700;
 }
 
@@ -515,7 +511,7 @@ select {
   font-size: 8px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #8b9894;
+  color: var(--mint);
   margin-bottom: 0.25rem;
   font-weight: 700;
 }
@@ -525,7 +521,7 @@ select {
   height: 6.45rem;
   overflow: hidden;
   border-radius: 8px;
-  background: #0b100f;
+  background: #042e2b;
   mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
 }

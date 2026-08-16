@@ -20,8 +20,9 @@ describe('ICE green brand', () => {
 
   it('places the rolling date card in the bottom-right corner', () => {
     const css = readFileSync(themePath, 'utf8');
-    expect(css).toMatch(/\.date-reel[\s\S]{0,80}right:/);
-    expect(css).toMatch(/\.date-reel[\s\S]{0,120}bottom:/);
+    expect(css).toMatch(/\.date-reel[\s\S]{0,80}right:\s*0/);
+    expect(css).toMatch(/\.date-reel[\s\S]{0,120}bottom:\s*0/);
+    expect(css).toMatch(/\.date-reel[\s\S]{0,280}#063D39/);
   });
 
   it('keeps the centered tour popup fully visible', () => {

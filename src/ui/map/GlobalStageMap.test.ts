@@ -15,7 +15,7 @@ describe('GlobalStageMap airplane marker', () => {
 
   it('moves the airplane, travel line, and map tour on the same slow clock', () => {
     expect(source).toContain('FLIGHT_MS');
-    expect(source).toContain('TOUR_STEP_MS');
+    expect(source).toContain('POPUP_HOLD_MS');
     expect(source).toContain('GLOBE_VIEW');
     expect(source).toContain('line-trim-offset');
     expect(source).toContain('CAMERA_MS');
@@ -55,5 +55,12 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('setPopupOpen');
     expect(source).not.toMatch(/\.addTo\(map\)\s*\n\s*\.togglePopup\(\)/);
     expect(source).toMatch(/setTimeout\([\s\S]{0,220}setPopupOpen\(true\)[\s\S]{0,80}POPUP_DELAY_MS/);
+  });
+
+  it('holds the popup 5 seconds on play, then flies home', () => {
+    expect(source).toContain('POPUP_HOLD_MS');
+    expect(source).toContain('queueNextIfPlaying');
+    expect(source).toMatch(/setPopupOpen\(true\)[\s\S]{0,80}queueNextIfPlaying\(POPUP_HOLD_MS\)/);
+    expect(source).not.toMatch(/setInterval\(/);
   });
 });

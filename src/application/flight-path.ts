@@ -10,7 +10,8 @@ export const ARRIVE_T = 0.74;
 export const FOLLOW_MAX_ZOOM = 5.5;
 export const CITY_EASE_MS = 2000;
 export const POPUP_DELAY_MS = 1000;
-export const TOUR_STEP_MS = FLIGHT_MS + CITY_EASE_MS + POPUP_DELAY_MS + 4000;
+export const POPUP_HOLD_MS = 5000;
+export const TOUR_STEP_MS = FLIGHT_MS + CITY_EASE_MS + POPUP_DELAY_MS + POPUP_HOLD_MS;
 
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 const toDegrees = (radians: number): number => (radians * 180) / Math.PI;
