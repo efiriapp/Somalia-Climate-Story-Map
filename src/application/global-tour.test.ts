@@ -128,7 +128,8 @@ describe('tour popup', () => {
     expect(html).toContain(formatTourDate('2023-03-20'));
     expect(html).toContain('Country:');
     expect(html).toContain('Qatar');
-    expect(html).toContain('More information:');
+    expect(html).toContain('Description:');
+    expect(html).toContain('tour-popup-description');
     expect(html).toContain('ldc5-doha.png');
   });
 });

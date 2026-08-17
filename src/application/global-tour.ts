@@ -155,7 +155,7 @@ export const tourPopupHtml = (stop: TourStop): string | null => {
     <p><strong>Title:</strong> ${escapeHtml(stop.title)}</p>
     <p><strong>Date:</strong> ${escapeHtml(formatTourDate(stop.date))}</p>
     <p><strong>Country:</strong> ${escapeHtml(stop.country)}</p>
-    <p><strong>Description:</strong> ${escapeHtml(stop.summary)}</p>
+    <p class="tour-popup-description"><strong>Description:</strong> ${escapeHtml(stop.summary)}</p>
     <p><strong>More information:</strong> <a href="${escapeHtml(stop.website)}" target="_blank" rel="noreferrer">${escapeHtml(stop.website)}</a></p>`;
 };
 

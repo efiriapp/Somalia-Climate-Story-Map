@@ -10,7 +10,7 @@ describe('global-stage source pages', () => {
       title: 'Decoding COP27 Comes at a Critical Moment',
       country: 'Egypt',
       location: { name: 'Sharm El Sheikh, Egypt' },
-      summary: 'ICE unpacks COP27 for Somali students, policymakers, and partners.',
+      summary: expect.stringMatching(/COP27/),
       website: 'https://ice.simad.edu.so/2023/03/03/decoding-the-cop27/',
     });
     expect(story?.region).toBe('');
@@ -52,6 +52,14 @@ describe('global-stage source pages', () => {
       location: { name: 'Djibouti City, Djibouti' },
       website: 'https://ice.simad.edu.so/2026/01/24/ice-institute-at-the-international-climate-adaptation-forum-2026/',
     });
+  });
+
+  it('gives every story a 3-to-5 sentence summary of the full document', () => {
+    for (const story of stories) {
+      const sentences = (story.summary.match(/[.!?](?:\s|$)/g) ?? []).length;
+      expect(sentences, story.id).toBeGreaterThanOrEqual(3);
+      expect(sentences, story.id).toBeLessThanOrEqual(5);
+    }
   });
 
   it('gives every global-stage event its actual ICE article URL', () => {

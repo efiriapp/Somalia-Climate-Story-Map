@@ -1048,8 +1048,8 @@ select {
   top: 42%;
   transform: translate(-50%, -50%);
   z-index: 50;
-  width: min(380px, calc(100% - 2rem));
-  max-height: min(70vh, 520px);
+  width: min(440px, calc(100% - 2rem));
+  max-height: min(78vh, 620px);
   overflow: auto;
   background: #fff;
   color: var(--ink);
@@ -1071,6 +1071,10 @@ select {
   font-size: 12px;
   line-height: 1.4;
   color: var(--ink);
+}
+
+.tour-popup-description {
+  line-height: 1.55;
 }
 
 .tour-popup-card a {
