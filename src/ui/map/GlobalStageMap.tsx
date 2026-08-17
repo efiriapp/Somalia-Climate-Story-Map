@@ -764,10 +764,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setIndex(nextIndex);
   };
 
+  const goToStopFromHome = (nextIndex: number) => {
+    lastIndexRef.current = 0;
+    goToStop(nextIndex);
+  };
+
   const updateFilter = (next: typeof filter) => {
     const constrained = constrainTourFilter(stories, next);
     setFilter(constrained);
-    goToStop(firstEventIndexMatching(tour, constrained));
+    goToStopFromHome(firstEventIndexMatching(tour, constrained));
   };
 
   if (!stop) {
@@ -840,7 +845,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                   <button
                     key={hit.storyId ?? hit.title}
                     type="button"
-                    onClick={() => goToStop(tour.findIndex((item) => item.storyId === hit.storyId))}
+                    onClick={() => goToStopFromHome(tour.findIndex((item) => item.storyId === hit.storyId))}
                   >
                     {hit.country} — {hit.title}
                   </button>
@@ -935,7 +940,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           <DateReel isoDate={calendarDate} />
           <ContinentCards
             cards={continents}
-            onCountry={(country) => goToStop(firstEventIndexByCountry(tour, country, filter.year))}
+            onCountry={(country) => goToStopFromHome(firstEventIndexByCountry(tour, country, filter.year))}
             onReset={resetTable}
           />
         </div>

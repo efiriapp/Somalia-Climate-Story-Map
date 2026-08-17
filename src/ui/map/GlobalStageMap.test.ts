@@ -105,6 +105,12 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).not.toMatch(/setPlaying\(true\)/);
   });
 
+  it('starts filtered flights from Mogadishu home', () => {
+    expect(source).toContain('goToStopFromHome');
+    expect(source).toMatch(/lastIndexRef\.current = 0/);
+    expect(source).toContain('MOGADISHU_HOME');
+  });
+
   it('keeps the airplane marker on top of map pins and trail', () => {
     expect(source).toContain('tour-plane');
   });
