@@ -131,8 +131,9 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).not.toContain('Show continent cards');
     expect(source).not.toContain('Hide continent cards');
     expect(source).not.toContain('CardsIcon');
-    expect(source).toContain('firstEventIndexByContinent');
+    expect(source).toContain('firstEventIndexMatching');
     expect(source).toContain('onContinent');
+    expect(source).not.toContain('continentSummaries(stories, defaultTourFilter())');
     expect(source).toContain('>ICE Institute at Global Stage<');
     expect(source).not.toContain('<span>ICE Institute</span>');
     expect(source).toContain('tour-tool-bar');

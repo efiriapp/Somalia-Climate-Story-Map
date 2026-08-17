@@ -9,6 +9,7 @@ import {
   filterYears,
   firstEventIndexByCountry,
   firstEventIndexByContinent,
+  firstEventIndexMatching,
   continentSummaries,
   searchTourStops,
   tallyContinentVisits,
@@ -121,6 +122,12 @@ describe('continent summaries', () => {
       ),
     ).toEqual(['Africa', 'Asia']);
   });
+
+  it('narrows a continent total when a country filter is selected', () => {
+    expect(
+      continentSummaries(stories, { year: 2023, continent: 'all', country: 'Qatar' }),
+    ).toEqual([{ continent: 'Asia', count: 2 }]);
+  });
 });
 
 describe('tour country search', () => {
@@ -137,6 +144,13 @@ describe('tour country search', () => {
     const africa = firstEventIndexByContinent(tour, 'Africa');
     expect(tour[africa]?.kind).toBe('event');
     expect(tour[africa]?.country).toBeDefined();
+  });
+
+  it('finds the first tour event that matches year, continent, and country filters', () => {
+    const tour = buildGlobalTour(stories);
+    const asia = firstEventIndexMatching(tour, { year: 2023, continent: 'Asia', country: 'all' });
+    expect(tour[asia]?.kind).toBe('event');
+    expect(['Qatar', 'United Arab Emirates']).toContain(tour[asia]?.country);
   });
 
   it('filters event stops by country, city, or title', () => {

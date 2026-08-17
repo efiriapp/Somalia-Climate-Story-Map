@@ -196,6 +196,9 @@ export const firstEventIndexByContinent = (
       (year === 'all' || yearOf(stop.date) === year),
   );
 
+export const firstEventIndexMatching = (tour: TourStop[], filter: TourFilter): number =>
+  tour.findIndex((stop) => stop.kind === 'event' && matchesTourFilter(stop, filter));
+
 export const searchTourStops = (tour: TourStop[], query: string): TourStop[] => {
   const needle = query.trim().toLowerCase();
   return tour.filter((stop) => {

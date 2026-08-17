@@ -32,8 +32,8 @@ import {
   filterContinents,
   filterCountries,
   filterYears,
-  firstEventIndexByContinent,
   firstEventIndexByCountry,
+  firstEventIndexMatching,
   matchesTourFilter,
   searchTourStops,
   tallyContinentVisits,
@@ -373,7 +373,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const rows = tallyContinentVisits(visitedCountries);
     return filter.continent === 'all' ? rows : rows.filter((row) => row.continent === filter.continent);
   }, [visitedCountries, filter.continent]);
-  const summaries = useMemo(() => continentSummaries(stories, defaultTourFilter()), [stories]);
+  const summaries = useMemo(
+    () => continentSummaries(stories, { ...filter, continent: 'all' }),
+    [stories, filter],
+  );
   const searchHits = useMemo(
     () => searchTourStops(tour, searchQuery).filter((hit) => matchesTourFilter(hit, filter)),
     [tour, searchQuery, filter],
@@ -735,10 +738,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setVisits([]);
   };
 
-  const updateFilter = (next: typeof filter) => {
-    setFilter(constrainTourFilter(stories, next));
-  };
-
   const togglePath = () => {
     const next = !showPath;
     showPathRef.current = next;
@@ -763,6 +762,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setPlaying(false);
     setSearchOpen(false);
     setIndex(nextIndex);
+  };
+
+  const updateFilter = (next: typeof filter) => {
+    const constrained = constrainTourFilter(stories, next);
+    setFilter(constrained);
+    goToStop(firstEventIndexMatching(tour, constrained));
   };
 
   if (!stop) {
@@ -923,14 +928,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           continents={continentOptions}
           countries={countryOptions}
           onYear={(year) => updateFilter({ ...filter, year })}
-          onContinent={(continent) => updateFilter({ ...filter, continent })}
-          onCountry={(country) => {
-            const next = constrainTourFilter(stories, { ...filter, country });
-            setFilter(next);
-            if (next.country !== 'all') {
-              goToStop(firstEventIndexByCountry(tour, next.country, next.year));
-            }
-          }}
+          onContinent={(continent) => updateFilter({ ...filter, continent, country: 'all' })}
+          onCountry={(country) => updateFilter({ ...filter, country })}
         />
         <div className="tour-right-stack">
           <DateReel isoDate={calendarDate} />
@@ -942,11 +941,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         </div>
         <ContinentSummaryCards
           cards={summaries}
-          activeContinent={stop.kind === 'event' ? continentOfCountry(stop.country) : undefined}
-          onContinent={(continent) => {
-            updateFilter({ ...filter, continent, country: 'all' });
-            goToStop(firstEventIndexByContinent(tour, continent, filter.year));
-          }}
+          activeContinent={
+            filter.continent !== 'all'
+              ? filter.continent
+              : stop.kind === 'event'
+                ? continentOfCountry(stop.country)
+                : undefined
+          }
+          onContinent={(continent) => updateFilter({ ...filter, continent, country: 'all' })}
         />
         {measuring ? (
           <p className="tour-measure-badge">
