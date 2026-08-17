@@ -82,7 +82,18 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('tour-popup-card');
     expect(source).toContain('setPopupOpen');
     expect(source).not.toMatch(/\.addTo\(map\)\s*\n\s*\.togglePopup\(\)/);
-    expect(source).toMatch(/setTimeout\([\s\S]{0,220}setPopupOpen\(true\)[\s\S]{0,80}POPUP_DELAY_MS/);
+    expect(source).toMatch(/setTimeout\([\s\S]{0,280}setPopupOpen\(true\)/);
+    expect(source).toContain('CITY_EASE_MS + POPUP_DELAY_MS');
+  });
+
+  it('opens the event popup when a marker or table country is tapped', () => {
+    expect(source).toMatch(/addEventListener\('click'/);
+    expect(source).toContain('Show event popup');
+    expect(source).toMatch(/playingRef\.current \? CITY_EASE_MS \+ POPUP_DELAY_MS : 0/);
+    expect(source).toContain('firstEventIndexByCountry');
+    expect(source).toContain("const showPopupNow = !playingRef.current && stop.kind === 'event'");
+    expect(source).toContain('setPopupOpen(showPopupNow)');
+    expect(source).toMatch(/if \(nextIndex === index\)[\s\S]{0,220}setPopupOpen\(true\)/);
   });
 
   it('holds the popup 5 seconds on play, then flies home', () => {

@@ -585,6 +585,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     markerRef.current = null;
     if (stop.kind === 'event') {
       markerRef.current = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
+      const pin = markerRef.current.getElement();
+      pin.style.cursor = 'pointer';
+      pin.setAttribute('role', 'button');
+      pin.setAttribute('aria-label', 'Show event popup');
+      pin.addEventListener('click', () => setPopupOpen(true));
     }
 
     const originStop = tour[lastIndexRef.current] ?? stop;
@@ -597,7 +602,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     window.cancelAnimationFrame(flightRef.current);
     window.clearTimeout(popupTimerRef.current);
     window.clearTimeout(playAdvanceRef.current);
-    setPopupOpen(false);
+    const showPopupNow = !playingRef.current && stop.kind === 'event';
+    setPopupOpen(showPopupNow);
     stopFlightSound();
     const afterArrive = () => {
       if (stop.kind === 'home') {
@@ -611,7 +617,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         popupTimerRef.current = window.setTimeout(() => {
           setPopupOpen(true);
           queueNextIfPlaying(POPUP_HOLD_MS);
-        }, CITY_EASE_MS + POPUP_DELAY_MS);
+        }, playingRef.current ? CITY_EASE_MS + POPUP_DELAY_MS : 0);
         return;
       }
       if (index > 0) {
@@ -845,6 +851,17 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   };
 
   const goToStopFromHome = (nextIndex: number) => {
+    if (nextIndex < 0) {
+      return;
+    }
+    if (nextIndex === index) {
+      setPlaying(false);
+      setSearchOpen(false);
+      if (tour[nextIndex]?.kind === 'event') {
+        setPopupOpen(true);
+      }
+      return;
+    }
     lastIndexRef.current = 0;
     goToStop(nextIndex);
   };
