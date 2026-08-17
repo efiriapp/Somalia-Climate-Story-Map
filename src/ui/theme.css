@@ -1021,6 +1021,10 @@ select {
   filter: drop-shadow(0 2px 6px rgba(6, 61, 57, 0.55));
 }
 
+.tour-plane.is-hidden {
+  display: none !important;
+}
+
 .tour-plane svg {
   width: 32px;
   height: 32px;

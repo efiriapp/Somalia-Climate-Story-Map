@@ -214,6 +214,10 @@ const parkPlane = (plane: Marker, at: LngLat, heading: number) => {
   plane.getElement().style.zIndex = '40';
 };
 
+const applyPlaneVisibility = (plane: Marker, visible: boolean) => {
+  plane.getElement().classList.toggle('is-hidden', !visible);
+};
+
 const followFlight = (
   map: Map,
   plane: Marker,
@@ -325,6 +329,15 @@ const PathIcon = () => (
     />
   </svg>
 );
+const PlaneIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+      fill="currentColor"
+      stroke="none"
+    />
+  </svg>
+);
 const FilterIcon = () => <Icon d="M4 6h16M7 12h10M10 18h4" />;
 const SoundIcon = ({ volume }: { volume: number }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -373,6 +386,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const measurePointsRef = useRef<LngLat[]>([]);
   const measuringRef = useRef(false);
   const showPathRef = useRef(true);
+  const showPlaneRef = useRef(true);
   const playingRef = useRef(false);
   const playAdvanceRef = useRef(0);
   const flightTickRef = useRef<((now: number) => void) | null>(null);
@@ -386,6 +400,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [measuring, setMeasuring] = useState(false);
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [showPath, setShowPath] = useState(true);
+  const [showPlane, setShowPlane] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [volumeOpen, setVolumeOpen] = useState(false);
   const [soundVolume, setSoundVolume] = useState(DEFAULT_TOUR_SOUND_VOLUME);
@@ -425,6 +440,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   playingRef.current = playing;
   measuringRef.current = measuring;
   showPathRef.current = showPath;
+  showPlaneRef.current = showPlane;
 
   const queueNextIfPlaying = (delay: number) => {
     window.clearTimeout(playAdvanceRef.current);
@@ -563,6 +579,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
         .addTo(map);
     }
+    applyPlaneVisibility(planeRef.current, showPlaneRef.current);
     const plane = planeRef.current;
     markerRef.current?.remove();
     markerRef.current = null;
@@ -803,6 +820,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
   };
 
+  const togglePlane = () => {
+    const next = !showPlane;
+    showPlaneRef.current = next;
+    setShowPlane(next);
+    if (planeRef.current) {
+      applyPlaneVisibility(planeRef.current, next);
+    }
+  };
+
   const goToStop = (nextIndex: number) => {
     if (nextIndex < 0) {
       return;
@@ -914,6 +940,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             onClick={togglePath}
           >
             <PathIcon />
+          </button>
+          <button
+            type="button"
+            className={showPlane ? 'active' : undefined}
+            aria-label={showPlane ? 'Hide airplane' : 'Show airplane'}
+            aria-pressed={showPlane}
+            onClick={togglePlane}
+          >
+            <PlaneIcon />
           </button>
           <button
             type="button"

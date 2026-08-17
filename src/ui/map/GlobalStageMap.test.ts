@@ -145,6 +145,11 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('showPath');
     expect(source).toContain('Hide path');
     expect(source).toContain('Show path');
+    expect(source).toContain('showPlane');
+    expect(source).toContain('Hide airplane');
+    expect(source).toContain('Show airplane');
+    expect(source).toContain('PlaneIcon');
+    expect(source).toContain('togglePlane');
     expect(source).toContain('TourFilterSlide');
     expect(source).toContain('tour-left-stack');
     expect(source).toContain('filters-open');
