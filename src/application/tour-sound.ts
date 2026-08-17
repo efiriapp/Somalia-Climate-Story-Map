@@ -1,6 +1,10 @@
-let muted = false;
+let volume = 1;
+let lastVolume = 1;
 let audioCtx: AudioContext | null = null;
+let masterGain: GainNode | null = null;
 let flightStop: (() => void) | null = null;
+
+const clampVolume = (value: number): number => Math.min(1, Math.max(0, value));
 
 const audioContext = (): AudioContext | null => {
   const Ctor =
@@ -11,24 +15,26 @@ const audioContext = (): AudioContext | null => {
   }
   if (!audioCtx || audioCtx.state === 'closed') {
     audioCtx = new Ctor();
+    masterGain = null;
   }
   return audioCtx;
 };
 
-const withAudio = (play: (ctx: AudioContext) => void): void => {
-  if (muted) {
-    return;
+const output = (ctx: AudioContext): GainNode => {
+  if (!masterGain || masterGain.context !== ctx) {
+    masterGain = ctx.createGain();
+    masterGain.gain.value = volume;
+    masterGain.connect(ctx.destination);
   }
+  return masterGain;
+};
+
+const withAudio = (play: (ctx: AudioContext) => void): void => {
   const ctx = audioContext();
   if (!ctx) {
     return;
   }
-  const run = () => {
-    if (muted) {
-      return;
-    }
-    play(ctx);
-  };
+  const run = () => play(ctx);
   if (ctx.state === 'suspended') {
     void ctx.resume().then(run);
     return;
@@ -49,13 +55,24 @@ const noiseSource = (ctx: AudioContext, seconds: number, loop: boolean): AudioBu
   return source;
 };
 
-export const isTourSoundMuted = (): boolean => muted;
+export const getTourSoundVolume = (): number => volume;
+
+export const isTourSoundMuted = (): boolean => volume === 0;
+
+export const setTourSoundVolume = (value: number): void => {
+  volume = clampVolume(value);
+  if (volume > 0) {
+    lastVolume = volume;
+  }
+  if (masterGain) {
+    const now = masterGain.context.currentTime;
+    masterGain.gain.cancelScheduledValues(now);
+    masterGain.gain.setTargetAtTime(volume, now, 0.03);
+  }
+};
 
 export const setTourSoundMuted = (value: boolean): void => {
-  muted = value;
-  if (value) {
-    stopFlightSound();
-  }
+  setTourSoundVolume(value ? 0 : lastVolume || 1);
 };
 
 export const unlockTourSound = (): void => {
@@ -73,6 +90,7 @@ export const stopFlightSound = (): void => {
 export const playTakeoffSound = (): void => {
   withAudio((ctx) => {
     const now = ctx.currentTime;
+    const dest = output(ctx);
     const osc = ctx.createOscillator();
     const oscGain = ctx.createGain();
     osc.type = 'sawtooth';
@@ -82,7 +100,7 @@ export const playTakeoffSound = (): void => {
     oscGain.gain.exponentialRampToValueAtTime(0.16, now + 0.08);
     oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
     osc.connect(oscGain);
-    oscGain.connect(ctx.destination);
+    oscGain.connect(dest);
     osc.start(now);
     osc.stop(now + 0.72);
 
@@ -95,7 +113,7 @@ export const playTakeoffSound = (): void => {
     noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
     noise.connect(filter);
     filter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
+    noiseGain.connect(dest);
     noise.start(now);
     noise.stop(now + 0.7);
   });
@@ -105,6 +123,7 @@ export const startFlightSound = (): void => {
   stopFlightSound();
   withAudio((ctx) => {
     const now = ctx.currentTime;
+    const dest = output(ctx);
     const osc = ctx.createOscillator();
     const oscGain = ctx.createGain();
     osc.type = 'triangle';
@@ -113,7 +132,7 @@ export const startFlightSound = (): void => {
     oscGain.gain.setValueAtTime(0.0001, now);
     oscGain.gain.exponentialRampToValueAtTime(0.11, now + 0.2);
     osc.connect(oscGain);
-    oscGain.connect(ctx.destination);
+    oscGain.connect(dest);
     osc.start(now);
 
     const noise = noiseSource(ctx, 1.2, true);
@@ -126,7 +145,7 @@ export const startFlightSound = (): void => {
     noiseGain.gain.exponentialRampToValueAtTime(0.09, now + 0.25);
     noise.connect(filter);
     filter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
+    noiseGain.connect(dest);
     noise.start(now);
 
     flightStop = () => {
@@ -152,6 +171,7 @@ export const playLandingSound = (): void => {
   stopFlightSound();
   withAudio((ctx) => {
     const now = ctx.currentTime;
+    const dest = output(ctx);
     const osc = ctx.createOscillator();
     const oscGain = ctx.createGain();
     osc.type = 'triangle';
@@ -160,7 +180,7 @@ export const playLandingSound = (): void => {
     oscGain.gain.setValueAtTime(0.14, now);
     oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
     osc.connect(oscGain);
-    oscGain.connect(ctx.destination);
+    oscGain.connect(dest);
     osc.start(now);
     osc.stop(now + 0.52);
 
@@ -173,7 +193,7 @@ export const playLandingSound = (): void => {
     noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
     noise.connect(filter);
     filter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
+    noiseGain.connect(dest);
     noise.start(now);
     noise.stop(now + 0.42);
   });
@@ -190,7 +210,7 @@ export const playCalendarTick = (): void => {
     gain.gain.setValueAtTime(0.07, now);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(output(ctx));
     osc.start(now);
     osc.stop(now + 0.1);
   });

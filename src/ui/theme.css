@@ -563,6 +563,29 @@ select {
   background: var(--leaf);
 }
 
+.tour-volume-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  display: grid;
+  place-items: center;
+  padding: 0.7rem 0.45rem;
+  background: rgba(6, 61, 57, 0.96);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(6, 61, 57, 0.3);
+}
+
+.tour-volume-slider {
+  appearance: slider-vertical;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 18px;
+  height: 7.5rem;
+  margin: 0;
+  accent-color: #4CAF7D;
+  cursor: pointer;
+}
+
 .tour-tool-bar .tour-layer-menu {
   top: auto;
   bottom: calc(100% + 0.4rem);

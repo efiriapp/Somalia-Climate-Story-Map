@@ -51,6 +51,8 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.continent-summary-cards[\s\S]*?top:\s*50%/);
     expect(css).toMatch(/\.continent-summary-cards[\s\S]*?flex-direction:\s*column/);
     expect(css).toMatch(/\.continent-board[\s\S]{0,180}overflow:\s*auto/);
+    expect(css).toContain('.tour-volume-slider');
+    expect(css).toContain('.tour-volume-menu');
   });
 
   it('keeps Global Stage calendar text fully white', () => {

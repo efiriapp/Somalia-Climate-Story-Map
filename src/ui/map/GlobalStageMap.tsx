@@ -41,7 +41,7 @@ import {
 } from '../../application/continent-visits';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
-import { playLandingSound, playTakeoffSound, setTourSoundMuted, startFlightSound, stopFlightSound, unlockTourSound } from '../../application/tour-sound';
+import { playLandingSound, playTakeoffSound, setTourSoundVolume, startFlightSound, stopFlightSound, unlockTourSound } from '../../application/tour-sound';
 import { ContinentCards } from './ContinentCards';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 import { DateReel } from './DateReel';
@@ -326,23 +326,34 @@ const PathIcon = () => (
   </svg>
 );
 const FilterIcon = () => <Icon d="M4 6h16M7 12h10M10 18h4" />;
-const SoundIcon = ({ muted }: { muted: boolean }) => (
+const SoundIcon = ({ volume }: { volume: number }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path
       d="M3 10v4h3l4 4V6L6 10H3z"
       fill="currentColor"
       stroke="none"
     />
-    {muted ? (
+    {volume <= 0 ? (
       <path d="M16 9l6 6M22 9l-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     ) : (
-      <path
-        d="M15 9.5a3.5 3.5 0 010 5M17.5 7a6 6 0 010 10"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <>
+        <path
+          d="M15 9.5a3.5 3.5 0 010 5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        {volume > 0.5 ? (
+          <path
+            d="M17.5 7a6 6 0 010 10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        ) : null}
+      </>
     )}
   </svg>
 );
@@ -376,7 +387,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [showPath, setShowPath] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [soundMuted, setSoundMuted] = useState(false);
+  const [volumeOpen, setVolumeOpen] = useState(false);
+  const [soundVolume, setSoundVolume] = useState(1);
   const [filter, setFilter] = useState(defaultTourFilter());
   const [visits, setVisits] = useState<{ country: string; date: string }[]>([]);
   const seenVisitsRef = useRef(new Set<string>());
@@ -751,6 +763,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setMeasuring(next);
     setLayersOpen(false);
     setSearchOpen(false);
+    setVolumeOpen(false);
     if (!next) {
       measurePointsRef.current = [];
       setMeasureKm(null);
@@ -866,6 +879,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 setSearchOpen((open) => !open);
                 setLayersOpen(false);
                 setFiltersOpen(false);
+                setVolumeOpen(false);
               }}
             >
               <SearchIcon />
@@ -910,26 +924,49 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               setFiltersOpen((open) => !open);
               setLayersOpen(false);
               setSearchOpen(false);
+              setVolumeOpen(false);
             }}
           >
             <FilterIcon />
           </button>
-          <button
-            type="button"
-            className={soundMuted ? 'active' : undefined}
-            aria-label={soundMuted ? 'Unmute sound' : 'Mute sound'}
-            onClick={() => {
-              unlockTourSound();
-              const next = !soundMuted;
-              setSoundMuted(next);
-              setTourSoundMuted(next);
-              setLayersOpen(false);
-              setSearchOpen(false);
-              setFiltersOpen(false);
-            }}
-          >
-            <SoundIcon muted={soundMuted} />
-          </button>
+          <div className="tour-layer-wrap">
+            <button
+              type="button"
+              className={volumeOpen || soundVolume === 0 ? 'active' : undefined}
+              aria-label="Sound volume"
+              aria-expanded={volumeOpen}
+              onClick={() => {
+                unlockTourSound();
+                setVolumeOpen((open) => !open);
+                setLayersOpen(false);
+                setSearchOpen(false);
+                setFiltersOpen(false);
+              }}
+            >
+              <SoundIcon volume={soundVolume} />
+            </button>
+            {volumeOpen ? (
+              <div className="tour-volume-menu">
+                <input
+                  className="tour-volume-slider"
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={Math.round(soundVolume * 100)}
+                  aria-label="Sound volume"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={Math.round(soundVolume * 100)}
+                  onChange={(event) => {
+                    const next = Number(event.target.value) / 100;
+                    setSoundVolume(next);
+                    setTourSoundVolume(next);
+                  }}
+                />
+              </div>
+            ) : null}
+          </div>
         </div>
         <div className="tour-tool-bar">
           <button type="button" aria-label="Home view" onClick={goHomeView}>
@@ -956,6 +993,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 setLayersOpen((open) => !open);
                 setSearchOpen(false);
                 setFiltersOpen(false);
+                setVolumeOpen(false);
               }}
             >
               <Icon d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" />
