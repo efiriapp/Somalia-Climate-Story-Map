@@ -132,6 +132,10 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('Hide continent cards');
     expect(source).toContain('>ICE Institute at Global Stage<');
     expect(source).not.toContain('<span>ICE Institute</span>');
+    expect(source).toContain('tour-tool-bar');
+    expect(source).toMatch(
+      /tour-tool-bar[\s\S]+aria-label="Home view"[\s\S]+aria-label="Measure length"[\s\S]+aria-label="Compass north"[\s\S]+aria-label="Map layers"/,
+    );
   });
 
   it('leaves empty continent cells blank instead of writing zero', () => {

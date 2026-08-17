@@ -408,19 +408,30 @@ select {
   position: relative;
 }
 
+.tour-icon-bar,
+.tour-tool-bar {
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
 .tour-icon-bar {
   position: absolute;
   top: 1rem;
   left: 1rem;
   right: calc(50% + 15rem);
-  z-index: 45;
-  display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.65rem;
 }
 
-.tour-icon-bar button {
+.tour-tool-bar {
+  position: absolute;
+  right: 316px;
+  bottom: 1rem;
+}
+
+.tour-icon-bar button,
+.tour-tool-bar button {
   width: 44px;
   height: 44px;
   border: 0;
@@ -433,13 +444,16 @@ select {
   box-shadow: 0 6px 16px rgba(6, 61, 57, 0.28);
 }
 
-.tour-icon-bar button svg {
+.tour-icon-bar button svg,
+.tour-tool-bar button svg {
   width: 22px;
   height: 22px;
 }
 
 .tour-icon-bar button.active,
-.tour-icon-bar button[aria-pressed='true'] {
+.tour-icon-bar button[aria-pressed='true'],
+.tour-tool-bar button.active,
+.tour-tool-bar button[aria-pressed='true'] {
   background: var(--leaf);
 }
 
@@ -547,6 +561,13 @@ select {
 .tour-layer-menu button.active,
 .tour-layer-menu button:hover {
   background: var(--leaf);
+}
+
+.tour-tool-bar .tour-layer-menu {
+  top: auto;
+  bottom: calc(100% + 0.4rem);
+  left: auto;
+  right: 0;
 }
 
 .tour-search-panel {

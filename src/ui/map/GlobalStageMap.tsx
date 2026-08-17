@@ -826,38 +826,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           <div className="tour-layer-wrap">
             <button
               type="button"
-              aria-label="Map layers"
-              aria-expanded={layersOpen}
-              onClick={() => {
-                setLayersOpen((open) => !open);
-                setSearchOpen(false);
-                setFiltersOpen(false);
-              }}
-            >
-              <Icon d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" />
-            </button>
-            {layersOpen ? (
-              <div className="tour-layer-menu" role="menu">
-                {MAP_LAYERS.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    role="menuitem"
-                    className={item.id === layer ? 'active' : undefined}
-                    onClick={() => {
-                      setLayer(item.id);
-                      setLayersOpen(false);
-                    }}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            ) : null}
-          </div>
-          <div className="tour-layer-wrap">
-            <button
-              type="button"
               aria-label="Search tour"
               aria-expanded={searchOpen}
               onClick={() => {
@@ -890,21 +858,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               </div>
             ) : null}
           </div>
-          <button type="button" aria-label="Home view" onClick={goHomeView}>
-            <HomeIcon />
-          </button>
-          <button type="button" aria-label="Compass north" onClick={goNorth}>
-            <CompassIcon />
-          </button>
-          <button
-            type="button"
-            className={measuring ? 'active' : undefined}
-            aria-label="Measure length"
-            aria-pressed={measuring}
-            onClick={toggleMeasure}
-          >
-            <MeasureIcon />
-          </button>
           <button
             type="button"
             className={showPath ? 'active' : undefined}
@@ -936,6 +889,55 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           >
             <CardsIcon />
           </button>
+        </div>
+        <div className="tour-tool-bar">
+          <button type="button" aria-label="Home view" onClick={goHomeView}>
+            <HomeIcon />
+          </button>
+          <button
+            type="button"
+            className={measuring ? 'active' : undefined}
+            aria-label="Measure length"
+            aria-pressed={measuring}
+            onClick={toggleMeasure}
+          >
+            <MeasureIcon />
+          </button>
+          <button type="button" aria-label="Compass north" onClick={goNorth}>
+            <CompassIcon />
+          </button>
+          <div className="tour-layer-wrap">
+            <button
+              type="button"
+              aria-label="Map layers"
+              aria-expanded={layersOpen}
+              onClick={() => {
+                setLayersOpen((open) => !open);
+                setSearchOpen(false);
+                setFiltersOpen(false);
+              }}
+            >
+              <Icon d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" />
+            </button>
+            {layersOpen ? (
+              <div className="tour-layer-menu" role="menu">
+                {MAP_LAYERS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="menuitem"
+                    className={item.id === layer ? 'active' : undefined}
+                    onClick={() => {
+                      setLayer(item.id);
+                      setLayersOpen(false);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
         <TourFilterSlide
           open={filtersOpen}
