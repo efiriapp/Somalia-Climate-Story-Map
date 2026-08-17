@@ -47,8 +47,11 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.tour-title[\s\S]{0,900}white-space:\s*nowrap/);
     expect(css).toContain('.tour-tool-bar');
     expect(css).toMatch(/\.tour-tool-bar[\s\S]*?right:\s*1rem/);
-    expect(css).toMatch(/\.continent-summary-cards[\s\S]*?left:\s*1rem/);
-    expect(css).toMatch(/\.continent-summary-cards[\s\S]*?top:\s*50%/);
+    expect(css).toContain('.tour-left-stack');
+    expect(css).toMatch(/\.tour-left-stack[\s\S]*?left:\s*1rem/);
+    expect(css).toMatch(/\.tour-left-stack[\s\S]*?flex-direction:\s*column/);
+    expect(css).toMatch(/\.tour-left-stack\.filters-open[\s\S]{0,120}justify-content:\s*flex-start/);
+    expect(css).toMatch(/\.tour-filter-slide\.open[\s\S]{0,80}position:\s*relative/);
     expect(css).toMatch(/\.continent-summary-cards[\s\S]*?flex-direction:\s*column/);
     expect(css).toMatch(/\.continent-board[\s\S]{0,180}overflow:\s*auto/);
     expect(css).toContain('.tour-volume-slider');

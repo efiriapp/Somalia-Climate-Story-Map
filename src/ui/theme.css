@@ -643,10 +643,33 @@ select {
   color: #fff;
 }
 
+.tour-left-stack {
+  position: absolute;
+  left: 1rem;
+  top: 8.4rem;
+  bottom: 5.5rem;
+  z-index: 44;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.7rem;
+  pointer-events: none;
+}
+
+.tour-left-stack.filters-open {
+  justify-content: flex-start;
+}
+
+.tour-left-stack > .continent-summary-cards,
+.tour-left-stack > .tour-filter-slide.open {
+  pointer-events: auto;
+}
+
 .tour-filter-slide {
   position: absolute;
-  top: 8.4rem;
-  left: 1rem;
+  top: 0;
+  left: 0;
   z-index: 44;
   width: 240px;
   padding: 0.9rem 1rem 1rem;
@@ -660,6 +683,7 @@ select {
 }
 
 .tour-filter-slide.open {
+  position: relative;
   transform: translateX(0);
   pointer-events: auto;
 }
@@ -697,10 +721,7 @@ select {
 }
 
 .continent-summary-cards {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
+  position: relative;
   z-index: 42;
   display: flex;
   flex-direction: column;
@@ -708,6 +729,8 @@ select {
   margin: 0;
   padding: 0;
   list-style: none;
+  overflow: auto;
+  max-height: 100%;
 }
 
 .continent-summary-card {

@@ -1018,16 +1018,26 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             ) : null}
           </div>
         </div>
-        <TourFilterSlide
-          open={filtersOpen}
-          filter={filter}
-          years={years}
-          continents={continentOptions}
-          countries={countryOptions}
-          onYear={(year) => updateFilter({ ...filter, year })}
-          onContinent={(continent) => updateFilter({ ...filter, continent, country: 'all' })}
-          onCountry={(country) => updateFilter({ ...filter, country })}
-        />
+        <div className={filtersOpen ? 'tour-left-stack filters-open' : 'tour-left-stack'}>
+          <TourFilterSlide
+            open={filtersOpen}
+            filter={filter}
+            years={years}
+            continents={continentOptions}
+            countries={countryOptions}
+            onYear={(year) => updateFilter({ ...filter, year })}
+            onContinent={(continent) => updateFilter({ ...filter, continent, country: 'all' })}
+            onCountry={(country) => updateFilter({ ...filter, country })}
+          />
+          <ContinentSummaryCards
+            cards={summaries}
+            total={total}
+            activeContinent={filter.continent === 'all' ? undefined : filter.continent}
+            activeTotal={filter.continent === 'all' && filter.country === 'all'}
+            onContinent={(continent) => updateFilter({ ...filter, continent, country: 'all' })}
+            onTotal={() => updateFilter(defaultTourFilter())}
+          />
+        </div>
         <div className="tour-right-stack">
           <DateReel
             isoDate={calendarDate}
@@ -1044,14 +1054,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             onReset={resetTable}
           />
         </div>
-        <ContinentSummaryCards
-          cards={summaries}
-          total={total}
-          activeContinent={filter.continent === 'all' ? undefined : filter.continent}
-          activeTotal={filter.continent === 'all' && filter.country === 'all'}
-          onContinent={(continent) => updateFilter({ ...filter, continent, country: 'all' })}
-          onTotal={() => updateFilter(defaultTourFilter())}
-        />
         {measuring ? (
           <p className="tour-measure-badge">
             {measureKm == null ? 'Click two points' : `${Math.round(measureKm).toLocaleString('en-GB')} km`}
