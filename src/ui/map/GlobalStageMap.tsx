@@ -787,10 +787,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
       <div className="global-stage-scene">
         <div className="global-stage-map" ref={host} />
-        <h1 className="tour-title">
-          <span>ICE Institute</span>
-          <span>at Global Stage</span>
-        </h1>
+        <h1 className="tour-title">ICE Institute at Global Stage</h1>
         <div className="tour-icon-bar">
           <button type="button" className="tour-back" aria-label="Back to main" onClick={onClose}>
             <Icon d="M15 18l-6-6 6-6" />

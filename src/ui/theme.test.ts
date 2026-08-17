@@ -38,6 +38,14 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.tour-play-bar \.play[\s\S]{0,180}border-radius:\s*50%/);
   });
 
+  it('keeps Global Stage icons and title in separate lanes', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toContain('right: calc(50% + 15rem)');
+    expect(css).toContain('gap: 0.65rem');
+    expect(css).toContain('max-width: min(26rem, calc(100% - 42rem))');
+    expect(css).toMatch(/\.tour-title[\s\S]{0,900}white-space:\s*nowrap/);
+  });
+
   it('keeps Global Stage calendar text fully white', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.date-reel-kicker[\s\S]{0,140}color:\s*(#fff|#ffffff|var\(--white\))/i);
