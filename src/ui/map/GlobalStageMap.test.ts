@@ -119,8 +119,10 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('playLandingSound');
     expect(source).toContain('unlockTourSound');
     expect(source).toContain('setTourSoundVolume');
+    expect(source).toContain('DEFAULT_TOUR_SOUND_VOLUME');
     expect(source).toContain('tour-volume-slider');
     expect(source).toContain('aria-label="Sound volume"');
+    expect(source).toContain('max={10}');
     expect(source).toContain('SoundIcon');
     expect(source).not.toContain('Sound settings');
   });

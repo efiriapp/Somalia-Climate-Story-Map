@@ -41,7 +41,7 @@ import {
 } from '../../application/continent-visits';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
-import { playLandingSound, playTakeoffSound, setTourSoundVolume, startFlightSound, stopFlightSound, unlockTourSound } from '../../application/tour-sound';
+import { DEFAULT_TOUR_SOUND_VOLUME, playLandingSound, playTakeoffSound, setTourSoundVolume, startFlightSound, stopFlightSound, unlockTourSound } from '../../application/tour-sound';
 import { ContinentCards } from './ContinentCards';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 import { DateReel } from './DateReel';
@@ -388,7 +388,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [showPath, setShowPath] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [volumeOpen, setVolumeOpen] = useState(false);
-  const [soundVolume, setSoundVolume] = useState(1);
+  const [soundVolume, setSoundVolume] = useState(DEFAULT_TOUR_SOUND_VOLUME);
   const [filter, setFilter] = useState(defaultTourFilter());
   const [visits, setVisits] = useState<{ country: string; date: string }[]>([]);
   const seenVisitsRef = useRef(new Set<string>());
@@ -951,15 +951,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                   className="tour-volume-slider"
                   type="range"
                   min={0}
-                  max={100}
+                  max={10}
                   step={1}
-                  value={Math.round(soundVolume * 100)}
+                  value={Math.round(soundVolume * 10)}
                   aria-label="Sound volume"
                   aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={Math.round(soundVolume * 100)}
+                  aria-valuemax={10}
+                  aria-valuenow={Math.round(soundVolume * 10)}
                   onChange={(event) => {
-                    const next = Number(event.target.value) / 100;
+                    const next = Number(event.target.value) / 10;
                     setSoundVolume(next);
                     setTourSoundVolume(next);
                   }}

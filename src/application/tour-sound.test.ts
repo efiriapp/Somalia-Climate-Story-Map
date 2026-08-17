@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DEFAULT_TOUR_SOUND_VOLUME,
   getTourSoundVolume,
   isTourSoundMuted,
   playCalendarTick,
@@ -12,6 +13,10 @@ import {
 } from './tour-sound';
 
 describe('tour sound', () => {
+  it('starts at a low volume so the user can increase it', () => {
+    expect(DEFAULT_TOUR_SOUND_VOLUME).toBe(0.1);
+    expect(DEFAULT_TOUR_SOUND_VOLUME).toBeLessThan(0.5);
+  });
   it('mutes flight and calendar sounds together', () => {
     setTourSoundMuted(false);
     expect(isTourSoundMuted()).toBe(false);

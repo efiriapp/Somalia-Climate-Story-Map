@@ -1,5 +1,7 @@
-let volume = 1;
-let lastVolume = 1;
+export const DEFAULT_TOUR_SOUND_VOLUME = 0.1;
+
+let volume = DEFAULT_TOUR_SOUND_VOLUME;
+let lastVolume = DEFAULT_TOUR_SOUND_VOLUME;
 let audioCtx: AudioContext | null = null;
 let masterGain: GainNode | null = null;
 let flightStop: (() => void) | null = null;
@@ -72,7 +74,7 @@ export const setTourSoundVolume = (value: number): void => {
 };
 
 export const setTourSoundMuted = (value: boolean): void => {
-  setTourSoundVolume(value ? 0 : lastVolume || 1);
+  setTourSoundVolume(value ? 0 : lastVolume || DEFAULT_TOUR_SOUND_VOLUME);
 };
 
 export const unlockTourSound = (): void => {
