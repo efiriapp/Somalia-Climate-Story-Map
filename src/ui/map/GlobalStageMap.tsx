@@ -41,7 +41,7 @@ import {
 } from '../../application/continent-visits';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
-import { DEFAULT_TOUR_SOUND_VOLUME, playLandingSound, playTakeoffSound, setTourSoundVolume, startFlightSound, stopFlightSound, unlockTourSound } from '../../application/tour-sound';
+import { DEFAULT_TOUR_SOUND_VOLUME, getTourSoundVolume, playLandingSound, playTakeoffSound, setTourSoundMuted, setTourSoundVolume, startFlightSound, stopFlightSound, unlockTourSound } from '../../application/tour-sound';
 import { ContinentCards } from './ContinentCards';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 import { DateReel } from './DateReel';
@@ -827,6 +827,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (planeRef.current) {
       applyPlaneVisibility(planeRef.current, next);
     }
+    if (next) {
+      setTourSoundMuted(false);
+    } else {
+      setTourSoundMuted(true);
+    }
+    setSoundVolume(getTourSoundVolume());
   };
 
   const goToStop = (nextIndex: number) => {

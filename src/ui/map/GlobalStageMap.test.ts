@@ -150,6 +150,8 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('Show airplane');
     expect(source).toContain('PlaneIcon');
     expect(source).toContain('togglePlane');
+    expect(source).toMatch(/togglePlane[\s\S]{0,500}setTourSoundMuted\(true\)/);
+    expect(source).toMatch(/togglePlane[\s\S]{0,700}setTourSoundMuted\(false\)/);
     expect(source).toContain('TourFilterSlide');
     expect(source).toContain('tour-left-stack');
     expect(source).toContain('filters-open');
