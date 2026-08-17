@@ -23,7 +23,7 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.tour-right-stack[\s\S]{0,80}right:\s*0/);
     expect(css).toMatch(/\.tour-right-stack[\s\S]{0,120}top:\s*0/);
     expect(css).toContain('.continent-board');
-    expect(css).toContain('.continent-card');
+    expect(css).toContain('.continent-table');
   });
 
   it('places the ICE calendar in the top-right corner', () => {

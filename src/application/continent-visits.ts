@@ -35,6 +35,34 @@ const COUNTRY_CONTINENT: Record<string, ContinentId> = {
 
 const yearOf = (iso: string): number => Number.parseInt(iso.slice(0, 4), 10);
 
+export const tallyContinentVisits = (countries: string[]): ContinentCard[] => {
+  const grouped = new Map<ContinentId, Map<string, number>>();
+  for (const continent of CONTINENT_ORDER) {
+    grouped.set(continent, new Map());
+  }
+  for (const country of countries) {
+    const continent = COUNTRY_CONTINENT[country];
+    if (!continent) {
+      continue;
+    }
+    const counts = grouped.get(continent) ?? new Map<string, number>();
+    counts.set(country, (counts.get(country) ?? 0) + 1);
+    grouped.set(continent, counts);
+  }
+  return CONTINENT_ORDER.map((continent) => {
+    const counts = grouped.get(continent) ?? new Map<string, number>();
+    const items = [...counts]
+      .map(([country, visits]) => ({ country, visits }))
+      .sort((left, right) => left.country.localeCompare(right.country));
+    return {
+      continent,
+      connected: items.length,
+      visited: items.reduce((sum, item) => sum + item.visits, 0),
+      countries: items,
+    };
+  });
+};
+
 export const continentVisits = (stories: Story[]): ContinentCard[] => {
   const events = stories.filter((story) => {
     if (story.type !== 'global-stage') {
@@ -43,27 +71,7 @@ export const continentVisits = (stories: Story[]): ContinentCard[] => {
     const year = yearOf(story.date);
     return year >= 2023 && year <= 2026;
   });
-  const grouped = new Map<ContinentId, Map<string, number>>();
-  for (const event of events) {
-    const continent = COUNTRY_CONTINENT[event.country];
-    if (!continent) {
-      continue;
-    }
-    const countries = grouped.get(continent) ?? new Map<string, number>();
-    countries.set(event.country, (countries.get(event.country) ?? 0) + 1);
-    grouped.set(continent, countries);
-  }
-  return CONTINENT_ORDER.filter((continent) => grouped.has(continent)).map((continent) => {
-    const countries = [...(grouped.get(continent) ?? [])]
-      .map(([country, visits]) => ({ country, visits }))
-      .sort((left, right) => left.country.localeCompare(right.country));
-    return {
-      continent,
-      connected: countries.length,
-      visited: countries.reduce((sum, item) => sum + item.visits, 0),
-      countries,
-    };
-  });
+  return tallyContinentVisits(events.map((story) => story.country)).filter((row) => row.visited > 0);
 };
 
 export const firstEventIndexByCountry = (tour: TourStop[], country: string): number =>

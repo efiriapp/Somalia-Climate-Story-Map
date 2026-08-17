@@ -24,7 +24,7 @@ import {
   slicePath,
   type LngLat,
 } from '../../application/flight-path';
-import { continentVisits, firstEventIndexByCountry, searchTourStops } from '../../application/continent-visits';
+import { firstEventIndexByCountry, searchTourStops, tallyContinentVisits } from '../../application/continent-visits';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
 import { ContinentCards } from './ContinentCards';
@@ -323,9 +323,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [measuring, setMeasuring] = useState(false);
   const [measureKm, setMeasureKm] = useState<number | null>(null);
+  const [visitedCountries, setVisitedCountries] = useState<string[]>([]);
+  const seenVisitsRef = useRef(new Set<string>());
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
-  const continents = useMemo(() => continentVisits(stories), [stories]);
+  const continents = useMemo(() => tallyContinentVisits(visitedCountries), [visitedCountries]);
   const searchHits = useMemo(() => searchTourStops(tour, searchQuery), [tour, searchQuery]);
   const stop: TourStop | undefined = tour[index];
   const [calendarDate, setCalendarDate] = useState(tour[0]?.date ?? '2023-01-01');
@@ -473,6 +475,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         setCalendarDate(stop.date);
       }
       if (stop.kind === 'event') {
+        if (stop.storyId && !seenVisitsRef.current.has(stop.storyId)) {
+          seenVisitsRef.current.add(stop.storyId);
+          setVisitedCountries((current) => [...current, stop.country]);
+        }
         popupTimerRef.current = window.setTimeout(() => {
           setPopupOpen(true);
           queueNextIfPlaying(POPUP_HOLD_MS);

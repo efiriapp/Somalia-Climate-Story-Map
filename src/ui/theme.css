@@ -685,63 +685,64 @@ select {
 }
 
 .continent-board {
-  display: grid;
-  gap: 0.4rem;
   padding: 0.4rem 0 0.55rem;
 }
 
-.continent-card {
-  padding: 0.65rem 0.85rem 0.75rem;
+.continent-table {
+  width: 100%;
+  border-collapse: collapse;
   color: #fff;
   background: #063D39;
   border: 1px solid var(--leaf);
   border-radius: 0 0 0 14px;
+  overflow: hidden;
   box-shadow: 0 8px 18px rgba(6, 61, 57, 0.28);
 }
 
-.continent-card h2 {
-  margin: 0 0 0.35rem;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 800;
-}
-
-.continent-stats {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin: 0 0 0.45rem;
+.continent-table th,
+.continent-table td {
+  padding: 0.45rem 0.55rem;
+  text-align: left;
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(76, 175, 125, 0.28);
+}
+
+.continent-table thead th {
   text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  background: #042e2b;
 }
 
-.continent-countries {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
+.continent-table tbody th {
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.continent-countries button {
+.continent-table td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.continent-table button {
+  display: block;
+  width: 100%;
   border: 0;
-  border-radius: 999px;
+  border-radius: 6px;
   background: #042e2b;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
-  padding: 0.28rem 0.55rem;
+  padding: 0.22rem 0.4rem;
+  margin: 0 0 0.22rem;
   cursor: pointer;
+  text-align: left;
 }
 
-.continent-countries button small {
-  margin-left: 0.28rem;
-  color: #4caf7d;
-  font-weight: 800;
-}
-
-.continent-countries button:hover {
+.continent-table button:hover {
   background: var(--leaf);
 }
 

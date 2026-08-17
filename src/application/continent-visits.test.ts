@@ -4,8 +4,44 @@ import {
   continentVisits,
   firstEventIndexByCountry,
   searchTourStops,
+  tallyContinentVisits,
 } from './continent-visits';
 import { buildGlobalTour } from './global-tour';
+
+describe('tallyContinentVisits', () => {
+  it('starts every continent at zero countries and zero frequency', () => {
+    expect(tallyContinentVisits([])).toEqual([
+      { continent: 'Africa', connected: 0, visited: 0, countries: [] },
+      { continent: 'Asia', connected: 0, visited: 0, countries: [] },
+      { continent: 'Europe', connected: 0, visited: 0, countries: [] },
+      { continent: 'Americas', connected: 0, visited: 0, countries: [] },
+    ]);
+  });
+
+  it('updates countries and frequency as the map visits events', () => {
+    const rows = tallyContinentVisits(['Egypt', 'Qatar', 'Qatar', 'France']);
+    expect(rows.find((row) => row.continent === 'Africa')).toMatchObject({
+      connected: 1,
+      visited: 1,
+      countries: [{ country: 'Egypt', visits: 1 }],
+    });
+    expect(rows.find((row) => row.continent === 'Asia')).toMatchObject({
+      connected: 1,
+      visited: 2,
+      countries: [{ country: 'Qatar', visits: 2 }],
+    });
+    expect(rows.find((row) => row.continent === 'Europe')).toMatchObject({
+      connected: 1,
+      visited: 1,
+      countries: [{ country: 'France', visits: 1 }],
+    });
+    expect(rows.find((row) => row.continent === 'Americas')).toMatchObject({
+      connected: 0,
+      visited: 0,
+      countries: [],
+    });
+  });
+});
 
 describe('continentVisits', () => {
   it('groups ICE global-stage countries by continent from catalog documents', () => {

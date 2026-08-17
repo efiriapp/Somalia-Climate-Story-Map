@@ -112,6 +112,8 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('aria-label="Measure length"');
     expect(source).toContain('distanceKm');
     expect(source).toContain('ContinentCards');
+    expect(source).toContain('tallyContinentVisits');
+    expect(source).toContain('visitedCountries');
     expect(source).toContain('tour-search-panel');
   });
 });
