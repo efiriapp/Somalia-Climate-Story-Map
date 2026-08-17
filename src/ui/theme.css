@@ -426,7 +426,7 @@ select {
 
 .tour-tool-bar {
   position: absolute;
-  right: 316px;
+  right: 1rem;
   bottom: 1rem;
 }
 
@@ -675,9 +675,8 @@ select {
 
 .continent-summary-cards {
   position: absolute;
-  left: 50%;
+  left: 1rem;
   bottom: 1rem;
-  transform: translateX(-50%);
   z-index: 42;
   display: flex;
   gap: 0.45rem;
@@ -689,14 +688,21 @@ select {
 .continent-summary-card {
   min-width: 5.6rem;
   padding: 0.45rem 0.7rem 0.5rem;
+  border: 1px dashed var(--mint);
   border-radius: 10px;
   background: rgba(6, 61, 57, 0.94);
-  border: 1px dashed var(--mint);
   color: #fff;
   text-align: center;
   display: grid;
   gap: 0.12rem;
   box-shadow: 0 8px 18px rgba(6, 61, 57, 0.28);
+  cursor: pointer;
+  font: inherit;
+}
+
+.continent-summary-card:hover,
+.continent-summary-card.active {
+  background: var(--leaf);
 }
 
 .continent-summary-card span {
@@ -718,7 +724,7 @@ select {
   top: 0;
   z-index: 40;
   width: 300px;
-  max-height: calc(100% - 0.6rem);
+  max-height: calc(100% - 4.4rem);
   overflow: auto;
   display: flex;
   flex-direction: column;

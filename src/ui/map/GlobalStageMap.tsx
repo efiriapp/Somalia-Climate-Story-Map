@@ -26,11 +26,13 @@ import {
 } from '../../application/flight-path';
 import {
   constrainTourFilter,
+  continentOfCountry,
   continentSummaries,
   defaultTourFilter,
   filterContinents,
   filterCountries,
   filterYears,
+  firstEventIndexByContinent,
   firstEventIndexByCountry,
   matchesTourFilter,
   searchTourStops,
@@ -322,21 +324,6 @@ const PathIcon = () => (
   </svg>
 );
 const FilterIcon = () => <Icon d="M4 6h16M7 12h10M10 18h4" />;
-const CardsIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <rect
-      x="4"
-      y="5"
-      width="16"
-      height="14"
-      rx="2"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeDasharray="3 3"
-    />
-  </svg>
-);
 
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
@@ -367,7 +354,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [showPath, setShowPath] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [showContinentCards, setShowContinentCards] = useState(true);
   const [filter, setFilter] = useState(defaultTourFilter());
   const [visits, setVisits] = useState<{ country: string; date: string }[]>([]);
   const seenVisitsRef = useRef(new Set<string>());
@@ -387,7 +373,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const rows = tallyContinentVisits(visitedCountries);
     return filter.continent === 'all' ? rows : rows.filter((row) => row.continent === filter.continent);
   }, [visitedCountries, filter.continent]);
-  const summaries = useMemo(() => continentSummaries(stories, filter), [stories, filter]);
+  const summaries = useMemo(() => continentSummaries(stories, defaultTourFilter()), [stories]);
   const searchHits = useMemo(
     () => searchTourStops(tour, searchQuery).filter((hit) => matchesTourFilter(hit, filter)),
     [tour, searchQuery, filter],
@@ -880,15 +866,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           >
             <FilterIcon />
           </button>
-          <button
-            type="button"
-            className={showContinentCards ? 'active' : undefined}
-            aria-label={showContinentCards ? 'Hide continent cards' : 'Show continent cards'}
-            aria-pressed={showContinentCards}
-            onClick={() => setShowContinentCards((open) => !open)}
-          >
-            <CardsIcon />
-          </button>
         </div>
         <div className="tour-tool-bar">
           <button type="button" aria-label="Home view" onClick={goHomeView}>
@@ -963,7 +940,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             onReset={resetTable}
           />
         </div>
-        {showContinentCards ? <ContinentSummaryCards cards={summaries} /> : null}
+        <ContinentSummaryCards
+          cards={summaries}
+          activeContinent={stop.kind === 'event' ? continentOfCountry(stop.country) : undefined}
+          onContinent={(continent) => {
+            updateFilter({ ...filter, continent, country: 'all' });
+            goToStop(firstEventIndexByContinent(tour, continent, filter.year));
+          }}
+        />
         {measuring ? (
           <p className="tour-measure-badge">
             {measureKm == null ? 'Click two points' : `${Math.round(measureKm).toLocaleString('en-GB')} km`}

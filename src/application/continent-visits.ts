@@ -184,6 +184,18 @@ export const firstEventIndexByCountry = (tour: TourStop[], country: string, year
       (year === 'all' || yearOf(stop.date) === year),
   );
 
+export const firstEventIndexByContinent = (
+  tour: TourStop[],
+  continent: ContinentId,
+  year: number | 'all' = 'all',
+): number =>
+  tour.findIndex(
+    (stop) =>
+      stop.kind === 'event' &&
+      continentOfCountry(stop.country) === continent &&
+      (year === 'all' || yearOf(stop.date) === year),
+  );
+
 export const searchTourStops = (tour: TourStop[], query: string): TourStop[] => {
   const needle = query.trim().toLowerCase();
   return tour.filter((stop) => {

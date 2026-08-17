@@ -8,6 +8,7 @@ import {
   filterCountries,
   filterYears,
   firstEventIndexByCountry,
+  firstEventIndexByContinent,
   continentSummaries,
   searchTourStops,
   tallyContinentVisits,
@@ -129,6 +130,13 @@ describe('tour country search', () => {
     expect(tour[kenya]?.country).toBe('Kenya');
     expect(tour[kenya]?.kind).toBe('event');
     expect(kenya).toBeGreaterThan(0);
+  });
+
+  it('finds the first event stop for a continent so cards can fly the map', () => {
+    const tour = buildGlobalTour(stories);
+    const africa = firstEventIndexByContinent(tour, 'Africa');
+    expect(tour[africa]?.kind).toBe('event');
+    expect(tour[africa]?.country).toBeDefined();
   });
 
   it('filters event stops by country, city, or title', () => {
