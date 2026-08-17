@@ -49,9 +49,10 @@ describe('continentVisits', () => {
     expect(cards.map((card) => card.continent)).toEqual(['Africa', 'Asia', 'Europe', 'Americas']);
 
     const africa = cards.find((card) => card.continent === 'Africa');
-    expect(africa?.connected).toBe(6);
-    expect(africa?.visited).toBe(8);
+    expect(africa?.connected).toBe(7);
+    expect(africa?.visited).toBe(10);
     expect(africa?.countries.map((item) => item.country)).toEqual([
+      'Djibouti',
       'Egypt',
       'Ethiopia',
       'Ghana',

@@ -29,6 +29,31 @@ describe('global-stage source pages', () => {
     });
   });
 
+  it('includes the 2026 UNEP meeting at the UN Office in Nairobi', () => {
+    const story = stories.find((item) => item.id === 'unep-unon-2026');
+    expect(story).toMatchObject({
+      title: 'ICE Institute Meets UNEP Somalia Programme in Nairobi',
+      type: 'global-stage',
+      date: '2026-04-14',
+      country: 'Kenya',
+      location: { name: 'United Nations Office at Nairobi, Kenya' },
+      website:
+        'https://ice.simad.edu.so/2025/06/17/ice-institute-gains-unep-accreditation-somalias-climate-voice-reaches-the-global-stage/',
+    });
+  });
+
+  it('includes ICAF 2026 in Djibouti', () => {
+    const story = stories.find((item) => item.id === 'icaf-2026');
+    expect(story).toMatchObject({
+      title: 'ICE Institute at the International Climate Adaptation Forum 2026',
+      type: 'global-stage',
+      date: '2026-01-12',
+      country: 'Djibouti',
+      location: { name: 'Djibouti City, Djibouti' },
+      website: 'https://ice.simad.edu.so/2026/01/24/ice-institute-at-the-international-climate-adaptation-forum-2026/',
+    });
+  });
+
   it('gives every global-stage event its actual ICE article URL', () => {
     expect(globalStage.length).toBeGreaterThan(10);
     for (const story of globalStage) {

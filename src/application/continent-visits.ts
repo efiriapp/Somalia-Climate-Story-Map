@@ -25,6 +25,7 @@ const COUNTRY_CONTINENT: Record<string, ContinentId> = {
   Zambia: 'Africa',
   Ethiopia: 'Africa',
   Ghana: 'Africa',
+  Djibouti: 'Africa',
   Qatar: 'Asia',
   Azerbaijan: 'Asia',
   'United Arab Emirates': 'Asia',

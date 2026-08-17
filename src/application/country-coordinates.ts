@@ -14,6 +14,7 @@ const COUNTRY_BOUNDS: Record<string, Bounds> = {
   Brazil: { minLat: -34.0, maxLat: 5.4, minLng: -74.1, maxLng: -32.3 },
   France: { minLat: 41.2, maxLat: 51.2, minLng: -5.3, maxLng: 9.7 },
   Ghana: { minLat: 4.6, maxLat: 11.3, minLng: -3.4, maxLng: 1.3 },
+  Djibouti: { minLat: 10.9, maxLat: 12.8, minLng: 41.7, maxLng: 43.5 },
 };
 
 export const coordinatesMatchCountry = (country: string, lat: number, lng: number): boolean => {
