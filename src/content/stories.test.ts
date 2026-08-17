@@ -17,6 +17,18 @@ describe('global-stage source pages', () => {
     expect(story?.district).toBe('');
   });
 
+  it('includes COP28 in Dubai in 2023', () => {
+    const story = stories.find((item) => item.id === 'cop28-dubai');
+    expect(story).toMatchObject({
+      title: 'ICE Institute at COP28 in Dubai',
+      type: 'global-stage',
+      date: '2023-12-13',
+      country: 'United Arab Emirates',
+      location: { name: 'Dubai, United Arab Emirates' },
+      website: 'https://ice.simad.edu.so/2024/01/10/ice-annual-report-2023/',
+    });
+  });
+
   it('gives every global-stage event its actual ICE article URL', () => {
     expect(globalStage.length).toBeGreaterThan(10);
     for (const story of globalStage) {
