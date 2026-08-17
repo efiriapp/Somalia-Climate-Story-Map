@@ -296,6 +296,18 @@ const CompassIcon = () => (
   </svg>
 );
 const MeasureIcon = () => <Icon d="M4 8h16v8H4zm3 0v4m3-4v3m3-3v4m3-4v3" />;
+const PathIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M4 18c3-6 5 0 8-6s5 0 8-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeDasharray="3 3"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
@@ -311,6 +323,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const trailCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const measurePointsRef = useRef<LngLat[]>([]);
   const measuringRef = useRef(false);
+  const showPathRef = useRef(true);
   const playingRef = useRef(false);
   const playAdvanceRef = useRef(0);
   const flightTickRef = useRef<((now: number) => void) | null>(null);
@@ -323,6 +336,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [measuring, setMeasuring] = useState(false);
   const [measureKm, setMeasureKm] = useState<number | null>(null);
+  const [showPath, setShowPath] = useState(true);
   const [visitedCountries, setVisitedCountries] = useState<string[]>([]);
   const seenVisitsRef = useRef(new Set<string>());
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
@@ -333,6 +347,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [calendarDate, setCalendarDate] = useState(tour[0]?.date ?? '2023-01-01');
   playingRef.current = playing;
   measuringRef.current = measuring;
+  showPathRef.current = showPath;
 
   const queueNextIfPlaying = (delay: number) => {
     window.clearTimeout(playAdvanceRef.current);
@@ -362,7 +377,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       if (!canvas) {
         return;
       }
-      paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
+      paintTrail(
+        map,
+        canvas,
+        showPathRef.current ? tracesRef.current : [],
+        showPathRef.current ? currentTrailRef.current : [],
+        measurePointsRef.current,
+      );
     };
     map.on('load', () => {
       trailCanvasRef.current = attachTrailCanvas(map);
@@ -420,7 +441,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       setMeasureKm(next.length === 2 ? distanceKm(next[0], next[1]) : null);
       const canvas = trailCanvasRef.current;
       if (canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, next);
+        paintTrail(
+          map,
+          canvas,
+          showPathRef.current ? tracesRef.current : [],
+          showPathRef.current ? currentTrailRef.current : [],
+          next,
+        );
       }
     };
     map.on('click', onClick);
@@ -439,7 +466,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       currentTrailRef.current = slicePath(path, Math.max(traveled, 0.02));
       const canvas = trailCanvasRef.current;
       if (canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
+        paintTrail(
+        map,
+        canvas,
+        showPathRef.current ? tracesRef.current : [],
+        showPathRef.current ? currentTrailRef.current : [],
+        measurePointsRef.current,
+      );
       }
     };
     if (!homeMarkerRef.current) {
@@ -493,7 +526,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       currentTrailRef.current = [];
       const canvas = trailCanvasRef.current;
       if (canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
+        paintTrail(
+        map,
+        canvas,
+        showPathRef.current ? tracesRef.current : [],
+        showPathRef.current ? currentTrailRef.current : [],
+        measurePointsRef.current,
+      );
       }
       parkPlane(plane, dest, 12);
       applyStopView(map, stop);
@@ -539,7 +578,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       tracesRef.current = [...tracesRef.current, pathCoordinates(path)];
       const canvas = trailCanvasRef.current;
       if (canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, measurePointsRef.current);
+        paintTrail(
+        map,
+        canvas,
+        showPathRef.current ? tracesRef.current : [],
+        showPathRef.current ? currentTrailRef.current : [],
+        measurePointsRef.current,
+      );
       }
       applyStopView(map, stop);
       afterArrive();
@@ -639,8 +684,36 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       const map = mapRef.current;
       const canvas = trailCanvasRef.current;
       if (map && canvas) {
-        paintTrail(map, canvas, tracesRef.current, currentTrailRef.current, []);
+        paintTrail(
+          map,
+          canvas,
+          showPathRef.current ? tracesRef.current : [],
+          showPathRef.current ? currentTrailRef.current : [],
+          [],
+        );
       }
+    }
+  };
+
+  const resetTable = () => {
+    seenVisitsRef.current.clear();
+    setVisitedCountries([]);
+  };
+
+  const togglePath = () => {
+    const next = !showPath;
+    showPathRef.current = next;
+    setShowPath(next);
+    const map = mapRef.current;
+    const canvas = trailCanvasRef.current;
+    if (map && canvas) {
+      paintTrail(
+        map,
+        canvas,
+        next ? tracesRef.current : [],
+        next ? currentTrailRef.current : [],
+        measurePointsRef.current,
+      );
     }
   };
 
@@ -777,12 +850,22 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           >
             <MeasureIcon />
           </button>
+          <button
+            type="button"
+            className={showPath ? 'active' : undefined}
+            aria-label={showPath ? 'Hide path' : 'Show path'}
+            aria-pressed={showPath}
+            onClick={togglePath}
+          >
+            <PathIcon />
+          </button>
         </div>
         <div className="tour-right-stack">
           <DateReel isoDate={calendarDate} />
           <ContinentCards
             cards={continents}
             onCountry={(country) => goToStop(firstEventIndexByCountry(tour, country))}
+            onReset={resetTable}
           />
         </div>
         {measuring ? (

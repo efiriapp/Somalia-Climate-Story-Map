@@ -3,11 +3,18 @@ import type { ContinentCard } from '../../application/continent-visits';
 type Props = {
   cards: ContinentCard[];
   onCountry: (country: string) => void;
+  onReset: () => void;
 };
 
-export function ContinentCards({ cards, onCountry }: Props) {
+export function ContinentCards({ cards, onCountry, onReset }: Props) {
   return (
     <div className="continent-board" aria-label="Countries visited by continent">
+      <div className="continent-table-bar">
+        <p>Visited continents</p>
+        <button type="button" aria-label="Reset table" onClick={onReset}>
+          Reset
+        </button>
+      </div>
       <table className="continent-table">
         <thead>
           <tr>
@@ -21,17 +28,13 @@ export function ContinentCards({ cards, onCountry }: Props) {
             <tr key={card.continent}>
               <th scope="row">{card.continent}</th>
               <td>
-                {card.countries.length === 0 ? (
-                  <span>0</span>
-                ) : (
-                  card.countries.map((item) => (
-                    <button key={item.country} type="button" onClick={() => onCountry(item.country)}>
-                      {item.country}
-                    </button>
-                  ))
-                )}
+                {card.countries.map((item) => (
+                  <button key={item.country} type="button" onClick={() => onCountry(item.country)}>
+                    {item.country}
+                  </button>
+                ))}
               </td>
-              <td>{card.visited}</td>
+              <td>{card.visited === 0 ? '' : card.visited}</td>
             </tr>
           ))}
         </tbody>

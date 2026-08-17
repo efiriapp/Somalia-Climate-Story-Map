@@ -11,6 +11,10 @@ const dateReel = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), 'DateReel.tsx'),
   'utf8',
 );
+const continentCards = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), 'ContinentCards.tsx'),
+  'utf8',
+);
 
 describe('GlobalStageMap airplane marker', () => {
   it('sets a LngLat on the plane before adding it to the map', () => {
@@ -24,7 +28,7 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('slicePath');
     expect(source).toContain('flight-trail-canvas');
     expect(source).toContain('setLineDash');
-    expect(source).toMatch(/onTrail[\s\S]{0,220}paintTrail\(map/);
+    expect(source).toMatch(/onTrail[\s\S]{0,400}paintTrail\(/);
     expect(source).not.toContain('line-trim-offset');
     expect(source).toContain('CAMERA_MS');
     expect(source).toContain('cruiseThenArrive');
@@ -115,5 +119,15 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('tallyContinentVisits');
     expect(source).toContain('visitedCountries');
     expect(source).toContain('tour-search-panel');
+    expect(source).toContain('onReset');
+    expect(source).toContain('showPath');
+    expect(source).toContain('Hide path');
+    expect(source).toContain('Show path');
+  });
+
+  it('leaves empty continent cells blank instead of writing zero', () => {
+    expect(continentCards).toContain('aria-label="Reset table"');
+    expect(continentCards).not.toContain('<span>0</span>');
+    expect(continentCards).toMatch(/card\.visited === 0 \? ''/);
   });
 });
