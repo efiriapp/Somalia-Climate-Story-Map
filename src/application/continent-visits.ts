@@ -114,6 +114,29 @@ export const matchesTourFilter = (story: { date: string; country: string }, filt
   return filter.country === 'all' || story.country === filter.country;
 };
 
+export type ContinentSummary = {
+  continent: ContinentId;
+  count: number;
+};
+
+export const continentSummaries = (stories: Story[], filter: TourFilter): ContinentSummary[] => {
+  const counts = new Map<ContinentId, number>();
+  for (const story of globalEvents(stories)) {
+    if (!matchesTourFilter(story, filter)) {
+      continue;
+    }
+    const continent = COUNTRY_CONTINENT[story.country];
+    if (!continent) {
+      continue;
+    }
+    counts.set(continent, (counts.get(continent) ?? 0) + 1);
+  }
+  return CONTINENT_ORDER.filter((continent) => (counts.get(continent) ?? 0) > 0).map((continent) => ({
+    continent,
+    count: counts.get(continent) ?? 0,
+  }));
+};
+
 export const tallyContinentVisits = (countries: string[]): ContinentCard[] => {
   const grouped = new Map<ContinentId, Map<string, number>>();
   for (const continent of CONTINENT_ORDER) {

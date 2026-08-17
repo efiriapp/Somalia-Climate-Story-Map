@@ -3,10 +3,12 @@ import { stories } from '../content/stories';
 import {
   continentVisits,
   constrainTourFilter,
+  defaultTourFilter,
   filterContinents,
   filterCountries,
   filterYears,
   firstEventIndexByCountry,
+  continentSummaries,
   searchTourStops,
   tallyContinentVisits,
 } from './continent-visits';
@@ -98,6 +100,25 @@ describe('connected tour filters', () => {
       country: 'Brazil',
     });
     expect(next).toEqual({ year: 2023, continent: 'all', country: 'all' });
+  });
+});
+
+describe('continent summaries', () => {
+  it('shows catalog event counts by continent without visit tracking', () => {
+    expect(continentSummaries(stories, defaultTourFilter())).toEqual([
+      { continent: 'Africa', count: 10 },
+      { continent: 'Asia', count: 5 },
+      { continent: 'Europe', count: 2 },
+      { continent: 'Americas', count: 1 },
+    ]);
+  });
+
+  it('keeps only continents that match the selected year', () => {
+    expect(
+      continentSummaries(stories, { year: 2023, continent: 'all', country: 'all' }).map(
+        (card) => card.continent,
+      ),
+    ).toEqual(['Africa', 'Asia']);
   });
 });
 

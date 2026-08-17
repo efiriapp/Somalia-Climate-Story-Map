@@ -26,6 +26,7 @@ import {
 } from '../../application/flight-path';
 import {
   constrainTourFilter,
+  continentSummaries,
   defaultTourFilter,
   filterContinents,
   filterCountries,
@@ -38,6 +39,7 @@ import {
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
 import { ContinentCards } from './ContinentCards';
+import { ContinentSummaryCards } from './ContinentSummaryCards';
 import { DateReel } from './DateReel';
 import { TourFilterSlide } from './TourFilterSlide';
 import type { Story } from '../../domain/story';
@@ -320,6 +322,21 @@ const PathIcon = () => (
   </svg>
 );
 const FilterIcon = () => <Icon d="M4 6h16M7 12h10M10 18h4" />;
+const CardsIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <rect
+      x="4"
+      y="5"
+      width="16"
+      height="14"
+      rx="2"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeDasharray="3 3"
+    />
+  </svg>
+);
 
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
@@ -350,6 +367,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [showPath, setShowPath] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [showContinentCards, setShowContinentCards] = useState(true);
   const [filter, setFilter] = useState(defaultTourFilter());
   const [visits, setVisits] = useState<{ country: string; date: string }[]>([]);
   const seenVisitsRef = useRef(new Set<string>());
@@ -369,6 +387,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const rows = tallyContinentVisits(visitedCountries);
     return filter.continent === 'all' ? rows : rows.filter((row) => row.continent === filter.continent);
   }, [visitedCountries, filter.continent]);
+  const summaries = useMemo(() => continentSummaries(stories, filter), [stories, filter]);
   const searchHits = useMemo(
     () => searchTourStops(tour, searchQuery).filter((hit) => matchesTourFilter(hit, filter)),
     [tour, searchQuery, filter],
@@ -768,7 +787,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
       <div className="global-stage-scene">
         <div className="global-stage-map" ref={host} />
-        <h1 className="tour-title">ICE Institute at Global Stage</h1>
+        <h1 className="tour-title">
+          <span>ICE Institute</span>
+          <span>at Global Stage</span>
+        </h1>
         <div className="tour-icon-bar">
           <button type="button" className="tour-back" aria-label="Back to main" onClick={onClose}>
             <Icon d="M15 18l-6-6 6-6" />
@@ -908,6 +930,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           >
             <FilterIcon />
           </button>
+          <button
+            type="button"
+            className={showContinentCards ? 'active' : undefined}
+            aria-label={showContinentCards ? 'Hide continent cards' : 'Show continent cards'}
+            aria-pressed={showContinentCards}
+            onClick={() => setShowContinentCards((open) => !open)}
+          >
+            <CardsIcon />
+          </button>
         </div>
         <TourFilterSlide
           open={filtersOpen}
@@ -933,6 +964,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             onReset={resetTable}
           />
         </div>
+        {showContinentCards ? <ContinentSummaryCards cards={summaries} /> : null}
         {measuring ? (
           <p className="tour-measure-badge">
             {measureKm == null ? 'Click two points' : `${Math.round(measureKm).toLocaleString('en-GB')} km`}

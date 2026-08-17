@@ -497,17 +497,21 @@ select {
   transform: translateX(-50%);
   z-index: 45;
   margin: 0;
-  padding: 0.55rem 1.25rem;
+  padding: 0.5rem 1.4rem;
   border-radius: 10px;
   color: var(--white);
   background: var(--forest);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 900;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
   text-align: center;
   box-shadow: 0 6px 16px rgba(6, 61, 57, 0.35);
   pointer-events: none;
-  white-space: nowrap;
+  display: grid;
+  gap: 0.2rem;
+  line-height: 1.15;
+  max-width: min(36vw, 20rem);
+  white-space: normal;
 }
 
 .tour-layer-wrap {
@@ -646,6 +650,45 @@ select {
   font: inherit;
   font-size: 13px;
   font-weight: 700;
+}
+
+.continent-summary-cards {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 42;
+  display: flex;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.continent-summary-card {
+  min-width: 5.6rem;
+  padding: 0.45rem 0.7rem 0.5rem;
+  border-radius: 10px;
+  background: rgba(6, 61, 57, 0.94);
+  border: 1px dashed var(--mint);
+  color: #fff;
+  text-align: center;
+  display: grid;
+  gap: 0.12rem;
+  box-shadow: 0 8px 18px rgba(6, 61, 57, 0.28);
+}
+
+.continent-summary-card span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.continent-summary-card strong {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
 }
 
 .tour-right-stack {

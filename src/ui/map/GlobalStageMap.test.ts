@@ -127,6 +127,10 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('Show filters');
     expect(source).toContain('Hide filters');
     expect(source).toContain('constrainTourFilter');
+    expect(source).toContain('ContinentSummaryCards');
+    expect(source).toContain('Show continent cards');
+    expect(source).toContain('Hide continent cards');
+    expect(source).toMatch(/<span>ICE Institute<\/span>\s*<span>at Global Stage<\/span>/);
   });
 
   it('leaves empty continent cells blank instead of writing zero', () => {
