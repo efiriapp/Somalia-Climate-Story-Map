@@ -36,6 +36,84 @@ const COUNTRY_CONTINENT: Record<string, ContinentId> = {
 
 const yearOf = (iso: string): number => Number.parseInt(iso.slice(0, 4), 10);
 
+export type TourFilter = {
+  year: number | 'all';
+  continent: ContinentId | 'all';
+  country: string | 'all';
+};
+
+export const defaultTourFilter = (): TourFilter => ({
+  year: 'all',
+  continent: 'all',
+  country: 'all',
+});
+
+const globalEvents = (stories: Story[]): Story[] =>
+  stories.filter((story) => {
+    if (story.type !== 'global-stage') {
+      return false;
+    }
+    const year = yearOf(story.date);
+    return year >= 2023 && year <= 2026;
+  });
+
+export const continentOfCountry = (country: string): ContinentId | undefined => COUNTRY_CONTINENT[country];
+
+export const filterYears = (stories: Story[]): number[] =>
+  [...new Set(globalEvents(stories).map((story) => yearOf(story.date)))].sort((left, right) => left - right);
+
+export const filterContinents = (stories: Story[], year: number | 'all'): ContinentId[] => {
+  const present = new Set(
+    globalEvents(stories)
+      .filter((story) => year === 'all' || yearOf(story.date) === year)
+      .map((story) => COUNTRY_CONTINENT[story.country])
+      .filter((continent): continent is ContinentId => Boolean(continent)),
+  );
+  return CONTINENT_ORDER.filter((continent) => present.has(continent));
+};
+
+export const filterCountries = (
+  stories: Story[],
+  year: number | 'all',
+  continent: ContinentId | 'all',
+): string[] => {
+  const names = globalEvents(stories)
+    .filter((story) => {
+      if (year !== 'all' && yearOf(story.date) !== year) {
+        return false;
+      }
+      const storyContinent = COUNTRY_CONTINENT[story.country];
+      if (!storyContinent) {
+        return false;
+      }
+      return continent === 'all' || storyContinent === continent;
+    })
+    .map((story) => story.country);
+  return [...new Set(names)].sort((left, right) => left.localeCompare(right));
+};
+
+export const constrainTourFilter = (stories: Story[], filter: TourFilter): TourFilter => {
+  const years = filterYears(stories);
+  const year = filter.year === 'all' || years.includes(filter.year) ? filter.year : 'all';
+  const continents = filterContinents(stories, year);
+  const continent =
+    filter.continent === 'all' || continents.includes(filter.continent) ? filter.continent : 'all';
+  const countries = filterCountries(stories, year, continent);
+  const country = filter.country === 'all' || countries.includes(filter.country) ? filter.country : 'all';
+  return { year, continent, country };
+};
+
+export const matchesTourFilter = (story: { date: string; country: string }, filter: TourFilter): boolean => {
+  if (filter.year !== 'all' && yearOf(story.date) !== filter.year) {
+    return false;
+  }
+  const continent = COUNTRY_CONTINENT[story.country];
+  if (filter.continent !== 'all' && continent !== filter.continent) {
+    return false;
+  }
+  return filter.country === 'all' || story.country === filter.country;
+};
+
 export const tallyContinentVisits = (countries: string[]): ContinentCard[] => {
   const grouped = new Map<ContinentId, Map<string, number>>();
   for (const continent of CONTINENT_ORDER) {
@@ -75,8 +153,13 @@ export const continentVisits = (stories: Story[]): ContinentCard[] => {
   return tallyContinentVisits(events.map((story) => story.country)).filter((row) => row.visited > 0);
 };
 
-export const firstEventIndexByCountry = (tour: TourStop[], country: string): number =>
-  tour.findIndex((stop) => stop.kind === 'event' && stop.country === country);
+export const firstEventIndexByCountry = (tour: TourStop[], country: string, year: number | 'all' = 'all'): number =>
+  tour.findIndex(
+    (stop) =>
+      stop.kind === 'event' &&
+      stop.country === country &&
+      (year === 'all' || yearOf(stop.date) === year),
+  );
 
 export const searchTourStops = (tour: TourStop[], query: string): TourStop[] => {
   const needle = query.trim().toLowerCase();

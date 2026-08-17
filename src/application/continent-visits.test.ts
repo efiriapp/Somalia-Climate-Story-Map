@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { stories } from '../content/stories';
 import {
   continentVisits,
+  constrainTourFilter,
+  filterContinents,
+  filterCountries,
+  filterYears,
   firstEventIndexByCountry,
   searchTourStops,
   tallyContinentVisits,
@@ -77,6 +81,23 @@ describe('continentVisits', () => {
     const americas = cards.find((card) => card.continent === 'Americas');
     expect(americas).toMatchObject({ connected: 1, visited: 1 });
     expect(americas?.countries.map((item) => item.country)).toEqual(['Brazil']);
+  });
+});
+
+describe('connected tour filters', () => {
+  it('lists years, then continents and countries that exist in the selected year', () => {
+    expect(filterYears(stories)).toEqual([2023, 2024, 2025, 2026]);
+    expect(filterContinents(stories, 2023)).toEqual(['Africa', 'Asia']);
+    expect(filterCountries(stories, 2023, 'Asia')).toEqual(['Qatar', 'United Arab Emirates']);
+  });
+
+  it('clears child dropdowns when a parent filter no longer matches', () => {
+    const next = constrainTourFilter(stories, {
+      year: 2023,
+      continent: 'Americas',
+      country: 'Brazil',
+    });
+    expect(next).toEqual({ year: 2023, continent: 'all', country: 'all' });
   });
 });
 

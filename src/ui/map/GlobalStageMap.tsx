@@ -24,11 +24,22 @@ import {
   slicePath,
   type LngLat,
 } from '../../application/flight-path';
-import { firstEventIndexByCountry, searchTourStops, tallyContinentVisits } from '../../application/continent-visits';
+import {
+  constrainTourFilter,
+  defaultTourFilter,
+  filterContinents,
+  filterCountries,
+  filterYears,
+  firstEventIndexByCountry,
+  matchesTourFilter,
+  searchTourStops,
+  tallyContinentVisits,
+} from '../../application/continent-visits';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
 import { MAP_LAYERS, styleForLayer, type MapLayerId } from '../../application/map-layers';
 import { ContinentCards } from './ContinentCards';
 import { DateReel } from './DateReel';
+import { TourFilterSlide } from './TourFilterSlide';
 import type { Story } from '../../domain/story';
 
 type Props = {
@@ -308,6 +319,7 @@ const PathIcon = () => (
     />
   </svg>
 );
+const FilterIcon = () => <Icon d="M4 6h16M7 12h10M10 18h4" />;
 
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
@@ -337,12 +349,30 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [measuring, setMeasuring] = useState(false);
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [showPath, setShowPath] = useState(true);
-  const [visitedCountries, setVisitedCountries] = useState<string[]>([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filter, setFilter] = useState(defaultTourFilter());
+  const [visits, setVisits] = useState<{ country: string; date: string }[]>([]);
   const seenVisitsRef = useRef(new Set<string>());
   const [layer, setLayer] = useState<MapLayerId>('carto-voyager');
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
-  const continents = useMemo(() => tallyContinentVisits(visitedCountries), [visitedCountries]);
-  const searchHits = useMemo(() => searchTourStops(tour, searchQuery), [tour, searchQuery]);
+  const years = useMemo(() => filterYears(stories), [stories]);
+  const continentOptions = useMemo(() => filterContinents(stories, filter.year), [stories, filter.year]);
+  const countryOptions = useMemo(
+    () => filterCountries(stories, filter.year, filter.continent),
+    [stories, filter.year, filter.continent],
+  );
+  const visitedCountries = useMemo(
+    () => visits.filter((visit) => matchesTourFilter(visit, filter)).map((visit) => visit.country),
+    [visits, filter],
+  );
+  const continents = useMemo(() => {
+    const rows = tallyContinentVisits(visitedCountries);
+    return filter.continent === 'all' ? rows : rows.filter((row) => row.continent === filter.continent);
+  }, [visitedCountries, filter.continent]);
+  const searchHits = useMemo(
+    () => searchTourStops(tour, searchQuery).filter((hit) => matchesTourFilter(hit, filter)),
+    [tour, searchQuery, filter],
+  );
   const stop: TourStop | undefined = tour[index];
   const [calendarDate, setCalendarDate] = useState(tour[0]?.date ?? '2023-01-01');
   playingRef.current = playing;
@@ -510,7 +540,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       if (stop.kind === 'event') {
         if (stop.storyId && !seenVisitsRef.current.has(stop.storyId)) {
           seenVisitsRef.current.add(stop.storyId);
-          setVisitedCountries((current) => [...current, stop.country]);
+          setVisits((current) => [...current, { country: stop.country, date: stop.date }]);
         }
         popupTimerRef.current = window.setTimeout(() => {
           setPopupOpen(true);
@@ -697,7 +727,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   const resetTable = () => {
     seenVisitsRef.current.clear();
-    setVisitedCountries([]);
+    setVisits([]);
+  };
+
+  const updateFilter = (next: typeof filter) => {
+    setFilter(constrainTourFilter(stories, next));
   };
 
   const togglePath = () => {
@@ -778,6 +812,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               onClick={() => {
                 setLayersOpen((open) => !open);
                 setSearchOpen(false);
+                setFiltersOpen(false);
               }}
             >
               <Icon d="M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4M4 16l8 4 8-4" />
@@ -809,6 +844,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               onClick={() => {
                 setSearchOpen((open) => !open);
                 setLayersOpen(false);
+                setFiltersOpen(false);
               }}
             >
               <SearchIcon />
@@ -859,12 +895,41 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           >
             <PathIcon />
           </button>
+          <button
+            type="button"
+            className={filtersOpen ? 'active' : undefined}
+            aria-label={filtersOpen ? 'Hide filters' : 'Show filters'}
+            aria-expanded={filtersOpen}
+            onClick={() => {
+              setFiltersOpen((open) => !open);
+              setLayersOpen(false);
+              setSearchOpen(false);
+            }}
+          >
+            <FilterIcon />
+          </button>
         </div>
+        <TourFilterSlide
+          open={filtersOpen}
+          filter={filter}
+          years={years}
+          continents={continentOptions}
+          countries={countryOptions}
+          onYear={(year) => updateFilter({ ...filter, year })}
+          onContinent={(continent) => updateFilter({ ...filter, continent })}
+          onCountry={(country) => {
+            const next = constrainTourFilter(stories, { ...filter, country });
+            setFilter(next);
+            if (next.country !== 'all') {
+              goToStop(firstEventIndexByCountry(tour, next.country, next.year));
+            }
+          }}
+        />
         <div className="tour-right-stack">
           <DateReel isoDate={calendarDate} />
           <ContinentCards
             cards={continents}
-            onCountry={(country) => goToStop(firstEventIndexByCountry(tour, country))}
+            onCountry={(country) => goToStop(firstEventIndexByCountry(tour, country, filter.year))}
             onReset={resetTable}
           />
         </div>

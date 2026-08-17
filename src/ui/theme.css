@@ -595,6 +595,59 @@ select {
   color: #fff;
 }
 
+.tour-filter-slide {
+  position: absolute;
+  top: 5.2rem;
+  left: 1rem;
+  z-index: 44;
+  width: 240px;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 12px;
+  background: rgba(6, 61, 57, 0.96);
+  color: var(--white);
+  box-shadow: 0 10px 24px rgba(6, 61, 57, 0.3);
+  transform: translateX(calc(-100% - 1.5rem));
+  transition: transform 0.28s ease;
+  pointer-events: none;
+}
+
+.tour-filter-slide.open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.tour-filter-slide p {
+  margin: 0 0 0.7rem;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tour-filter-slide label {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.7rem;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tour-filter-slide label:last-child {
+  margin-bottom: 0;
+}
+
+.tour-filter-slide select {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  background: #042e2b;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .tour-right-stack {
   position: absolute;
   right: 0;

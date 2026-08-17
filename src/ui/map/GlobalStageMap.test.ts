@@ -123,6 +123,10 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).toContain('showPath');
     expect(source).toContain('Hide path');
     expect(source).toContain('Show path');
+    expect(source).toContain('TourFilterSlide');
+    expect(source).toContain('Show filters');
+    expect(source).toContain('Hide filters');
+    expect(source).toContain('constrainTourFilter');
   });
 
   it('leaves empty continent cells blank instead of writing zero', () => {

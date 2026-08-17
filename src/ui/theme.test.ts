@@ -24,6 +24,7 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.tour-right-stack[\s\S]{0,120}top:\s*0/);
     expect(css).toContain('.continent-board');
     expect(css).toContain('.continent-table');
+    expect(css).toContain('.tour-filter-slide');
   });
 
   it('places the ICE calendar in the top-right corner', () => {
