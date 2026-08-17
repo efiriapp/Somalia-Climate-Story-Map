@@ -1,3 +1,4 @@
+import { playCalendarTick } from '../../application/tour-sound';
 import { tourDateParts } from '../../application/global-tour';
 
 const YEARS = ['2023', '2024', '2025', '2026'];
@@ -62,6 +63,7 @@ type Props = {
 export function DateReel({ isoDate, onDateChange }: Props) {
   const parts = tourDateParts(isoDate);
   const change = (next: { year?: string; month?: string; day?: string }) => {
+    playCalendarTick();
     onDateChange(
       isoFromParts(next.year ?? parts.year, next.month ?? parts.month, next.day ?? parts.day),
     );

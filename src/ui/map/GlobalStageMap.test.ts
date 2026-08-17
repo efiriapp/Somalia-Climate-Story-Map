@@ -74,6 +74,7 @@ describe('GlobalStageMap airplane marker', () => {
     expect(dateReel).not.toContain('label="Date"');
     expect(dateReel).toContain('onWheel');
     expect(dateReel).toContain('onDateChange');
+    expect(dateReel).toContain('playCalendarTick');
   });
 
   it('opens the event popup 1 second after city zoom, as a centered card', () => {
@@ -110,9 +111,11 @@ describe('GlobalStageMap airplane marker', () => {
   });
 
   it('starts filtered flights from Mogadishu home', () => {
-    expect(source).toContain('goToStopFromHome');
-    expect(source).toMatch(/lastIndexRef\.current = 0/);
-    expect(source).toContain('MOGADISHU_HOME');
+    expect(source).toContain('startFlightSound');
+    expect(source).toContain('stopFlightSound');
+    expect(source).toContain('Sound settings');
+    expect(source).toContain('Mute sound');
+    expect(source).toContain('Unmute sound');
   });
 
   it('keeps the airplane marker on top of map pins and trail', () => {
