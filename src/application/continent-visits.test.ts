@@ -10,6 +10,7 @@ import {
   firstEventIndexByCountry,
   firstEventIndexByContinent,
   firstEventIndexMatching,
+  firstEventIndexForDate,
   continentSummaries,
   summaryTotal,
   searchTourStops,
@@ -163,6 +164,16 @@ describe('tour country search', () => {
     const asia = firstEventIndexMatching(tour, { year: 2023, continent: 'Asia', country: 'all' });
     expect(tour[asia]?.kind).toBe('event');
     expect(['Qatar', 'United Arab Emirates']).toContain(tour[asia]?.country);
+  });
+
+  it('finds a tour event from a scrolled calendar date', () => {
+    const tour = buildGlobalTour(stories);
+    const exact = firstEventIndexForDate(tour, '2023-03-03');
+    expect(tour[exact]?.kind).toBe('event');
+    expect(tour[exact]?.date).toBe('2023-03-03');
+    const month = firstEventIndexForDate(tour, '2023-03-31');
+    expect(tour[month]?.kind).toBe('event');
+    expect(tour[month]?.date.startsWith('2023-03')).toBe(true);
   });
 
   it('filters event stops by country, city, or title', () => {

@@ -32,6 +32,7 @@ import {
   filterCountries,
   filterYears,
   firstEventIndexByCountry,
+  firstEventIndexForDate,
   firstEventIndexMatching,
   matchesTourFilter,
   searchTourStops,
@@ -941,7 +942,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           onCountry={(country) => updateFilter({ ...filter, country })}
         />
         <div className="tour-right-stack">
-          <DateReel isoDate={calendarDate} />
+          <DateReel
+            isoDate={calendarDate}
+            onDateChange={(iso) => {
+              setCalendarDate(iso);
+              const year = Number.parseInt(iso.slice(0, 4), 10);
+              setFilter(constrainTourFilter(stories, { ...filter, year }));
+              goToStopFromHome(firstEventIndexForDate(tour, iso));
+            }}
+          />
           <ContinentCards
             cards={continents}
             onCountry={(country) => goToStopFromHome(firstEventIndexByCountry(tour, country, filter.year))}

@@ -72,6 +72,8 @@ describe('GlobalStageMap airplane marker', () => {
     expect(dateReel).toContain("ICE Institute's calendar");
     expect(dateReel).toContain('label="DAY"');
     expect(dateReel).not.toContain('label="Date"');
+    expect(dateReel).toContain('onWheel');
+    expect(dateReel).toContain('onDateChange');
   });
 
   it('opens the event popup 1 second after city zoom, as a centered card', () => {
@@ -92,6 +94,8 @@ describe('GlobalStageMap airplane marker', () => {
   it('updates the calendar only when the airplane arrives home', () => {
     expect(source).toContain('isoDate={calendarDate}');
     expect(source).toMatch(/if \(stop\.kind === 'home'\)[\s\S]{0,80}setCalendarDate\(stop\.date\)/);
+    expect(source).toContain('onDateChange');
+    expect(source).toContain('firstEventIndexForDate');
   });
 
   it('freezes the airplane in place when the tour is paused', () => {

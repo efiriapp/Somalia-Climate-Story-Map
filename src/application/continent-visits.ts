@@ -202,6 +202,20 @@ export const firstEventIndexByContinent = (
 export const firstEventIndexMatching = (tour: TourStop[], filter: TourFilter): number =>
   tour.findIndex((stop) => stop.kind === 'event' && matchesTourFilter(stop, filter));
 
+export const firstEventIndexForDate = (tour: TourStop[], iso: string): number => {
+  const exact = tour.findIndex((stop) => stop.kind === 'event' && stop.date === iso);
+  if (exact >= 0) {
+    return exact;
+  }
+  const month = iso.slice(0, 7);
+  const inMonth = tour.findIndex((stop) => stop.kind === 'event' && stop.date.startsWith(month));
+  if (inMonth >= 0) {
+    return inMonth;
+  }
+  const year = iso.slice(0, 4);
+  return tour.findIndex((stop) => stop.kind === 'event' && stop.date.startsWith(year));
+};
+
 export const searchTourStops = (tour: TourStop[], query: string): TourStop[] => {
   const needle = query.trim().toLowerCase();
   return tour.filter((stop) => {
