@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   isTourSoundMuted,
   playCalendarTick,
+  playLandingSound,
+  playTakeoffSound,
   setTourSoundMuted,
   startFlightSound,
   stopFlightSound,
@@ -14,7 +16,9 @@ describe('tour sound', () => {
     setTourSoundMuted(true);
     expect(isTourSoundMuted()).toBe(true);
     expect(() => {
+      playTakeoffSound();
       startFlightSound();
+      playLandingSound();
       playCalendarTick();
       stopFlightSound();
     }).not.toThrow();

@@ -12,10 +12,41 @@ const audioContext = (): AudioContext | null => {
   if (!audioCtx || audioCtx.state === 'closed') {
     audioCtx = new Ctor();
   }
-  if (audioCtx.state === 'suspended') {
-    void audioCtx.resume();
-  }
   return audioCtx;
+};
+
+const withAudio = (play: (ctx: AudioContext) => void): void => {
+  if (muted) {
+    return;
+  }
+  const ctx = audioContext();
+  if (!ctx) {
+    return;
+  }
+  const run = () => {
+    if (muted) {
+      return;
+    }
+    play(ctx);
+  };
+  if (ctx.state === 'suspended') {
+    void ctx.resume().then(run);
+    return;
+  }
+  run();
+};
+
+const noiseSource = (ctx: AudioContext, seconds: number, loop: boolean): AudioBufferSourceNode => {
+  const length = Math.max(1, Math.floor(ctx.sampleRate * seconds));
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let index = 0; index < length; index += 1) {
+    data[index] = Math.random() * 2 - 1;
+  }
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.loop = loop;
+  return source;
 };
 
 export const isTourSoundMuted = (): boolean => muted;
@@ -27,64 +58,140 @@ export const setTourSoundMuted = (value: boolean): void => {
   }
 };
 
+export const unlockTourSound = (): void => {
+  const ctx = audioContext();
+  if (ctx?.state === 'suspended') {
+    void ctx.resume();
+  }
+};
+
 export const stopFlightSound = (): void => {
   flightStop?.();
   flightStop = null;
 };
 
+export const playTakeoffSound = (): void => {
+  withAudio((ctx) => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(620, now + 0.55);
+    oscGain.gain.setValueAtTime(0.0001, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.16, now + 0.08);
+    oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.72);
+
+    const noise = noiseSource(ctx, 0.7, false);
+    const filter = ctx.createBiquadFilter();
+    const noiseGain = ctx.createGain();
+    filter.type = 'highpass';
+    filter.frequency.value = 700;
+    noiseGain.gain.setValueAtTime(0.12, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.7);
+  });
+};
+
 export const startFlightSound = (): void => {
   stopFlightSound();
-  if (muted) {
-    return;
-  }
-  const ctx = audioContext();
-  if (!ctx) {
-    return;
-  }
-  const osc = ctx.createOscillator();
-  const filter = ctx.createBiquadFilter();
-  const gain = ctx.createGain();
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(86, ctx.currentTime);
-  osc.frequency.linearRampToValueAtTime(118, ctx.currentTime + 1.2);
-  filter.type = 'lowpass';
-  filter.frequency.value = 420;
-  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 0.35);
-  osc.connect(filter);
-  filter.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start();
-  flightStop = () => {
-    try {
-      const now = ctx.currentTime;
-      gain.gain.cancelScheduledValues(now);
-      gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
-      osc.stop(now + 0.28);
-    } catch {
-      osc.disconnect();
-    }
-  };
+  withAudio((ctx) => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(240, now);
+    osc.frequency.linearRampToValueAtTime(310, now + 0.8);
+    oscGain.gain.setValueAtTime(0.0001, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.11, now + 0.2);
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(now);
+
+    const noise = noiseSource(ctx, 1.2, true);
+    const filter = ctx.createBiquadFilter();
+    const noiseGain = ctx.createGain();
+    filter.type = 'bandpass';
+    filter.frequency.value = 900;
+    filter.Q.value = 0.7;
+    noiseGain.gain.setValueAtTime(0.0001, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.09, now + 0.25);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start(now);
+
+    flightStop = () => {
+      try {
+        const stopAt = ctx.currentTime;
+        oscGain.gain.cancelScheduledValues(stopAt);
+        noiseGain.gain.cancelScheduledValues(stopAt);
+        oscGain.gain.setValueAtTime(Math.max(oscGain.gain.value, 0.0001), stopAt);
+        noiseGain.gain.setValueAtTime(Math.max(noiseGain.gain.value, 0.0001), stopAt);
+        oscGain.gain.exponentialRampToValueAtTime(0.0001, stopAt + 0.2);
+        noiseGain.gain.exponentialRampToValueAtTime(0.0001, stopAt + 0.2);
+        osc.stop(stopAt + 0.22);
+        noise.stop(stopAt + 0.22);
+      } catch {
+        osc.disconnect();
+        noise.disconnect();
+      }
+    };
+  });
+};
+
+export const playLandingSound = (): void => {
+  stopFlightSound();
+  withAudio((ctx) => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.exponentialRampToValueAtTime(140, now + 0.45);
+    oscGain.gain.setValueAtTime(0.14, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.52);
+
+    const noise = noiseSource(ctx, 0.45, false);
+    const filter = ctx.createBiquadFilter();
+    const noiseGain = ctx.createGain();
+    filter.type = 'lowpass';
+    filter.frequency.value = 800;
+    noiseGain.gain.setValueAtTime(0.1, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.42);
+  });
 };
 
 export const playCalendarTick = (): void => {
-  if (muted) {
-    return;
-  }
-  const ctx = audioContext();
-  if (!ctx) {
-    return;
-  }
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(1240, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(820, ctx.currentTime + 0.07);
-  gain.gain.setValueAtTime(0.05, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.09);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + 0.1);
+  withAudio((ctx) => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1240, now);
+    osc.frequency.exponentialRampToValueAtTime(820, now + 0.07);
+    gain.gain.setValueAtTime(0.07, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.1);
+  });
 };

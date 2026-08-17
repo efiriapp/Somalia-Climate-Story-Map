@@ -111,11 +111,17 @@ describe('GlobalStageMap airplane marker', () => {
   });
 
   it('starts filtered flights from Mogadishu home', () => {
+    expect(source).toContain('goToStopFromHome');
+    expect(source).toMatch(/lastIndexRef\.current = 0/);
+    expect(source).toContain('MOGADISHU_HOME');
+    expect(source).toContain('playTakeoffSound');
     expect(source).toContain('startFlightSound');
-    expect(source).toContain('stopFlightSound');
-    expect(source).toContain('Sound settings');
+    expect(source).toContain('playLandingSound');
+    expect(source).toContain('unlockTourSound');
     expect(source).toContain('Mute sound');
     expect(source).toContain('Unmute sound');
+    expect(source).toContain('SoundIcon');
+    expect(source).not.toContain('Sound settings');
   });
 
   it('keeps the airplane marker on top of map pins and trail', () => {
