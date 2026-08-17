@@ -139,6 +139,8 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).not.toContain('CardsIcon');
     expect(source).toContain('firstEventIndexMatching');
     expect(source).toContain('onContinent');
+    expect(source).toContain('onTotal');
+    expect(source).toContain('summaryTotal');
     expect(source).not.toContain('continentSummaries(stories, defaultTourFilter())');
     expect(source).toContain('>ICE Institute at Global Stage<');
     expect(source).not.toContain('<span>ICE Institute</span>');

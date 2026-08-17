@@ -27,6 +27,7 @@ describe('ICE green brand', () => {
     expect(css).toContain('.tour-filter-slide');
     expect(css).toContain('.continent-summary-cards');
     expect(css).toContain('.continent-summary-card');
+    expect(css).toContain('.continent-summary-card.total');
   });
 
   it('places the ICE calendar in the top-right corner', () => {

@@ -137,6 +137,9 @@ export const continentSummaries = (stories: Story[], filter: TourFilter): Contin
   }));
 };
 
+export const summaryTotal = (stories: Story[], filter: TourFilter): number =>
+  continentSummaries(stories, filter).reduce((sum, card) => sum + card.count, 0);
+
 export const tallyContinentVisits = (countries: string[]): ContinentCard[] => {
   const grouped = new Map<ContinentId, Map<string, number>>();
   for (const continent of CONTINENT_ORDER) {

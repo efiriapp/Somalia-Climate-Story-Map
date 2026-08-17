@@ -705,6 +705,12 @@ select {
   background: var(--leaf);
 }
 
+.continent-summary-card.total {
+  min-width: 6.2rem;
+  border-style: solid;
+  background: #042e2b;
+}
+
 .continent-summary-card span {
   font-size: 10px;
   font-weight: 800;

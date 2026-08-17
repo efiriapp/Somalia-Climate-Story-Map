@@ -26,7 +26,6 @@ import {
 } from '../../application/flight-path';
 import {
   constrainTourFilter,
-  continentOfCountry,
   continentSummaries,
   defaultTourFilter,
   filterContinents,
@@ -36,6 +35,7 @@ import {
   firstEventIndexMatching,
   matchesTourFilter,
   searchTourStops,
+  summaryTotal,
   tallyContinentVisits,
 } from '../../application/continent-visits';
 import { buildGlobalTour, GLOBE_PADDING, GLOBE_VIEW, MOGADISHU_HOME, nextTourIndex, prevTourIndex, tourPopupHtml, type TourStop } from '../../application/global-tour';
@@ -375,6 +375,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   }, [visitedCountries, filter.continent]);
   const summaries = useMemo(
     () => continentSummaries(stories, { ...filter, continent: 'all' }),
+    [stories, filter],
+  );
+  const total = useMemo(
+    () => summaryTotal(stories, { ...filter, continent: 'all' }),
     [stories, filter],
   );
   const searchHits = useMemo(
@@ -946,14 +950,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         </div>
         <ContinentSummaryCards
           cards={summaries}
-          activeContinent={
-            filter.continent !== 'all'
-              ? filter.continent
-              : stop.kind === 'event'
-                ? continentOfCountry(stop.country)
-                : undefined
-          }
+          total={total}
+          activeContinent={filter.continent === 'all' ? undefined : filter.continent}
+          activeTotal={filter.continent === 'all' && filter.country === 'all'}
           onContinent={(continent) => updateFilter({ ...filter, continent, country: 'all' })}
+          onTotal={() => updateFilter(defaultTourFilter())}
         />
         {measuring ? (
           <p className="tour-measure-badge">

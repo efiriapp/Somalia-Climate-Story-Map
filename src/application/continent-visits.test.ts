@@ -11,6 +11,7 @@ import {
   firstEventIndexByContinent,
   firstEventIndexMatching,
   continentSummaries,
+  summaryTotal,
   searchTourStops,
   tallyContinentVisits,
 } from './continent-visits';
@@ -127,6 +128,17 @@ describe('continent summaries', () => {
     expect(
       continentSummaries(stories, { year: 2023, continent: 'all', country: 'Qatar' }),
     ).toEqual([{ continent: 'Asia', count: 2 }]);
+  });
+
+  it('adds a dashboard total that follows the default catalog and the active filter', () => {
+    expect(summaryTotal(stories, defaultTourFilter())).toBe(18);
+    expect(summaryTotal(stories, { year: 2023, continent: 'all', country: 'all' })).toBe(
+      continentSummaries(stories, { year: 2023, continent: 'all', country: 'all' }).reduce(
+        (sum, card) => sum + card.count,
+        0,
+      ),
+    );
+    expect(summaryTotal(stories, { year: 2023, continent: 'all', country: 'Qatar' })).toBe(2);
   });
 });
 
