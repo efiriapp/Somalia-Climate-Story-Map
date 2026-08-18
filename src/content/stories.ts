@@ -150,7 +150,55 @@ export const stories: Story[] = [
     website: 'https://ice.simad.edu.so/',
     summary: 'Every Friday, young Somalis led by Abdisatar Arabow clean plastic and debris from Liido Beach in Abdiaziz District. What began with a handful of volunteers became a multi-year campaign after research found tens of thousands of litter items, mostly plastic, on the shore. The work protects marine life, public health, and a beach families still use for rest and business. Volunteers also teach beachgoers and shops why dumping plastic into the ocean threatens biodiversity along Somalia’s coast.',
     body: 'At Liido Beach, young Somalis organise cleanups that protect the ocean and public space. The campaign treats the coastline as a shared climate commons.',
+    featuredPerson: 'Abdisatar Arabow',
+    placeLabel: 'Liido Beach, Abdiaziz District, Mogadishu',
+    videoTitle: 'Beach Cleaning Campaign in Mogadishu | Ololaha Nadaafada Xeebta Liido ee Muqdishu',
+    stats: [
+      { label: 'First volunteers', value: 'About 6 people' },
+      { label: 'Consecutive weeks', value: '147 by 2024' },
+      { label: 'Litter items recorded', value: '119,873' },
+      { label: 'Plastics', value: '89.47%' },
+      { label: 'Shoreline activities', value: '54.12% of plastic waste' },
+      { label: 'Dumping', value: '36.61% of plastic waste' },
+    ],
     images: ['/images/ice-stories/liido-1.png', '/images/ice-stories/liido-2.jpeg'],
+    chapters: [
+      {
+        heading: 'Every Friday at Liido Beach',
+        paragraphs: [
+          'Every Friday morning, while much of Mogadishu is still waking up, young Somalis arrive at Liido Beach carrying gloves, bags, and simple cleaning tools. They are not coming for a holiday. They are coming to pick up someone else’s waste: plastic bottles, bags, food packaging, and debris. One piece at a time. One bag at a time. One Friday at a time.',
+          'This is Ololaha Nadaafada Xeebta Liido — the Liido Beach Cleaning Campaign. Led by development practitioner and instructor Abdisatar Arabow (Abdisatar Arbow Ibrahim), volunteers have gathered every Friday morning for years to clean plastic and waste from the iconic beach in Abdiaziz District. What started as a small group became a resilient, multi-year movement protecting marine life and restoring the coast’s natural beauty.',
+        ],
+      },
+      {
+        heading: 'A 2024 assessment of marine litter',
+        paragraphs: [
+          'Liido is one of Mogadishu’s best-known beaches. People come here to swim, relax, meet friends, run businesses, and enjoy the ocean. Beneath the beauty is a serious environmental problem. A 2024 scientific assessment of marine litter at Liido Beach recovered 119,873 individual litter items. Plastics accounted for 89.47% of the collected material.',
+          'Researchers identified local recreational and shoreline activities as the largest source (54.12%), while dumping accounted for 36.61% of the plastic waste. Those numbers are difficult to imagine until you stand on the beach and look at a plastic bag in the sand, then imagine thousands, then tens of thousands. Plastic does not disappear with the tide. The assessment warns that plastic pollution at Liido poses risks to marine biodiversity along Somalia’s coast and the western Indian Ocean.',
+        ],
+      },
+      {
+        heading: 'Six people decided to do something',
+        paragraphs: [
+          'The campaign did not begin with a large budget or sophisticated equipment. Reporting describes it starting with six volunteers after a social-media post called on young people to participate in beach cleaning and community volunteerism. The idea was simple: if people are damaging the beach, people can also help restore it.',
+          'Volunteers committed to returning to Liido every Friday. By 2024, reporting documented 147 consecutive weeks of cleanup activity. They kept returning through rain, security challenges, public holidays, Ramadan, and national examinations. Climate action is often celebrated when something dramatic happens. This campaign was built by showing up again next week.',
+        ],
+      },
+      {
+        heading: 'The work nobody wants to do',
+        paragraphs: [
+          'Cleaning a beach is not glamorous. You bend down, pick up rubbish, fill bags, carry them, then come back next week and do it again. Abdisatar described the problem bluntly: plastic continues to be dumped on the beach, particularly at night, creating an almost endless cycle. The volunteers did not collapse. Their message became: “Environment is our life.”',
+          'If the beach is polluted, people suffer. If the ocean is polluted, marine life suffers. If marine ecosystems decline, fishing livelihoods are threatened. If beaches become unusable, tourism and local businesses lose opportunities. The environment is not separate from the economy.',
+        ],
+      },
+      {
+        heading: 'Education on the shoreline',
+        paragraphs: [
+          'Somalia has one of Africa’s longest coastlines, and coastal communities depend on marine resources for livelihoods, food, and economic activity. The Liido campaign is therefore not only a cleaning exercise. It is environmental education in action. Researchers studying the beach noted that the weekly cleanup has been carrying out environmental education there, and recommended stronger efforts by individuals and organizations to reduce coastal litter.',
+          'Participation grew from a handful of dedicated individuals to hundreds of local volunteers, including environmental graduates and citizens. Volunteers teach beachgoers and local businesses about proper waste disposal and the dangers of plastic pollution. They are doing two jobs at once: removing waste and changing behaviour.',
+        ],
+      },
+    ],
   },
   {
     id: 'simad-drought',

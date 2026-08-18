@@ -107,4 +107,17 @@ describe('global-stage source pages', () => {
     expect(story?.images).toHaveLength(3);
     expect(story?.chapters?.some((chapter) => /UNSOS/i.test(chapter.paragraphs.join(' ')))).toBe(true);
   });
+
+  it('gives Liido Beach Cleanup a full source-backed detail page', () => {
+    const story = stories.find((item) => item.id === 'liido-beach-cleanup');
+    expect(story?.featuredPerson).toBe('Abdisatar Arabow');
+    expect(story?.videoTitle).toMatch(/Beach Cleaning Campaign/);
+    expect(story?.placeLabel).toMatch(/Liido Beach/);
+    expect(story?.stats?.some((stat) => /119,873/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /89\.47/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /147/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
+    expect(story?.images).toHaveLength(2);
+    expect(story?.location.name).toMatch(/Liido Beach/);
+  });
 });
