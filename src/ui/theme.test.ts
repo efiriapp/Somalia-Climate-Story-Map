@@ -82,4 +82,13 @@ describe('ICE green brand', () => {
     expect(css).toContain('.tour-popup-close');
     expect(css).toContain('.date-reel-nav');
   });
+
+  it('makes the platform logos large and the title bold white on forest green', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.topbar[\s\S]{0,220}background:\s*(#063D39|var\(--forest\))/);
+    expect(css).toMatch(/\.topbar-logo[\s\S]{0,80}height:\s*(8[0-9]|9[0-9]|1[0-4][0-9])px/);
+    expect(css).toMatch(/\.topbar-title[\s\S]{0,160}color:\s*(#fff|#ffffff|var\(--white\))/i);
+    expect(css).toMatch(/\.topbar-title[\s\S]{0,180}font-weight:\s*(800|900)/);
+    expect(css).toMatch(/\.topbar-title[\s\S]{0,200}font-size:\s*(1\.[3-9]|2)\s*rem/);
+  });
 });

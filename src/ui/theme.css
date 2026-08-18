@@ -45,32 +45,35 @@ select {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  padding: 0.7rem 1.5rem;
-  background: var(--white);
-  border-bottom: 1px solid var(--line);
+  padding: 0.85rem 1.5rem;
+  background: var(--forest);
+  border-bottom: 1px solid var(--leaf);
 }
 
 .topbar-logo {
-  height: 44px;
+  height: 96px;
   width: auto;
-  max-width: 160px;
+  max-width: 280px;
   object-fit: contain;
   object-position: left center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.2rem 0.45rem;
 }
 
 .topbar-logo.ice {
-  max-width: 220px;
+  max-width: 340px;
   object-position: right center;
 }
 
 .topbar-title {
   flex: 1;
   text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--forest);
-  font-weight: 700;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
 }
 
 .nav {
