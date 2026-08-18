@@ -46,7 +46,6 @@ import { ContinentCards } from './ContinentCards';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 import { DateReel } from './DateReel';
 import { TourFilterSlide } from './TourFilterSlide';
-import { SiteFooter } from '../chrome/SiteFooter';
 import type { Story } from '../../domain/story';
 
 type Props = {
@@ -1182,7 +1181,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </article>
         ) : null}
       </div>
-      <SiteFooter />
     </section>
   );
 }

@@ -1341,18 +1341,3 @@ select {
 .site-footer a {
   color: var(--mint);
 }
-
-.global-stage .site-footer {
-  margin-top: 0;
-  padding: 0.7rem 1.2rem 0.85rem;
-  flex-shrink: 0;
-  z-index: 50;
-}
-
-.global-stage .site-footer-brand img {
-  height: 28px;
-}
-
-.global-stage .site-footer-comment {
-  font-size: 12px;
-}

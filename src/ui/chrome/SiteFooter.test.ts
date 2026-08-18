@@ -10,7 +10,7 @@ const globalStage = readFileSync(join(here, '..', 'map', 'GlobalStageMap.tsx'), 
 const copy = readFileSync(join(here, '../../content/site-footer.ts'), 'utf8');
 
 describe('SiteFooter', () => {
-  it('uses one standard footer with ICE credits and comments on every screen', () => {
+  it('uses one standard footer with ICE credits on catalog and story pages', () => {
     expect(source).toContain('site-footer');
     expect(source).toContain('siteFooter.comment');
     expect(source).toContain('siteFooter.copyright');
@@ -20,6 +20,6 @@ describe('SiteFooter', () => {
     expect(copy).toContain('https://ice.simad.edu.so/');
     expect(app).toContain('<SiteFooter');
     expect(app).toMatch(/catalog[\s\S]*SiteFooter|SiteFooter[\s\S]*catalog/);
-    expect(globalStage).toContain('<SiteFooter');
+    expect(globalStage).not.toContain('SiteFooter');
   });
 });

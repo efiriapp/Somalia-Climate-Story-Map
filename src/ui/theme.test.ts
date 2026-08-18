@@ -97,6 +97,6 @@ describe('ICE green brand', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.site-footer[\s\S]{0,160}background:\s*(#063D39|var\(--forest\))/);
     expect(css).toContain('.site-footer-comment');
-    expect(css).toContain('.global-stage .site-footer');
+    expect(css).not.toContain('.global-stage .site-footer');
   });
 });
