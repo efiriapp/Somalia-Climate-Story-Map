@@ -97,4 +97,14 @@ describe('global-stage source pages', () => {
       expect(existsSync(join(publicDir, story.images[0].replace(/^\//, ''))), story.images[0]).toBe(true);
     }
   });
+
+  it('gives 4C Art a full source-backed detail page', () => {
+    const story = stories.find((item) => item.id === '4c-art');
+    expect(story?.featuredPerson).toBe('Abdinasir Abdikadir Mohamed (4C)');
+    expect(story?.videoTitle).toMatch(/Arts and Climate Action/);
+    expect(story?.stats?.length).toBeGreaterThanOrEqual(4);
+    expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
+    expect(story?.images).toHaveLength(3);
+    expect(story?.chapters?.some((chapter) => /UNSOS/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+  });
 });

@@ -17,10 +17,66 @@ export const stories: Story[] = [
     website: 'https://ice.simad.edu.so/',
     summary: 'Abdinasir Abdikadir Mohamed, known as 4C, is a Mogadishu artist who turns drought, heat, waste, and identity into paintings, murals, and installations people can see and feel. He founded 4C Art Studio so young Somalis can learn, exhibit, and earn from creative work instead of treating climate action as volunteering alone. His practice shows that climate communication fails when facts never become a human story. ICE highlights 4C as proof that climate action can be scientific, entrepreneurial, and art at the same time.',
     body: '4C Art uses visual storytelling so Somali communities can see climate change, not only hear about it. The work links youth, culture, and climate action in Mogadishu.',
+    featuredPerson: 'Abdinasir Abdikadir Mohamed (4C)',
+    placeLabel: '4C Art Studio / Mogadishu',
+    videoTitle: 'Arts and Climate Action | ICE Institute',
+    stats: [
+      { label: 'Featured person', value: 'Abdinasir Abdikadir Mohamed (4C)' },
+      { label: 'Place', value: '4C Art Studio / Mogadishu' },
+      { label: 'Public mural', value: '2024 UNSOS commission' },
+      { label: 'Exhibition', value: '2023 Mogadishu Environmental Summit' },
+      { label: 'ICE video', value: 'Arts and Climate Action' },
+    ],
     images: [
       '/images/ice-stories/4c-art-1.jpg',
       '/images/ice-stories/4c-art-2.jpg',
       '/images/ice-stories/4c-art-3.png',
+    ],
+    chapters: [
+      {
+        heading: 'Climate change on the canvas',
+        paragraphs: [
+          'In Somalia, climate change is often discussed through statistics: droughts, floods, rising temperatures, disappearing livelihoods, and growing pressure on communities. Those numbers matter. They do not always make people feel the problem. For Abdinasir Abdikadir Mohamed, better known as 4C, art is a way to make people see, feel, and question the changes taking place around them.',
+          'Based in Mogadishu, 4C is a contemporary artist working across painting, murals, street art, sculpture, and conceptual installations. His work explores culture, identity, environment, and coexistence. Climate change is among the major issues he translates into visual stories: take something abstract or technical and turn it into something people can see and emotionally understand.',
+          'Somalia already lives with drought, floods, extreme heat, and rainfall variability, with consequences for agriculture, livestock, food security, livelihoods, and displacement. A farmer may understand drought through a failed harvest. A pastoralist may understand it through the loss of pasture and water. A young person in Mogadishu may experience climate change through heat, flooding, waste, or a changing city. An artist can connect those experiences in one visual message. His project Earth, Water, Fire, Air explores the elemental forces that shape human existence and their connection to physical and emotional landscapes.',
+        ],
+      },
+      {
+        heading: 'From artist to creative entrepreneur',
+        paragraphs: [
+          '4C founded 4C Art Studio in Mogadishu so artists and art enthusiasts can create, learn, collaborate, and exhibit. The studio offers studio space, workshops, classes, exhibitions, events, and artist-residency opportunities. It also operates as a creative business. Its shop offers paintings, prints, art materials, tote bags, and other products, showing how artistic talent can become income.',
+          'Climate action is often presented to young people as volunteering, awareness campaigns, or environmental activism. Those matter, but they are not the whole picture. Climate action can also create space for creative industries, entrepreneurship, education, and employment. A mural can communicate a climate message. A workshop can build another young person’s skills. An exhibition can create income. A studio can become a platform for collaboration.',
+        ],
+      },
+      {
+        heading: 'Young people as climate storytellers',
+        paragraphs: [
+          'One of the strongest parts of 4C’s work is its connection with young people and creative learning. His studio has organized workshops and art activities, and his practice includes mentoring emerging artists. Climate communication often fails when people hear facts without seeing themselves in the story. Art can close that gap.',
+          'Imagine young Somali artists producing murals about drought resilience, paintings about coastal ecosystems, illustrations about plastic pollution, photography about disappearing landscapes, sculptures from discarded materials, or digital art showing climate-resilient Somali cities. That would not replace climate science. It would make climate science more human. Instead of only saying climate change is affecting Somalia, an artist can ask: What does a changing Somalia look like? What do we lose if our environment changes? What kind of Somalia do we want to build?',
+        ],
+      },
+      {
+        heading: 'A public mural for UNSOS in 2024',
+        paragraphs: [
+          'In 2024, 4C was commissioned by UNSOS in Mogadishu to create a large mural incorporating several social themes, including climate change, equality, children, internally displaced people, human rights, disability inclusion, freedom of speech, and protection of civilians.',
+          'A wall becomes a public message. People do not need to attend a conference or read a long report. They walk past it. A child may look at it. A young person may ask what the image means. Someone who has never attended a climate workshop may begin a conversation about climate change. Climate action begins not only with knowledge. It begins with attention.',
+        ],
+      },
+      {
+        heading: 'The 2023 Mogadishu Environmental Summit exhibition',
+        paragraphs: [
+          'In 2023, a climate-focused art exhibition by 4C was documented as part of the Mogadishu Environmental Summit, where the artwork was presented specifically around the impact of climate change. The story is not isolated. It sits at the intersection of Mogadishu’s creative community, environmental awareness, youth participation, and the emerging green and creative economy.',
+          'On a map, Mogadishu is one point. Behind that point is a studio, an artist, young people, paint, ideas, and a climate message.',
+        ],
+      },
+      {
+        heading: 'What we can learn',
+        paragraphs: [
+          'The Somali art sector still faces limited support and a common perception that art is mainly valuable when it produces immediate financial returns. Talent alone does not build a sustainable creative industry. Artists need customers, networks, spaces, training, financing, and access to markets. Climate-focused artists face an extra challenge: environmental messages must compete for attention.',
+          'Climate action needs storytellers. Scientists can produce evidence. Engineers can build solutions. Policymakers can develop strategies. Entrepreneurs can create businesses. Storytellers help people understand why any of it matters. 4C shows what happens when creativity enters that conversation: environmental issues become visible, a studio becomes a platform for other creatives, and public art takes climate communication out of the conference room and into everyday space.',
+          'This story is part of the ICE Institute’s climate storytelling series, highlighting Somali people and initiatives that show how climate action can create social impact, youth opportunities, and new economic possibilities. Climate action can be scientific. It can be entrepreneurial. And it can be art.',
+        ],
+      },
     ],
   },
   {

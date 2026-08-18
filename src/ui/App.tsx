@@ -5,6 +5,7 @@ import { aboutIce } from '../content/about-ice';
 import { stories as catalog } from '../content/stories';
 import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '../domain/story';
 import { FilterPanel } from './chrome/FilterPanel';
+import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
 import { MapPane } from './map/MapPane';
 import { GlobalStageMap } from './map/GlobalStageMap';
@@ -87,6 +88,8 @@ export default function App() {
             </a>
           </p>
         </article>
+      ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
+        <StoryDetail story={detail} onBack={() => setSelectedId(null)} />
       ) : detail ? (
         <article className="detail">
           <button className="back" type="button" onClick={() => setSelectedId(null)}>

@@ -24,6 +24,12 @@ export type Story = {
   images: string[];
   country: string;
   website: string;
+  featuredPerson?: string;
+  placeLabel?: string;
+  videoTitle?: string;
+  videoUrl?: string;
+  stats?: { label: string; value: string }[];
+  chapters?: { heading: string; paragraphs: string[] }[];
 };
 
 export type SortKey = 'newest' | 'oldest' | 'title' | 'keywords';
