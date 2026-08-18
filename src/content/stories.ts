@@ -646,7 +646,7 @@ export const stories: Story[] = [
       'https://ice.simad.edu.so/2025/06/17/ice-institute-gains-unep-accreditation-somalias-climate-voice-reaches-the-global-stage/',
     summary: 'On 14 April 2026 ICE visited the United Nations Office at Nairobi and met UNEP’s Somalia Programme team. The discussion covered environmental governance, climate peace, research, and capacity development, and ICE’s role as a policy and action research institute. ICE has been accredited in UNEP’s Civil Society Unit since June 2025. The meeting positioned the institute to bridge evidence, policy, and practice for Somalia’s sustainability agenda.',
     body: 'On 14 April 2026 the Institute of Climate and Environment at SIMAD University visited the United Nations Office at Nairobi and met the Somalia Programme team at the UN Environment Programme. The discussion highlighted ICE’s role as a policy and action research institute and explored collaboration on environmental governance, climate peace, research, and capacity development in Somalia. As an accredited entity in UNEP’s Civil Society Unit since June 2025, ICE is positioned to bridge evidence, policy, and practice for national and global sustainability agendas.',
-    images: ['/images/global-stage/unep-unon-2026.png', '/images/global-stage/unep-accreditation-2025.png'],
+    images: ['/images/global-stage/unep-unon-2026.jpg', '/images/global-stage/unep-accreditation-2025.png'],
   },
   {
     id: 'oecd-2026',

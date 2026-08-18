@@ -44,6 +44,8 @@ describe('global-stage source pages', () => {
       website:
         'https://ice.simad.edu.so/2025/06/17/ice-institute-gains-unep-accreditation-somalias-climate-voice-reaches-the-global-stage/',
     });
+    expect(story?.images[0]).toBe('/images/global-stage/unep-unon-2026.jpg');
+    expect(existsSync(join(publicDir, 'images/global-stage/unep-unon-2026.jpg'))).toBe(true);
   });
 
   it('includes ICAF 2026 in Djibouti', () => {
