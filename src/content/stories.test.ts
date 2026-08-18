@@ -1,6 +1,10 @@
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { stories } from './stories';
 
+const publicDir = join(dirname(fileURLToPath(import.meta.url)), '../../public');
 const globalStage = stories.filter((story) => story.type === 'global-stage');
 
 describe('global-stage source pages', () => {
@@ -78,5 +82,19 @@ describe('global-stage source pages', () => {
       expect(story.country).toBe('Somalia');
     }
     expect(research.some((story) => story.id === 'state-of-climate-2026')).toBe(true);
+  });
+
+  it('gives every ICE community story a source date and its own image', () => {
+    const ice = stories.filter((story) => story.type === 'ice-story');
+    expect(ice).toHaveLength(6);
+    expect(ice.find((story) => story.id === '4c-art')?.date).toBe('2024-01-01');
+    expect(ice.find((story) => story.id === 'ecosom')?.date).toBe('2019-01-01');
+    expect(ice.find((story) => story.id === 'geed-soor')?.date).toBe('2024-09-19');
+    expect(ice.find((story) => story.id === 'liido-beach-cleanup')?.date).toBe('2024-01-01');
+    expect(ice.find((story) => story.id === 'simad-drought')?.date).toBe('2026-03-01');
+    for (const story of ice) {
+      expect(story.images.length, story.id).toBeGreaterThan(0);
+      expect(existsSync(join(publicDir, story.images[0].replace(/^\//, ''))), story.images[0]).toBe(true);
+    }
   });
 });

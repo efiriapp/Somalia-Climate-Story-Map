@@ -94,6 +94,7 @@ export default function App() {
           </button>
           <p className="story-type">{detail.type === 'research-story' ? 'Research' : 'Story'}</p>
           <h1>{detail.title}</h1>
+          {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
           <p className="story-meta">
             {detail.date} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
           </p>
@@ -147,17 +148,27 @@ export default function App() {
               {screen === 'research' ? 'ICE Institute Research Stories' : 'Latest stories'}
             </h2>
           </div>
-          <div className="catalog">
-            <MapPane stories={matches} view={view} selectedId={selectedId} onSelect={setSelectedId} />
-            <div className="list-pane">
-              <StoryList
-                stories={matches}
-                selectedId={selectedId}
-                onSelect={setSelectedId}
-                typeLabel={screen === 'research' ? 'Research' : 'Story'}
-              />
+          {screen === 'stories' ? (
+            <StoryList
+              stories={matches}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              typeLabel="Story"
+              layout="grid"
+            />
+          ) : (
+            <div className="catalog">
+              <MapPane stories={matches} view={view} selectedId={selectedId} onSelect={setSelectedId} />
+              <div className="list-pane">
+                <StoryList
+                  stories={matches}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                  typeLabel="Research"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </div>
