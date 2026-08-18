@@ -1,4 +1,4 @@
-export type ContentType = 'ice-story' | 'global-stage';
+export type ContentType = 'ice-story' | 'global-stage' | 'research-story';
 
 export type SdgNumber =
   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17;

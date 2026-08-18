@@ -4,9 +4,10 @@ type Props = {
   stories: Story[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  typeLabel?: string;
 };
 
-export function StoryList({ stories, selectedId, onSelect }: Props) {
+export function StoryList({ stories, selectedId, onSelect, typeLabel = 'Story' }: Props) {
   if (stories.length === 0) {
     return (
       <div className="empty">
@@ -28,7 +29,7 @@ export function StoryList({ stories, selectedId, onSelect }: Props) {
             {story.title.slice(0, 2).toUpperCase()}
           </div>
           <div>
-            <div className="story-type">Story</div>
+            <div className="story-type">{typeLabel}</div>
             <h3>{story.title}</h3>
             <div className="story-meta">
               {story.date} · {story.location.name}

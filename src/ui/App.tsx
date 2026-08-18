@@ -1,23 +1,38 @@
 import { useMemo, useState } from 'react';
 import { filterCatalog } from '../application/filter-catalog';
 import { resolveMapView } from '../application/resolve-map-view';
+import { aboutIce } from '../content/about-ice';
 import { stories as catalog } from '../content/stories';
-import { defaultFilterCriteria, type FilterCriteria } from '../domain/story';
+import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '../domain/story';
 import { FilterPanel } from './chrome/FilterPanel';
 import { StoryList } from './catalog/StoryList';
 import { MapPane } from './map/MapPane';
 import { GlobalStageMap } from './map/GlobalStageMap';
+
+type Screen = 'about' | 'research' | 'stories' | 'global-stage';
+
+const catalogTypeFor = (screen: Screen): ContentType =>
+  screen === 'research' ? 'research-story' : 'ice-story';
 
 export default function App() {
   const [draft, setDraft] = useState<FilterCriteria>(defaultFilterCriteria);
   const [applied, setApplied] = useState<FilterCriteria>(defaultFilterCriteria);
   const [advancedOpen, setAdvancedOpen] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [screen, setScreen] = useState<'stories' | 'global-stage'>('stories');
+  const [screen, setScreen] = useState<Screen>('stories');
 
-  const matches = useMemo(() => filterCatalog(catalog, applied), [applied]);
+  const scoped = useMemo(
+    () => catalog.filter((story) => story.type === catalogTypeFor(screen)),
+    [screen],
+  );
+  const matches = useMemo(() => filterCatalog(scoped, applied), [scoped, applied]);
   const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
   const detail = selectedId ? catalog.find((story) => story.id === selectedId) : undefined;
+
+  const openScreen = (next: Screen) => {
+    setScreen(next);
+    setSelectedId(null);
+  };
 
   return (
     <div>
@@ -29,33 +44,68 @@ export default function App() {
       <nav className="nav" aria-label="Primary">
         <button
           type="button"
+          className={screen === 'about' ? 'active' : ''}
+          onClick={() => openScreen('about')}
+        >
+          About ICE Institute
+        </button>
+        <button
+          type="button"
+          className={screen === 'research' ? 'active' : ''}
+          onClick={() => openScreen('research')}
+        >
+          ICE Institute Research Stories
+        </button>
+        <button
+          type="button"
           className={screen === 'stories' ? 'active' : ''}
-          onClick={() => setScreen('stories')}
+          onClick={() => openScreen('stories')}
         >
           Stories
         </button>
         <button
           type="button"
           className={screen === 'global-stage' ? 'active' : ''}
-          onClick={() => setScreen('global-stage')}
+          onClick={() => openScreen('global-stage')}
         >
           ICE Institute at Global Stage
         </button>
       </nav>
 
       {screen === 'global-stage' ? (
-        <GlobalStageMap stories={catalog} onClose={() => setScreen('stories')} />
+        <GlobalStageMap stories={catalog} onClose={() => openScreen('stories')} />
+      ) : screen === 'about' ? (
+        <article className="detail about-ice" aria-label="About ICE Institute">
+          <h1>{aboutIce.title}</h1>
+          {aboutIce.paragraphs.map((paragraph) => (
+            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+          ))}
+          <p>
+            <strong>More information:</strong>{' '}
+            <a href={aboutIce.website} target="_blank" rel="noreferrer">
+              {aboutIce.website}
+            </a>
+          </p>
+        </article>
       ) : detail ? (
         <article className="detail">
           <button className="back" type="button" onClick={() => setSelectedId(null)}>
             ← Back to catalog
           </button>
-          <p className="story-type">Story</p>
+          <p className="story-type">{detail.type === 'research-story' ? 'Research' : 'Story'}</p>
           <h1>{detail.title}</h1>
           <p className="story-meta">
             {detail.date} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
           </p>
           <p>{detail.body}</p>
+          {detail.website ? (
+            <p>
+              <strong>More information:</strong>{' '}
+              <a href={detail.website} target="_blank" rel="noreferrer">
+                {detail.website}
+              </a>
+            </p>
+          ) : null}
         </article>
       ) : (
         <>
@@ -81,7 +131,7 @@ export default function App() {
             </button>
             {advancedOpen ? (
               <FilterPanel
-                stories={catalog}
+                stories={scoped}
                 draft={draft}
                 onDraftChange={(next) => {
                   setDraft(next);
@@ -93,12 +143,19 @@ export default function App() {
                 }}
               />
             ) : null}
-            <h2 className="section-title">Latest stories</h2>
+            <h2 className="section-title">
+              {screen === 'research' ? 'ICE Institute Research Stories' : 'Latest stories'}
+            </h2>
           </div>
           <div className="catalog">
             <MapPane stories={matches} view={view} selectedId={selectedId} onSelect={setSelectedId} />
             <div className="list-pane">
-              <StoryList stories={matches} selectedId={selectedId} onSelect={setSelectedId} />
+              <StoryList
+                stories={matches}
+                selectedId={selectedId}
+                onSelect={setSelectedId}
+                typeLabel={screen === 'research' ? 'Research' : 'Story'}
+              />
             </div>
           </div>
         </>

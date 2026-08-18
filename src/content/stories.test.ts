@@ -69,4 +69,14 @@ describe('global-stage source pages', () => {
       expect(story.website, story.id).not.toBe('https://ice.simad.edu.so/');
     }
   });
+
+  it('lists ICE Institute research stories separately from community stories', () => {
+    const research = stories.filter((story) => story.type === 'research-story');
+    expect(research.length).toBeGreaterThan(4);
+    for (const story of research) {
+      expect(story.website, story.id).toMatch(/^https:\/\/ice\.simad\.edu\.so\/\d{4}\/\d{2}\/\d{2}\/.+/);
+      expect(story.country).toBe('Somalia');
+    }
+    expect(research.some((story) => story.id === 'state-of-climate-2026')).toBe(true);
+  });
 });
