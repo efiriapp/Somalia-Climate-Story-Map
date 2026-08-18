@@ -120,4 +120,43 @@ describe('global-stage source pages', () => {
     expect(story?.images).toHaveLength(2);
     expect(story?.location.name).toMatch(/Liido Beach/);
   });
+
+  it('gives ECOSOM a full source-backed detail page', () => {
+    const story = stories.find((item) => item.id === 'ecosom');
+    expect(story?.videoTitle).toMatch(/Clean and Affordable Charcoal/);
+    expect(story?.stats?.some((stat) => /2019/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /20,000/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /185/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /1\.3/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.chapters?.some((chapter) => /Prosopis/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.images).toHaveLength(4);
+  });
+
+  it('gives Geed Soor a full source-backed detail page', () => {
+    const story = stories.find((item) => item.id === 'geed-soor');
+    expect(story?.featuredPerson).toBe('Mohamed Omar');
+    expect(story?.date).toBe('2024-09-19');
+    expect(story?.stats?.some((stat) => /19 September 2024/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.chapters?.some((chapter) => /Hotel Jazeera/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.images).toHaveLength(3);
+  });
+
+  it('gives Casuuro Plants a full source-backed detail page', () => {
+    const story = stories.find((item) => item.id === 'casuuro-plants');
+    expect(story?.videoTitle).toMatch(/Casuuro Plants/);
+    expect(story?.stats?.some((stat) => /Dalbile/i.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
+    expect(story?.images).toHaveLength(2);
+  });
+
+  it('gives the SIMAD drought response a full source-backed detail page', () => {
+    const story = stories.find((item) => item.id === 'simad-drought');
+    expect(story?.featuredPerson).toBe('SIMAD University');
+    expect(story?.stats?.some((stat) => /35/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /180/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /340/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.chapters?.some((chapter) => /Ceelgula/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.chapters?.some((chapter) => /Far-libaax/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.images).toEqual(['/logos/simad.webp']);
+  });
 });

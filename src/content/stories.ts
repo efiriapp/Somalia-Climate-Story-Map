@@ -93,7 +93,47 @@ export const stories: Story[] = [
     website: 'https://ice.simad.edu.so/',
     summary: 'Casuuro Plants is a youth-led green startup in Banaadir that sells plants while making Mogadishu cooler, greener, and more liveable. Named after a Somali plant, it treats urban greening as a business rather than only a donor project. Rapid growth, heat, and scarce shade make trees and gardens a visible climate solution for homes and shops. The venture sits on the Dalbile Youth Initiative platform, linking skills, jobs, and environmental action.',
     body: 'Casuuro Plants is building a local green enterprise around nurseries, trees, and urban greening. It shows how Somali youth can turn restoration into a business.',
+    featuredPerson: 'Casuuro Plants',
+    placeLabel: 'Mogadishu, Banaadir',
+    videoTitle: 'Casuuro Plants | ICE Institute',
+    stats: [
+      { label: 'Featured initiative', value: 'Casuuro Plants' },
+      { label: 'Supporting platform', value: 'Dalbile Youth Initiative' },
+      { label: 'Place', value: 'Mogadishu, Banaadir' },
+      { label: 'Focus', value: 'Urban greening and youth enterprise' },
+      { label: 'ICE video', value: 'Casuuro Plants | ICE Institute' },
+    ],
     images: ['/images/ice-stories/casuuro-1.jpg', '/images/ice-stories/casuuro-2.jpg'],
+    chapters: [
+      {
+        heading: 'A plant, and a greener city',
+        paragraphs: [
+          'What if one of the simplest ways to fight climate change in Mogadishu is also one of the most visible? Plant a tree. In a city facing rapid urban growth, rising temperatures, limited green spaces, and increasing environmental pressure, that simple act can become more than environmental activism. It can become a business opportunity.',
+          'That is the idea behind Casuuro Plants, a youth-led green startup based in Banaadir and documented through the Dalbile Youth Initiative’s startup platform. “Casuuro” is a Somali plant name used for several plant species in botanical references, reflecting the country’s native flora. The modern question the startup asks is: how can young Somalis turn plants into livelihoods while making their city greener?',
+        ],
+      },
+      {
+        heading: 'From environmental problem to business opportunity',
+        paragraphs: [
+          'Walk through parts of Mogadishu and you notice the contrast: concrete, dust, traffic, buildings, heat — then suddenly a green space, a row of plants, a garden around a home or business. That small patch of green can change how a place feels. It can make a home more welcoming, a business look better, and a street cooler. Collectively, urban vegetation can contribute to healthier and more resilient urban environments.',
+          'Environmental challenges are often treated as problems for government or donor-funded projects. Casuuro Plants sits in a different question: can a young entrepreneur build a business that helps solve it? Dalbile lists the startup among youth businesses in Banaadir alongside other agriculture, landscaping, and environmentally connected ventures, and describes its programme as investing in Somali youth with skills and resources to accelerate economic development.',
+        ],
+      },
+      {
+        heading: 'Why Mogadishu needs more green businesses',
+        paragraphs: [
+          'As the city expands, land is used for houses, roads, businesses, and other infrastructure. Green spaces can become an afterthought. A city without enough vegetation can become less comfortable and less resilient. That creates an opportunity for businesses that can provide landscaping, home gardens, office plants, nursery services, and urban greening solutions.',
+          'The source document does not publish a numeric production or sales dataset for Casuuro Plants. The story is therefore about the model, not invented counts: sell plants, and also sell a greener way of living.',
+        ],
+      },
+      {
+        heading: 'More than selling greenery',
+        paragraphs: [
+          'The strongest green businesses do not simply sell an environmentally friendly product. They solve a problem. For Casuuro Plants, the problem is how to make urban spaces greener in a hot, rapidly changing city. The answer can involve plants, landscaping, maintenance, gardening knowledge, and customer education.',
+          'A plant can be sold once. Landscaping can create a service relationship. A garden can need maintenance. A business can need replacement plants. A school can need educational support. A housing project can need an entire landscaping package. The climate opportunity therefore becomes an enterprise opportunity. Young people do not need to wait for a government job to contribute to climate action. They can start small enough to fit in their hands: a seed that becomes a business, a livelihood, a garden, and perhaps a greener city.',
+        ],
+      },
+    ],
   },
   {
     id: 'ecosom',
@@ -109,11 +149,53 @@ export const stories: Story[] = [
     website: 'https://ice.simad.edu.so/',
     summary: 'ECOSOM is a Somali social enterprise founded in 2019 that turns agricultural waste and invasive Prosopis into eco-briquettes, biochar, and related products. Traditional charcoal cooking drives deforestation, so the company offers cleaner fuel that can save trees and household costs. Reported capacity exceeds 1700 tonnes of briquettes a year, with work in Mogadishu and expansion toward other cities. The model creates green jobs while attacking waste, poverty, and climate pressure together.',
     body: 'ECOSOM converts waste into cleaner energy while creating green jobs. The story sits at the intersection of circular economy, climate, and livelihoods in Mogadishu.',
+    featuredPerson: 'ECOSOM',
+    placeLabel: 'Mogadishu (headquarters)',
+    videoTitle: 'Clean and Affordable Charcoal — ICE Institute',
+    stats: [
+      { label: 'Founded', value: '2019' },
+      { label: 'Households reached', value: '20,000+' },
+      { label: 'Green jobs', value: '185+ in the briquette chain, 58% women' },
+      { label: 'Trees saved (company-reported)', value: '1.3 million+ a year' },
+      { label: 'Briquette capacity', value: 'More than 1,700 tonnes a year' },
+      { label: 'Biochar production', value: 'About 200 tonnes a month' },
+      { label: '2030 biochar target', value: '1,000 tonnes a month' },
+    ],
     images: [
       '/images/ice-stories/ecosom-1.jpg',
       '/images/ice-stories/ecosom-2.jpg',
       '/images/ice-stories/ecosom-3.jpg',
       '/images/ice-stories/ecosom-4.jpg',
+    ],
+    chapters: [
+      {
+        heading: 'Waste should not be the end of the story',
+        paragraphs: [
+          'What if the waste we throw away could help save a tree? What if an invasive plant that damages farmland could become cooking fuel? And what if solving those environmental problems could also create jobs and help families save money? That is the idea behind ECOSOM, a Somali social enterprise building a circular-economy business around one principle: waste can be the beginning of another product’s story.',
+          'Founded in 2019, ECOSOM transforms agricultural waste and invasive species into clean energy, biochar, livestock feed, and other sustainable products. Its stated mission is to turn waste into solutions for energy, food, and income while fighting deforestation, poverty, and climate change.',
+        ],
+      },
+      {
+        heading: 'The problem starts with charcoal',
+        paragraphs: [
+          'For many Somali households, charcoal is how dinner gets cooked and how small restaurants operate. Traditional charcoal production places enormous pressure on trees and ecosystems. People need affordable cooking fuel, but forests need protection. Families need affordable energy, while climate change is already putting pressure on livelihoods.',
+          'ECOSOM produces eco-briquettes using Prosopis juliflora and agricultural waste as an alternative to conventional wood charcoal. Published figures report an annual briquette production capacity of more than 1,700 tonnes, with operations and expansion plans covering Mogadishu, Galkacyo, and Dhusamareb, and planned facilities in Beledweyne and Baydhabo. This map uses the Mogadishu headquarters location rather than inventing pins for every named city.',
+        ],
+      },
+      {
+        heading: 'Company-reported reach and jobs',
+        paragraphs: [
+          'ECOSOM reports that its eco-briquette model currently saves approximately 1.3 million trees annually by replacing conventional charcoal. It also reports more than 20,000 households reached and more than 185 green jobs in its briquette chain, with women representing 58% of those jobs, alongside more than 70 local distributors. These figures connect environmental protection, household economics, and employment.',
+          'The company says its briquettes are designed as a low-cost alternative to charcoal and reports that they can be 30–50% cheaper in some applications. The customer is not buying a climate lecture. They are buying fuel. If the fuel works, is affordable, and is available, adoption becomes possible and the climate benefit comes with the purchase.',
+        ],
+      },
+      {
+        heading: 'Biochar, feed, and a careful reading of the numbers',
+        paragraphs: [
+          'ECOSOM also produces biochar from agricultural and organic waste. The company says biochar can improve soil structure and water retention while storing carbon in soils. Current reported production is around 200 tonnes per month, with a target of 1,000 tonnes monthly by 2030. It also works with livestock feed using materials including Prosopis pods and agricultural by-products, and has projects involving land restoration and seed balls.',
+          'A serious climate story should distinguish company-reported impact claims from independently verified measurements. ECOSOM’s website presents different impact figures across pages, for example 1.3 million-plus trees saved and 4 million tonnes of CO₂ reduced on the homepage, while a detailed impact page provides narrower figures for particular interventions. Briquettes are not magically emission-free. Their climate value depends on what they replace, how they are produced, transport, combustion efficiency, and feedstocks. The defensible claim is that ECOSOM is building a Somali circular-economy model that uses waste and invasive biomass to produce alternative fuels and other products, while creating jobs and seeking to reduce pressure on forests.',
+        ],
+      },
     ],
   },
   {
@@ -130,10 +212,56 @@ export const stories: Story[] = [
     website: 'https://ice.simad.edu.so/',
     summary: 'Mohamed Omar’s Geed Soor grew from a childhood school garden in Mogadishu into a green plant business. After goats destroyed his first garden he kept nursing the plants, then later reused discarded bottles as pots in a university waste-management assignment. Friends asked to buy the plants he posted online, and he launched Geed Soor in September 2024. The enterprise sells greenery while teaching that persistence, recycling, and youth enterprise can restore urban nature.',
     body: 'Geed Soor began as a school garden and became a green business. Students learn by growing, selling, and restoring urban nature.',
+    featuredPerson: 'Mohamed Omar',
+    placeLabel: 'Mogadishu, Banaadir',
+    stats: [
+      { label: 'Founder', value: 'Mohamed Omar' },
+      { label: 'Founded', value: '19 September 2024' },
+      { label: 'First ICE exhibition', value: 'Ten ornamental plants at Hotel Jazeera' },
+      { label: 'Later milestone', value: 'Mogadishu Environmental Summit' },
+      { label: 'Place', value: 'Mogadishu city level' },
+    ],
     images: [
       '/images/ice-stories/geed-soor-1.jpg',
       '/images/ice-stories/geed-soor-2.jpg',
       '/images/ice-stories/geed-soor-3.jpg',
+    ],
+    chapters: [
+      {
+        heading: 'A school garden that refused to die',
+        paragraphs: [
+          'Long before there was a company called Geed Soor, Mohamed Omar was a young Somali boy saving his school pocket money to buy plants. Every week he brought home another plant, built a small garden, watered it, and protected it from the goats. Then, while he was away visiting his aunt in Ceelasha, hungry goats entered the garden and destroyed almost everything. When he returned, the green leaves were gone. Only branches remained.',
+          'He did not give up. He continued caring for the damaged branches until new leaves appeared. Years later, that persistence became the foundation of Geed Soor. In his own account, Mohamed describes how a childhood fascination with plants evolved into a business.',
+        ],
+      },
+      {
+        heading: 'Waste bottles, social media, and a market',
+        paragraphs: [
+          'During his fourth semester at university, Mohamed took a course in Solid Waste Management. The lecturer asked students to recycle and reuse materials to create something useful. He took large discarded water bottles, cut them, painted them, and turned them into containers for ornamental plants. Waste became a plant pot. A schoolboy’s hobby became a university project.',
+          'He photographed the plants and shared them on social media. Friends asked whether he sold them. That was the moment the idea changed: he was not the only person who loved plants. There was a market, and perhaps he had already found his first customers.',
+        ],
+      },
+      {
+        heading: 'Geed Soor is born',
+        paragraphs: [
+          'On 19 September 2024, Mohamed officially announced Geed Soor on social media. He was still in his final semesters at university, now both student and entrepreneur, and he describes struggling to balance studies with the growing demands of the business, including missing classes at times. He began without much capital and without a strong understanding of entrepreneurship. He learned while doing.',
+          'The plants reached offices and institutions, including the Rector’s Office at Somali National University, the Deputy Rector’s Office at SIMAD University, and the IBS Bank office in Tripiano, according to his account. Homes, offices, commercial buildings, events, and exhibitions became part of the market. In a rapidly growing Mogadishu, that matters.',
+        ],
+      },
+      {
+        heading: 'Why Mogadishu needs businesses like this',
+        paragraphs: [
+          'A study of urban green-space accessibility in Mogadishu found a severe shortage of public green space, with more than 60,524 square metres of former public green space identified as inaccessible due to privatization or occupation, while the city’s three paid private parks were considered inadequate. Trees and vegetation can help reduce heat, improve air quality, manage runoff, support biodiversity, and make urban environments more liveable.',
+          'Someone has to grow the plants, supply them, design gardens, maintain them, and teach people how to keep plants alive in a hot, water-stressed environment. That someone can be a green entrepreneur. This map stays at Mogadishu city level because the source does not give a verified shop coordinate.',
+        ],
+      },
+      {
+        heading: 'The ICE symposium that changed everything',
+        paragraphs: [
+          'After launching the company, Mohamed received an invitation to participate in a climate symposium at Hotel Jazeera, organised through the Institute of Climate and Environment (ICE). The company was still new. He brought ten different ornamental plants. Half were taken by ICE, while others were purchased by participants. People photographed the plants, shared them on Instagram, followed Geed Soor, and asked questions. The plants became his business card.',
+          'Later, Geed Soor participated in the Mogadishu Environmental Summit, which Mohamed describes as one of the most important exhibitions in the company’s early development. Sometimes the first customers are not found through expensive advertising. They are found by showing up where the right people are.',
+        ],
+      },
     ],
   },
   {
@@ -214,7 +342,54 @@ export const stories: Story[] = [
     website: 'https://ice.simad.edu.so/',
     summary: 'When rains failed, SIMAD University moved from campus into drought-hit communities with emergency water trucking. Alumni, students, and staff reached households and livestock in Mudug, Baay, Hiiraan, and Jubbada Hoose after consecutive poor rainy seasons. In Ceelgula, Mudug, more than 35 pastoralist families received water when wells and pasture failed. The response treats drought as a daily struggle over distance, animals, and survival, not a classroom statistic.',
     body: 'SIMAD University works with communities facing drought, linking campus knowledge to water, food, and climate resilience on the ground.',
+    featuredPerson: 'SIMAD University',
+    placeLabel: 'SIMAD University, Mogadishu',
+    stats: [
+      { label: 'Date', value: 'March 2026' },
+      { label: 'Ceelgula, Mudug', value: '35+ households and livestock' },
+      { label: 'Baay, around Baydhaba', value: '1,200+ people' },
+      { label: 'Xuduley, Hiiraan', value: '90+ households' },
+      { label: 'Far-libaax, Hiiraan', value: 'About 180 households' },
+      { label: 'Lower Juba', value: '340+ pastoralist and farming households' },
+    ],
     images: ['/logos/simad.webp'],
+    chapters: [
+      {
+        heading: 'When the rains fail',
+        paragraphs: [
+          'When the rains fail, the consequences do not stop at the edge of a farm. Wells begin to dry. Pasture disappears. Livestock become weaker. Families start moving in search of water. In 2026, as Somalia faced another severe drought following consecutive failed rainy seasons, SIMAD University moved beyond the classroom and into communities. Together with alumni, student government, staff, and the wider community, it launched emergency water assistance for drought-affected families.',
+          'Somalia entered 2026 under severe drought pressure. Consecutive poor rainy seasons, including a weak Gu season in 2025 and the near failure of the Deyr season, created widespread rainfall deficits. ICE Institute described an increasingly severe drought driven by repeated rainfall failures. FAO’s SWALIM noted that the country entered 2026 with an ongoing water and livestock crisis and emphasized sustained drought response and anticipatory action.',
+        ],
+      },
+      {
+        heading: 'Mudug: water for families and livestock',
+        paragraphs: [
+          'Over several weeks, SIMAD supported emergency water trucking to communities in Mudug, Baay, Hiiraan, and Jubbada Hoose. In March 2026, it delivered water to communities surrounding Ceelgula in Mudug Region, where pastoralist families had gathered after being affected by drought. More than 35 households and their livestock benefited.',
+          'For pastoralists, water for people alone is not enough. Livestock are the household economy. They provide milk, income, and accumulated wealth. When animals die, a family can lose more than livestock; it can lose its future. During the same period, SoDMA was conducting emergency water operations across drought-affected parts of Galmudug, including rural communities in Mudug.',
+        ],
+      },
+      {
+        heading: 'Baay and Hiiraan',
+        paragraphs: [
+          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people. Independent reporting from SoDMA shows that emergency water trucking was also being expanded around Baidoa in March 2026 as severe drought affected communities and livestock.',
+          'In Xuduley, Hiiraan, SIMAD’s water assistance reached more than 90 households affected by drought, including families who had moved from other parts of the region. Drought here is also a mobility problem: people move because water disappears. A March 2026 logistics assessment described Hiiraan and surrounding areas as facing severe drought, dried rivers and wells, major agricultural and livestock losses, and displacement. In Far-libaax and surrounding areas of Hiiraan, about 180 households were reached.',
+        ],
+      },
+      {
+        heading: 'Lower Juba: pastoralists and farmers',
+        paragraphs: [
+          'The response also reached communities in Lower Juba, benefiting more than 340 households made up of pastoralist and farming families affected by drought and widespread water shortages. The same drought can damage different livelihoods in different ways: a dying herd, a failed harvest, the cost of buying water, or displacement.',
+          'This map stays on SIMAD University in Mogadishu. The source names Ceelgula, Baydhaba, Xuduley, Far-libaax, and Lower Juba, but it does not give verified coordinates for those field sites, so those places are told in the chapters rather than as invented pins.',
+        ],
+      },
+      {
+        heading: 'The university becomes a platform for action',
+        paragraphs: [
+          'SIMAD publicly recognized alumni, Xukuumadda Ardayda Jaamacadda SIMAD (XAJSi), staff, students, and the wider university community in delivering drought assistance. When drought hits, knowledge must leave the classroom. Students become volunteers. Alumni become mobilizers. Staff become coordinators. Education becomes service.',
+          'The humanitarian truck is a bridge, not the road. An entrepreneurial university can also map drought hotspots, identify vulnerable water points, design solar-powered water systems, develop drought-resilient farming methods, and strengthen early-warning systems. The question is not only how people survive this drought, but how Somalia becomes less vulnerable to the next one.',
+        ],
+      },
+    ],
   },
   {
     id: 'decoding-cop27',
