@@ -58,9 +58,11 @@ const ReelColumn = ({ label, value, items, onChange }: ColumnProps) => {
 type Props = {
   isoDate: string;
   onDateChange: (iso: string) => void;
+  onPrev: () => void;
+  onNext: () => void;
 };
 
-export function DateReel({ isoDate, onDateChange }: Props) {
+export function DateReel({ isoDate, onDateChange, onPrev, onNext }: Props) {
   const parts = tourDateParts(isoDate);
   const change = (next: { year?: string; month?: string; day?: string }) => {
     playCalendarTick();
@@ -71,10 +73,38 @@ export function DateReel({ isoDate, onDateChange }: Props) {
   return (
     <aside className="date-reel" aria-label={`ICE Institute's calendar ${parts.year} ${parts.month} ${parts.day}`}>
       <p className="date-reel-kicker">ICE Institute's calendar</p>
-      <div className="date-reel-face">
-        <ReelColumn label="Year" value={parts.year} items={YEARS} onChange={(year) => change({ year })} />
-        <ReelColumn label="Month" value={parts.month} items={MONTHS} onChange={(month) => change({ month })} />
-        <ReelColumn label="DAY" value={parts.day} items={DAYS} onChange={(day) => change({ day })} />
+      <div className="date-reel-body">
+        <div className="date-reel-face">
+          <ReelColumn label="Year" value={parts.year} items={YEARS} onChange={(year) => change({ year })} />
+          <ReelColumn label="Month" value={parts.month} items={MONTHS} onChange={(month) => change({ month })} />
+          <ReelColumn label="DAY" value={parts.day} items={DAYS} onChange={(day) => change({ day })} />
+        </div>
+        <div className="date-reel-nav">
+          <button
+            type="button"
+            aria-label="Previous stop"
+            onClick={() => {
+              playCalendarTick();
+              onPrev();
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            aria-label="Next stop"
+            onClick={() => {
+              playCalendarTick();
+              onNext();
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
       </div>
     </aside>
   );

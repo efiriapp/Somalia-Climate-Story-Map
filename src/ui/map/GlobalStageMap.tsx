@@ -804,9 +804,47 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
   };
 
-  const resetTable = () => {
+  const resetMap = () => {
+    window.cancelAnimationFrame(flightRef.current);
+    window.clearTimeout(popupTimerRef.current);
+    window.clearTimeout(playAdvanceRef.current);
+    stopFlightSound();
+    playingRef.current = false;
+    setPlaying(false);
+    setPopupOpen(false);
+    setFilter(defaultTourFilter());
     seenVisitsRef.current.clear();
     setVisits([]);
+    lastIndexRef.current = 0;
+    tracesRef.current = [];
+    currentTrailRef.current = [];
+    setCalendarDate(tour[0]?.date ?? '2023-01-01');
+    setIndex(0);
+    goHomeView();
+    setSearchOpen(false);
+    setSearchQuery('');
+    setFiltersOpen(false);
+    setLayersOpen(false);
+    setVolumeOpen(false);
+    setMeasuring(false);
+    measurePointsRef.current = [];
+    setMeasureKm(null);
+    showPathRef.current = true;
+    setShowPath(true);
+    showPlaneRef.current = true;
+    setShowPlane(true);
+    if (planeRef.current) {
+      applyPlaneVisibility(planeRef.current, true);
+      parkPlane(planeRef.current, { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat }, 12);
+    }
+    setTourSoundMuted(false);
+    setTourSoundVolume(DEFAULT_TOUR_SOUND_VOLUME);
+    setSoundVolume(DEFAULT_TOUR_SOUND_VOLUME);
+    const map = mapRef.current;
+    const canvas = trailCanvasRef.current;
+    if (map && canvas) {
+      paintTrail(map, canvas, [], [], []);
+    }
   };
 
   const togglePath = () => {
@@ -1105,11 +1143,23 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               setFilter(constrainTourFilter(stories, { ...filter, year }));
               goToStopFromHome(firstEventIndexForDate(tour, iso));
             }}
+            onPrev={() => {
+              setPlaying(false);
+              const next = prevTourIndex(index);
+              setCalendarDate(tour[next]?.date ?? calendarDate);
+              setIndex(next);
+            }}
+            onNext={() => {
+              setPlaying(false);
+              const next = nextTourIndex(index, tour.length);
+              setCalendarDate(tour[next]?.date ?? calendarDate);
+              setIndex(next);
+            }}
           />
           <ContinentCards
             cards={continents}
             onCountry={(country) => goToStopFromHome(firstEventIndexByCountry(tour, country, filter.year))}
-            onReset={resetTable}
+            onReset={resetMap}
           />
         </div>
         {measuring ? (
@@ -1118,10 +1168,17 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </p>
         ) : null}
         {popupOpen && stop.kind === 'event' ? (
-          <article
-            className="tour-popup-card"
-            dangerouslySetInnerHTML={{ __html: tourPopupHtml(stop) ?? '' }}
-          />
+          <article className="tour-popup-card">
+            <button
+              type="button"
+              className="tour-popup-close"
+              aria-label="Close popup"
+              onClick={() => setPopupOpen(false)}
+            >
+              ×
+            </button>
+            <div dangerouslySetInnerHTML={{ __html: tourPopupHtml(stop) ?? '' }} />
+          </article>
         ) : null}
       </div>
     </section>

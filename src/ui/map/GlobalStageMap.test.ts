@@ -75,6 +75,17 @@ describe('GlobalStageMap airplane marker', () => {
     expect(dateReel).toContain('onWheel');
     expect(dateReel).toContain('onDateChange');
     expect(dateReel).toContain('playCalendarTick');
+    expect(dateReel).toContain('aria-label="Previous stop"');
+    expect(dateReel).toContain('aria-label="Next stop"');
+    expect(dateReel).toContain('onPrev');
+    expect(dateReel).toContain('onNext');
+  });
+
+  it('jumps the tour from calendar up and down arrows', () => {
+    expect(source).toContain('onPrev={() => {');
+    expect(source).toContain('onNext={() => {');
+    expect(source).toMatch(/onPrev=\{\(\) => \{[\s\S]{0,240}prevTourIndex\(index\)/);
+    expect(source).toMatch(/onNext=\{\(\) => \{[\s\S]{0,240}nextTourIndex\(index, tour\.length\)/);
   });
 
   it('opens the event popup 1 second after city zoom, as a centered card', () => {
@@ -84,6 +95,8 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).not.toMatch(/\.addTo\(map\)\s*\n\s*\.togglePopup\(\)/);
     expect(source).toMatch(/setTimeout\([\s\S]{0,280}setPopupOpen\(true\)/);
     expect(source).toContain('CITY_EASE_MS + POPUP_DELAY_MS');
+    expect(source).toContain('aria-label="Close popup"');
+    expect(source).toMatch(/aria-label="Close popup"[\s\S]{0,80}setPopupOpen\(false\)/);
   });
 
   it('opens the event popup when a marker or table country is tapped', () => {
@@ -187,8 +200,21 @@ describe('GlobalStageMap airplane marker', () => {
   });
 
   it('leaves empty continent cells blank instead of writing zero', () => {
-    expect(continentCards).toContain('aria-label="Reset table"');
+    expect(continentCards).toContain('aria-label="Reset map"');
     expect(continentCards).not.toContain('<span>0</span>');
     expect(continentCards).toMatch(/card\.visited === 0 \? ''/);
+  });
+
+  it('resets the map to the first stop and default tour state', () => {
+    expect(source).toContain('const resetMap = () => {');
+    expect(source).toContain('onReset={resetMap}');
+    expect(source).toMatch(/resetMap[\s\S]{0,900}setIndex\(0\)/);
+    expect(source).toMatch(/resetMap[\s\S]{0,900}defaultTourFilter\(\)/);
+    expect(source).toMatch(/resetMap[\s\S]{0,900}setPopupOpen\(false\)/);
+    expect(source).toMatch(/resetMap[\s\S]{0,900}setPlaying\(false\)/);
+    expect(source).toMatch(/resetMap[\s\S]{0,900}setVisits\(\[\]\)/);
+    expect(source).toMatch(/resetMap[\s\S]{0,900}lastIndexRef\.current = 0/);
+    expect(source).toMatch(/resetMap[\s\S]{0,1200}setCalendarDate\(tour\[0\]\?\.date/);
+    expect(source).toMatch(/resetMap[\s\S]{0,1200}goHomeView\(\)/);
   });
 });

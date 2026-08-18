@@ -807,11 +807,49 @@ select {
   text-align: left;
 }
 
+.date-reel-body {
+  display: flex;
+  gap: 0.4rem;
+  align-items: stretch;
+}
+
 .date-reel-face {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 0.45rem;
   position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.date-reel-nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  padding-bottom: 0.1rem;
+}
+
+.date-reel-nav button {
+  width: 2rem;
+  height: 2.45rem;
+  border: 0;
+  border-radius: 8px;
+  background: #042e2b;
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.date-reel-nav button:hover {
+  background: var(--leaf);
+}
+
+.date-reel-nav svg {
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 .date-reel-label {
@@ -1056,6 +1094,26 @@ select {
   border-radius: 10px;
   box-shadow: 0 12px 40px rgba(6, 61, 57, 0.28);
   padding: 0 0.9rem 0.9rem;
+}
+
+.tour-popup-close {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 2;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 0;
+  border-radius: 50%;
+  background: #063D39;
+  color: #fff;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tour-popup-close:hover {
+  background: var(--leaf);
 }
 
 .tour-popup-card img {

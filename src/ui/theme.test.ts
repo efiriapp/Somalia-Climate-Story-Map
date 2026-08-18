@@ -79,5 +79,7 @@ describe('ICE green brand', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.tour-popup-card[\s\S]{0,120}left:\s*50%/);
     expect(css).toMatch(/\.tour-popup-card[\s\S]{0,160}translate\(-50%/);
+    expect(css).toContain('.tour-popup-close');
+    expect(css).toContain('.date-reel-nav');
   });
 });

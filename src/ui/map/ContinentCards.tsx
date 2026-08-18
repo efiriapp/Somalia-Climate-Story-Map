@@ -11,7 +11,7 @@ export function ContinentCards({ cards, onCountry, onReset }: Props) {
     <div className="continent-board" aria-label="Countries visited by continent">
       <div className="continent-table-bar">
         <p>Visited continents</p>
-        <button type="button" aria-label="Reset table" onClick={onReset}>
+        <button type="button" aria-label="Reset map" onClick={onReset}>
           Reset
         </button>
       </div>
