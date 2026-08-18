@@ -38,7 +38,7 @@ export default function App() {
     <div>
       <header className="topbar">
         <img className="topbar-logo" src="/logos/simad.webp" alt="SIMAD University" />
-        <div className="topbar-title">Somali Climate Storytelling Map Platform</div>
+        <div className="topbar-title">Somali Climate Data Storytelling Platform</div>
         <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
       </header>
       <nav className="nav" aria-label="Primary">
