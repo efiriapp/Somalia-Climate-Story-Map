@@ -11,8 +11,8 @@ const source = readFileSync(
 describe('GlobalStageMap', () => {
   it('tours date-sorted places with classic pins, city zoom, and a center-right card', () => {
     expect(source).toContain('a.date.localeCompare');
-    expect(source).toContain('COUNTRY_ZOOM');
-    expect(source).toContain('CITY_ZOOM');
+    expect(source).toMatch(/landAtIceOffice[\s\S]{0,220}COUNTRY_ZOOM/);
+    expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}CITY_ZOOM/);
     expect(source).toMatch(/openFull[\s\S]{0,600}CITY_ZOOM/);
     expect(source).toContain('showPinPopup(map, stop)');
     expect(source).toContain('CITY_EASE_MS');

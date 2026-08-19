@@ -186,8 +186,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const landAtIceOffice = (map: Map, onDone: () => void) => {
     map.easeTo({
       center: [iceOffice.lng, iceOffice.lat],
-      zoom: CITY_ZOOM,
-      pitch: 42,
+      zoom: COUNTRY_ZOOM,
+      pitch: 24,
       bearing: 0,
       duration: CITY_EASE_MS,
     });
@@ -231,8 +231,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       }
       map.easeTo({
         center: [stop.lng, stop.lat],
-        zoom: COUNTRY_ZOOM,
-        pitch: 24,
+        zoom: CITY_ZOOM,
+        pitch: 42,
         bearing: 8,
         duration: CITY_EASE_MS,
       });
@@ -441,8 +441,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         clearPopup();
         map.easeTo({
           center: [MOGADISHU_HOME.lng, MOGADISHU_HOME.lat],
-          zoom: CITY_ZOOM,
-          pitch: 42,
+          zoom: COUNTRY_ZOOM,
+          pitch: 24,
           bearing: 0,
           duration: CITY_EASE_MS,
         });
