@@ -45,6 +45,7 @@ import { DEFAULT_TOUR_SOUND_VOLUME, getTourSoundVolume, playLandingSound, playTa
 import { ContinentCards } from './ContinentCards';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 import { DateReel } from './DateReel';
+import { EventSlider } from './EventSlider';
 import { TourFilterSlide } from './TourFilterSlide';
 import type { Story } from '../../domain/story';
 
@@ -1154,6 +1155,19 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               const next = nextTourIndex(index, tour.length);
               setCalendarDate(tour[next]?.date ?? calendarDate);
               setIndex(next);
+            }}
+          />
+          <EventSlider
+            stops={tour}
+            activeStoryId={stop.kind === 'event' ? stop.storyId : null}
+            onSelect={(storyId) => {
+              setPlaying(false);
+              const nextIndex = tour.findIndex((item) => item.storyId === storyId);
+              const next = tour[nextIndex];
+              if (next) {
+                setCalendarDate(next.date);
+              }
+              goToStopFromHome(nextIndex);
             }}
           />
           <ContinentCards

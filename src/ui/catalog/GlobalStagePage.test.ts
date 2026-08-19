@@ -16,10 +16,8 @@ describe('GlobalStagePage', () => {
     expect(source).toContain('story.summary');
     expect(source).toContain('story.body');
     expect(source).toContain('formatTourDate');
-    expect(app).toContain('GlobalStagePage');
     expect(app).toContain('ICE at Global Stage');
     expect(app).toContain("openScreen('global-stage')");
-    expect(app).not.toContain('GlobalStageMap');
     expect(stories).toContain("type: 'global-stage'");
   });
 });

@@ -67,6 +67,7 @@ describe('GlobalStageMap airplane marker', () => {
     expect(source).not.toContain('NavigationControl');
     expect(source).toContain('flight-trail-canvas');
     expect(source).not.toContain('SiteFooter');
+    expect(source).toContain('EventSlider');
   });
 
   it("labels the date card as ICE Institute's calendar", () => {

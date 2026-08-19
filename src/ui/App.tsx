@@ -8,8 +8,8 @@ import { FilterPanel } from './chrome/FilterPanel';
 import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
-import { GlobalStagePage } from './catalog/GlobalStagePage';
 import { MapPane } from './map/MapPane';
+import { GlobalStageMap } from './map/GlobalStageMap';
 
 type Screen = 'about' | 'research' | 'stories' | 'global-stage';
 
@@ -88,7 +88,7 @@ export default function App() {
           </p>
         </article>
       ) : screen === 'global-stage' ? (
-        <GlobalStagePage stories={catalog} />
+        <GlobalStageMap stories={catalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
         <StoryDetail story={detail} onBack={() => setSelectedId(null)} />
       ) : detail ? (
@@ -175,7 +175,7 @@ export default function App() {
           )}
         </>
       )}
-      <SiteFooter />
+      {screen === 'global-stage' ? null : <SiteFooter />}
     </div>
   );
 }

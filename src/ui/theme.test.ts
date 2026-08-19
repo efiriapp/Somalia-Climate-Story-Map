@@ -22,6 +22,8 @@ describe('ICE green brand', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.tour-right-stack[\s\S]{0,80}right:\s*0/);
     expect(css).toMatch(/\.tour-right-stack[\s\S]{0,120}top:\s*0/);
+    expect(css).toContain('.event-slider');
+    expect(css).toContain('.event-card');
     expect(css).toContain('.continent-board');
     expect(css).toContain('.continent-table');
     expect(css).toContain('.tour-filter-slide');

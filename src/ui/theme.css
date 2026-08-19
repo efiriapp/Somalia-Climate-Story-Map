@@ -942,11 +942,87 @@ select {
   right: 0;
   top: 0;
   z-index: 40;
-  width: 300px;
-  max-height: calc(100% - 4.4rem);
+  width: 320px;
+  max-height: calc(100% - 1rem);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.event-slider {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.55rem 0.55rem 0.7rem;
+  background: rgba(6, 61, 57, 0.94);
+  border-left: 1px solid var(--leaf);
+}
+
+.event-card {
+  margin: 0 0 0.65rem;
+  background: var(--white);
+  border-radius: 10px;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.event-card.active {
+  outline: 2px solid var(--mint);
+}
+
+.event-card button {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.event-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.event-card h3,
+.event-card p,
+.event-card-more {
+  margin: 0;
+  padding: 0 0.7rem;
+}
+
+.event-card h3 {
+  padding-top: 0.15rem;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  color: var(--forest);
+}
+
+.event-card-date,
+.event-card-place {
+  padding-top: 0.45rem;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--leaf);
+}
+
+.event-card p {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.event-card-more {
+  padding: 0 0.7rem 0.7rem;
+  font-size: 11px;
+  line-height: 1.4;
+  word-break: break-all;
 }
 
 .date-reel {
