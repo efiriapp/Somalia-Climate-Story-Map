@@ -13,6 +13,7 @@ export const GLOBE_VIEW = {
 export const GLOBE_PADDING = { top: 72, bottom: 80, left: 64, right: 64 };
 
 export const CITY_ZOOM = 11;
+export const COUNTRY_ZOOM = 5.6;
 
 export const MOGADISHU_HOME = {
   lat: 2.0469,

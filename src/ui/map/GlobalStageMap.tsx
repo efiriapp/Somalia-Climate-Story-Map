@@ -20,6 +20,7 @@ import {
   GLOBE_PADDING,
   GLOBE_VIEW,
   CITY_ZOOM,
+  COUNTRY_ZOOM,
   MOGADISHU_HOME,
   formatTourDate,
   nextTourIndex,
@@ -230,9 +231,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       }
       map.easeTo({
         center: [stop.lng, stop.lat],
-        zoom: CITY_ZOOM,
-        pitch: 42,
-        bearing: 12,
+        zoom: COUNTRY_ZOOM,
+        pitch: 24,
+        bearing: 8,
         duration: CITY_EASE_MS,
       });
       holdRef.current = window.setTimeout(() => {
