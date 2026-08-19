@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AttributionControl, Map, Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { buildGlobalTour, GLOBE_VIEW } from '../../application/global-tour';
+import {
+  buildGlobalTour,
+  GLOBE_PADDING,
+  GLOBE_VIEW,
+  nextTourIndex,
+  prevTourIndex,
+  tourPopupHtml,
+} from '../../application/global-tour';
 import { styleForLayer } from '../../application/map-layers';
 import type { Story } from '../../domain/story';
-import { EventSlider } from './EventSlider';
 
 type Props = {
   stories: Story[];
@@ -26,6 +32,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     () => buildGlobalTour(stories).filter((stop) => stop.kind === 'event'),
     [stories],
   );
+  const active = events.find((stop) => stop.storyId === activeId);
+  const popup = active ? tourPopupHtml(active) : null;
 
   useEffect(() => {
     if (!host.current) {
@@ -43,7 +51,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       fadeDuration: 0,
       attributionControl: false,
     });
-    map.setPadding({ top: 56, bottom: 24, left: 16, right: 340 });
+    map.setPadding(GLOBE_PADDING);
+    map.scrollZoom.disable();
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
     mapRef.current = map;
     const onLoad = () => {
@@ -62,6 +71,28 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       mapRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const node = host.current;
+    if (!node) {
+      return;
+    }
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      if (events.length === 0) {
+        return;
+      }
+      const delta = event.deltaY > 0 ? 1 : -1;
+      setActiveId((current) => {
+        const index = events.findIndex((stop) => stop.storyId === current);
+        const from = index < 0 ? (delta > 0 ? -1 : 0) : index;
+        const next = delta > 0 ? nextTourIndex(from, events.length) : prevTourIndex(Math.max(from, 0));
+        return events[next]?.storyId ?? current;
+      });
+    };
+    node.addEventListener('wheel', onWheel, { passive: false });
+    return () => node.removeEventListener('wheel', onWheel);
+  }, [events]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -84,18 +115,17 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   useEffect(() => {
     const map = mapRef.current;
-    const stop = events.find((item) => item.storyId === activeId);
-    if (!map || !ready || !stop) {
+    if (!map || !ready || !active) {
       return;
     }
     map.easeTo({
-      center: [stop.lng, stop.lat],
+      center: [active.lng, active.lat],
       zoom: 4.4,
       pitch: 28,
       bearing: 8,
       duration: 1800,
     });
-  }, [activeId, events, ready]);
+  }, [active, ready]);
 
   return (
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
@@ -105,9 +135,19 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         <button type="button" className="tour-back simple" aria-label="Back to main" onClick={onClose}>
           Back to main
         </button>
-        <div className="tour-right-stack">
-          <EventSlider stops={events} activeStoryId={activeId} onSelect={setActiveId} />
-        </div>
+        {popup ? (
+          <article className="tour-popup-card" aria-label="Selected ICE global event">
+            <button
+              type="button"
+              className="tour-popup-close"
+              aria-label="Close event"
+              onClick={() => setActiveId(null)}
+            >
+              ×
+            </button>
+            <div dangerouslySetInnerHTML={{ __html: popup }} />
+          </article>
+        ) : null}
       </div>
     </section>
   );

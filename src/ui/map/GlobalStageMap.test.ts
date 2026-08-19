@@ -9,13 +9,17 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('keeps a simple 3D globe with the date-ordered tour slider only', () => {
-    expect(source).toContain('EventSlider');
-    expect(source).toContain('tour-right-stack');
+  it('scrolls the 3D globe through events and shows the active one as a popup', () => {
+    expect(source).toContain('tour-popup-card');
+    expect(source).toContain('tourPopupHtml');
+    expect(source).toContain('wheel');
+    expect(source).toContain('scrollZoom');
     expect(source).toContain('easeTo');
     expect(source).toContain('setProjection');
     expect(source).toContain('Back to main');
     expect(source).toContain('ICE Institute at Global Stage');
+    expect(source).not.toContain('EventSlider');
+    expect(source).not.toContain('tour-right-stack');
     expect(source).not.toContain('DateReel');
     expect(source).not.toContain('tour-play-bar');
     expect(source).not.toContain('createPlaneMarker');
@@ -24,7 +28,6 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('ContinentSummaryCards');
     expect(source).not.toContain('TourFilterSlide');
     expect(source).not.toContain('flight-trail-canvas');
-    expect(source).not.toContain('tour-popup-card');
     expect(source).not.toContain('SiteFooter');
   });
 });

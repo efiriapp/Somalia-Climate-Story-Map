@@ -4,21 +4,15 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const source = readFileSync(join(here, 'EventSlider.tsx'), 'utf8');
 const map = readFileSync(join(here, 'GlobalStageMap.tsx'), 'utf8');
 const app = readFileSync(join(here, '..', 'App.tsx'), 'utf8');
 
-describe('EventSlider', () => {
-  it('puts date-ordered event cards on the right of the full-screen globe', () => {
-    expect(source).toContain('event-slider');
-    expect(source).toContain('onWheel');
-    expect(source).toContain('stop.images');
-    expect(source).toContain('stop.title');
-    expect(source).toContain('stop.summary');
-    expect(source).toContain('More information');
-    expect(source).toContain('formatTourDate');
-    expect(map).toContain('EventSlider');
-    expect(map).toContain('tour-right-stack');
+describe('ICE at Global Stage events', () => {
+  it('uses map scroll and a popup instead of a right-side slider', () => {
+    expect(map).toContain('tour-popup-card');
+    expect(map).toContain('wheel');
+    expect(map).not.toContain('EventSlider');
+    expect(map).not.toContain('event-slider');
     expect(app).toContain('GlobalStageMap');
     expect(app).not.toContain('GlobalStagePage');
     expect(app).toContain('<SiteFooter');
