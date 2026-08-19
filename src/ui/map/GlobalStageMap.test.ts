@@ -9,21 +9,19 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('tours with a right-side card, hover titles, and click-only pin popups', () => {
-    expect(source).toMatch(/>\s*Back\s*</);
-    expect(source).toMatch(/>\s*Next\s*</);
-    expect(source).toContain('MOGADISHU_HOME');
-    expect(source).toContain('greatCircle');
-    expect(source).toContain('new Popup');
-    expect(source).toContain('POPUP_HOLD_MS');
+  it('tours date-sorted places with classic pins, city zoom, and a center-right card', () => {
+    expect(source).toContain('a.date.localeCompare');
+    expect(source).toContain('CITY_ZOOM');
+    expect(source).toContain('CITY_EASE_MS');
+    expect(source).toContain("new Marker({ color:");
     expect(source).toContain('tour-right-stack');
     expect(source).toContain('event-card');
-    expect(source).toContain('tour-pin-label');
+    expect(source).toContain("addEventListener('mouseenter'");
     expect(source).toContain("addEventListener('click'");
-    expect(source).not.toContain("addEventListener('mouseenter'");
+    expect(source).toContain('new Popup');
+    expect(source).not.toContain('labeledPin');
     expect(source).not.toContain("addEventListener('wheel'");
     expect(source).not.toContain('createPlaneMarker');
     expect(source).not.toContain('setPlaying(true)');
-    expect(source).not.toContain('SiteFooter');
   });
 });

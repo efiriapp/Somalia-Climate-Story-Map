@@ -20,8 +20,9 @@ describe('ICE green brand', () => {
 
   it('places continent visit cards below the ICE calendar', () => {
     const css = readFileSync(themePath, 'utf8');
-    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,80}right:\s*0/);
-    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,120}top:\s*0/);
+    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,80}right:\s*1rem/);
+    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,140}top:\s*50%/);
+    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,180}translateY\(-50%\)/);
     expect(css).toContain('.event-slider');
     expect(css).toContain('.event-card');
     expect(css).toContain('.continent-board');

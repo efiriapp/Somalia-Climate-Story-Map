@@ -1041,14 +1041,22 @@ select {
 
 .tour-right-stack {
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 40;
-  width: 320px;
-  max-height: calc(100% - 1rem);
+  width: min(320px, calc(100% - 2rem));
+  max-height: min(72vh, 540px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.tour-right-stack .event-slider {
+  flex: 0 1 auto;
+  max-height: min(72vh, 540px);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(6, 61, 57, 0.28);
 }
 
 .event-slider {

@@ -3,9 +3,9 @@ import { AttributionControl, Map, Marker, NavigationControl, Popup, type GeoJSON
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { searchTourStops } from '../../application/continent-visits';
 import {
+  CITY_EASE_MS,
   CRUISE_ZOOM,
   PLACE_FLY_MS,
-  PLACE_ZOOM,
   POPUP_HOLD_MS,
   cruiseThenArrive,
   distanceKm,
@@ -19,6 +19,7 @@ import {
   buildGlobalTour,
   GLOBE_PADDING,
   GLOBE_VIEW,
+  CITY_ZOOM,
   MOGADISHU_HOME,
   formatTourDate,
   nextTourIndex,
@@ -115,19 +116,6 @@ const flyAlong = (
   setRaf(requestAnimationFrame(step));
 };
 
-const labeledPin = (color: string, title: string) => {
-  const root = document.createElement('div');
-  root.className = 'tour-pin';
-  const dot = document.createElement('span');
-  dot.className = 'tour-pin-dot';
-  dot.style.background = color;
-  const label = document.createElement('span');
-  label.className = 'tour-pin-label';
-  label.textContent = title;
-  root.append(dot, label);
-  return root;
-};
-
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -148,7 +136,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [tourCard, setTourCard] = useState<TourStop | null>(null);
   const events = useMemo(
-    () => buildGlobalTour(stories).filter((stop) => stop.kind === 'event'),
+    () =>
+      buildGlobalTour(stories)
+        .filter((stop) => stop.kind === 'event')
+        .sort((a, b) => a.date.localeCompare(b.date)),
     [stories],
   );
   const eventsRef = useRef(events);
@@ -216,34 +207,46 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     clearPopup();
     setActiveId(stop.storyId);
-    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), PLACE_ZOOM, 28, (id) => {
+    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 28, (id) => {
       rafRef.current = id;
     }, () => {
       if (token !== tourToken.current) {
         return;
       }
-      setTourCard(stop);
+      map.easeTo({
+        center: [stop.lng, stop.lat],
+        zoom: CITY_ZOOM,
+        pitch: 42,
+        bearing: 12,
+        duration: CITY_EASE_MS,
+      });
       holdRef.current = window.setTimeout(() => {
         if (token !== tourToken.current) {
           return;
         }
-        setTourCard(null);
-        const list = eventsRef.current;
-        const index = list.findIndex((item) => item.storyId === stop.storyId);
-        const nextIndex = directionRef.current > 0
-          ? nextTourIndex(index, list.length)
-          : prevTourIndex(Math.max(index, 0));
-        if (nextIndex === index) {
-          flyHome(token);
-          return;
-        }
-        const next = list[nextIndex];
-        if (!next) {
-          flyHome(token);
-          return;
-        }
-        flyToStop(token, { lng: stop.lng, lat: stop.lat }, next);
-      }, POPUP_HOLD_MS);
+        setTourCard(stop);
+        holdRef.current = window.setTimeout(() => {
+          if (token !== tourToken.current) {
+            return;
+          }
+          setTourCard(null);
+          const list = eventsRef.current;
+          const index = list.findIndex((item) => item.storyId === stop.storyId);
+          const nextIndex = directionRef.current > 0
+            ? nextTourIndex(index, list.length)
+            : prevTourIndex(Math.max(index, 0));
+          if (nextIndex === index) {
+            flyHome(token);
+            return;
+          }
+          const next = list[nextIndex];
+          if (!next) {
+            flyHome(token);
+            return;
+          }
+          flyToStop(token, { lng: stop.lng, lat: stop.lat }, next);
+        }, POPUP_HOLD_MS);
+      }, CITY_EASE_MS);
     });
   };
 
@@ -406,18 +409,16 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     if (!homeMarkerRef.current) {
-      homeMarkerRef.current = new Marker({ element: labeledPin('#063D39', MOGADISHU_HOME.title), anchor: 'bottom' })
+      homeMarkerRef.current = new Marker({ color: '#063D39' })
         .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
         .addTo(map);
     }
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = events.map((stop) => {
-      const marker = new Marker({ element: labeledPin('#2E7D57', stop.title), anchor: 'bottom' })
-        .setLngLat([stop.lng, stop.lat])
-        .addTo(map);
+      const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
       const pin = marker.getElement();
       pin.style.cursor = 'pointer';
-      const open = (event: Event) => {
+      const openFull = (event: Event) => {
         event.stopPropagation();
         if (measuringRef.current || touringRef.current || !stop.storyId) {
           return;
@@ -425,7 +426,29 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         setActiveId(stop.storyId);
         showPinPopup(map, stop);
       };
-      pin.addEventListener('click', open);
+      const openTitle = () => {
+        if (measuringRef.current || touringRef.current || popupRef.current) {
+          return;
+        }
+        popupRef.current = new Popup({
+          closeButton: false,
+          closeOnClick: false,
+          offset: 18,
+          className: 'tour-hover-label',
+        })
+          .setLngLat([stop.lng, stop.lat])
+          .setText(stop.title)
+          .addTo(map);
+      };
+      const closeTitle = () => {
+        const el = popupRef.current?.getElement();
+        if (el?.classList.contains('tour-hover-label')) {
+          clearPopup();
+        }
+      };
+      pin.addEventListener('mouseenter', openTitle);
+      pin.addEventListener('mouseleave', closeTitle);
+      pin.addEventListener('click', openFull);
       return marker;
     });
   }, [events, ready]);
