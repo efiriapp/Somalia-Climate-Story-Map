@@ -13,6 +13,8 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('a.date.localeCompare');
     expect(source).toContain('COUNTRY_ZOOM');
     expect(source).toContain('CITY_ZOOM');
+    expect(source).toMatch(/openFull[\s\S]{0,600}CITY_ZOOM/);
+    expect(source).toContain('showPinPopup(map, stop)');
     expect(source).toContain('CITY_EASE_MS');
     expect(source).toContain('MOGADISHU_HOME.lng');
     expect(source).not.toContain('flyToStop(token, { lng: stop.lng, lat: stop.lat }, next)');

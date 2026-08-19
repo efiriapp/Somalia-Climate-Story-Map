@@ -430,6 +430,23 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       homeMarkerRef.current = new Marker({ color: '#063D39' })
         .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
         .addTo(map);
+      const homePin = homeMarkerRef.current.getElement();
+      homePin.style.cursor = 'pointer';
+      homePin.addEventListener('click', (event) => {
+        event.stopPropagation();
+        tourToken.current += 1;
+        stopMotion();
+        touringRef.current = false;
+        setTourCard(null);
+        clearPopup();
+        map.easeTo({
+          center: [MOGADISHU_HOME.lng, MOGADISHU_HOME.lat],
+          zoom: CITY_ZOOM,
+          pitch: 42,
+          bearing: 0,
+          duration: CITY_EASE_MS,
+        });
+      });
     }
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = events.map((stop) => {
@@ -438,10 +455,21 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       pin.style.cursor = 'pointer';
       const openFull = (event: Event) => {
         event.stopPropagation();
-        if (measuringRef.current || touringRef.current || !stop.storyId) {
+        if (measuringRef.current || !stop.storyId) {
           return;
         }
+        tourToken.current += 1;
+        stopMotion();
+        touringRef.current = false;
+        setTourCard(null);
         setActiveId(stop.storyId);
+        map.easeTo({
+          center: [stop.lng, stop.lat],
+          zoom: CITY_ZOOM,
+          pitch: 42,
+          bearing: 12,
+          duration: CITY_EASE_MS,
+        });
         showPinPopup(map, stop);
       };
       const openTitle = () => {
