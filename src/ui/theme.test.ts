@@ -41,23 +41,13 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.tour-play-bar \.play[\s\S]{0,180}border-radius:\s*50%/);
   });
 
-  it('keeps Global Stage icons and title in separate lanes', () => {
+  it('keeps the simple globe title and right-side event slider', () => {
     const css = readFileSync(themePath, 'utf8');
-    expect(css).toContain('right: calc(50% + 15rem)');
-    expect(css).toContain('gap: 0.65rem');
-    expect(css).toContain('max-width: min(26rem, calc(100% - 42rem))');
-    expect(css).toMatch(/\.tour-title[\s\S]{0,900}white-space:\s*nowrap/);
-    expect(css).toContain('.tour-tool-bar');
-    expect(css).toMatch(/\.tour-tool-bar[\s\S]*?right:\s*1rem/);
-    expect(css).toContain('.tour-left-stack');
-    expect(css).toMatch(/\.tour-left-stack[\s\S]*?left:\s*1rem/);
-    expect(css).toMatch(/\.tour-left-stack[\s\S]*?flex-direction:\s*column/);
-    expect(css).toMatch(/\.tour-left-stack\.filters-open[\s\S]{0,120}justify-content:\s*flex-start/);
-    expect(css).toMatch(/\.tour-filter-slide\.open[\s\S]{0,80}position:\s*relative/);
-    expect(css).toMatch(/\.continent-summary-cards[\s\S]*?flex-direction:\s*column/);
-    expect(css).toMatch(/\.continent-board[\s\S]{0,180}overflow:\s*auto/);
-    expect(css).toContain('.tour-volume-slider');
-    expect(css).toContain('.tour-volume-menu');
+    expect(css).toMatch(/\.tour-title[\s\S]{0,140}left:\s*50%/);
+    expect(css).toMatch(/\.tour-title[\s\S]{0,280}background:\s*(#063D39|var\(--forest\))/);
+    expect(css).toMatch(/\.tour-right-stack[\s\S]{0,80}right:\s*0/);
+    expect(css).toContain('.event-slider');
+    expect(css).toContain('.tour-back.simple');
   });
 
   it('keeps Global Stage calendar text fully white', () => {

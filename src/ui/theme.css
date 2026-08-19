@@ -581,12 +581,20 @@ select {
   gap: 0.65rem;
 }
 
-.tour-icon-bar {
+.tour-back.simple {
   position: absolute;
   top: 1rem;
   left: 1rem;
-  right: calc(50% + 15rem);
-  flex-wrap: wrap;
+  z-index: 45;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(6, 61, 57, 0.92);
+  color: var(--white);
+  padding: 0.65rem 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .tour-tool-bar {
