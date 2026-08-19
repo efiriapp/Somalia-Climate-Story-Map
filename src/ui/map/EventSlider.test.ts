@@ -13,7 +13,9 @@ describe('ICE at Global Stage events', () => {
     expect(map).toMatch(/>\s*Next\s*</);
     expect(map).toContain('NavigationControl');
     expect(map).toContain('mouseenter');
-    expect(map).toContain('tour-popup-card');
+    expect(map).toContain('new Popup');
+    expect(map).toContain('MOGADISHU_HOME');
+    expect(map).toContain('POPUP_HOLD_MS');
     expect(map).not.toContain("addEventListener('wheel'");
     expect(map).not.toContain('EventSlider');
     expect(app).toContain('GlobalStageMap');

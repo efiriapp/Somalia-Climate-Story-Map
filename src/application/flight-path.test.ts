@@ -119,7 +119,7 @@ describe('flight timing', () => {
     expect(CRUISE_ZOOM).toBeGreaterThanOrEqual(2.8);
     expect(CRUISE_ZOOM).toBeLessThan(5);
     expect(POPUP_DELAY_MS).toBe(1000);
-    expect(POPUP_HOLD_MS).toBe(5000);
+    expect(POPUP_HOLD_MS).toBe(7000);
     expect(TOUR_STEP_MS).toBe(FLIGHT_MS + CITY_EASE_MS + POPUP_DELAY_MS + POPUP_HOLD_MS);
   });
 });

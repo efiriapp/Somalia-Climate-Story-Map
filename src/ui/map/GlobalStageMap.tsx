@@ -1,15 +1,29 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { AttributionControl, Map, Marker, NavigationControl, type GeoJSONSource } from 'maplibre-gl';
+import { AttributionControl, Map, Marker, NavigationControl, Popup, type GeoJSONSource } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { searchTourStops } from '../../application/continent-visits';
-import { distanceKm, type LngLat } from '../../application/flight-path';
+import {
+  CRUISE_ZOOM,
+  PLACE_FLY_MS,
+  PLACE_ZOOM,
+  POPUP_HOLD_MS,
+  cruiseThenArrive,
+  distanceKm,
+  greatCircle,
+  pathCoordinates,
+  pointAlong,
+  slicePath,
+  type LngLat,
+} from '../../application/flight-path';
 import {
   buildGlobalTour,
   GLOBE_PADDING,
   GLOBE_VIEW,
+  MOGADISHU_HOME,
   nextTourIndex,
   prevTourIndex,
   tourPopupHtml,
+  type TourStop,
 } from '../../application/global-tour';
 import { styleForLayer } from '../../application/map-layers';
 import type { Story } from '../../domain/story';
@@ -63,13 +77,55 @@ const emptyLine: GeoJSON.Feature = {
   geometry: { type: 'LineString', coordinates: [] },
 };
 
+const lineData = (path: LngLat[]): GeoJSON.Feature => ({
+  type: 'Feature',
+  properties: {},
+  geometry: { type: 'LineString', coordinates: pathCoordinates(path) },
+});
+
+const flyAlong = (
+  map: Map,
+  path: LngLat[],
+  endZoom: number,
+  endPitch: number,
+  setRaf: (id: number) => void,
+  onDone: () => void,
+) => {
+  const startZoom = map.getZoom();
+  const startPitch = map.getPitch();
+  const started = performance.now();
+  const step = (now: number) => {
+    const t = Math.min(1, (now - started) / PLACE_FLY_MS);
+    const point = pointAlong(path, t);
+    const source = map.getSource('tour-path') as GeoJSONSource | undefined;
+    source?.setData(lineData(slicePath(path, t)));
+    map.jumpTo({
+      center: [point.lng, point.lat],
+      zoom: cruiseThenArrive(t, startZoom, CRUISE_ZOOM, endZoom),
+      pitch: startPitch + (endPitch - startPitch) * t,
+      bearing: map.getBearing(),
+    });
+    if (t < 1) {
+      setRaf(requestAnimationFrame(step));
+    } else {
+      onDone();
+    }
+  };
+  setRaf(requestAnimationFrame(step));
+};
+
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const markersRef = useRef<Marker[]>([]);
-  const jumpRef = useRef(false);
+  const homeMarkerRef = useRef<Marker | null>(null);
+  const popupRef = useRef<Popup | null>(null);
   const measuringRef = useRef(false);
   const measurePointsRef = useRef<LngLat[]>([]);
+  const touringRef = useRef(false);
+  const tourToken = useRef(0);
+  const rafRef = useRef(0);
+  const holdRef = useRef(0);
   const [ready, setReady] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -80,9 +136,79 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     () => buildGlobalTour(stories).filter((stop) => stop.kind === 'event'),
     [stories],
   );
-  const active = events.find((stop) => stop.storyId === activeId);
-  const popup = active ? tourPopupHtml(active) : null;
   const searchHits = useMemo(() => searchTourStops(events, searchQuery), [events, searchQuery]);
+
+  const clearPopup = () => {
+    popupRef.current?.remove();
+    popupRef.current = null;
+  };
+
+  const clearTourPath = (map: Map | null) => {
+    const source = map?.getSource('tour-path') as GeoJSONSource | undefined;
+    source?.setData(emptyLine);
+  };
+
+  const stopMotion = () => {
+    cancelAnimationFrame(rafRef.current);
+    window.clearTimeout(holdRef.current);
+  };
+
+  const showPinPopup = (map: Map, stop: TourStop) => {
+    const html = tourPopupHtml(stop);
+    clearPopup();
+    if (!html) {
+      return;
+    }
+    popupRef.current = new Popup({
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: '320px',
+      offset: 28,
+      className: 'tour-map-popup',
+    })
+      .setLngLat([stop.lng, stop.lat])
+      .setHTML(html)
+      .addTo(map);
+  };
+
+  const runPlaceTour = (stop: TourStop) => {
+    const map = mapRef.current;
+    if (!map || !stop.storyId) {
+      return;
+    }
+    const token = tourToken.current + 1;
+    tourToken.current = token;
+    stopMotion();
+    touringRef.current = true;
+    clearPopup();
+    setActiveId(stop.storyId);
+    const from = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
+    const to = { lng: stop.lng, lat: stop.lat };
+    flyAlong(map, greatCircle(from, to), PLACE_ZOOM, 28, (id) => {
+      rafRef.current = id;
+    }, () => {
+      if (token !== tourToken.current) {
+        return;
+      }
+      showPinPopup(map, stop);
+      holdRef.current = window.setTimeout(() => {
+        if (token !== tourToken.current) {
+          return;
+        }
+        clearPopup();
+        const home = { lng: GLOBE_VIEW.lng, lat: GLOBE_VIEW.lat };
+        flyAlong(map, greatCircle(to, home), GLOBE_VIEW.zoom, GLOBE_VIEW.pitch, (id) => {
+          rafRef.current = id;
+        }, () => {
+          if (token !== tourToken.current) {
+            return;
+          }
+          clearTourPath(map);
+          touringRef.current = false;
+        });
+      }, POPUP_HOLD_MS);
+    });
+  };
 
   const stepEvent = (delta: number) => {
     if (events.length === 0) {
@@ -91,24 +217,25 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const index = events.findIndex((stop) => stop.storyId === activeId);
     const from = index < 0 ? (delta > 0 ? -1 : 0) : index;
     const next = delta > 0 ? nextTourIndex(from, events.length) : prevTourIndex(Math.max(from, 0));
-    const storyId = events[next]?.storyId;
-    if (!storyId) {
-      return;
+    const stop = events[next];
+    if (stop) {
+      runPlaceTour(stop);
     }
-    jumpRef.current = true;
-    setActiveId(storyId);
   };
 
   const goHome = () => {
     const map = mapRef.current;
-    jumpRef.current = false;
-    setActiveId(null);
+    tourToken.current += 1;
+    stopMotion();
+    touringRef.current = false;
+    clearPopup();
     setSearchOpen(false);
     setMeasuring(false);
     measurePointsRef.current = [];
     setMeasureKm(null);
-    const source = map?.getSource('measure-line') as GeoJSONSource | undefined;
-    source?.setData(emptyLine);
+    const measure = map?.getSource('measure-line') as GeoJSONSource | undefined;
+    measure?.setData(emptyLine);
+    clearTourPath(map);
     map?.easeTo({
       center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
       zoom: GLOBE_VIEW.zoom,
@@ -173,6 +300,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           paint: { 'line-color': '#4CAF7D', 'line-width': 3 },
         });
       }
+      if (!map.getSource('tour-path')) {
+        map.addSource('tour-path', { type: 'geojson', data: emptyLine });
+        map.addLayer({
+          id: 'tour-path',
+          type: 'line',
+          source: 'tour-path',
+          paint: { 'line-color': '#4CAF7D', 'line-width': 3, 'line-opacity': 0.85 },
+        });
+      }
       map.resize();
       setReady(true);
     };
@@ -185,11 +321,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       const next = previous.length >= 2 ? [point] : [...previous, point];
       measurePointsRef.current = next;
       const source = map.getSource('measure-line') as GeoJSONSource | undefined;
-      source?.setData({
-        type: 'Feature',
-        properties: {},
-        geometry: { type: 'LineString', coordinates: next.map((item) => [item.lng, item.lat]) },
-      });
+      source?.setData(lineData(next));
       setMeasureKm(next.length === 2 ? distanceKm(next[0], next[1]) : null);
     };
     map.on('load', onLoad);
@@ -198,8 +330,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     window.addEventListener('resize', fitScreen);
     return () => {
       window.removeEventListener('resize', fitScreen);
+      tourToken.current += 1;
+      stopMotion();
+      clearPopup();
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
+      homeMarkerRef.current?.remove();
+      homeMarkerRef.current = null;
       map.remove();
       mapRef.current = null;
     };
@@ -210,6 +347,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!map || !ready) {
       return;
     }
+    if (!homeMarkerRef.current) {
+      homeMarkerRef.current = new Marker({ color: '#063D39' })
+        .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
+        .addTo(map);
+    }
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = events.map((stop) => {
       const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
@@ -217,32 +359,17 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       pin.style.cursor = 'pointer';
       const open = (event: Event) => {
         event.stopPropagation();
-        if (measuringRef.current || !stop.storyId) {
+        if (measuringRef.current || touringRef.current || !stop.storyId) {
           return;
         }
-        jumpRef.current = false;
         setActiveId(stop.storyId);
+        showPinPopup(map, stop);
       };
       pin.addEventListener('mouseenter', open);
       pin.addEventListener('click', open);
       return marker;
     });
   }, [events, ready]);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !ready || !active || !jumpRef.current) {
-      return;
-    }
-    jumpRef.current = false;
-    map.easeTo({
-      center: [active.lng, active.lat],
-      zoom: 4.4,
-      pitch: 28,
-      bearing: 8,
-      duration: 1800,
-    });
-  }, [active, ready]);
 
   return (
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
@@ -278,12 +405,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                     key={hit.storyId}
                     type="button"
                     onClick={() => {
-                      if (!hit.storyId) {
-                        return;
-                      }
-                      jumpRef.current = true;
-                      setActiveId(hit.storyId);
                       setSearchOpen(false);
+                      runPlaceTour(hit);
                     }}
                   >
                     {hit.country}: {hit.title}
@@ -312,19 +435,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </button>
         </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}
-        {popup ? (
-          <article className="tour-popup-card" aria-label="Selected ICE global event">
-            <button
-              type="button"
-              className="tour-popup-close"
-              aria-label="Close event"
-              onClick={() => setActiveId(null)}
-            >
-              ×
-            </button>
-            <div dangerouslySetInnerHTML={{ __html: popup }} />
-          </article>
-        ) : null}
       </div>
     </section>
   );

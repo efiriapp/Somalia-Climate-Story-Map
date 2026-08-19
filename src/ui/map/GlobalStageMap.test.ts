@@ -9,23 +9,25 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('uses Next/Back, a centered popup, and home/search/measure/compass tools', () => {
+  it('tours each place from Mogadishu, shows the pin popup for 7s, then flies home', () => {
     expect(source).toMatch(/>\s*Back\s*</);
     expect(source).toMatch(/>\s*Next\s*</);
+    expect(source).toContain('MOGADISHU_HOME');
+    expect(source).toContain('greatCircle');
+    expect(source).toContain('slicePath');
+    expect(source).toContain('new Popup');
+    expect(source).toContain('POPUP_HOLD_MS');
+    expect(source).toContain('tourPopupHtml');
     expect(source).toContain('Search tour');
     expect(source).toContain('Go home');
     expect(source).toContain('Measure distance');
     expect(source).toContain('Reset compass');
-    expect(source).toContain('tour-popup-card');
-    expect(source).toContain('tourPopupHtml');
-    expect(source).toContain('mouseenter');
     expect(source).toContain('NavigationControl');
-    expect(source).toContain('easeTo');
-    expect(source).toContain('GLOBE_VIEW');
-    expect(source).not.toContain('new Popup');
+    expect(source).not.toContain('tour-popup-card');
     expect(source).not.toContain("addEventListener('wheel'");
     expect(source).not.toContain('EventSlider');
     expect(source).not.toContain('createPlaneMarker');
+    expect(source).not.toContain('setPlaying(true)');
     expect(source).not.toContain('SiteFooter');
   });
 });
