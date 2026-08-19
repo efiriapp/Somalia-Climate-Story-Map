@@ -129,7 +129,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const tourToken = useRef(0);
   const rafRef = useRef(0);
   const holdRef = useRef(0);
-  const [ready, setReady] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -183,6 +182,35 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   const iceOffice = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
 
+  const hidePins = () => {
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+    homeMarkerRef.current?.remove();
+    homeMarkerRef.current = null;
+  };
+
+  const showHomePin = (map: Map) => {
+    hidePins();
+    homeMarkerRef.current = new Marker({ color: '#063D39' })
+      .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
+      .addTo(map);
+  };
+
+  const showEventPin = (map: Map, stop: TourStop) => {
+    hidePins();
+    const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
+    const pin = marker.getElement();
+    pin.style.cursor = 'pointer';
+    pin.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (measuringRef.current) {
+        return;
+      }
+      showPinPopup(map, stop);
+    });
+    markersRef.current = [marker];
+  };
+
   const landAtIceOffice = (map: Map, onDone: () => void) => {
     map.easeTo({
       center: [iceOffice.lng, iceOffice.lat],
@@ -200,6 +228,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     setTourCard(null);
+    showHomePin(map);
     flyAlong(map, greatCircle(from, iceOffice), CRUISE_ZOOM, 28, (id) => {
       rafRef.current = id;
     }, () => {
@@ -223,6 +252,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     clearPopup();
     setActiveId(stop.storyId);
+    showEventPin(map, stop);
     flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 28, (id) => {
       rafRef.current = id;
     }, () => {
@@ -258,6 +288,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               if (map) {
                 clearTourPath(map);
               }
+              hidePins();
               touringRef.current = false;
               return;
             }
@@ -308,6 +339,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const measure = map?.getSource('measure-line') as GeoJSONSource | undefined;
     measure?.setData(emptyLine);
     clearTourPath(map);
+    hidePins();
     map?.easeTo({
       center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
       zoom: GLOBE_VIEW.zoom,
@@ -389,7 +421,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         });
       }
       map.resize();
-      setReady(true);
     };
     const onClick = (event: { lngLat: { lng: number; lat: number } }) => {
       if (!measuringRef.current) {
@@ -420,90 +451,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       mapRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !ready) {
-      return;
-    }
-    if (!homeMarkerRef.current) {
-      homeMarkerRef.current = new Marker({ color: '#063D39' })
-        .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
-        .addTo(map);
-      const homePin = homeMarkerRef.current.getElement();
-      homePin.style.cursor = 'pointer';
-      homePin.addEventListener('click', (event) => {
-        event.stopPropagation();
-        tourToken.current += 1;
-        stopMotion();
-        touringRef.current = false;
-        setTourCard(null);
-        clearPopup();
-        map.easeTo({
-          center: [MOGADISHU_HOME.lng, MOGADISHU_HOME.lat],
-          zoom: COUNTRY_ZOOM,
-          pitch: 24,
-          bearing: 0,
-          duration: CITY_EASE_MS,
-        });
-      });
-    }
-    markersRef.current.forEach((marker) => marker.remove());
-    markersRef.current = events.map((stop) => {
-      const pin = document.createElement('div');
-      pin.className = 'tour-pin';
-      const label = document.createElement('span');
-      label.className = 'tour-pin-label';
-      label.textContent = formatTourDate(stop.date);
-      const dot = document.createElement('span');
-      dot.className = 'tour-pin-dot';
-      pin.append(label, dot);
-      const marker = new Marker({ element: pin, anchor: 'bottom' }).setLngLat([stop.lng, stop.lat]).addTo(map);
-      const openFull = (event: Event) => {
-        event.stopPropagation();
-        if (measuringRef.current || !stop.storyId) {
-          return;
-        }
-        tourToken.current += 1;
-        stopMotion();
-        touringRef.current = false;
-        setTourCard(null);
-        setActiveId(stop.storyId);
-        map.easeTo({
-          center: [stop.lng, stop.lat],
-          zoom: CITY_ZOOM,
-          pitch: 42,
-          bearing: 12,
-          duration: CITY_EASE_MS,
-        });
-        showPinPopup(map, stop);
-      };
-      const openTitle = () => {
-        if (measuringRef.current || touringRef.current || popupRef.current) {
-          return;
-        }
-        popupRef.current = new Popup({
-          closeButton: false,
-          closeOnClick: false,
-          offset: 18,
-          className: 'tour-hover-label',
-        })
-          .setLngLat([stop.lng, stop.lat])
-          .setText(stop.title)
-          .addTo(map);
-      };
-      const closeTitle = () => {
-        const el = popupRef.current?.getElement();
-        if (el?.classList.contains('tour-hover-label')) {
-          clearPopup();
-        }
-      };
-      pin.addEventListener('mouseenter', openTitle);
-      pin.addEventListener('mouseleave', closeTitle);
-      pin.addEventListener('click', openFull);
-      return marker;
-    });
-  }, [events, ready]);
 
   return (
     <section className="global-stage" aria-label="ICE Institute at Global Stage">
