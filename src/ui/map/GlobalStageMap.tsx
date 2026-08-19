@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AttributionControl, Map, Marker } from 'maplibre-gl';
+import { AttributionControl, Map, Marker, NavigationControl, Popup } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
   buildGlobalTour,
@@ -26,6 +26,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const markersRef = useRef<Marker[]>([]);
+  const popupRef = useRef<Popup | null>(null);
+  const jumpRef = useRef(false);
   const [ready, setReady] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const events = useMemo(
@@ -33,7 +35,21 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     [stories],
   );
   const active = events.find((stop) => stop.storyId === activeId);
-  const popup = active ? tourPopupHtml(active) : null;
+
+  const stepEvent = (delta: number) => {
+    if (events.length === 0) {
+      return;
+    }
+    const index = events.findIndex((stop) => stop.storyId === activeId);
+    const from = index < 0 ? (delta > 0 ? -1 : 0) : index;
+    const next = delta > 0 ? nextTourIndex(from, events.length) : prevTourIndex(Math.max(from, 0));
+    const storyId = events[next]?.storyId;
+    if (!storyId) {
+      return;
+    }
+    jumpRef.current = true;
+    setActiveId(storyId);
+  };
 
   useEffect(() => {
     if (!host.current) {
@@ -52,7 +68,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       attributionControl: false,
     });
     map.setPadding(GLOBE_PADDING);
-    map.scrollZoom.disable();
+    map.addControl(new NavigationControl({ visualizePitch: true }), 'top-right');
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
     mapRef.current = map;
     const onLoad = () => {
@@ -67,32 +83,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       window.removeEventListener('resize', fitScreen);
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
+      popupRef.current?.remove();
+      popupRef.current = null;
       map.remove();
       mapRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    const node = host.current;
-    if (!node) {
-      return;
-    }
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault();
-      if (events.length === 0) {
-        return;
-      }
-      const delta = event.deltaY > 0 ? 1 : -1;
-      setActiveId((current) => {
-        const index = events.findIndex((stop) => stop.storyId === current);
-        const from = index < 0 ? (delta > 0 ? -1 : 0) : index;
-        const next = delta > 0 ? nextTourIndex(from, events.length) : prevTourIndex(Math.max(from, 0));
-        return events[next]?.storyId ?? current;
-      });
-    };
-    node.addEventListener('wheel', onWheel, { passive: false });
-    return () => node.removeEventListener('wheel', onWheel);
-  }, [events]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -104,20 +100,60 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
       const pin = marker.getElement();
       pin.style.cursor = 'pointer';
-      pin.addEventListener('click', () => {
+      const open = () => {
         if (stop.storyId) {
+          jumpRef.current = false;
           setActiveId(stop.storyId);
         }
-      });
+      };
+      pin.addEventListener('mouseenter', open);
+      pin.addEventListener('click', open);
       return marker;
     });
   }, [events, ready]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !ready || !active) {
+    if (!map || !ready) {
       return;
     }
+    popupRef.current?.remove();
+    popupRef.current = null;
+    if (!active) {
+      return;
+    }
+    const html = tourPopupHtml(active);
+    if (!html) {
+      return;
+    }
+    const popup = new Popup({
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: '320px',
+      offset: 28,
+      className: 'tour-map-popup',
+    })
+      .setLngLat([active.lng, active.lat])
+      .setHTML(html)
+      .addTo(map);
+    popup.on('close', () => {
+      setActiveId((current) => (current === active.storyId ? null : current));
+    });
+    popupRef.current = popup;
+    return () => {
+      popup.remove();
+      if (popupRef.current === popup) {
+        popupRef.current = null;
+      }
+    };
+  }, [active, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready || !active || !jumpRef.current) {
+      return;
+    }
+    jumpRef.current = false;
     map.easeTo({
       center: [active.lng, active.lat],
       zoom: 4.4,
@@ -135,19 +171,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         <button type="button" className="tour-back simple" aria-label="Back to main" onClick={onClose}>
           Back to main
         </button>
-        {popup ? (
-          <article className="tour-popup-card" aria-label="Selected ICE global event">
-            <button
-              type="button"
-              className="tour-popup-close"
-              aria-label="Close event"
-              onClick={() => setActiveId(null)}
-            >
-              ×
-            </button>
-            <div dangerouslySetInnerHTML={{ __html: popup }} />
-          </article>
-        ) : null}
+        <div className="tour-event-nav">
+          <button type="button" aria-label="Previous event" onClick={() => stepEvent(-1)}>
+            Previous
+          </button>
+          <button type="button" aria-label="Next event" onClick={() => stepEvent(1)}>
+            Next
+          </button>
+        </div>
       </div>
     </section>
   );

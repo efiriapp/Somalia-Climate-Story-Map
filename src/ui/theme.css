@@ -597,6 +597,55 @@ select {
   cursor: pointer;
 }
 
+.tour-event-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 1.2rem;
+  z-index: 45;
+  display: flex;
+  gap: 0.55rem;
+  transform: translateX(-50%);
+}
+
+.tour-event-nav button {
+  border: 0;
+  border-radius: 10px;
+  background: rgba(6, 61, 57, 0.92);
+  color: var(--white);
+  padding: 0.7rem 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tour-event-nav button:hover {
+  background: var(--leaf);
+}
+
+.global-stage .maplibregl-popup-content {
+  padding: 0.65rem 0.8rem 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(6, 61, 57, 0.22);
+}
+
+.global-stage .maplibregl-popup-content img {
+  display: block;
+  width: calc(100% + 1.6rem);
+  max-height: 120px;
+  margin: -0.65rem -0.8rem 0.55rem;
+  object-fit: cover;
+}
+
+.global-stage .maplibregl-popup-content p {
+  margin: 0.35rem 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.global-stage .maplibregl-ctrl-top-right {
+  top: 4.6rem;
+  right: 0.7rem;
+}
+
 .tour-tool-bar {
   position: absolute;
   right: 1rem;

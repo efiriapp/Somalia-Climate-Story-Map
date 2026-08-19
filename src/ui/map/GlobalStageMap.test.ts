@@ -9,25 +9,25 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('scrolls the 3D globe through events and shows the active one as a popup', () => {
-    expect(source).toContain('tour-popup-card');
+  it('jumps events with next/back, uses normal map zoom, and opens a popup on hover', () => {
+    expect(source).toContain('NavigationControl');
+    expect(source).toContain('Previous event');
+    expect(source).toContain('Next event');
+    expect(source).toContain('mouseenter');
+    expect(source).toContain('new Popup');
     expect(source).toContain('tourPopupHtml');
-    expect(source).toContain('wheel');
-    expect(source).toContain('scrollZoom');
     expect(source).toContain('easeTo');
     expect(source).toContain('setProjection');
     expect(source).toContain('Back to main');
     expect(source).toContain('ICE Institute at Global Stage');
+    expect(source).not.toContain('scrollZoom.disable');
+    expect(source).not.toContain("addEventListener('wheel'");
     expect(source).not.toContain('EventSlider');
     expect(source).not.toContain('tour-right-stack');
     expect(source).not.toContain('DateReel');
     expect(source).not.toContain('tour-play-bar');
     expect(source).not.toContain('createPlaneMarker');
-    expect(source).not.toContain('tour-plane');
     expect(source).not.toContain('ContinentCards');
-    expect(source).not.toContain('ContinentSummaryCards');
-    expect(source).not.toContain('TourFilterSlide');
-    expect(source).not.toContain('flight-trail-canvas');
     expect(source).not.toContain('SiteFooter');
   });
 });
