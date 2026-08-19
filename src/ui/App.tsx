@@ -9,9 +9,8 @@ import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
 import { MapPane } from './map/MapPane';
-import { GlobalStageMap } from './map/GlobalStageMap';
 
-type Screen = 'about' | 'research' | 'stories' | 'global-stage';
+type Screen = 'about' | 'research' | 'stories';
 
 const catalogTypeFor = (screen: Screen): ContentType =>
   screen === 'research' ? 'research-story' : 'ice-story';
@@ -65,121 +64,108 @@ export default function App() {
         >
           Stories
         </button>
-        <button
-          type="button"
-          className={screen === 'global-stage' ? 'active' : ''}
-          onClick={() => openScreen('global-stage')}
-        >
-          ICE Institute at Global Stage
-        </button>
       </nav>
 
-      {screen === 'global-stage' ? (
-        <GlobalStageMap stories={catalog} onClose={() => openScreen('stories')} />
+      {screen === 'about' ? (
+        <article className="detail about-ice" aria-label="About ICE Institute">
+          <h1>{aboutIce.title}</h1>
+          {aboutIce.paragraphs.map((paragraph) => (
+            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+          ))}
+          <p>
+            <strong>More information:</strong>{' '}
+            <a href={aboutIce.website} target="_blank" rel="noreferrer">
+              {aboutIce.website}
+            </a>
+          </p>
+        </article>
+      ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
+        <StoryDetail story={detail} onBack={() => setSelectedId(null)} />
+      ) : detail ? (
+        <article className="detail">
+          <button className="back" type="button" onClick={() => setSelectedId(null)}>
+            ← Back to catalog
+          </button>
+          <p className="story-type">{detail.type === 'research-story' ? 'Research' : 'Story'}</p>
+          <h1>{detail.title}</h1>
+          {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
+          <p className="story-meta">
+            {detail.date} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
+          </p>
+          <p>{detail.body}</p>
+          {detail.website ? (
+            <p>
+              <strong>More information:</strong>{' '}
+              <a href={detail.website} target="_blank" rel="noreferrer">
+                {detail.website}
+              </a>
+            </p>
+          ) : null}
+        </article>
       ) : (
         <>
-          {screen === 'about' ? (
-            <article className="detail about-ice" aria-label="About ICE Institute">
-              <h1>{aboutIce.title}</h1>
-              {aboutIce.paragraphs.map((paragraph) => (
-                <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-              ))}
-              <p>
-                <strong>More information:</strong>{' '}
-                <a href={aboutIce.website} target="_blank" rel="noreferrer">
-                  {aboutIce.website}
-                </a>
-              </p>
-            </article>
-          ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
-            <StoryDetail story={detail} onBack={() => setSelectedId(null)} />
-          ) : detail ? (
-            <article className="detail">
-              <button className="back" type="button" onClick={() => setSelectedId(null)}>
-                ← Back to catalog
-              </button>
-              <p className="story-type">{detail.type === 'research-story' ? 'Research' : 'Story'}</p>
-              <h1>{detail.title}</h1>
-              {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
-              <p className="story-meta">
-                {detail.date} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
-              </p>
-              <p>{detail.body}</p>
-              {detail.website ? (
-                <p>
-                  <strong>More information:</strong>{' '}
-                  <a href={detail.website} target="_blank" rel="noreferrer">
-                    {detail.website}
-                  </a>
-                </p>
-              ) : null}
-            </article>
+          <div className="search-wrap">
+            <p className="kicker">Search</p>
+            <input
+              className="search-input"
+              value={draft.query}
+              placeholder="Search by keywords"
+              onChange={(event) => setDraft({ ...draft, query: event.target.value })}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  setApplied(draft);
+                }
+              }}
+            />
+            <button
+              className="advanced-toggle"
+              type="button"
+              onClick={() => setAdvancedOpen((open) => !open)}
+            >
+              {advancedOpen ? '▼' : '►'} Advanced options
+            </button>
+            {advancedOpen ? (
+              <FilterPanel
+                stories={scoped}
+                draft={draft}
+                onDraftChange={(next) => {
+                  setDraft(next);
+                  setApplied(next);
+                }}
+                onApply={() => {
+                  setApplied(draft);
+                  setSelectedId(null);
+                }}
+              />
+            ) : null}
+            <h2 className="section-title">
+              {screen === 'research' ? 'ICE Institute Research Stories' : 'Latest stories'}
+            </h2>
+          </div>
+          {screen === 'stories' ? (
+            <StoryList
+              stories={matches}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+              typeLabel="Story"
+              layout="grid"
+            />
           ) : (
-            <>
-              <div className="search-wrap">
-                <p className="kicker">Search</p>
-                <input
-                  className="search-input"
-                  value={draft.query}
-                  placeholder="Search by keywords"
-                  onChange={(event) => setDraft({ ...draft, query: event.target.value })}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      setApplied(draft);
-                    }
-                  }}
-                />
-                <button
-                  className="advanced-toggle"
-                  type="button"
-                  onClick={() => setAdvancedOpen((open) => !open)}
-                >
-                  {advancedOpen ? '▼' : '►'} Advanced options
-                </button>
-                {advancedOpen ? (
-                  <FilterPanel
-                    stories={scoped}
-                    draft={draft}
-                    onDraftChange={(next) => {
-                      setDraft(next);
-                      setApplied(next);
-                    }}
-                    onApply={() => {
-                      setApplied(draft);
-                      setSelectedId(null);
-                    }}
-                  />
-                ) : null}
-                <h2 className="section-title">
-                  {screen === 'research' ? 'ICE Institute Research Stories' : 'Latest stories'}
-                </h2>
-              </div>
-              {screen === 'stories' ? (
+            <div className="catalog">
+              <MapPane stories={matches} view={view} selectedId={selectedId} onSelect={setSelectedId} />
+              <div className="list-pane">
                 <StoryList
                   stories={matches}
                   selectedId={selectedId}
                   onSelect={setSelectedId}
-                  typeLabel="Story"
-                  layout="grid"
+                  typeLabel="Research"
                 />
-              ) : (
-                <div className="catalog">
-                  <MapPane stories={matches} view={view} selectedId={selectedId} onSelect={setSelectedId} />
-                  <div className="list-pane">
-                    <StoryList
-                      stories={matches}
-                      selectedId={selectedId}
-                      onSelect={setSelectedId}
-                      typeLabel="Research"
-                    />
-                  </div>
-                </div>
-              )}
-            </>
+              </div>
+            </div>
           )}
-          <SiteFooter />
         </>
       )}
+      <SiteFooter />
     </div>
   );
 }
