@@ -597,6 +597,13 @@ select {
   cursor: pointer;
 }
 
+.tour-icon-bar.simple {
+  position: absolute;
+  top: 4.5rem;
+  left: 1rem;
+  z-index: 45;
+}
+
 .tour-event-nav {
   position: absolute;
   left: 50%;
@@ -746,7 +753,7 @@ select {
   pointer-events: none;
   line-height: 1;
   width: max-content;
-  max-width: min(26rem, calc(100% - 42rem));
+  max-width: min(28rem, calc(100% - 12rem));
   white-space: nowrap;
 }
 
@@ -1311,7 +1318,7 @@ select {
 .tour-measure-badge {
   position: absolute;
   left: 50%;
-  bottom: 1.1rem;
+  bottom: 4.4rem;
   transform: translateX(-50%);
   z-index: 45;
   margin: 0;
@@ -1381,11 +1388,11 @@ select {
 .tour-popup-card {
   position: absolute;
   left: 50%;
-  top: 42%;
+  top: 50%;
   transform: translate(-50%, -50%);
   z-index: 50;
   width: min(440px, calc(100% - 2rem));
-  max-height: min(78vh, 620px);
+  max-height: min(72vh, 560px);
   overflow: auto;
   background: #fff;
   color: var(--ink);

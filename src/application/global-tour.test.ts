@@ -84,8 +84,9 @@ describe('buildGlobalTour', () => {
     expect(GLOBE_VIEW.lng).toBeCloseTo(45.32, 1);
     expect(GLOBE_VIEW.lat).toBeGreaterThan(0);
     expect(GLOBE_VIEW.lat).toBeLessThan(12);
-    expect(GLOBE_VIEW.zoom).toBeGreaterThanOrEqual(2.5);
-    expect(GLOBE_VIEW.pitch).toBeLessThanOrEqual(12);
+    expect(GLOBE_VIEW.zoom).toBeGreaterThanOrEqual(1.2);
+    expect(GLOBE_VIEW.zoom).toBeLessThan(2.2);
+    expect(GLOBE_VIEW.pitch).toBe(0);
     expect(GLOBE_VIEW.maxZoom).toBeGreaterThanOrEqual(11);
     const tour = buildGlobalTour(catalog);
     for (const stop of tour) {

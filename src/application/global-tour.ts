@@ -2,15 +2,15 @@ import type { Story } from '../domain/story';
 
 export const GLOBE_VIEW = {
   lng: 45.3182,
-  lat: 8.4,
-  zoom: 2.7,
-  pitch: 8,
+  lat: 5.2,
+  zoom: 1.55,
+  pitch: 0,
   bearing: 0,
-  minZoom: 2.0,
+  minZoom: 0.8,
   maxZoom: 12.5,
 };
 
-export const GLOBE_PADDING = { top: 72, bottom: 28, left: 16, right: 24 };
+export const GLOBE_PADDING = { top: 64, bottom: 72, left: 56, right: 56 };
 
 export const CITY_ZOOM = 11;
 

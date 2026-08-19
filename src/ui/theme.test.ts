@@ -69,7 +69,8 @@ describe('ICE green brand', () => {
   it('keeps the centered tour popup fully visible', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.tour-popup-card[\s\S]{0,120}left:\s*50%/);
-    expect(css).toMatch(/\.tour-popup-card[\s\S]{0,160}translate\(-50%/);
+    expect(css).toMatch(/\.tour-popup-card[\s\S]{0,140}top:\s*50%/);
+    expect(css).toMatch(/\.tour-popup-card[\s\S]{0,180}translate\(-50%,\s*-50%/);
     expect(css).toContain('.tour-popup-close');
     expect(css).toContain('.date-reel-nav');
   });
