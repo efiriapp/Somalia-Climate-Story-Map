@@ -8,9 +8,10 @@ import { FilterPanel } from './chrome/FilterPanel';
 import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
+import { GlobalStagePage } from './catalog/GlobalStagePage';
 import { MapPane } from './map/MapPane';
 
-type Screen = 'about' | 'research' | 'stories';
+type Screen = 'about' | 'research' | 'stories' | 'global-stage';
 
 const catalogTypeFor = (screen: Screen): ContentType =>
   screen === 'research' ? 'research-story' : 'ice-story';
@@ -64,6 +65,13 @@ export default function App() {
         >
           Stories
         </button>
+        <button
+          type="button"
+          className={screen === 'global-stage' ? 'active' : ''}
+          onClick={() => openScreen('global-stage')}
+        >
+          ICE at Global Stage
+        </button>
       </nav>
 
       {screen === 'about' ? (
@@ -79,6 +87,8 @@ export default function App() {
             </a>
           </p>
         </article>
+      ) : screen === 'global-stage' ? (
+        <GlobalStagePage stories={catalog} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
         <StoryDetail story={detail} onBack={() => setSelectedId(null)} />
       ) : detail ? (

@@ -16,15 +16,16 @@ describe('platform topbar', () => {
     );
   });
 
-  it('places About and Research Stories before Stories, without Global Stage', () => {
+  it('places About, Research, Stories, then ICE at Global Stage as a text page', () => {
     expect(source).toContain('About ICE Institute');
     expect(source).toContain('ICE Institute Research Stories');
+    expect(source).toContain('ICE at Global Stage');
     expect(source).toMatch(
-      /About ICE Institute[\s\S]+ICE Institute Research Stories[\s\S]+>[\s\n]*Stories[\s\n]*</,
+      /About ICE Institute[\s\S]+ICE Institute Research Stories[\s\S]+>[\s\n]*Stories[\s\n]*<[\s\S]+ICE at Global Stage/,
     );
-    expect(source).not.toContain("openScreen('global-stage')");
+    expect(source).toContain("openScreen('global-stage')");
+    expect(source).toContain('GlobalStagePage');
     expect(source).not.toContain('GlobalStageMap');
-    expect(source).not.toContain('ICE Institute at Global Stage');
     expect(source).toContain("openScreen('about')");
     expect(source).toContain("openScreen('research')");
     expect(source).toContain('aboutIce');
