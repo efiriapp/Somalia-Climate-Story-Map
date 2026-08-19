@@ -20,6 +20,7 @@ import {
   GLOBE_PADDING,
   GLOBE_VIEW,
   MOGADISHU_HOME,
+  formatTourDate,
   nextTourIndex,
   prevTourIndex,
   tourPopupHtml,
@@ -145,10 +146,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [measuring, setMeasuring] = useState(false);
   const [measureKm, setMeasureKm] = useState<number | null>(null);
+  const [tourCard, setTourCard] = useState<TourStop | null>(null);
   const events = useMemo(
     () => buildGlobalTour(stories).filter((stop) => stop.kind === 'event'),
     [stories],
   );
+  const eventsRef = useRef(events);
+  eventsRef.current = events;
+  const directionRef = useRef(1);
   const searchHits = useMemo(() => searchTourStops(events, searchQuery), [events, searchQuery]);
 
   const clearPopup = () => {
@@ -184,7 +189,65 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       .addTo(map);
   };
 
-  const runPlaceTour = (stop: TourStop) => {
+  const flyHome = (token: number) => {
+    const map = mapRef.current;
+    if (!map) {
+      return;
+    }
+    setTourCard(null);
+    const from = { lng: map.getCenter().lng, lat: map.getCenter().lat };
+    const home = { lng: GLOBE_VIEW.lng, lat: GLOBE_VIEW.lat };
+    flyAlong(map, greatCircle(from, home), GLOBE_VIEW.zoom, GLOBE_VIEW.pitch, (id) => {
+      rafRef.current = id;
+    }, () => {
+      if (token !== tourToken.current) {
+        return;
+      }
+      clearTourPath(map);
+      touringRef.current = false;
+    });
+  };
+
+  const flyToStop = (token: number, from: LngLat, stop: TourStop) => {
+    const map = mapRef.current;
+    if (!map || !stop.storyId) {
+      return;
+    }
+    touringRef.current = true;
+    clearPopup();
+    setActiveId(stop.storyId);
+    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), PLACE_ZOOM, 28, (id) => {
+      rafRef.current = id;
+    }, () => {
+      if (token !== tourToken.current) {
+        return;
+      }
+      setTourCard(stop);
+      holdRef.current = window.setTimeout(() => {
+        if (token !== tourToken.current) {
+          return;
+        }
+        setTourCard(null);
+        const list = eventsRef.current;
+        const index = list.findIndex((item) => item.storyId === stop.storyId);
+        const nextIndex = directionRef.current > 0
+          ? nextTourIndex(index, list.length)
+          : prevTourIndex(Math.max(index, 0));
+        if (nextIndex === index) {
+          flyHome(token);
+          return;
+        }
+        const next = list[nextIndex];
+        if (!next) {
+          flyHome(token);
+          return;
+        }
+        flyToStop(token, { lng: stop.lng, lat: stop.lat }, next);
+      }, POPUP_HOLD_MS);
+    });
+  };
+
+  const runPlaceTour = (stop: TourStop, direction = 1) => {
     const map = mapRef.current;
     if (!map || !stop.storyId) {
       return;
@@ -192,35 +255,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const token = tourToken.current + 1;
     tourToken.current = token;
     stopMotion();
-    touringRef.current = true;
-    clearPopup();
-    setActiveId(stop.storyId);
-    const from = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
-    const to = { lng: stop.lng, lat: stop.lat };
-    flyAlong(map, greatCircle(from, to), PLACE_ZOOM, 28, (id) => {
-      rafRef.current = id;
-    }, () => {
-      if (token !== tourToken.current) {
-        return;
-      }
-      showPinPopup(map, stop);
-      holdRef.current = window.setTimeout(() => {
-        if (token !== tourToken.current) {
-          return;
-        }
-        clearPopup();
-        const home = { lng: GLOBE_VIEW.lng, lat: GLOBE_VIEW.lat };
-        flyAlong(map, greatCircle(to, home), GLOBE_VIEW.zoom, GLOBE_VIEW.pitch, (id) => {
-          rafRef.current = id;
-        }, () => {
-          if (token !== tourToken.current) {
-            return;
-          }
-          clearTourPath(map);
-          touringRef.current = false;
-        });
-      }, POPUP_HOLD_MS);
-    });
+    directionRef.current = direction;
+    setTourCard(null);
+    flyToStop(token, { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat }, stop);
   };
 
   const stepEvent = (delta: number) => {
@@ -232,7 +269,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const next = delta > 0 ? nextTourIndex(from, events.length) : prevTourIndex(Math.max(from, 0));
     const stop = events[next];
     if (stop) {
-      runPlaceTour(stop);
+      runPlaceTour(stop, delta);
     }
   };
 
@@ -242,6 +279,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     stopMotion();
     touringRef.current = false;
     clearPopup();
+    setTourCard(null);
     setSearchOpen(false);
     setMeasuring(false);
     measurePointsRef.current = [];
@@ -281,6 +319,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   useEffect(() => {
     measuringRef.current = measuring;
   }, [measuring]);
+
+  useEffect(() => {
+    mapRef.current?.setPadding({
+      ...GLOBE_PADDING,
+      right: tourCard ? 332 : GLOBE_PADDING.right,
+    });
+  }, [tourCard]);
 
   useEffect(() => {
     if (!host.current) {
@@ -449,6 +494,29 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </button>
         </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}
+        {tourCard ? (
+          <div className="tour-right-stack">
+            <aside className="event-slider">
+            <article className="event-card active" aria-label="Tour event">
+              {tourCard.images[0] ? <img src={tourCard.images[0]} alt="" /> : null}
+              <p className="event-card-date">{formatTourDate(tourCard.date)}</p>
+              <h3>{tourCard.title}</h3>
+              <p className="event-card-place">
+                {tourCard.place} · {tourCard.country}
+              </p>
+              <p>{tourCard.summary}</p>
+              {tourCard.website ? (
+                <p className="event-card-more">
+                  <strong>More information:</strong>{' '}
+                  <a href={tourCard.website} target="_blank" rel="noreferrer">
+                    {tourCard.website}
+                  </a>
+                </p>
+              ) : null}
+            </article>
+            </aside>
+          </div>
+        ) : null}
       </div>
     </section>
   );

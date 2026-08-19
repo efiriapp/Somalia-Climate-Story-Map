@@ -678,6 +678,12 @@ select {
   font-weight: 800;
   line-height: 1.2;
   box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tour-pin:hover .tour-pin-label {
+  opacity: 1;
 }
 
 .global-stage .maplibregl-ctrl-top-right {

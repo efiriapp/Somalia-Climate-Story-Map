@@ -3,10 +3,10 @@ import type { Story } from '../domain/story';
 export const GLOBE_VIEW = {
   lng: 45.3182,
   lat: 6.5,
-  zoom: 2.75,
+  zoom: 3.55,
   pitch: 0,
   bearing: 0,
-  minZoom: 1.2,
+  minZoom: 1.6,
   maxZoom: 12.5,
 };
 

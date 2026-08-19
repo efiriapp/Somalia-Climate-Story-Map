@@ -9,25 +9,19 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('tours each place from Mogadishu, shows the pin popup for 7s, then flies home', () => {
+  it('tours with a right-side card, hover titles, and click-only pin popups', () => {
     expect(source).toMatch(/>\s*Back\s*</);
     expect(source).toMatch(/>\s*Next\s*</);
     expect(source).toContain('MOGADISHU_HOME');
     expect(source).toContain('greatCircle');
-    expect(source).toContain('slicePath');
     expect(source).toContain('new Popup');
     expect(source).toContain('POPUP_HOLD_MS');
-    expect(source).toContain('tourPopupHtml');
-    expect(source).toContain('Search tour');
-    expect(source).toContain('Go home');
-    expect(source).toContain('Measure distance');
-    expect(source).toContain('Reset compass');
-    expect(source).not.toContain('mouseenter');
+    expect(source).toContain('tour-right-stack');
+    expect(source).toContain('event-card');
     expect(source).toContain('tour-pin-label');
-    expect(source).toContain('stop.title');
-    expect(source).toContain('maxWidth: \'200px\'');
+    expect(source).toContain("addEventListener('click'");
+    expect(source).not.toContain("addEventListener('mouseenter'");
     expect(source).not.toContain("addEventListener('wheel'");
-    expect(source).not.toContain('EventSlider');
     expect(source).not.toContain('createPlaneMarker');
     expect(source).not.toContain('setPlaying(true)');
     expect(source).not.toContain('SiteFooter');
