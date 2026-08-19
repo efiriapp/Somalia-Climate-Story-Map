@@ -19,6 +19,9 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('MOGADISHU_HOME.lng');
     expect(source).not.toContain('flyToStop(token, { lng: stop.lng, lat: stop.lat }, next)');
     expect(source).toContain("new Marker({ color:");
+    expect(source).toContain("className = 'tour-pin'");
+    expect(source).toContain('tour-pin-label');
+    expect(source).toContain('formatTourDate(stop.date)');
     expect(source).toContain('tour-right-stack');
     expect(source).toContain('event-card');
     expect(source).toContain("addEventListener('mouseenter'");

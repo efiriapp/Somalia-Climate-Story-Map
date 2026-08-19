@@ -450,9 +450,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = events.map((stop) => {
-      const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
-      const pin = marker.getElement();
-      pin.style.cursor = 'pointer';
+      const pin = document.createElement('div');
+      pin.className = 'tour-pin';
+      const label = document.createElement('span');
+      label.className = 'tour-pin-label';
+      label.textContent = formatTourDate(stop.date);
+      const dot = document.createElement('span');
+      dot.className = 'tour-pin-dot';
+      pin.append(label, dot);
+      const marker = new Marker({ element: pin, anchor: 'bottom' }).setLngLat([stop.lng, stop.lat]).addTo(map);
       const openFull = (event: Event) => {
         event.stopPropagation();
         if (measuringRef.current || !stop.storyId) {

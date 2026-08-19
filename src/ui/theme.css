@@ -653,11 +653,13 @@ select {
   flex-direction: column;
   align-items: center;
   pointer-events: auto;
+  cursor: pointer;
 }
 
 .tour-pin-dot {
   width: 16px;
   height: 16px;
+  background: #2E7D57;
   border: 2px solid #fff;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
@@ -665,7 +667,8 @@ select {
 }
 
 .tour-pin-label {
-  margin-top: 0.35rem;
+  opacity: 1;
+  margin-bottom: 0.28rem;
   max-width: 9.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -678,12 +681,7 @@ select {
   font-weight: 800;
   line-height: 1.2;
   box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
-  opacity: 0;
   pointer-events: none;
-}
-
-.tour-pin:hover .tour-pin-label {
-  opacity: 1;
 }
 
 .global-stage .maplibregl-ctrl-top-right {

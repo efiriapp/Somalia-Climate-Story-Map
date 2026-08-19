@@ -49,7 +49,8 @@ describe('ICE green brand', () => {
     expect(css).toContain('.tour-back.simple');
     expect(css).toContain('.tour-event-nav');
     expect(css).toContain('.tour-pin-label');
-    expect(css).toMatch(/\.tour-pin:hover \.tour-pin-label[\s\S]{0,80}opacity:\s*1/);
+    expect(css).toMatch(/\.tour-pin-label \{[\s\S]{0,280}opacity:\s*1/);
+    expect(css).not.toMatch(/\.tour-pin:hover \.tour-pin-label/);
     expect(css).toContain('.tour-right-stack');
     expect(css).toMatch(/\.maplibregl-popup-content img[\s\S]{0,80}max-height:\s*[4-8][0-9]px/);
   });
