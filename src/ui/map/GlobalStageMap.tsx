@@ -180,22 +180,37 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       .addTo(map);
   };
 
-  const flyHome = (token: number) => {
+  const iceOffice = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
+
+  const landAtIceOffice = (map: Map, onDone: () => void) => {
+    map.easeTo({
+      center: [iceOffice.lng, iceOffice.lat],
+      zoom: CITY_ZOOM,
+      pitch: 42,
+      bearing: 0,
+      duration: CITY_EASE_MS,
+    });
+    holdRef.current = window.setTimeout(onDone, CITY_EASE_MS);
+  };
+
+  const flyToIceOffice = (token: number, from: LngLat, onArrive: () => void) => {
     const map = mapRef.current;
     if (!map) {
       return;
     }
     setTourCard(null);
-    const from = { lng: map.getCenter().lng, lat: map.getCenter().lat };
-    const home = { lng: GLOBE_VIEW.lng, lat: GLOBE_VIEW.lat };
-    flyAlong(map, greatCircle(from, home), GLOBE_VIEW.zoom, GLOBE_VIEW.pitch, (id) => {
+    flyAlong(map, greatCircle(from, iceOffice), CRUISE_ZOOM, 28, (id) => {
       rafRef.current = id;
     }, () => {
       if (token !== tourToken.current) {
         return;
       }
-      clearTourPath(map);
-      touringRef.current = false;
+      landAtIceOffice(map, () => {
+        if (token !== tourToken.current) {
+          return;
+        }
+        onArrive();
+      });
     });
   };
 
@@ -235,16 +250,18 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           const nextIndex = directionRef.current > 0
             ? nextTourIndex(index, list.length)
             : prevTourIndex(Math.max(index, 0));
-          if (nextIndex === index) {
-            flyHome(token);
-            return;
-          }
-          const next = list[nextIndex];
-          if (!next) {
-            flyHome(token);
-            return;
-          }
-          flyToStop(token, { lng: stop.lng, lat: stop.lat }, next);
+          const next = nextIndex === index ? null : list[nextIndex];
+          flyToIceOffice(token, { lng: stop.lng, lat: stop.lat }, () => {
+            if (!next) {
+              const map = mapRef.current;
+              if (map) {
+                clearTourPath(map);
+              }
+              touringRef.current = false;
+              return;
+            }
+            flyToStop(token, iceOffice, next);
+          });
         }, POPUP_HOLD_MS);
       }, CITY_EASE_MS);
     });
