@@ -22,8 +22,10 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('Go home');
     expect(source).toContain('Measure distance');
     expect(source).toContain('Reset compass');
-    expect(source).toContain('NavigationControl');
-    expect(source).not.toContain('tour-popup-card');
+    expect(source).not.toContain('mouseenter');
+    expect(source).toContain('tour-pin-label');
+    expect(source).toContain('stop.title');
+    expect(source).toContain('maxWidth: \'200px\'');
     expect(source).not.toContain("addEventListener('wheel'");
     expect(source).not.toContain('EventSlider');
     expect(source).not.toContain('createPlaneMarker');

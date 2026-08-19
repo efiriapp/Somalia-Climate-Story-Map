@@ -114,6 +114,19 @@ const flyAlong = (
   setRaf(requestAnimationFrame(step));
 };
 
+const labeledPin = (color: string, title: string) => {
+  const root = document.createElement('div');
+  root.className = 'tour-pin';
+  const dot = document.createElement('span');
+  dot.className = 'tour-pin-dot';
+  dot.style.background = color;
+  const label = document.createElement('span');
+  label.className = 'tour-pin-label';
+  label.textContent = title;
+  root.append(dot, label);
+  return root;
+};
+
 export function GlobalStageMap({ stories, onClose }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -162,8 +175,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     popupRef.current = new Popup({
       closeButton: true,
       closeOnClick: false,
-      maxWidth: '320px',
-      offset: 28,
+      maxWidth: '200px',
+      offset: 22,
       className: 'tour-map-popup',
     })
       .setLngLat([stop.lng, stop.lat])
@@ -348,13 +361,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     if (!homeMarkerRef.current) {
-      homeMarkerRef.current = new Marker({ color: '#063D39' })
+      homeMarkerRef.current = new Marker({ element: labeledPin('#063D39', MOGADISHU_HOME.title), anchor: 'bottom' })
         .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
         .addTo(map);
     }
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = events.map((stop) => {
-      const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
+      const marker = new Marker({ element: labeledPin('#2E7D57', stop.title), anchor: 'bottom' })
+        .setLngLat([stop.lng, stop.lat])
+        .addTo(map);
       const pin = marker.getElement();
       pin.style.cursor = 'pointer';
       const open = (event: Event) => {
@@ -365,7 +380,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         setActiveId(stop.storyId);
         showPinPopup(map, stop);
       };
-      pin.addEventListener('mouseenter', open);
       pin.addEventListener('click', open);
       return marker;
     });
