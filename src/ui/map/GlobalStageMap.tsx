@@ -36,9 +36,9 @@ type Props = {
   onClose: () => void;
 };
 
-const applyGlobe = (map: Map) => {
-  const globeMap = map as Map & { setProjection?: (projection: { type: string }) => void };
-  globeMap.setProjection?.({ type: 'globe' });
+const applyFlatMap = (map: Map) => {
+  const flatMap = map as Map & { setProjection?: (projection: { type: string }) => void };
+  flatMap.setProjection?.({ type: 'mercator' });
 };
 
 const Icon = ({ children }: { children: ReactNode }) => (
@@ -215,7 +215,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.easeTo({
       center: [iceOffice.lng, iceOffice.lat],
       zoom: COUNTRY_ZOOM,
-      pitch: 24,
+      pitch: 0,
       bearing: 0,
       duration: CITY_EASE_MS,
     });
@@ -229,7 +229,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     setTourCard(null);
     showHomePin(map);
-    flyAlong(map, greatCircle(from, iceOffice), CRUISE_ZOOM, 28, (id) => {
+    flyAlong(map, greatCircle(from, iceOffice), CRUISE_ZOOM, 0, (id) => {
       rafRef.current = id;
     }, () => {
       if (token !== tourToken.current) {
@@ -253,7 +253,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     clearPopup();
     setActiveId(stop.storyId);
     showEventPin(map, stop);
-    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 28, (id) => {
+    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 0, (id) => {
       rafRef.current = id;
     }, () => {
       if (token !== tourToken.current) {
@@ -262,7 +262,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       map.easeTo({
         center: [stop.lng, stop.lat],
         zoom: CITY_ZOOM,
-        pitch: 42,
+        pitch: 0,
         bearing: 8,
         duration: CITY_EASE_MS,
       });
@@ -393,15 +393,16 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       bearing: GLOBE_VIEW.bearing,
       minZoom: GLOBE_VIEW.minZoom,
       maxZoom: GLOBE_VIEW.maxZoom,
+      maxPitch: 0,
       fadeDuration: 0,
       attributionControl: false,
     });
     map.setPadding(GLOBE_PADDING);
-    map.addControl(new NavigationControl({ visualizePitch: true, showCompass: false }), 'top-right');
+    map.addControl(new NavigationControl({ visualizePitch: false, showCompass: false }), 'top-right');
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
     mapRef.current = map;
     const onLoad = () => {
-      applyGlobe(map);
+      applyFlatMap(map);
       if (!map.getSource('measure-line')) {
         map.addSource('measure-line', { type: 'geojson', data: emptyLine });
         map.addLayer({

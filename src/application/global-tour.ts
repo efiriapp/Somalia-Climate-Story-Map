@@ -78,7 +78,7 @@ const eventStop = (story: Story): TourStop => ({
   lat: story.location.lat,
   lng: story.location.lng,
   zoom: CITY_ZOOM,
-  pitch: 42,
+  pitch: 0,
   bearing: 12,
 });
 

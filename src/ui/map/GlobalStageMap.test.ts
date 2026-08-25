@@ -36,4 +36,14 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('createPlaneMarker');
     expect(source).not.toContain('setPlaying(true)');
   });
+
+  it('keeps the world map flat 2D globally, with no globe or camera tilt', () => {
+    expect(source).not.toContain("type: 'globe'");
+    expect(source).toContain("type: 'mercator'");
+    expect(source).toContain('maxPitch: 0');
+    expect(source).not.toContain('pitch: 24');
+    expect(source).not.toContain('pitch: 42');
+    expect(source).not.toContain('CRUISE_ZOOM, 28');
+    expect(source).toContain('visualizePitch: false');
+  });
 });
