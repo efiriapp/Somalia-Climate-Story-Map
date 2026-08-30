@@ -534,6 +534,87 @@ select {
   overflow: hidden;
 }
 
+.region-map-tour {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.story-detail .region-map-tour-map,
+.story-detail .region-map-tour-map .leaflet-container {
+  min-height: 420px;
+  height: 420px;
+}
+
+.region-pin-label {
+  background: transparent;
+  border: 0;
+}
+
+.region-pin-label span {
+  display: inline-block;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  background: var(--forest);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
+  white-space: nowrap;
+}
+
+.region-pin-label.active span {
+  background: var(--mint);
+  color: var(--forest);
+  outline: 2px solid var(--forest);
+}
+
+.region-map-slider {
+  background: var(--chip);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.region-map-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  background: var(--white);
+}
+
+.region-map-card h3,
+.region-map-card p {
+  margin: 0;
+  padding: 0 0.9rem;
+}
+
+.region-map-card h3 {
+  padding-top: 0.75rem;
+  color: var(--forest);
+  font-size: 1.05rem;
+}
+
+.region-map-card p {
+  padding-top: 0.4rem;
+  padding-bottom: 0.75rem;
+  line-height: 1.55;
+}
+
+.region-map-nav {
+  display: flex;
+  gap: 0.55rem;
+  padding: 0 0.9rem 0.9rem;
+}
+
+.region-map-nav button {
+  border: 0;
+  border-radius: 10px;
+  background: var(--forest);
+  color: var(--white);
+  padding: 0.55rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .back {
   background: none;
   border: 0;

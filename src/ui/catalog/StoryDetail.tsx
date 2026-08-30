@@ -1,6 +1,7 @@
 import { formatTourDate } from '../../application/global-tour';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
+import { RegionMapTour } from '../map/RegionMapTour';
 
 type Props = {
   story: Story;
@@ -72,14 +73,20 @@ export function StoryDetail({ story, onBack }: Props) {
       ))}
 
       <section className="story-map">
-        <h2>On the map</h2>
-        <p>{story.placeLabel ?? story.location.name}</p>
-        <MapPane
-          stories={[story]}
-          view={{ center: { lat: story.location.lat, lng: story.location.lng }, zoom: CITY_ZOOM }}
-          selectedId={story.id}
-          onSelect={() => undefined}
-        />
+        <h2>{story.tourStops?.length ? 'Regions of Somalia' : 'On the map'}</h2>
+        {story.tourStops?.length ? (
+          <RegionMapTour story={story} />
+        ) : (
+          <>
+            <p>{story.placeLabel ?? story.location.name}</p>
+            <MapPane
+              stories={[story]}
+              view={{ center: { lat: story.location.lat, lng: story.location.lng }, zoom: CITY_ZOOM }}
+              selectedId={story.id}
+              onSelect={() => undefined}
+            />
+          </>
+        )}
       </section>
 
       {story.website ? (

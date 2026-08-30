@@ -30,6 +30,7 @@ export type Story = {
   videoUrl?: string;
   stats?: { label: string; value: string }[];
   chapters?: { heading: string; paragraphs: string[] }[];
+  tourStops?: { region: string; title: string; description: string; images: string[] }[];
 };
 
 export type SortKey = 'newest' | 'oldest' | 'title' | 'keywords';

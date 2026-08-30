@@ -18,6 +18,8 @@ describe('StoryDetail', () => {
     expect(source).toContain('story-gallery');
     expect(source).toContain('story-video');
     expect(source).toContain('MapPane');
+    expect(source).toContain('RegionMapTour');
+    expect(source).toContain('Regions of Somalia');
     expect(source).toContain('story.chapters');
     expect(app).toContain('StoryDetail');
   });

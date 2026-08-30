@@ -160,5 +160,12 @@ describe('global-stage source pages', () => {
     expect(story?.chapters?.some((chapter) => /Ceelgula/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Far-libaax/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.images).toEqual(['/logos/simad.webp']);
+    expect(story?.tourStops?.map((stop) => stop.region)).toEqual([
+      'mudug',
+      'bay',
+      'hiraan',
+      'lower-juba',
+    ]);
+    expect(story?.tourStops?.every((stop) => stop.images[0] === '/logos/simad.webp')).toBe(true);
   });
 });

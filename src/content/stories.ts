@@ -353,6 +353,36 @@ export const stories: Story[] = [
       { label: 'Lower Juba', value: '340+ pastoralist and farming households' },
     ],
     images: ['/logos/simad.webp'],
+    tourStops: [
+      {
+        region: 'mudug',
+        title: 'Mudug: water for families and livestock',
+        description:
+          'In March 2026, SIMAD delivered emergency water to communities around Ceelgula in Mudug, where pastoralist families had gathered after drought. More than 35 households and their livestock benefited.',
+        images: ['/logos/simad.webp'],
+      },
+      {
+        region: 'bay',
+        title: 'Baay: reaching more than 1,200 people',
+        description:
+          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people as drought affected households and livestock.',
+        images: ['/logos/simad.webp'],
+      },
+      {
+        region: 'hiraan',
+        title: 'Hiiraan: families displaced by drought',
+        description:
+          'In Xuduley, Hiiraan, more than 90 households were reached, including families who had moved for water. In Far-libaax and surrounding areas, about 180 households received assistance.',
+        images: ['/logos/simad.webp'],
+      },
+      {
+        region: 'lower-juba',
+        title: 'Lower Juba: pastoralists and farmers',
+        description:
+          'The response reached communities in Lower Juba, benefiting more than 340 pastoralist and farming households facing widespread water shortages.',
+        images: ['/logos/simad.webp'],
+      },
+    ],
     chapters: [
       {
         heading: 'When the rains fail',
@@ -379,7 +409,7 @@ export const stories: Story[] = [
         heading: 'Lower Juba: pastoralists and farmers',
         paragraphs: [
           'The response also reached communities in Lower Juba, benefiting more than 340 households made up of pastoralist and farming families affected by drought and widespread water shortages. The same drought can damage different livelihoods in different ways: a dying herd, a failed harvest, the cost of buying water, or displacement.',
-          'This map stays on SIMAD University in Mogadishu. The source names Ceelgula, Baydhaba, Xuduley, Far-libaax, and Lower Juba, but it does not give verified coordinates for those field sites, so those places are told in the chapters rather than as invented pins.',
+          'The map tour below follows the response region by region: Mudug, Baay, Hiiraan, and Lower Juba.',
         ],
       },
       {
