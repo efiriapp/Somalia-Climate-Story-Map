@@ -105,4 +105,10 @@ describe('ICE green brand', () => {
     expect(css).toContain('.region-pin-popup');
     expect(css).not.toContain('region-slide-in');
   });
+
+  it('styles the ICE story source card at the end of each story', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toContain('.story-source');
+    expect(css).toMatch(/\.story-source[\s\S]{0,160}background:\s*(var\(--chip\)|#e8f5ee)/);
+  });
 });

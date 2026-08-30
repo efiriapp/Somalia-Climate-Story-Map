@@ -28,6 +28,17 @@ export type Story = {
   placeLabel?: string;
   videoTitle?: string;
   videoUrl?: string;
+  sourceCard?: {
+    place: string;
+    city: string;
+    regionLabel: string;
+    country: string;
+    category: string;
+    impactAreas: string[];
+    featuredPerson: string;
+    primarySource: string;
+    extras?: { label: string; value: string }[];
+  };
   stats?: { label: string; value: string }[];
   chapters?: { heading: string; paragraphs: string[] }[];
   tourStops?: { region: string; place?: string; title: string; description: string; images: string[] }[];

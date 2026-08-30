@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { formatTourDate } from '../../application/global-tour';
 import { scrollPageToTop } from '../../application/scroll-page-top';
+import { youtubeEmbedSrc } from '../../application/youtube-embed';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
@@ -12,13 +13,12 @@ type Props = {
 
 const CITY_ZOOM = 12;
 
-const canEmbedVideo = (url: string): boolean => url.includes('youtube.com/embed');
-
 export function StoryDetail({ story, onBack }: Props) {
   const chapters = story.chapters?.length
     ? story.chapters
     : [{ heading: 'The story', paragraphs: [story.body] }];
-  const videoHref = story.videoUrl ?? story.website;
+  const embedSrc = story.videoUrl ? youtubeEmbedSrc(story.videoUrl) : null;
+  const source = story.sourceCard;
 
   useLayoutEffect(() => {
     scrollPageToTop();
@@ -56,19 +56,6 @@ export function StoryDetail({ story, onBack }: Props) {
         </dl>
       ) : null}
 
-      {story.videoTitle ? (
-        <div className="story-video">
-          {story.videoUrl && canEmbedVideo(story.videoUrl) ? (
-            <iframe title={story.videoTitle} src={story.videoUrl} allowFullScreen />
-          ) : (
-            <a className="story-video-card" href={videoHref} target="_blank" rel="noreferrer">
-              {story.images[0] ? <img src={story.images[0]} alt="" /> : null}
-              <span>ICE video: {story.videoTitle}</span>
-            </a>
-          )}
-        </div>
-      ) : null}
-
       {chapters.map((chapter, index) => (
         <section className="story-chapter" key={chapter.heading}>
           <h2>{chapter.heading}</h2>
@@ -96,6 +83,64 @@ export function StoryDetail({ story, onBack }: Props) {
           />
         </section>
       )}
+
+      {embedSrc && story.videoTitle ? (
+        <div className="story-video">
+          <iframe title={story.videoTitle} src={embedSrc} allowFullScreen />
+        </div>
+      ) : null}
+
+      {source ? (
+        <section className="story-source" aria-label="Story Map Location">
+          <h2>📍 Story Map Location</h2>
+          <dl>
+            <div>
+              <dt>Place</dt>
+              <dd>{source.place}</dd>
+            </div>
+            <div>
+              <dt>City</dt>
+              <dd>{source.city}</dd>
+            </div>
+            <div>
+              <dt>Region</dt>
+              <dd>{source.regionLabel}</dd>
+            </div>
+            <div>
+              <dt>Country</dt>
+              <dd>{source.country}</dd>
+            </div>
+            <div>
+              <dt>Story category</dt>
+              <dd>{source.category}</dd>
+            </div>
+            <div>
+              <dt>Impact areas</dt>
+              <dd>{source.impactAreas.join(' • ')}</dd>
+            </div>
+            <div>
+              <dt>Featured person</dt>
+              <dd>{source.featuredPerson}</dd>
+            </div>
+            <div>
+              <dt>Primary source</dt>
+              <dd>{source.primarySource}</dd>
+            </div>
+            {source.extras?.map((row) => (
+              <div key={row.label}>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))}
+            {story.videoTitle ? (
+              <div>
+                <dt>ICE video</dt>
+                <dd>{story.videoTitle}</dd>
+              </div>
+            ) : null}
+          </dl>
+        </section>
+      ) : null}
 
       {story.website ? (
         <p>

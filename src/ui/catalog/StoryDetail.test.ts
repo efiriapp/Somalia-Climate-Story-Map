@@ -14,10 +14,16 @@ describe('StoryDetail', () => {
     expect(domain).toContain('chapters?:');
     expect(domain).toContain('stats?:');
     expect(domain).toContain('videoTitle?:');
+    expect(domain).toContain('sourceCard?:');
     expect(source).toContain('story-detail');
     expect(source).toContain('story-stats');
     expect(source).toContain('story-gallery');
     expect(source).toContain('story-video');
+    expect(source).toContain('youtubeEmbedSrc');
+    expect(source).toContain('story-source');
+    expect(source).toContain('Story Map Location');
+    expect(source.indexOf('chapters.map')).toBeLessThan(source.indexOf('story-video'));
+    expect(source.indexOf('story-video')).toBeLessThan(source.indexOf('story-source'));
     expect(source).toContain('MapPane');
     expect(source).toContain('RegionMapTour');
     expect(source).toContain('SIMAD supported drought impact');

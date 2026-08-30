@@ -97,6 +97,14 @@ describe('global-stage source pages', () => {
     for (const story of ice) {
       expect(story.images.length, story.id).toBeGreaterThan(0);
       expect(existsSync(join(publicDir, story.images[0].replace(/^\//, ''))), story.images[0]).toBe(true);
+      expect(story.sourceCard?.place, story.id).toBeTruthy();
+      expect(story.sourceCard?.city, story.id).toBe('Mogadishu');
+      expect(story.sourceCard?.regionLabel, story.id).toBe('Banaadir');
+      expect(story.sourceCard?.country, story.id).toBe('Somalia');
+      expect(story.sourceCard?.category, story.id).toBeTruthy();
+      expect(story.sourceCard?.impactAreas.length, story.id).toBeGreaterThan(0);
+      expect(story.sourceCard?.featuredPerson, story.id).toBe(story.featuredPerson);
+      expect(story.sourceCard?.primarySource, story.id).toBeTruthy();
     }
   });
 
@@ -104,6 +112,10 @@ describe('global-stage source pages', () => {
     const story = stories.find((item) => item.id === '4c-art');
     expect(story?.featuredPerson).toBe('Abdinasir Abdikadir Mohamed (4C)');
     expect(story?.videoTitle).toMatch(/Arts and Climate Action/);
+    expect(story?.videoUrl).toContain('osuiqTcIEeM');
+    expect(story?.sourceCard?.place).toBe('4C Art Studio / Mogadishu');
+    expect(story?.sourceCard?.category).toBe('Arts & Climate Action');
+    expect(story?.sourceCard?.extras?.some((row) => /UNSOS/i.test(row.value))).toBe(true);
     expect(story?.stats?.length).toBeGreaterThanOrEqual(4);
     expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
     expect(story?.images).toHaveLength(3);
@@ -114,6 +126,7 @@ describe('global-stage source pages', () => {
     const story = stories.find((item) => item.id === 'liido-beach-cleanup');
     expect(story?.featuredPerson).toBe('Abdisatar Arabow');
     expect(story?.videoTitle).toMatch(/Beach Cleaning Campaign/);
+    expect(story?.videoUrl).toContain('gi083zfLVC4');
     expect(story?.placeLabel).toMatch(/Liido Beach/);
     expect(story?.stats?.some((stat) => /119,873/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /89\.47/.test(`${stat.label} ${stat.value}`))).toBe(true);
@@ -126,6 +139,7 @@ describe('global-stage source pages', () => {
   it('gives ECOSOM a full source-backed detail page', () => {
     const story = stories.find((item) => item.id === 'ecosom');
     expect(story?.videoTitle).toMatch(/Clean and Affordable Charcoal/);
+    expect(story?.videoUrl).toContain('fkwwMTtuqDM');
     expect(story?.stats?.some((stat) => /2019/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /20,000/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /185/.test(`${stat.label} ${stat.value}`))).toBe(true);
@@ -146,6 +160,7 @@ describe('global-stage source pages', () => {
   it('gives Casuuro Plants a full source-backed detail page', () => {
     const story = stories.find((item) => item.id === 'casuuro-plants');
     expect(story?.videoTitle).toMatch(/Casuuro Plants/);
+    expect(story?.videoUrl).toContain('WcUbn9Oo0A8');
     expect(story?.stats?.some((stat) => /Dalbile/i.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
     expect(story?.images).toHaveLength(2);
