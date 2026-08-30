@@ -29,7 +29,7 @@ describe('RegionMapTour', () => {
     expect(source).toContain('region-slide-card');
     expect(source).toContain('region-map-tour-screen');
     expect(source).toContain('whenReady');
-    expect(source).toContain('window.scrollTo(0, 0)');
+    expect(source).toContain('scrollPageToTop');
     expect(source).toContain('capture: true');
     expect(source).toContain('tourFlightPlan');
     expect(source).toContain('setSliderOpen(false)');

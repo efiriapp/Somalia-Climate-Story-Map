@@ -14,6 +14,7 @@ import {
   tourFlightPlan,
   type RegionMapStop,
 } from '../../application/region-map-tour';
+import { scrollPageToTop } from '../../application/scroll-page-top';
 import { scrollTourIndex } from '../../application/scroll-tour';
 import type { Story } from '../../domain/story';
 
@@ -166,7 +167,7 @@ export function RegionMapTour({ story }: Props) {
           maxZoom={18}
           scrollWheelZoom={false}
           keyboard={false}
-          whenReady={() => window.scrollTo(0, 0)}
+          whenReady={() => scrollPageToTop()}
         >
           <LayersControl position="topleft">
             {leafletBasemaps.map((layer, index) => (

@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { filterCatalog } from '../application/filter-catalog';
 import { resolveMapView } from '../application/resolve-map-view';
+import { scrollPageToTop } from '../application/scroll-page-top';
 import { aboutIce } from '../content/about-ice';
 import { stories as catalog } from '../content/stories';
 import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '../domain/story';
@@ -33,7 +34,7 @@ export default function App() {
 
   useLayoutEffect(() => {
     if (!selectedId) return;
-    window.scrollTo(0, 0);
+    scrollPageToTop();
   }, [selectedId]);
 
   const openScreen = (next: Screen) => {

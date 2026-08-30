@@ -26,8 +26,8 @@ describe('StoryDetail', () => {
     expect(source).toContain('index === 0 && story.tourStops');
     expect(source).toContain('story.chapters');
     expect(source).toContain('useLayoutEffect');
-    expect(source).toContain('window.scrollTo(0, 0)');
+    expect(source).toContain('scrollPageToTop');
     expect(app).toContain('StoryDetail');
-    expect(app).toContain('window.scrollTo(0, 0)');
+    expect(app).toContain('scrollPageToTop');
   });
 });

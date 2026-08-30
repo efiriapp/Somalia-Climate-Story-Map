@@ -1,5 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { formatTourDate } from '../../application/global-tour';
+import { scrollPageToTop } from '../../application/scroll-page-top';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
@@ -20,7 +21,7 @@ export function StoryDetail({ story, onBack }: Props) {
   const videoHref = story.videoUrl ?? story.website;
 
   useLayoutEffect(() => {
-    window.scrollTo(0, 0);
+    scrollPageToTop();
   }, [story.id]);
 
   return (

@@ -34,7 +34,7 @@ describe('platform topbar', () => {
 
   it('scrolls to the top of the page when a catalog story opens', () => {
     expect(source).toContain('useLayoutEffect');
-    expect(source).toMatch(/useLayoutEffect\([\s\S]{0,220}window\.scrollTo\(0, 0\)/);
-    expect(source).toMatch(/selectedId[\s\S]{0,220}window\.scrollTo\(0, 0\)/);
+    expect(source).toMatch(/useLayoutEffect\([\s\S]{0,220}scrollPageToTop/);
+    expect(source).toMatch(/selectedId[\s\S]{0,220}scrollPageToTop/);
   });
 });
