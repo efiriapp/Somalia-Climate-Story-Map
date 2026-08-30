@@ -112,12 +112,12 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.story-source[\s\S]{0,160}background:\s*(var\(--chip\)|#e8f5ee)/);
   });
 
-  it('makes ICE story videos a bit narrower with 16:9 height', () => {
+  it('makes ICE story videos 3rem wider on each side', () => {
     const css = readFileSync(themePath, 'utf8');
-    expect(css).toMatch(/\.story-video[\s\S]{0,80}width:\s*86%/);
-    expect(css).toMatch(/\.story-video[\s\S]{0,140}max-width:\s*720px/);
-    expect(css).toMatch(/\.story-video[\s\S]{0,180}aspect-ratio:\s*16\s*\/\s*9/);
-    expect(css).toMatch(/\.story-video[\s\S]{0,240}margin:\s*4\.5rem auto 1\.2rem/);
+    expect(css).toMatch(/\.story-video[\s\S]{0,120}width:\s*calc\(100% \+ 6rem\)/);
+    expect(css).toMatch(/\.story-video[\s\S]{0,180}max-width:\s*calc\(720px \+ 6rem\)/);
+    expect(css).toMatch(/\.story-video[\s\S]{0,220}aspect-ratio:\s*16\s*\/\s*9/);
+    expect(css).toMatch(/\.story-video[\s\S]{0,280}margin:\s*4\.5rem auto 1\.2rem/);
     expect(css).not.toMatch(/\.story-video[\s\S]{0,80}width:\s*100vw/);
     expect(css).toMatch(/\.story-video iframe[\s\S]{0,160}height:\s*100%/);
   });

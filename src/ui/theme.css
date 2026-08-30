@@ -484,8 +484,8 @@ select {
 }
 
 .story-video {
-  width: 86%;
-  max-width: 720px;
+  width: calc(100% + 6rem);
+  max-width: calc(720px + 6rem);
   aspect-ratio: 16 / 9;
   position: relative;
   margin: 4.5rem auto 1.2rem;
