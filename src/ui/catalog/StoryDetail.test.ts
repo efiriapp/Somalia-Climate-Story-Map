@@ -25,6 +25,8 @@ describe('StoryDetail', () => {
     expect(source.indexOf('story-lede')).toBeLessThan(source.indexOf('story-map-bleed'));
     expect(source).toContain('index === 0 && story.tourStops');
     expect(source).toContain('story.chapters');
+    expect(source).toContain('useLayoutEffect');
+    expect(source).toContain('window.scrollTo(0, 0)');
     expect(app).toContain('StoryDetail');
     expect(app).toContain('window.scrollTo(0, 0)');
   });

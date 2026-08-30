@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react';
 import { formatTourDate } from '../../application/global-tour';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
@@ -17,6 +18,10 @@ export function StoryDetail({ story, onBack }: Props) {
     ? story.chapters
     : [{ heading: 'The story', paragraphs: [story.body] }];
   const videoHref = story.videoUrl ?? story.website;
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [story.id]);
 
   return (
     <article className="detail story-detail">

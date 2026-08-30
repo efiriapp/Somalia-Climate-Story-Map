@@ -73,7 +73,7 @@ describe('tourFlightPlan', () => {
         showSlider: true,
       },
     ]);
-    expect(BUILDING_ZOOM).toBe(18);
+    expect(BUILDING_ZOOM).toBe(15);
     expect(SOMALIA_VIEW.zoom).toBe(6);
   });
 });

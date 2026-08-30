@@ -98,6 +98,8 @@ describe('ICE green brand', () => {
   it('makes the SIMAD region tour full-screen with a pin marker on district names', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.region-map-tour-screen[\s\S]{0,280}height:\s*100vh/);
+    expect(css).toMatch(/\.story-detail[\s\S]{0,80}overflow-anchor:\s*none/);
+    expect(css).toMatch(/\.story-map-bleed[\s\S]{0,120}overflow-anchor:\s*none/);
     expect(css).toContain('.region-pin-marker');
     expect(css).toContain('.modern-pin');
     expect(css).toContain('.region-pin-popup');

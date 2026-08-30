@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { filterCatalog } from '../application/filter-catalog';
 import { resolveMapView } from '../application/resolve-map-view';
 import { aboutIce } from '../content/about-ice';
@@ -31,7 +31,7 @@ export default function App() {
   const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
   const detail = selectedId ? catalog.find((story) => story.id === selectedId) : undefined;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!selectedId) return;
     window.scrollTo(0, 0);
   }, [selectedId]);

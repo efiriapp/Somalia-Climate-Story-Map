@@ -165,6 +165,8 @@ export function RegionMapTour({ story }: Props) {
           zoom={SOMALIA_VIEW.zoom}
           maxZoom={18}
           scrollWheelZoom={false}
+          keyboard={false}
+          whenReady={() => window.scrollTo(0, 0)}
         >
           <LayersControl position="topleft">
             {leafletBasemaps.map((layer, index) => (

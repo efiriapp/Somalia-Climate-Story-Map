@@ -420,6 +420,7 @@ select {
 
 .story-detail {
   max-width: 920px;
+  overflow-anchor: none;
 }
 
 .story-person {
@@ -536,6 +537,7 @@ select {
 }
 
 .story-map-bleed {
+  overflow-anchor: none;
   position: relative;
   width: 100vw;
   max-width: 100vw;

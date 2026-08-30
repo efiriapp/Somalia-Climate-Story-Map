@@ -17,7 +17,7 @@ const PLACE_LABELS: Record<string, string> = {
   'lower-juba': 'Lower Juba',
 };
 
-export const BUILDING_ZOOM = 18;
+export const BUILDING_ZOOM = 15;
 export const HOME_FLY_MS = 3500;
 export const DISTRICT_FLY_MS = 4500;
 
