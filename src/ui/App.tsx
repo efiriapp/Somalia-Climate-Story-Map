@@ -9,10 +9,12 @@ import { FilterPanel } from './chrome/FilterPanel';
 import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
+import { ClimateImpactPage } from './catalog/ClimateImpactPage';
 import { MapPane } from './map/MapPane';
 import { GlobalStageMap } from './map/GlobalStageMap';
+import type { ClimateHazardId } from '../content/climate-impact';
 
-type Screen = 'about' | 'research' | 'stories' | 'global-stage';
+type Screen = 'about' | 'research' | 'stories' | 'climate-impact' | 'global-stage';
 
 const catalogTypeFor = (screen: Screen): ContentType =>
   screen === 'research' ? 'research-story' : 'ice-story';
@@ -22,6 +24,7 @@ export default function App() {
   const [applied, setApplied] = useState<FilterCriteria>(defaultFilterCriteria);
   const [advancedOpen, setAdvancedOpen] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [impactHazard, setImpactHazard] = useState<ClimateHazardId | null>(null);
   const [screen, setScreen] = useState<Screen>('stories');
 
   const scoped = useMemo(
@@ -40,6 +43,7 @@ export default function App() {
   const openScreen = (next: Screen) => {
     setScreen(next);
     setSelectedId(null);
+    setImpactHazard(null);
   };
 
   return (
@@ -73,6 +77,13 @@ export default function App() {
         </button>
         <button
           type="button"
+          className={screen === 'climate-impact' ? 'active' : ''}
+          onClick={() => openScreen('climate-impact')}
+        >
+          Climate Impact
+        </button>
+        <button
+          type="button"
           className={screen === 'global-stage' ? 'active' : ''}
           onClick={() => openScreen('global-stage')}
         >
@@ -93,6 +104,12 @@ export default function App() {
             </a>
           </p>
         </article>
+      ) : screen === 'climate-impact' ? (
+        <ClimateImpactPage
+          selectedId={impactHazard}
+          onSelect={setImpactHazard}
+          onBack={() => setImpactHazard(null)}
+        />
       ) : screen === 'global-stage' ? (
         <GlobalStageMap stories={catalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (

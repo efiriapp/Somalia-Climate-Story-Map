@@ -16,14 +16,17 @@ describe('platform topbar', () => {
     );
   });
 
-  it('places About, Research, Stories, then ICE at Global Stage as a full-screen globe', () => {
+  it('places About, Research, Stories, Climate Impact, then ICE at Global Stage as a full-screen globe', () => {
     expect(source).toContain('About ICE Institute');
     expect(source).toContain('ICE Institute Research Stories');
+    expect(source).toContain('Climate Impact');
     expect(source).toContain('ICE at Global Stage');
     expect(source).toMatch(
-      /About ICE Institute[\s\S]+ICE Institute Research Stories[\s\S]+>[\s\n]*Stories[\s\n]*<[\s\S]+ICE at Global Stage/,
+      /About ICE Institute[\s\S]+ICE Institute Research Stories[\s\S]+>[\s\n]*Stories[\s\n]*<[\s\S]+Climate Impact[\s\S]+ICE at Global Stage/,
     );
     expect(source).toContain("openScreen('global-stage')");
+    expect(source).toContain("openScreen('climate-impact')");
+    expect(source).toContain('ClimateImpactPage');
     expect(source).toContain('GlobalStageMap');
     expect(source).not.toContain('GlobalStagePage');
     expect(source).toContain("openScreen('about')");

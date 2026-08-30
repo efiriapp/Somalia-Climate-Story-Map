@@ -121,4 +121,11 @@ describe('ICE green brand', () => {
     expect(css).not.toMatch(/\.story-video[\s\S]{0,80}width:\s*100vw/);
     expect(css).toMatch(/\.story-video iframe[\s\S]{0,160}height:\s*100%/);
   });
+
+  it('styles the Climate Impact hazard cards', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toContain('.climate-impact-grid');
+    expect(css).toContain('.climate-impact-card');
+    expect(css).toMatch(/\.climate-impact-card[\s\S]{0,220}background:\s*var\(--white\)/);
+  });
 });
