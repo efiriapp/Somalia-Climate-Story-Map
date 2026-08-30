@@ -17,7 +17,7 @@ const PLACE_LABELS: Record<string, string> = {
   'lower-juba': 'Lower Juba',
 };
 
-export const DISTRICT_ZOOM = 10;
+export const BUILDING_ZOOM = 18;
 export const HOME_FLY_MS = 3500;
 export const DISTRICT_FLY_MS = 4500;
 
@@ -53,7 +53,7 @@ export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightSt
   {
     lat: stop.lat,
     lng: stop.lng,
-    zoom: DISTRICT_ZOOM,
+    zoom: BUILDING_ZOOM,
     durationMs: DISTRICT_FLY_MS,
     showPin: true,
     showSlider: true,

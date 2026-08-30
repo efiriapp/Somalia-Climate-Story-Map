@@ -163,6 +163,7 @@ export function RegionMapTour({ story }: Props) {
         <MapContainer
           center={[SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng]}
           zoom={SOMALIA_VIEW.zoom}
+          maxZoom={18}
           scrollWheelZoom={false}
         >
           <LayersControl position="topleft">

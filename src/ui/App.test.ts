@@ -31,4 +31,9 @@ describe('platform topbar', () => {
     expect(source).toContain('aboutIce');
     expect(source).toContain("'research-story'");
   });
+
+  it('scrolls to the top of the page when a catalog story opens', () => {
+    expect(source).toContain('window.scrollTo(0, 0)');
+    expect(source).toMatch(/selectedId[\s\S]{0,180}window\.scrollTo\(0, 0\)/);
+  });
 });

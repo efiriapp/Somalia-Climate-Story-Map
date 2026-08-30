@@ -22,7 +22,10 @@ describe('StoryDetail', () => {
     expect(source).toContain('RegionMapTour');
     expect(source).toContain('SIMAD supported drought impact');
     expect(source).toContain('story-map-bleed');
+    expect(source.indexOf('story-lede')).toBeLessThan(source.indexOf('story-map-bleed'));
+    expect(source).toContain('index === 0 && story.tourStops');
     expect(source).toContain('story.chapters');
     expect(app).toContain('StoryDetail');
+    expect(app).toContain('window.scrollTo(0, 0)');
   });
 });

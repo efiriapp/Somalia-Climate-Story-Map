@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { filterCatalog } from '../application/filter-catalog';
 import { resolveMapView } from '../application/resolve-map-view';
 import { aboutIce } from '../content/about-ice';
@@ -30,6 +30,11 @@ export default function App() {
   const matches = useMemo(() => filterCatalog(scoped, applied), [scoped, applied]);
   const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
   const detail = selectedId ? catalog.find((story) => story.id === selectedId) : undefined;
+
+  useEffect(() => {
+    if (!selectedId) return;
+    window.scrollTo(0, 0);
+  }, [selectedId]);
 
   const openScreen = (next: Screen) => {
     setScreen(next);
