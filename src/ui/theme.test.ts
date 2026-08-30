@@ -111,4 +111,11 @@ describe('ICE green brand', () => {
     expect(css).toContain('.story-source');
     expect(css).toMatch(/\.story-source[\s\S]{0,160}background:\s*(var\(--chip\)|#e8f5ee)/);
   });
+
+  it('makes ICE story videos full screen width with 16:9 height', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.story-video[\s\S]{0,120}width:\s*100vw/);
+    expect(css).toMatch(/\.story-video[\s\S]{0,180}aspect-ratio:\s*16\s*\/\s*9/);
+    expect(css).toMatch(/\.story-video iframe[\s\S]{0,160}height:\s*100%/);
+  });
 });
