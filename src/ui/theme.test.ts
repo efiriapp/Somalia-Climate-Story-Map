@@ -99,6 +99,8 @@ describe('ICE green brand', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.region-map-tour-screen[\s\S]{0,280}height:\s*100vh/);
     expect(css).toContain('.region-pin-marker');
+    expect(css).toContain('.modern-pin');
+    expect(css).toContain('.region-pin-popup');
     expect(css).not.toContain('region-slide-in');
   });
 });

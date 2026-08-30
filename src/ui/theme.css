@@ -549,12 +549,13 @@ select {
   z-index: 2100;
   top: 1rem;
   left: 50%;
-  width: auto;
+  width: min(520px, calc(100% - 2rem));
   margin: 0;
-  padding: 0.35rem 0.85rem;
+  padding: 0.4rem 1rem;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   border-radius: 8px;
+  text-align: center;
 }
 
 .region-map-tour {
@@ -619,50 +620,56 @@ select {
   line-height: 1.55;
 }
 
-.region-pin-label {
+.modern-pin-wrap {
   background: transparent;
   border: 0;
 }
 
-.region-pin {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
+.modern-pin {
+  display: block;
+  width: 32px;
+  height: 42px;
+  filter: drop-shadow(0 4px 8px rgba(6, 61, 57, 0.35));
 }
 
 .region-pin-marker {
   display: block;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto;
   background: var(--forest);
-  border: 2px solid var(--white);
+  border: 3px solid var(--white);
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
-  box-shadow: 0 2px 8px rgba(6, 61, 57, 0.35);
+  box-shadow: inset 0 0 0 5px var(--mint);
 }
 
-.region-pin span {
-  display: inline-block;
-  padding: 0.22rem 0.5rem;
-  border-radius: 999px;
-  background: var(--forest);
-  color: var(--white);
-  font-size: 12px;
-  font-weight: 800;
-  box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
-  white-space: nowrap;
+.region-pin-popup .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(18, 33, 31, 0.2);
+  padding: 0;
 }
 
-.region-pin-label.active .region-pin-marker,
-.region-pin-label.active span {
-  background: var(--mint);
+.region-pin-popup .leaflet-popup-content {
+  margin: 0.7rem 0.9rem 0.8rem;
+  min-width: 160px;
+}
+
+.region-pin-popup strong {
+  display: block;
   color: var(--forest);
-  outline: 0;
+  font-size: 0.95rem;
 }
 
-.region-pin-label.active .region-pin-marker {
-  outline: 2px solid var(--forest);
+.region-pin-popup p {
+  margin: 0.25rem 0 0;
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.region-pin-popup .leaflet-popup-tip {
+  background: var(--white);
 }
 
 .region-map-nav {

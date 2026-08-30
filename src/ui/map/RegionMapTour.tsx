@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
-import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
@@ -19,12 +19,13 @@ type Props = {
 
 const SLIDER_HIDE_MS = 3500;
 
-const regionIcon = (label: string) =>
+const regionIcon = () =>
   L.divIcon({
-    className: 'region-pin-label active',
-    html: `<div class="region-pin"><i class="region-pin-marker"></i><span>${label}</span></div>`,
-    iconSize: [148, 56],
-    iconAnchor: [12, 22],
+    className: 'modern-pin-wrap',
+    html: `<span class="modern-pin"><i class="region-pin-marker"></i></span>`,
+    iconSize: [32, 42],
+    iconAnchor: [16, 42],
+    popupAnchor: [0, -36],
   });
 
 const flyToSomaliaThenDistrict = (
@@ -168,7 +169,12 @@ export function RegionMapTour({ story }: Props) {
           />
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
           {pinVisible && activeStop ? (
-            <Marker position={[activeStop.lat, activeStop.lng]} icon={regionIcon(activeStop.district)} />
+            <Marker position={[activeStop.lat, activeStop.lng]} icon={regionIcon()}>
+              <Popup className="region-pin-popup">
+                <strong>{activeStop.district}</strong>
+                <p>{activeStop.title}</p>
+              </Popup>
+            </Marker>
           ) : null}
         </MapContainer>
         {sliderOpen && activeStop ? (

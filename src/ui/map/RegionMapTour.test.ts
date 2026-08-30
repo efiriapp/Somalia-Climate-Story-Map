@@ -12,6 +12,10 @@ describe('RegionMapTour', () => {
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('activeStop.district');
     expect(source).toContain('region-pin-marker');
+    expect(source).toContain('modern-pin');
+    expect(source).toContain('<Popup');
+    expect(source).toContain('region-pin-popup');
+    expect(source).toContain('activeStop.district');
     expect(source).toContain('SOMALIA_VIEW');
     expect(source).toContain('flyTo');
     expect(source).toContain('HOME_FLY_MS');
