@@ -353,43 +353,6 @@ export const stories: Story[] = [
       { label: 'Lower Juba', value: '340+ pastoralist and farming households' },
     ],
     images: ['/logos/simad.webp'],
-    tourStops: [
-      {
-        district: 'hobyo',
-        title: 'Mudug: water for families and livestock',
-        description:
-          'In March 2026, SIMAD delivered emergency water to communities around Ceelgula in Mudug, where pastoralist families had gathered after drought. More than 35 households and their livestock benefited. For pastoralists, water for people alone is not enough: livestock are the household economy.',
-        images: ['/logos/simad.webp'],
-      },
-      {
-        district: 'baidoa',
-        title: 'Baay: reaching more than 1,200 people',
-        description:
-          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people. Independent reporting from SoDMA shows water trucking was also expanding around Baidoa in March 2026.',
-        images: ['/logos/simad.webp'],
-      },
-      {
-        district: 'jalalaqsi',
-        title: 'Hiiraan: families displaced by drought',
-        description:
-          'In Xuduley, Hiiraan, SIMAD’s water assistance reached more than 90 households affected by drought, including families who had moved from other parts of the region. Drought here is also a mobility problem: people move because water disappears.',
-        images: ['/logos/simad.webp'],
-      },
-      {
-        district: 'belet-weyne',
-        title: 'Far-libaax, Hiiraan',
-        description:
-          'In Far-libaax and surrounding areas of Hiiraan, about 180 households were reached. A March 2026 logistics assessment described Hiiraan as facing severe drought, dried rivers and wells, agricultural and livestock losses, and displacement.',
-        images: ['/logos/simad.webp'],
-      },
-      {
-        district: 'kismaayo',
-        title: 'Lower Juba: pastoralists and farmers',
-        description:
-          'The response reached communities in Lower Juba, benefiting more than 340 pastoralist and farming households facing widespread water shortages. The same drought can damage a herd, a harvest, or force a family to move.',
-        images: ['/logos/simad.webp'],
-      },
-    ],
     chapters: [
       {
         heading: 'When the rains fail',
@@ -416,7 +379,7 @@ export const stories: Story[] = [
         heading: 'Lower Juba: pastoralists and farmers',
         paragraphs: [
           'The response also reached communities in Lower Juba, benefiting more than 340 households made up of pastoralist and farming families affected by drought and widespread water shortages. The same drought can damage different livelihoods in different ways: a dying herd, a failed harvest, the cost of buying water, or displacement.',
-          'The map tour follows the response from Hobyo District in Mudug, through Baidoa in Baay, Jalalaqsi and Belet Weyne in Hiiraan, to Kismaayo in Lower Juba — using each district’s center as the pin.',
+          'This map stays on SIMAD University in Mogadishu. The source names Ceelgula, Baydhaba, Xuduley, Far-libaax, and Lower Juba, but it does not give verified coordinates for those field sites, so those places are told in the chapters rather than as invented pins.',
         ],
       },
       {

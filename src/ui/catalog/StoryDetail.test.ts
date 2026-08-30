@@ -13,15 +13,12 @@ describe('StoryDetail', () => {
     expect(domain).toContain('chapters?:');
     expect(domain).toContain('stats?:');
     expect(domain).toContain('videoTitle?:');
-    expect(domain).toContain('tourStops?:');
     expect(source).toContain('story-detail');
     expect(source).toContain('story-stats');
     expect(source).toContain('story-gallery');
     expect(source).toContain('story-video');
     expect(source).toContain('MapPane');
-    expect(source).toContain('StoryMapTour');
     expect(source).toContain('story.chapters');
     expect(app).toContain('StoryDetail');
   });
 });
-

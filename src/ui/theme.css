@@ -1424,26 +1424,6 @@ select {
   z-index: 1;
 }
 
-.tour-pin-label {
-  border: 0;
-  border-radius: 999px;
-  background: var(--forest);
-  color: var(--white);
-  padding: 0.35rem 0.7rem;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(6, 61, 57, 0.35);
-  white-space: nowrap;
-}
-
-.tour-pin-label.active {
-  background: var(--mint);
-  color: var(--forest);
-  outline: 2px solid var(--forest);
-}
-
 .global-stage-map .maplibregl-marker:has(.tour-plane),
 .global-stage-map .tour-plane {
   z-index: 40 !important;
