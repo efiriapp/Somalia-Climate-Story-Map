@@ -9,6 +9,12 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
+  it('uses a free OpenStreetMap style instead of Carto', () => {
+    expect(source).toContain("styleForLayer('osm')");
+    expect(source).not.toContain('carto-voyager');
+    expect(source).not.toContain('basemaps.cartocdn.com');
+  });
+
   it('tours date-sorted places with classic pins, city zoom, and a center-right card', () => {
     expect(source).toContain('a.date.localeCompare');
     expect(source).toMatch(/landAtIceOffice[\s\S]{0,220}COUNTRY_ZOOM/);

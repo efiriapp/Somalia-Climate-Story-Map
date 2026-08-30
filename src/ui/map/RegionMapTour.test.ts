@@ -11,6 +11,7 @@ describe('RegionMapTour', () => {
     expect(source).toContain('LayersControl');
     expect(source).toContain('Icon.Default');
     expect(source).not.toContain('basemaps.cartocdn.com');
+    expect(source).not.toContain('arcgisonline');
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('activeStop.district');
     expect(source).toContain('<Popup');

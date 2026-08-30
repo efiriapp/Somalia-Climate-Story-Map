@@ -15,8 +15,9 @@ export const leafletBasemaps: LeafletBasemap[] = [
   {
     id: 'satellite',
     name: 'Satellite',
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri',
+    url: 'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg',
+    attribution:
+      '<a href="https://s2maps.eu">Sentinel-2 cloudless</a> by EOX :: Copernicus open data',
   },
   {
     id: 'terrain',

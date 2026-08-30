@@ -386,7 +386,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     const map = new Map({
       container: host.current,
-      style: styleForLayer('carto-voyager'),
+      style: styleForLayer('osm'),
       center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
       zoom: GLOBE_VIEW.zoom,
       pitch: GLOBE_VIEW.pitch,

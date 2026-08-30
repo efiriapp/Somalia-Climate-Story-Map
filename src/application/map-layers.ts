@@ -1,6 +1,6 @@
 import type { StyleSpecification } from 'maplibre-gl';
 
-export type MapLayerId = 'carto-voyager' | 'carto-dark' | 'osm' | 'satellite';
+export type MapLayerId = 'osm' | 'terrain' | 'satellite';
 
 export type MapLayer = {
   id: MapLayerId;
@@ -8,11 +8,14 @@ export type MapLayer = {
 };
 
 export const MAP_LAYERS: MapLayer[] = [
-  { id: 'carto-voyager', label: 'Carto Voyager 3D' },
-  { id: 'carto-dark', label: 'Carto Dark Globe' },
   { id: 'osm', label: 'OpenStreetMap' },
-  { id: 'satellite', label: 'Satellite 3D' },
+  { id: 'terrain', label: 'Terrain' },
+  { id: 'satellite', label: 'Satellite' },
 ];
+
+const OSM_ATTR = '© OpenStreetMap contributors';
+const TERRAIN_ATTR = '© OpenStreetMap contributors, SRTM | © OpenTopoMap (CC-BY-SA)';
+const SATELLITE_ATTR = 'Sentinel-2 cloudless by EOX · Copernicus open data';
 
 const rasterStyle = (tiles: string[], attribution: string): StyleSpecification => ({
   version: 8,
@@ -32,30 +35,21 @@ const rasterStyle = (tiles: string[], attribution: string): StyleSpecification =
 
 export const styleForLayer = (id: MapLayerId): StyleSpecification => {
   switch (id) {
-    case 'carto-dark':
+    case 'terrain':
       return rasterStyle(
-        ['a', 'b', 'c', 'd'].map(
-          (s) => `https://${s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}@2x.png`,
-        ),
-        '© CARTO © OpenStreetMap contributors',
-      );
-    case 'osm':
-      return rasterStyle(
-        ['a', 'b', 'c'].map((s) => `https://${s}.tile.openstreetmap.org/{z}/{x}/{y}.png`),
-        '© OpenStreetMap contributors',
+        ['a', 'b', 'c'].map((s) => `https://${s}.tile.opentopomap.org/{z}/{x}/{y}.png`),
+        TERRAIN_ATTR,
       );
     case 'satellite':
       return rasterStyle(
-        ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
-        'Tiles © Esri',
+        ['https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg'],
+        SATELLITE_ATTR,
       );
-    case 'carto-voyager':
+    case 'osm':
     default:
       return rasterStyle(
-        ['a', 'b', 'c', 'd'].map(
-          (s) => `https://${s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png`,
-        ),
-        '© CARTO © OpenStreetMap contributors',
+        ['a', 'b', 'c'].map((s) => `https://${s}.tile.openstreetmap.org/{z}/{x}/{y}.png`),
+        OSM_ATTR,
       );
   }
 };
