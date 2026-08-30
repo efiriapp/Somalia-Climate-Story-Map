@@ -31,6 +31,9 @@ describe('buildRegionMapTour', () => {
       const sentences = stop.description.split(/(?<=[.!?])\s+/).filter(Boolean);
       expect(sentences.length).toBeGreaterThanOrEqual(5);
       expect(sentences.length).toBeLessThanOrEqual(7);
+      expect(stop.description).not.toMatch(/SoDMA|SODMA|FAO|SWALIM/i);
     }
+    const storyText = [story?.summary, story?.body, ...(story?.chapters ?? []).flatMap((chapter) => chapter.paragraphs)].join(' ');
+    expect(storyText).not.toMatch(/SoDMA|SODMA|FAO|SWALIM|XAJSi/i);
   });
 });

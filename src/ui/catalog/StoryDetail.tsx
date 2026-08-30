@@ -70,7 +70,7 @@ export function StoryDetail({ story, onBack }: Props) {
             <p key={paragraph.slice(0, 48)}>{paragraph}</p>
           ))}
           {index === 0 && story.tourStops?.length ? (
-            <section className="story-map">
+            <section className="story-map story-map-bleed">
               <h2>Regions of Somalia</h2>
               <RegionMapTour story={story} />
             </section>

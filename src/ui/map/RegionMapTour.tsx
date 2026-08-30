@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } fr
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { nextTourIndex, prevTourIndex } from '../../application/global-tour';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
 import { buildRegionMapTour, type RegionMapStop } from '../../application/region-map-tour';
 import { scrollTourIndex } from '../../application/scroll-tour';
@@ -13,8 +12,9 @@ type Props = {
 };
 
 const DISTRICT_ZOOM = 10;
-const HOME_FLY_MS = 900;
-const DISTRICT_FLY_MS = 1100;
+const HOME_FLY_MS = 2800;
+const DISTRICT_FLY_MS = 3200;
+const SLIDER_HIDE_MS = 3500;
 
 const regionIcon = (label: string) =>
   L.divIcon({
@@ -63,25 +63,28 @@ export function RegionMapTour({ story }: Props) {
   const stops = useMemo(() => buildRegionMapTour(story), [story]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [pinVisible, setPinVisible] = useState(false);
+  const [sliderOpen, setSliderOpen] = useState(false);
   const indexRef = useRef(0);
   const lockedRef = useRef(false);
+  const hideRef = useRef(0);
   const hostRef = useRef<HTMLDivElement>(null);
   const activeStop = stops[activeIndex];
   indexRef.current = activeIndex;
   const onHome = useCallback(() => setPinVisible(false), []);
   const onArrive = useCallback(() => setPinVisible(true), []);
 
+  const showSlider = () => {
+    setSliderOpen(true);
+    window.clearTimeout(hideRef.current);
+    hideRef.current = window.setTimeout(() => setSliderOpen(false), SLIDER_HIDE_MS);
+  };
+
   const onWheel = (event: WheelEvent<HTMLDivElement>) => {
     const next = scrollTourIndex(event.deltaY, indexRef.current, stops.length);
-    if (next === null || lockedRef.current) {
-      return;
+    if (lockedRef.current || next !== null) {
+      event.preventDefault();
     }
-    event.preventDefault();
-    lockedRef.current = true;
-    setActiveIndex(next);
-    window.setTimeout(() => {
-      lockedRef.current = false;
-    }, HOME_FLY_MS + DISTRICT_FLY_MS);
+    showSlider();
   };
 
   useEffect(() => {
@@ -91,18 +94,28 @@ export function RegionMapTour({ story }: Props) {
     }
     const handle = (event: globalThis.WheelEvent) => {
       const next = scrollTourIndex(event.deltaY, indexRef.current, stops.length);
-      if (next === null || lockedRef.current) {
+      if (lockedRef.current) {
+        event.preventDefault();
+        showSlider();
+        return;
+      }
+      if (next === null) {
+        showSlider();
         return;
       }
       event.preventDefault();
       lockedRef.current = true;
       setActiveIndex(next);
+      showSlider();
       window.setTimeout(() => {
         lockedRef.current = false;
       }, HOME_FLY_MS + DISTRICT_FLY_MS);
     };
     node.addEventListener('wheel', handle, { passive: false });
-    return () => node.removeEventListener('wheel', handle);
+    return () => {
+      node.removeEventListener('wheel', handle);
+      window.clearTimeout(hideRef.current);
+    };
   }, [stops.length]);
 
   if (!activeStop) {
@@ -126,44 +139,13 @@ export function RegionMapTour({ story }: Props) {
             <Marker position={[activeStop.lat, activeStop.lng]} icon={regionIcon(activeStop.district)} />
           ) : null}
         </MapContainer>
-        <div className="tour-right-stack">
-          <aside className="event-slider">
-            {stops.map((slide, index) => (
-              <article
-                key={slide.regionSlug}
-                className={
-                  index === activeIndex
-                    ? 'event-card event-card-slide active'
-                    : 'event-card event-card-slide hide'
-                }
-                aria-hidden={index !== activeIndex}
-                aria-label={slide.title}
-              >
-                {index === activeIndex ? (
-                  <>
-                    {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
-                    <h3>{activeStop.title}</h3>
-                    <p>{activeStop.description}</p>
-                  </>
-                ) : (
-                  <>
-                    {slide.images[0] ? <img src={slide.images[0]} alt="" /> : null}
-                    <h3>{slide.title}</h3>
-                    <p>{slide.description}</p>
-                  </>
-                )}
-              </article>
-            ))}
-            <div className="region-map-nav">
-              <button type="button" onClick={() => setActiveIndex(prevTourIndex(activeIndex))}>
-                Back
-              </button>
-              <button type="button" onClick={() => setActiveIndex(nextTourIndex(activeIndex, stops.length))}>
-                Next
-              </button>
-            </div>
+        {sliderOpen ? (
+          <aside className="region-slide-card" aria-label={activeStop.title}>
+            {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
+            <h3>{activeStop.title}</h3>
+            <p>{activeStop.description}</p>
           </aside>
-        </div>
+        ) : null}
       </div>
     </div>
   );

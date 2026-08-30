@@ -12,20 +12,22 @@ describe('RegionMapTour', () => {
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('activeStop.district');
     expect(source).toContain('region-pin-label');
-    expect(source).toContain('tour-right-stack');
     expect(source).toContain('DISTRICT_ZOOM');
     expect(source).toContain('SOMALIA_VIEW');
     expect(source).toContain('flyToSomaliaThenDistrict');
+    expect(source).toContain('HOME_FLY_MS = 2800');
     expect(source).toContain('scrollWheelZoom={false}');
     expect(source).toContain('onWheel');
     expect(source).toContain('scrollTourIndex');
-    expect(source).toContain('activeStop.district');
+    expect(source).toContain('sliderOpen');
+    expect(source).toContain('region-slide-card');
     expect(source).not.toContain('stops.map((stop, index)');
+    expect(source).not.toContain('tour-right-stack');
+    expect(source).not.toContain('event-slider');
     expect(source).toMatch(
       /activeStop\.images\[0\][\s\S]{0,80}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
     );
-    expect(source).toContain('event-card-slide');
-    expect(source).toContain('Back');
-    expect(source).toContain('Next');
+    expect(source).not.toContain('Back');
+    expect(source).not.toContain('Next');
   });
 });

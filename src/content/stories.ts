@@ -358,14 +358,14 @@ export const stories: Story[] = [
         region: 'mudug',
         title: 'Mudug: water for families and livestock',
         description:
-          'Over several weeks, SIMAD supported emergency water trucking to communities in Mudug, Baay, Hiiraan, and Jubbada Hoose. In March 2026, it delivered water to communities surrounding Ceelgula in Mudug Region, where pastoralist families had gathered after being affected by drought. More than 35 households and their livestock benefited. For pastoralists, water for people alone is not enough. Livestock are the household economy: they provide milk, income, and accumulated wealth. When animals die, a family can lose more than livestock; it can lose its future. During the same period, SoDMA was conducting emergency water operations across drought-affected parts of Galmudug, including rural communities in Mudug.',
+          'Over several weeks, SIMAD supported emergency water trucking to communities in Mudug, Baay, Hiiraan, and Jubbada Hoose. In March 2026, it delivered water to communities surrounding Ceelgula in Mudug Region, where pastoralist families had gathered after being affected by drought. More than 35 households and their livestock benefited. For pastoralists, water for people alone is not enough. Livestock are the household economy: they provide milk, income, and accumulated wealth. When animals die, a family can lose more than livestock; it can lose its future. SIMAD treated rural communities in Mudug as part of the same drought response.',
         images: ['/images/ice-stories/mudug.jpg'],
       },
       {
         region: 'bay',
         title: 'Baay: reaching more than 1,200 people',
         description:
-          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people. Independent reporting from SoDMA shows that emergency water trucking was also being expanded around Baidoa in March 2026. Severe drought was affecting communities and livestock at the same time. This was not a normal dry season. Families faced water scarcity, food insecurity, and livelihood disruption. In such circumstances, a water truck can become a lifeline.',
+          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people. SIMAD delivered water as severe drought affected communities and livestock around Baidoa in March 2026. This was not a normal dry season. Families faced water scarcity, food insecurity, and livelihood disruption. In such circumstances, a water truck can become a lifeline.',
         images: ['/images/ice-stories/baay.jpg'],
       },
       {
@@ -388,13 +388,13 @@ export const stories: Story[] = [
         heading: 'When the rains fail',
         paragraphs: [
           'When the rains fail, the consequences do not stop at the edge of a farm. Wells begin to dry. Pasture disappears. Livestock become weaker. Families start moving in search of water. In 2026, as Somalia faced another severe drought following consecutive failed rainy seasons, SIMAD University moved beyond the classroom and into communities. Together with alumni, student government, staff, and the wider community, it launched emergency water assistance for drought-affected families.',
-          'Somalia entered 2026 under severe drought pressure. Consecutive poor rainy seasons, including a weak Gu season in 2025 and the near failure of the Deyr season, created widespread rainfall deficits. ICE Institute described an increasingly severe drought driven by repeated rainfall failures. FAO’s SWALIM noted that the country entered 2026 with an ongoing water and livestock crisis and emphasized sustained drought response and anticipatory action.',
+          'Somalia entered 2026 under severe drought pressure. Consecutive poor rainy seasons, including a weak Gu season in 2025 and the near failure of the Deyr season, created widespread rainfall deficits. SIMAD University described an increasingly severe drought driven by repeated rainfall failures. The country entered 2026 with an ongoing water and livestock crisis that required sustained drought response.',
         ],
       },
       {
         heading: 'The university becomes a platform for action',
         paragraphs: [
-          'SIMAD publicly recognized alumni, Xukuumadda Ardayda Jaamacadda SIMAD (XAJSi), staff, students, and the wider university community in delivering drought assistance. When drought hits, knowledge must leave the classroom. Students become volunteers. Alumni become mobilizers. Staff become coordinators. Education becomes service.',
+          'SIMAD publicly recognized alumni, student government, staff, students, and the wider university community in delivering drought assistance. When drought hits, knowledge must leave the classroom. Students become volunteers. Alumni become mobilizers. Staff become coordinators. Education becomes service.',
           'The humanitarian truck is a bridge, not the road. An entrepreneurial university can also map drought hotspots, identify vulnerable water points, design solar-powered water systems, develop drought-resilient farming methods, and strengthen early-warning systems. The question is not only how people survive this drought, but how Somalia becomes less vulnerable to the next one.',
         ],
       },

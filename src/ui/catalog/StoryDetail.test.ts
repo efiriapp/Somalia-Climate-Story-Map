@@ -20,6 +20,7 @@ describe('StoryDetail', () => {
     expect(source).toContain('MapPane');
     expect(source).toContain('RegionMapTour');
     expect(source).toContain('Regions of Somalia');
+    expect(source).toContain('story-map-bleed');
     expect(source).toContain('story.chapters');
     expect(app).toContain('StoryDetail');
   });
