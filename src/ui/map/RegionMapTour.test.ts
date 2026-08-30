@@ -13,9 +13,10 @@ describe('RegionMapTour', () => {
     expect(source).toContain('activeStop.district');
     expect(source).toContain('region-pin-marker');
     expect(source).toContain('SOMALIA_VIEW');
-    expect(source).toContain('setView');
-    expect(source).toContain('animate: false');
-    expect(source).not.toContain('flyTo');
+    expect(source).toContain('flyTo');
+    expect(source).toContain('HOME_FLY_MS');
+    expect(source).toContain('DISTRICT_FLY_MS');
+    expect(source).not.toContain('animate: false');
     expect(source).toContain('useState(-1)');
     expect(source).toContain('scrollWheelZoom={false}');
     expect(source).toContain('onWheel');

@@ -4,7 +4,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
 import {
-  HOME_HOLD_MS,
+  DISTRICT_FLY_MS,
+  HOME_FLY_MS,
   buildRegionMapTour,
   tourFlightPlan,
   type RegionMapStop,
@@ -26,26 +27,40 @@ const regionIcon = (label: string) =>
     iconAnchor: [12, 22],
   });
 
-const jumpSomaliaThenDistrict = (
+const flyToSomaliaThenDistrict = (
   map: L.Map,
   stop: RegionMapStop | null,
   onHome: () => void,
   onArrive: () => void,
 ): (() => void) => {
   map.invalidateSize();
+  map.stop();
   if (!stop) {
-    map.setView([SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng], SOMALIA_VIEW.zoom, { animate: false });
+    map.flyTo([SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng], SOMALIA_VIEW.zoom, {
+      duration: HOME_FLY_MS / 1000,
+      easeLinearity: 0.12,
+    });
     onHome();
     return () => undefined;
   }
   const [home, district] = tourFlightPlan(stop);
-  map.setView([home.lat, home.lng], home.zoom, { animate: false });
   onHome();
-  const timer = window.setTimeout(() => {
-    map.setView([district.lat, district.lng], district.zoom, { animate: false });
-    onArrive();
-  }, HOME_HOLD_MS);
-  return () => window.clearTimeout(timer);
+  map.flyTo([home.lat, home.lng], home.zoom, {
+    duration: home.durationMs / 1000,
+    easeLinearity: 0.12,
+  });
+  let arriveTimer = 0;
+  const homeTimer = window.setTimeout(() => {
+    map.flyTo([district.lat, district.lng], district.zoom, {
+      duration: district.durationMs / 1000,
+      easeLinearity: 0.12,
+    });
+    arriveTimer = window.setTimeout(onArrive, district.durationMs);
+  }, home.durationMs);
+  return () => {
+    window.clearTimeout(homeTimer);
+    window.clearTimeout(arriveTimer);
+  };
 };
 
 function JumpOnStop({
@@ -64,7 +79,7 @@ function JumpOnStop({
       return;
     }
     primed.current = true;
-    return jumpSomaliaThenDistrict(map, stop, onHome, onArrive);
+    return flyToSomaliaThenDistrict(map, stop, onHome, onArrive);
   }, [map, stop, onHome, onArrive]);
   return null;
 }
@@ -130,7 +145,7 @@ export function RegionMapTour({ story }: Props) {
       setActiveIndex(next);
       window.setTimeout(() => {
         lockedRef.current = false;
-      }, HOME_HOLD_MS);
+      }, HOME_FLY_MS + DISTRICT_FLY_MS);
     };
     node.addEventListener('wheel', handle, { passive: false, capture: true });
     return () => {
