@@ -7,12 +7,12 @@ const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'Regio
 
 describe('RegionMapTour', () => {
   it('uses OpenStreetMap tiles, region pins, and a slider of image then title then description', () => {
-    expect(source).toContain('tile.openstreetmap.org');
+    expect(source).toContain('leafletBasemaps');
+    expect(source).toContain('LayersControl');
+    expect(source).toContain('Icon.Default');
     expect(source).not.toContain('basemaps.cartocdn.com');
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('activeStop.district');
-    expect(source).toContain('region-pin-marker');
-    expect(source).toContain('modern-pin');
     expect(source).toContain('<Popup');
     expect(source).toContain('region-pin-popup');
     expect(source).toContain('activeStop.district');

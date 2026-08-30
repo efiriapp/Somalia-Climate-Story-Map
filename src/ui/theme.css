@@ -567,6 +567,10 @@ select {
   min-height: 100vh;
 }
 
+.region-map-tour-screen .leaflet-control-layers {
+  z-index: 2200;
+}
+
 .story-detail .region-map-tour-screen .region-map-tour-map,
 .story-detail .region-map-tour-screen .leaflet-container {
   height: 100%;

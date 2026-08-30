@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, useMap, LayersControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
+import { leafletBasemaps } from '../../application/leaflet-basemaps';
 import {
   DISTRICT_FLY_MS,
   HOME_FLY_MS,
@@ -19,14 +23,12 @@ type Props = {
 
 const SLIDER_HIDE_MS = 3500;
 
-const regionIcon = () =>
-  L.divIcon({
-    className: 'modern-pin-wrap',
-    html: `<span class="modern-pin"><i class="region-pin-marker"></i></span>`,
-    iconSize: [32, 42],
-    iconAnchor: [16, 42],
-    popupAnchor: [0, -36],
-  });
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+});
 
 const flyToSomaliaThenDistrict = (
   map: L.Map,
@@ -163,13 +165,16 @@ export function RegionMapTour({ story }: Props) {
           zoom={SOMALIA_VIEW.zoom}
           scrollWheelZoom={false}
         >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+          <LayersControl position="topleft">
+            {leafletBasemaps.map((layer, index) => (
+              <LayersControl.BaseLayer key={layer.id} name={layer.name} checked={index === 0}>
+                <TileLayer attribution={layer.attribution} url={layer.url} />
+              </LayersControl.BaseLayer>
+            ))}
+          </LayersControl>
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
           {pinVisible && activeStop ? (
-            <Marker position={[activeStop.lat, activeStop.lng]} icon={regionIcon()}>
+            <Marker position={[activeStop.lat, activeStop.lng]}>
               <Popup className="region-pin-popup">
                 <strong>{activeStop.district}</strong>
                 <p>{activeStop.title}</p>
