@@ -160,5 +160,14 @@ describe('global-stage source pages', () => {
     expect(story?.chapters?.some((chapter) => /Ceelgula/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Far-libaax/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.images).toEqual(['/logos/simad.webp']);
+    expect(story?.tourStops?.map((stop) => stop.district)).toEqual([
+      'hobyo',
+      'baidoa',
+      'jalalaqsi',
+      'belet-weyne',
+      'kismaayo',
+    ]);
+    expect(story?.tourStops?.[0]?.title).toBe('Mudug: water for families and livestock');
+    expect(story?.tourStops?.at(-1)?.title).toBe('Lower Juba: pastoralists and farmers');
   });
 });

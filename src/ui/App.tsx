@@ -175,7 +175,7 @@ export default function App() {
           )}
         </>
       )}
-      {screen === 'global-stage' ? null : <SiteFooter />}
+      {screen === 'global-stage' || detail?.tourStops?.length ? null : <SiteFooter />}
     </div>
   );
 }

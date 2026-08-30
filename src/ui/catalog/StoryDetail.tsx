@@ -1,6 +1,7 @@
 import { formatTourDate } from '../../application/global-tour';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
+import { StoryMapTour } from '../map/StoryMapTour';
 
 type Props = {
   story: Story;
@@ -12,6 +13,10 @@ const CITY_ZOOM = 12;
 const canEmbedVideo = (url: string): boolean => url.includes('youtube.com/embed');
 
 export function StoryDetail({ story, onBack }: Props) {
+  if (story.tourStops?.length) {
+    return <StoryMapTour story={story} onBack={onBack} />;
+  }
+
   const chapters = story.chapters?.length
     ? story.chapters
     : [{ heading: 'The story', paragraphs: [story.body] }];
