@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { regionCenter } from './region-coordinates';
 
 describe('regionCenter', () => {
-  it('returns the district center used for each drought-response region', () => {
-    expect(regionCenter('mudug')).toEqual({ lat: 5.3516, lng: 48.5256 });
-    expect(regionCenter('bay')).toEqual({ lat: 3.1138, lng: 43.6498 });
-    expect(regionCenter('hiraan')).toEqual({ lat: 4.7358, lng: 45.2036 });
-    expect(regionCenter('lower-juba')).toEqual({ lat: -0.3566, lng: 42.5453 });
+  it('returns the named drought-response place centers', () => {
+    expect(regionCenter('ceelgula')).toEqual({ lat: 6.01175, lng: 47.85248 });
+    expect(regionCenter('baydhaba')).toEqual({ lat: 3.119951, lng: 43.644462 });
+    expect(regionCenter('xuduley')).toEqual({ lat: 3.31305, lng: 45.66508 });
+    expect(regionCenter('far-libaax')).toEqual({ lat: 4.87458, lng: 44.86873 });
+    expect(regionCenter('lower-juba')).toEqual({ lat: 0.07222, lng: 42.75056 });
   });
 });

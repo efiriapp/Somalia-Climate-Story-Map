@@ -10,6 +10,7 @@ const domain = readFileSync(join(here, '../../domain/story.ts'), 'utf8');
 
 describe('StoryDetail', () => {
   it('shows chapters, stats, gallery, video, and a map for a tapped ICE story', () => {
+    expect(domain).toContain('place?:');
     expect(domain).toContain('chapters?:');
     expect(domain).toContain('stats?:');
     expect(domain).toContain('videoTitle?:');

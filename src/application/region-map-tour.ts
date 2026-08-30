@@ -1,5 +1,6 @@
 import type { Story } from '../domain/story';
 import { regionCenter } from './region-coordinates';
+import { SOMALIA_VIEW } from './resolve-map-view';
 
 const REGION_LABELS: Record<string, string> = {
   mudug: 'Mudug',
@@ -8,12 +9,17 @@ const REGION_LABELS: Record<string, string> = {
   'lower-juba': 'Lower Juba',
 };
 
-const DISTRICT_LABELS: Record<string, string> = {
-  mudug: 'Hobyo',
-  bay: 'Baidoa',
-  hiraan: 'Belet Weyne',
-  'lower-juba': 'Kismaayo',
+const PLACE_LABELS: Record<string, string> = {
+  ceelgula: 'Ceelgula',
+  baydhaba: 'Baydhaba',
+  xuduley: 'Xuduley',
+  'far-libaax': 'Far-libaax',
+  'lower-juba': 'Lower Juba',
 };
+
+export const DISTRICT_ZOOM = 10;
+export const HOME_FLY_MS = 2800;
+export const DISTRICT_FLY_MS = 3200;
 
 export type RegionMapStop = {
   region: string;
@@ -26,12 +32,41 @@ export type RegionMapStop = {
   lng: number;
 };
 
+export type TourFlightStep = {
+  lat: number;
+  lng: number;
+  zoom: number;
+  durationMs: number;
+  showPin: boolean;
+  showSlider: boolean;
+};
+
+export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightStep[] => [
+  {
+    lat: SOMALIA_VIEW.center.lat,
+    lng: SOMALIA_VIEW.center.lng,
+    zoom: SOMALIA_VIEW.zoom,
+    durationMs: HOME_FLY_MS,
+    showPin: false,
+    showSlider: false,
+  },
+  {
+    lat: stop.lat,
+    lng: stop.lng,
+    zoom: DISTRICT_ZOOM,
+    durationMs: DISTRICT_FLY_MS,
+    showPin: true,
+    showSlider: true,
+  },
+];
+
 export const buildRegionMapTour = (story: Story): RegionMapStop[] =>
   (story.tourStops ?? []).map((stop) => {
-    const center = regionCenter(stop.region);
+    const place = stop.place ?? stop.region;
+    const center = regionCenter(place);
     return {
       region: REGION_LABELS[stop.region] ?? stop.region,
-      district: DISTRICT_LABELS[stop.region] ?? stop.region,
+      district: PLACE_LABELS[place] ?? place,
       regionSlug: stop.region,
       title: stop.title,
       description: stop.description,

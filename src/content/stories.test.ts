@@ -161,15 +161,17 @@ describe('global-stage source pages', () => {
     expect(story?.tourStops?.some((stop) => /Far-libaax/i.test(stop.description))).toBe(true);
     expect(story?.chapters?.some((chapter) => chapter.heading.startsWith('Mudug'))).toBe(false);
     expect(story?.images).toEqual(['/logos/simad.webp']);
-    expect(story?.tourStops?.map((stop) => stop.region)).toEqual([
-      'mudug',
-      'bay',
-      'hiraan',
+    expect(story?.tourStops?.map((stop) => stop.place)).toEqual([
+      'ceelgula',
+      'baydhaba',
+      'xuduley',
+      'far-libaax',
       'lower-juba',
     ]);
     expect(story?.tourStops?.map((stop) => stop.images[0])).toEqual([
       '/images/ice-stories/mudug.jpg',
       '/images/ice-stories/baay.jpg',
+      '/images/ice-stories/hiiraan.jpg',
       '/images/ice-stories/hiiraan.jpg',
       '/images/ice-stories/lower-juba.jpg',
     ]);
