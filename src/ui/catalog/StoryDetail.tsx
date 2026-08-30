@@ -63,31 +63,33 @@ export function StoryDetail({ story, onBack }: Props) {
         </div>
       ) : null}
 
-      {chapters.map((chapter) => (
+      {chapters.map((chapter, index) => (
         <section className="story-chapter" key={chapter.heading}>
           <h2>{chapter.heading}</h2>
           {chapter.paragraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 48)}>{paragraph}</p>
           ))}
+          {index === 0 && story.tourStops?.length ? (
+            <section className="story-map">
+              <h2>Regions of Somalia</h2>
+              <RegionMapTour story={story} />
+            </section>
+          ) : null}
         </section>
       ))}
 
-      <section className="story-map">
-        <h2>{story.tourStops?.length ? 'Regions of Somalia' : 'On the map'}</h2>
-        {story.tourStops?.length ? (
-          <RegionMapTour story={story} />
-        ) : (
-          <>
-            <p>{story.placeLabel ?? story.location.name}</p>
-            <MapPane
-              stories={[story]}
-              view={{ center: { lat: story.location.lat, lng: story.location.lng }, zoom: CITY_ZOOM }}
-              selectedId={story.id}
-              onSelect={() => undefined}
-            />
-          </>
-        )}
-      </section>
+      {story.tourStops?.length ? null : (
+        <section className="story-map">
+          <h2>On the map</h2>
+          <p>{story.placeLabel ?? story.location.name}</p>
+          <MapPane
+            stories={[story]}
+            view={{ center: { lat: story.location.lat, lng: story.location.lng }, zoom: CITY_ZOOM }}
+            selectedId={story.id}
+            onSelect={() => undefined}
+          />
+        </section>
+      )}
 
       {story.website ? (
         <p>

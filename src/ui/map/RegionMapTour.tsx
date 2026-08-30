@@ -60,22 +60,24 @@ export function RegionMapTour({ story }: Props) {
             />
           ))}
         </MapContainer>
-      </div>
-      <aside className="region-map-slider">
-        <article className="region-map-card" aria-label={activeStop.title}>
-          {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
-          <h3>{activeStop.title}</h3>
-          <p>{activeStop.description}</p>
-        </article>
-        <div className="region-map-nav">
-          <button type="button" onClick={() => setActiveIndex(prevTourIndex(activeIndex))}>
-            Back
-          </button>
-          <button type="button" onClick={() => setActiveIndex(nextTourIndex(activeIndex, stops.length))}>
-            Next
-          </button>
+        <div className="tour-right-stack">
+          <aside className="event-slider">
+            <article className="event-card active" aria-label={activeStop.title}>
+              {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
+              <h3>{activeStop.title}</h3>
+              <p>{activeStop.description}</p>
+            </article>
+            <div className="region-map-nav">
+              <button type="button" onClick={() => setActiveIndex(prevTourIndex(activeIndex))}>
+                Back
+              </button>
+              <button type="button" onClick={() => setActiveIndex(nextTourIndex(activeIndex, stops.length))}>
+                Next
+              </button>
+            </div>
+          </aside>
         </div>
-      </aside>
+      </div>
     </div>
   );
 }

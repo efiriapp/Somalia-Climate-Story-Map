@@ -12,6 +12,7 @@ describe('RegionMapTour', () => {
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('stop.region');
     expect(source).toContain('region-pin-label');
+    expect(source).toContain('tour-right-stack');
     expect(source).toMatch(
       /activeStop\.images\[0\][\s\S]{0,80}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
     );

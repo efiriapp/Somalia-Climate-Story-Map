@@ -157,8 +157,9 @@ describe('global-stage source pages', () => {
     expect(story?.stats?.some((stat) => /35/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /180/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /340/.test(`${stat.label} ${stat.value}`))).toBe(true);
-    expect(story?.chapters?.some((chapter) => /Ceelgula/i.test(chapter.paragraphs.join(' ')))).toBe(true);
-    expect(story?.chapters?.some((chapter) => /Far-libaax/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.tourStops?.some((stop) => /Ceelgula/i.test(stop.description))).toBe(true);
+    expect(story?.tourStops?.some((stop) => /Far-libaax/i.test(stop.description))).toBe(true);
+    expect(story?.chapters?.some((chapter) => chapter.heading.startsWith('Mudug'))).toBe(false);
     expect(story?.images).toEqual(['/logos/simad.webp']);
     expect(story?.tourStops?.map((stop) => stop.region)).toEqual([
       'mudug',

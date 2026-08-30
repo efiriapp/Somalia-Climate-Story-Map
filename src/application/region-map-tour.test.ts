@@ -17,8 +17,10 @@ describe('buildRegionMapTour', () => {
     });
     expect(tour.at(-1)).toMatchObject(regionCenter('lower-juba'));
     for (const stop of tour) {
+      const sentences = stop.description.split(/(?<=[.!?])\s+/).filter(Boolean);
       expect(stop.images[0]).toBe('/logos/simad.webp');
-      expect(stop.description.length).toBeGreaterThan(40);
+      expect(sentences.length).toBeGreaterThanOrEqual(5);
+      expect(sentences.length).toBeLessThanOrEqual(7);
     }
   });
 });

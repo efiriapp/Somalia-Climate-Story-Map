@@ -535,14 +535,54 @@ select {
 }
 
 .region-map-tour {
+  position: relative;
+}
+
+.story-detail .region-map-tour-map {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
   display: grid;
-  gap: 0.9rem;
 }
 
 .story-detail .region-map-tour-map,
 .story-detail .region-map-tour-map .leaflet-container {
-  min-height: 420px;
-  height: 420px;
+  min-height: 560px;
+  height: 560px;
+}
+
+.story-detail .region-map-tour-map > * {
+  grid-area: 1 / 1;
+}
+
+.region-map-tour .tour-right-stack {
+  position: relative;
+  z-index: 2000;
+  justify-self: end;
+  align-self: center;
+  width: min(280px, 46%);
+  max-height: 94%;
+  margin: 0 0.75rem;
+  transform: none;
+  top: auto;
+  right: auto;
+}
+
+.region-map-tour .event-slider {
+  border-radius: 12px;
+  max-height: 100%;
+}
+
+.region-map-tour .event-card img {
+  height: 110px;
+  object-fit: contain;
+  background: var(--white);
+}
+
+.region-map-tour .event-card p {
+  padding-bottom: 0.7rem;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .region-pin-label {
@@ -568,49 +608,18 @@ select {
   outline: 2px solid var(--forest);
 }
 
-.region-map-slider {
-  background: var(--chip);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.region-map-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-  background: var(--white);
-}
-
-.region-map-card h3,
-.region-map-card p {
-  margin: 0;
-  padding: 0 0.9rem;
-}
-
-.region-map-card h3 {
-  padding-top: 0.75rem;
-  color: var(--forest);
-  font-size: 1.05rem;
-}
-
-.region-map-card p {
-  padding-top: 0.4rem;
-  padding-bottom: 0.75rem;
-  line-height: 1.55;
-}
-
 .region-map-nav {
   display: flex;
   gap: 0.55rem;
-  padding: 0 0.9rem 0.9rem;
+  padding: 0 0.55rem 0.7rem;
 }
 
 .region-map-nav button {
   border: 0;
   border-radius: 10px;
-  background: var(--forest);
+  background: var(--leaf);
   color: var(--white);
-  padding: 0.55rem 1rem;
+  padding: 0.5rem 0.9rem;
   font-weight: 800;
   cursor: pointer;
 }

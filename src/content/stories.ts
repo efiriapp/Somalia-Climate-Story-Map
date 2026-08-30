@@ -358,28 +358,28 @@ export const stories: Story[] = [
         region: 'mudug',
         title: 'Mudug: water for families and livestock',
         description:
-          'In March 2026, SIMAD delivered emergency water to communities around Ceelgula in Mudug, where pastoralist families had gathered after drought. More than 35 households and their livestock benefited.',
+          'Over several weeks, SIMAD supported emergency water trucking to communities in Mudug, Baay, Hiiraan, and Jubbada Hoose. In March 2026, it delivered water to communities surrounding Ceelgula in Mudug Region, where pastoralist families had gathered after being affected by drought. More than 35 households and their livestock benefited. For pastoralists, water for people alone is not enough. Livestock are the household economy: they provide milk, income, and accumulated wealth. When animals die, a family can lose more than livestock; it can lose its future. During the same period, SoDMA was conducting emergency water operations across drought-affected parts of Galmudug, including rural communities in Mudug.',
         images: ['/logos/simad.webp'],
       },
       {
         region: 'bay',
         title: 'Baay: reaching more than 1,200 people',
         description:
-          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people as drought affected households and livestock.',
+          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people. Independent reporting from SoDMA shows that emergency water trucking was also being expanded around Baidoa in March 2026. Severe drought was affecting communities and livestock at the same time. This was not a normal dry season. Families faced water scarcity, food insecurity, and livelihood disruption. In such circumstances, a water truck can become a lifeline.',
         images: ['/logos/simad.webp'],
       },
       {
         region: 'hiraan',
         title: 'Hiiraan: families displaced by drought',
         description:
-          'In Xuduley, Hiiraan, more than 90 households were reached, including families who had moved for water. In Far-libaax and surrounding areas, about 180 households received assistance.',
+          'In Xuduley, Hiiraan, SIMAD’s water assistance reached more than 90 households affected by drought, including families who had moved from other parts of the region. Drought here is also a mobility problem: people move because water disappears. A March 2026 logistics assessment described Hiiraan and surrounding areas as facing severe drought, dried rivers and wells, major agricultural and livestock losses, and displacement. In Far-libaax and surrounding areas of Hiiraan, about 180 households were reached. When SIMAD delivers water to a displaced household, it is helping a family survive a climate shock.',
         images: ['/logos/simad.webp'],
       },
       {
         region: 'lower-juba',
         title: 'Lower Juba: pastoralists and farmers',
         description:
-          'The response reached communities in Lower Juba, benefiting more than 340 pastoralist and farming households facing widespread water shortages.',
+          'The response also reached communities in Lower Juba, benefiting more than 340 households made up of pastoralist and farming families affected by drought and widespread water shortages. The same drought can damage different livelihoods in different ways. For one family, the crisis is a dying herd. For another, it is a failed harvest, the cost of buying water, or displacement. The pastoralist depends on livestock, and the farmer depends on land and water. Both are vulnerable when rainfall fails.',
         images: ['/logos/simad.webp'],
       },
     ],
@@ -389,27 +389,6 @@ export const stories: Story[] = [
         paragraphs: [
           'When the rains fail, the consequences do not stop at the edge of a farm. Wells begin to dry. Pasture disappears. Livestock become weaker. Families start moving in search of water. In 2026, as Somalia faced another severe drought following consecutive failed rainy seasons, SIMAD University moved beyond the classroom and into communities. Together with alumni, student government, staff, and the wider community, it launched emergency water assistance for drought-affected families.',
           'Somalia entered 2026 under severe drought pressure. Consecutive poor rainy seasons, including a weak Gu season in 2025 and the near failure of the Deyr season, created widespread rainfall deficits. ICE Institute described an increasingly severe drought driven by repeated rainfall failures. FAO’s SWALIM noted that the country entered 2026 with an ongoing water and livestock crisis and emphasized sustained drought response and anticipatory action.',
-        ],
-      },
-      {
-        heading: 'Mudug: water for families and livestock',
-        paragraphs: [
-          'Over several weeks, SIMAD supported emergency water trucking to communities in Mudug, Baay, Hiiraan, and Jubbada Hoose. In March 2026, it delivered water to communities surrounding Ceelgula in Mudug Region, where pastoralist families had gathered after being affected by drought. More than 35 households and their livestock benefited.',
-          'For pastoralists, water for people alone is not enough. Livestock are the household economy. They provide milk, income, and accumulated wealth. When animals die, a family can lose more than livestock; it can lose its future. During the same period, SoDMA was conducting emergency water operations across drought-affected parts of Galmudug, including rural communities in Mudug.',
-        ],
-      },
-      {
-        heading: 'Baay and Hiiraan',
-        paragraphs: [
-          'The response extended to communities west and north of Baydhaba in Baay Region, where emergency water assistance reached more than 1,200 people. Independent reporting from SoDMA shows that emergency water trucking was also being expanded around Baidoa in March 2026 as severe drought affected communities and livestock.',
-          'In Xuduley, Hiiraan, SIMAD’s water assistance reached more than 90 households affected by drought, including families who had moved from other parts of the region. Drought here is also a mobility problem: people move because water disappears. A March 2026 logistics assessment described Hiiraan and surrounding areas as facing severe drought, dried rivers and wells, major agricultural and livestock losses, and displacement. In Far-libaax and surrounding areas of Hiiraan, about 180 households were reached.',
-        ],
-      },
-      {
-        heading: 'Lower Juba: pastoralists and farmers',
-        paragraphs: [
-          'The response also reached communities in Lower Juba, benefiting more than 340 households made up of pastoralist and farming families affected by drought and widespread water shortages. The same drought can damage different livelihoods in different ways: a dying herd, a failed harvest, the cost of buying water, or displacement.',
-          'The map tour below follows the response region by region: Mudug, Baay, Hiiraan, and Lower Juba.',
         ],
       },
       {
