@@ -488,7 +488,7 @@ select {
   max-width: 720px;
   aspect-ratio: 16 / 9;
   position: relative;
-  margin: 0 auto 1.2rem;
+  margin: 4.5rem auto 1.2rem;
 }
 
 .story-video iframe {
