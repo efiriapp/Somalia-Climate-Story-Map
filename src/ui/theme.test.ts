@@ -94,4 +94,11 @@ describe('ICE green brand', () => {
     expect(css).toContain('.site-footer-comment');
     expect(css).not.toContain('.global-stage .site-footer');
   });
+
+  it('makes the SIMAD region tour full-screen with a pin marker on district names', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.region-map-tour-screen[\s\S]{0,280}height:\s*100vh/);
+    expect(css).toContain('.region-pin-marker');
+    expect(css).not.toContain('region-slide-in');
+  });
 });

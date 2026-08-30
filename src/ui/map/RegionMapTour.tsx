@@ -4,8 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
 import {
-  DISTRICT_FLY_MS,
-  HOME_FLY_MS,
+  HOME_HOLD_MS,
   buildRegionMapTour,
   tourFlightPlan,
   type RegionMapStop,
@@ -22,57 +21,64 @@ const SLIDER_HIDE_MS = 3500;
 const regionIcon = (label: string) =>
   L.divIcon({
     className: 'region-pin-label active',
-    html: `<span>${label}</span>`,
-    iconSize: [96, 28],
-    iconAnchor: [48, 14],
+    html: `<div class="region-pin"><i class="region-pin-marker"></i><span>${label}</span></div>`,
+    iconSize: [148, 56],
+    iconAnchor: [12, 22],
   });
 
-const flyToSomaliaThenDistrict = (
+const jumpSomaliaThenDistrict = (
   map: L.Map,
-  stop: RegionMapStop,
+  stop: RegionMapStop | null,
   onHome: () => void,
   onArrive: () => void,
 ): (() => void) => {
+  map.invalidateSize();
+  if (!stop) {
+    map.setView([SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng], SOMALIA_VIEW.zoom, { animate: false });
+    onHome();
+    return () => undefined;
+  }
   const [home, district] = tourFlightPlan(stop);
-  map.stop();
+  map.setView([home.lat, home.lng], home.zoom, { animate: false });
   onHome();
-  map.flyTo([home.lat, home.lng], home.zoom, { duration: home.durationMs / 1000 });
-  let arriveTimer = 0;
-  const homeTimer = window.setTimeout(() => {
-    map.stop();
-    map.flyTo([district.lat, district.lng], district.zoom, { duration: district.durationMs / 1000 });
-    arriveTimer = window.setTimeout(onArrive, district.durationMs);
-  }, home.durationMs);
-  return () => {
-    window.clearTimeout(homeTimer);
-    window.clearTimeout(arriveTimer);
-  };
+  const timer = window.setTimeout(() => {
+    map.setView([district.lat, district.lng], district.zoom, { animate: false });
+    onArrive();
+  }, HOME_HOLD_MS);
+  return () => window.clearTimeout(timer);
 };
 
-function FlyHomeThenDistrict({
+function JumpOnStop({
   stop,
   onHome,
   onArrive,
 }: {
-  stop: RegionMapStop;
+  stop: RegionMapStop | null;
   onHome: () => void;
   onArrive: () => void;
 }) {
   const map = useMap();
-  useEffect(() => flyToSomaliaThenDistrict(map, stop, onHome, onArrive), [map, stop, onHome, onArrive]);
+  const primed = useRef(false);
+  useEffect(() => {
+    if (!stop && !primed.current) {
+      return;
+    }
+    primed.current = true;
+    return jumpSomaliaThenDistrict(map, stop, onHome, onArrive);
+  }, [map, stop, onHome, onArrive]);
   return null;
 }
 
 export function RegionMapTour({ story }: Props) {
   const stops = useMemo(() => buildRegionMapTour(story), [story]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [pinVisible, setPinVisible] = useState(false);
   const [sliderOpen, setSliderOpen] = useState(false);
-  const indexRef = useRef(0);
+  const indexRef = useRef(-1);
   const lockedRef = useRef(false);
   const hideRef = useRef(0);
   const hostRef = useRef<HTMLDivElement>(null);
-  const activeStop = stops[activeIndex];
+  const activeStop = activeIndex >= 0 ? stops[activeIndex] : undefined;
   indexRef.current = activeIndex;
 
   const showSlider = useCallback(() => {
@@ -114,7 +120,9 @@ export function RegionMapTour({ story }: Props) {
         return;
       }
       if (next === null) {
-        showSlider();
+        if (indexRef.current >= 0) {
+          showSlider();
+        }
         return;
       }
       event.preventDefault();
@@ -122,7 +130,7 @@ export function RegionMapTour({ story }: Props) {
       setActiveIndex(next);
       window.setTimeout(() => {
         lockedRef.current = false;
-      }, HOME_FLY_MS + DISTRICT_FLY_MS);
+      }, HOME_HOLD_MS);
     };
     node.addEventListener('wheel', handle, { passive: false, capture: true });
     return () => {
@@ -131,12 +139,8 @@ export function RegionMapTour({ story }: Props) {
     };
   }, [showSlider, stops.length]);
 
-  if (!activeStop) {
-    return null;
-  }
-
   return (
-    <div className="region-map-tour" ref={hostRef} onWheel={onWheel}>
+    <div className="region-map-tour region-map-tour-screen" ref={hostRef} onWheel={onWheel}>
       <div className="map-pane region-map-tour-map">
         <MapContainer
           center={[SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng]}
@@ -147,12 +151,12 @@ export function RegionMapTour({ story }: Props) {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <FlyHomeThenDistrict stop={activeStop} onHome={onHome} onArrive={onArrive} />
-          {pinVisible ? (
+          <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
+          {pinVisible && activeStop ? (
             <Marker position={[activeStop.lat, activeStop.lng]} icon={regionIcon(activeStop.district)} />
           ) : null}
         </MapContainer>
-        {sliderOpen ? (
+        {sliderOpen && activeStop ? (
           <aside className="region-slide-card" aria-label={activeStop.title}>
             {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
             <h3>{activeStop.title}</h3>

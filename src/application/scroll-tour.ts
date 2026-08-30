@@ -2,7 +2,7 @@ export const scrollTourIndex = (deltaY: number, index: number, length: number): 
   if (deltaY > 0 && index < length - 1) {
     return index + 1;
   }
-  if (deltaY < 0 && index > 0) {
+  if (deltaY < 0 && index >= 0) {
     return index - 1;
   }
   return null;

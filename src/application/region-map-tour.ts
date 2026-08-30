@@ -18,8 +18,7 @@ const PLACE_LABELS: Record<string, string> = {
 };
 
 export const DISTRICT_ZOOM = 10;
-export const HOME_FLY_MS = 2800;
-export const DISTRICT_FLY_MS = 3200;
+export const HOME_HOLD_MS = 400;
 
 export type RegionMapStop = {
   region: string;
@@ -46,7 +45,7 @@ export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightSt
     lat: SOMALIA_VIEW.center.lat,
     lng: SOMALIA_VIEW.center.lng,
     zoom: SOMALIA_VIEW.zoom,
-    durationMs: HOME_FLY_MS,
+    durationMs: 0,
     showPin: false,
     showSlider: false,
   },
@@ -54,7 +53,7 @@ export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightSt
     lat: stop.lat,
     lng: stop.lng,
     zoom: DISTRICT_ZOOM,
-    durationMs: DISTRICT_FLY_MS,
+    durationMs: 0,
     showPin: true,
     showSlider: true,
   },
