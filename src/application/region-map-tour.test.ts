@@ -14,15 +14,21 @@ describe('buildRegionMapTour', () => {
     expect(tour[0]).toMatchObject({
       ...regionCenter('mudug'),
       district: 'Hobyo',
-      images: ['/logos/simad.webp'],
+      images: ['/images/ice-stories/mudug.jpg'],
     });
     expect(tour.at(-1)).toMatchObject({
       ...regionCenter('lower-juba'),
       district: 'Kismaayo',
+      images: ['/images/ice-stories/lower-juba.jpg'],
     });
+    expect(tour.map((stop) => stop.images[0])).toEqual([
+      '/images/ice-stories/mudug.jpg',
+      '/images/ice-stories/baay.jpg',
+      '/images/ice-stories/hiiraan.jpg',
+      '/images/ice-stories/lower-juba.jpg',
+    ]);
     for (const stop of tour) {
       const sentences = stop.description.split(/(?<=[.!?])\s+/).filter(Boolean);
-      expect(stop.images[0]).toBe('/logos/simad.webp');
       expect(sentences.length).toBeGreaterThanOrEqual(5);
       expect(sentences.length).toBeLessThanOrEqual(7);
     }

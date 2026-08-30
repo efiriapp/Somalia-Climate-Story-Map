@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -13,6 +13,8 @@ type Props = {
 };
 
 const DISTRICT_ZOOM = 10;
+const HOME_FLY_MS = 900;
+const DISTRICT_FLY_MS = 1100;
 
 const regionIcon = (label: string) =>
   L.divIcon({
@@ -22,22 +24,52 @@ const regionIcon = (label: string) =>
     iconAnchor: [48, 14],
   });
 
-function FlyToDistrict({ stop }: { stop: RegionMapStop }) {
+const flyToSomaliaThenDistrict = (
+  map: L.Map,
+  stop: RegionMapStop,
+  onHome: () => void,
+  onArrive: () => void,
+): (() => void) => {
+  onHome();
+  map.flyTo([SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng], SOMALIA_VIEW.zoom, {
+    duration: HOME_FLY_MS / 1000,
+  });
+  let arriveTimer = 0;
+  const homeTimer = window.setTimeout(() => {
+    map.flyTo([stop.lat, stop.lng], DISTRICT_ZOOM, { duration: DISTRICT_FLY_MS / 1000 });
+    arriveTimer = window.setTimeout(onArrive, DISTRICT_FLY_MS);
+  }, HOME_FLY_MS);
+  return () => {
+    window.clearTimeout(homeTimer);
+    window.clearTimeout(arriveTimer);
+  };
+};
+
+function FlyHomeThenDistrict({
+  stop,
+  onHome,
+  onArrive,
+}: {
+  stop: RegionMapStop;
+  onHome: () => void;
+  onArrive: () => void;
+}) {
   const map = useMap();
-  useEffect(() => {
-    map.flyTo([stop.lat, stop.lng], DISTRICT_ZOOM, { duration: 1.1 });
-  }, [map, stop]);
+  useEffect(() => flyToSomaliaThenDistrict(map, stop, onHome, onArrive), [map, stop, onHome, onArrive]);
   return null;
 }
 
 export function RegionMapTour({ story }: Props) {
   const stops = useMemo(() => buildRegionMapTour(story), [story]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [pinVisible, setPinVisible] = useState(false);
   const indexRef = useRef(0);
   const lockedRef = useRef(false);
   const hostRef = useRef<HTMLDivElement>(null);
   const activeStop = stops[activeIndex];
   indexRef.current = activeIndex;
+  const onHome = useCallback(() => setPinVisible(false), []);
+  const onArrive = useCallback(() => setPinVisible(true), []);
 
   const onWheel = (event: WheelEvent<HTMLDivElement>) => {
     const next = scrollTourIndex(event.deltaY, indexRef.current, stops.length);
@@ -49,7 +81,7 @@ export function RegionMapTour({ story }: Props) {
     setActiveIndex(next);
     window.setTimeout(() => {
       lockedRef.current = false;
-    }, 450);
+    }, HOME_FLY_MS + DISTRICT_FLY_MS);
   };
 
   useEffect(() => {
@@ -67,7 +99,7 @@ export function RegionMapTour({ story }: Props) {
       setActiveIndex(next);
       window.setTimeout(() => {
         lockedRef.current = false;
-      }, 450);
+      }, HOME_FLY_MS + DISTRICT_FLY_MS);
     };
     node.addEventListener('wheel', handle, { passive: false });
     return () => node.removeEventListener('wheel', handle);
@@ -89,8 +121,10 @@ export function RegionMapTour({ story }: Props) {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <FlyToDistrict stop={activeStop} />
-          <Marker position={[activeStop.lat, activeStop.lng]} icon={regionIcon(activeStop.district)} />
+          <FlyHomeThenDistrict stop={activeStop} onHome={onHome} onArrive={onArrive} />
+          {pinVisible ? (
+            <Marker position={[activeStop.lat, activeStop.lng]} icon={regionIcon(activeStop.district)} />
+          ) : null}
         </MapContainer>
         <div className="tour-right-stack">
           <aside className="event-slider">

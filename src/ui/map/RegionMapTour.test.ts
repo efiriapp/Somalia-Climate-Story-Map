@@ -14,6 +14,8 @@ describe('RegionMapTour', () => {
     expect(source).toContain('region-pin-label');
     expect(source).toContain('tour-right-stack');
     expect(source).toContain('DISTRICT_ZOOM');
+    expect(source).toContain('SOMALIA_VIEW');
+    expect(source).toContain('flyToSomaliaThenDistrict');
     expect(source).toContain('scrollWheelZoom={false}');
     expect(source).toContain('onWheel');
     expect(source).toContain('scrollTourIndex');

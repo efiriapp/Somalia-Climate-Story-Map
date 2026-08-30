@@ -167,6 +167,11 @@ describe('global-stage source pages', () => {
       'hiraan',
       'lower-juba',
     ]);
-    expect(story?.tourStops?.every((stop) => stop.images[0] === '/logos/simad.webp')).toBe(true);
+    expect(story?.tourStops?.map((stop) => stop.images[0])).toEqual([
+      '/images/ice-stories/mudug.jpg',
+      '/images/ice-stories/baay.jpg',
+      '/images/ice-stories/hiiraan.jpg',
+      '/images/ice-stories/lower-juba.jpg',
+    ]);
   });
 });
