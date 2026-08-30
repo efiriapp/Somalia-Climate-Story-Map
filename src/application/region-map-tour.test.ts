@@ -13,9 +13,13 @@ describe('buildRegionMapTour', () => {
     expect(tour.at(-1)?.title).toBe('Lower Juba: pastoralists and farmers');
     expect(tour[0]).toMatchObject({
       ...regionCenter('mudug'),
+      district: 'Hobyo',
       images: ['/logos/simad.webp'],
     });
-    expect(tour.at(-1)).toMatchObject(regionCenter('lower-juba'));
+    expect(tour.at(-1)).toMatchObject({
+      ...regionCenter('lower-juba'),
+      district: 'Kismaayo',
+    });
     for (const stop of tour) {
       const sentences = stop.description.split(/(?<=[.!?])\s+/).filter(Boolean);
       expect(stop.images[0]).toBe('/logos/simad.webp');

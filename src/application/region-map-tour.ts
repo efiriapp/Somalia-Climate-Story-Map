@@ -8,8 +8,16 @@ const REGION_LABELS: Record<string, string> = {
   'lower-juba': 'Lower Juba',
 };
 
+const DISTRICT_LABELS: Record<string, string> = {
+  mudug: 'Hobyo',
+  bay: 'Baidoa',
+  hiraan: 'Belet Weyne',
+  'lower-juba': 'Kismaayo',
+};
+
 export type RegionMapStop = {
   region: string;
+  district: string;
   regionSlug: string;
   title: string;
   description: string;
@@ -23,6 +31,7 @@ export const buildRegionMapTour = (story: Story): RegionMapStop[] =>
     const center = regionCenter(stop.region);
     return {
       region: REGION_LABELS[stop.region] ?? stop.region,
+      district: DISTRICT_LABELS[stop.region] ?? stop.region,
       regionSlug: stop.region,
       title: stop.title,
       description: stop.description,
