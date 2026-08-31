@@ -8,9 +8,7 @@ const map = readFileSync(join(here, 'GlobalStageMap.tsx'), 'utf8');
 const app = readFileSync(join(here, '..', 'App.tsx'), 'utf8');
 
 describe('ICE at Global Stage events', () => {
-  it('uses Next and Back labels without map-scroll event jumping', () => {
-    expect(map).toMatch(/>\s*Back\s*</);
-    expect(map).toMatch(/>\s*Next\s*</);
+  it('shows stayed right-side information without paging events', () => {
     expect(map).toContain('NavigationControl');
     expect(map).toContain('tour-right-stack');
     expect(map).toContain('event-card');
@@ -18,7 +16,9 @@ describe('ICE at Global Stage events', () => {
     expect(map).toContain('CITY_ZOOM');
     expect(map).toContain('new Popup');
     expect(map).toContain('MOGADISHU_HOME');
-    expect(map).toContain('POPUP_HOLD_MS');
+    expect(map).toContain('setTourCard(stop)');
+    expect(map).not.toContain('POPUP_HOLD_MS');
+    expect(map).not.toContain('tour-event-nav');
     expect(map).not.toContain("addEventListener('wheel'");
     expect(map).not.toContain('EventSlider');
     expect(app).toContain('GlobalStageMap');

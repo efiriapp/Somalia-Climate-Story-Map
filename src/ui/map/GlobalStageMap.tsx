@@ -13,7 +13,6 @@ import {
   CITY_EASE_MS,
   CRUISE_ZOOM,
   PLACE_FLY_MS,
-  POPUP_HOLD_MS,
   cruiseThenArrive,
   distanceKm,
   greatCircle,
@@ -27,11 +26,8 @@ import {
   GLOBE_PADDING,
   GLOBE_VIEW,
   CITY_ZOOM,
-  COUNTRY_ZOOM,
   MOGADISHU_HOME,
   formatTourDate,
-  nextTourIndex,
-  prevTourIndex,
   tourPopupHtml,
   type TourStop,
 } from '../../application/global-tour';
@@ -152,7 +148,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const visitTotal = useMemo(() => summaryTotal(stories, defaultTourFilter()), [stories]);
   const eventsRef = useRef(events);
   eventsRef.current = events;
-  const directionRef = useRef(1);
+  const openStopRef = useRef<(stop: TourStop) => void>(() => undefined);
   const searchHits = useMemo(() => searchTourStops(events, searchQuery), [events, searchQuery]);
   const activeStop = events.find((stop) => stop.storyId === activeId);
   const activeContinent = activeStop ? continentOfCountry(activeStop.country) : undefined;
@@ -181,7 +177,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     popupRef.current = new Popup({
       closeButton: true,
       closeOnClick: false,
-      maxWidth: '200px',
+      maxWidth: '280px',
       offset: 22,
       className: 'tour-map-popup',
     })
@@ -190,8 +186,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       .addTo(map);
   };
 
-  const iceOffice = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
-
   const hidePins = () => {
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
@@ -199,60 +193,51 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     homeMarkerRef.current = null;
   };
 
-  const showHomePin = (map: Map) => {
+  const showAllPins = (map: Map) => {
     hidePins();
     homeMarkerRef.current = new Marker({ color: '#063D39' })
       .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
       .addTo(map);
+    const pins: Marker[] = [];
+    for (const stop of eventsRef.current) {
+      const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
+      const pin = marker.getElement();
+      pin.style.cursor = 'pointer';
+      pin.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (measuringRef.current) {
+          return;
+        }
+        openStopRef.current(stop);
+      });
+      pins.push(marker);
+    }
+    markersRef.current = pins;
   };
 
-  const showEventPin = (map: Map, stop: TourStop) => {
-    hidePins();
-    const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
-    const pin = marker.getElement();
-    pin.style.cursor = 'pointer';
-    pin.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (measuringRef.current) {
-        return;
-      }
-      showPinPopup(map, stop);
-    });
-    markersRef.current = [marker];
-  };
-
-  const landAtIceOffice = (map: Map, onDone: () => void) => {
-    map.easeTo({
-      center: [iceOffice.lng, iceOffice.lat],
-      zoom: COUNTRY_ZOOM,
-      pitch: 0,
-      bearing: 0,
-      duration: CITY_EASE_MS,
-    });
-    holdRef.current = window.setTimeout(onDone, CITY_EASE_MS);
-  };
-
-  const flyToIceOffice = (token: number, from: LngLat, onArrive: () => void) => {
+  const openStop = (stop: TourStop) => {
+    if (!stop.storyId) {
+      return;
+    }
     const map = mapRef.current;
+    tourToken.current += 1;
+    stopMotion();
+    touringRef.current = false;
+    setActiveId(stop.storyId);
+    setTourCard(stop);
     if (!map) {
       return;
     }
-    setTourCard(null);
-    showHomePin(map);
-    flyAlong(map, greatCircle(from, iceOffice), CRUISE_ZOOM, 0, (id) => {
-      rafRef.current = id;
-    }, () => {
-      if (token !== tourToken.current) {
-        return;
-      }
-      landAtIceOffice(map, () => {
-        if (token !== tourToken.current) {
-          return;
-        }
-        onArrive();
-      });
+    showPinPopup(map, stop);
+    map.easeTo({
+      center: [stop.lng, stop.lat],
+      zoom: CITY_ZOOM,
+      pitch: 0,
+      bearing: 8,
+      duration: CITY_EASE_MS,
     });
   };
+  openStopRef.current = openStop;
 
   const flyToStop = (token: number, from: LngLat, stop: TourStop) => {
     const map = mapRef.current;
@@ -262,7 +247,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     clearPopup();
     setActiveId(stop.storyId);
-    showEventPin(map, stop);
     flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 0, (id) => {
       rafRef.current = id;
     }, () => {
@@ -281,35 +265,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           return;
         }
         setTourCard(stop);
-        holdRef.current = window.setTimeout(() => {
-          if (token !== tourToken.current) {
-            return;
-          }
-          setTourCard(null);
-          const list = eventsRef.current;
-          const index = list.findIndex((item) => item.storyId === stop.storyId);
-          const nextIndex = directionRef.current > 0
-            ? nextTourIndex(index, list.length)
-            : prevTourIndex(Math.max(index, 0));
-          const next = nextIndex === index ? null : list[nextIndex];
-          flyToIceOffice(token, { lng: stop.lng, lat: stop.lat }, () => {
-            if (!next) {
-              const map = mapRef.current;
-              if (map) {
-                clearTourPath(map);
-              }
-              hidePins();
-              touringRef.current = false;
-              return;
-            }
-            flyToStop(token, iceOffice, next);
-          });
-        }, POPUP_HOLD_MS);
+        showPinPopup(map, stop);
+        touringRef.current = false;
       }, CITY_EASE_MS);
     });
   };
 
-  const runPlaceTour = (stop: TourStop, direction = 1) => {
+  const runPlaceTour = (stop: TourStop) => {
     const map = mapRef.current;
     if (!map || !stop.storyId) {
       return;
@@ -317,22 +279,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const token = tourToken.current + 1;
     tourToken.current = token;
     stopMotion();
-    directionRef.current = direction;
     setTourCard(null);
     flyToStop(token, { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat }, stop);
-  };
-
-  const stepEvent = (delta: number) => {
-    if (events.length === 0) {
-      return;
-    }
-    const index = events.findIndex((stop) => stop.storyId === activeId);
-    const from = index < 0 ? (delta > 0 ? -1 : 0) : index;
-    const next = delta > 0 ? nextTourIndex(from, events.length) : prevTourIndex(Math.max(from, 0));
-    const stop = events[next];
-    if (stop) {
-      runPlaceTour(stop, delta);
-    }
   };
 
   const goHome = () => {
@@ -342,6 +290,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = false;
     clearPopup();
     setTourCard(null);
+    setActiveId(null);
     setSearchOpen(false);
     setMeasuring(false);
     measurePointsRef.current = [];
@@ -349,7 +298,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const measure = map?.getSource('measure-line') as GeoJSONSource | undefined;
     measure?.setData(emptyLine);
     clearTourPath(map);
-    hidePins();
     map?.easeTo({
       center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
       zoom: GLOBE_VIEW.zoom,
@@ -433,6 +381,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         });
       }
       map.resize();
+      showAllPins(map);
     };
     const onClick = (event: { lngLat: { lng: number; lat: number } }) => {
       if (!measuringRef.current) {
@@ -517,14 +466,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </button>
           <button type="button" aria-label="Reset compass" onClick={resetCompass}>
             <CompassIcon />
-          </button>
-        </div>
-        <div className="tour-event-nav">
-          <button type="button" aria-label="Back" onClick={() => stepEvent(-1)}>
-            Back
-          </button>
-          <button type="button" aria-label="Next" onClick={() => stepEvent(1)}>
-            Next
           </button>
         </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}

@@ -17,7 +17,6 @@ describe('GlobalStageMap', () => {
 
   it('tours date-sorted places with classic pins, city zoom, and a center-right card', () => {
     expect(source).toContain('a.date.localeCompare');
-    expect(source).toMatch(/landAtIceOffice[\s\S]{0,220}COUNTRY_ZOOM/);
     expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}CITY_ZOOM/);
     expect(source).toContain('showPinPopup(map, stop)');
     expect(source).toContain('CITY_EASE_MS');
@@ -25,13 +24,11 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('flyToStop(token, { lng: stop.lng, lat: stop.lat }, next)');
     expect(source).toContain("new Marker({ color: '#063D39' })");
     expect(source).toContain("new Marker({ color: '#2E7D57' })");
-    expect(source).toContain('showEventPin(map, stop)');
-    expect(source).toContain('showHomePin(map)');
-    expect(source).toContain('hidePins()');
+    expect(source).toContain('showAllPins');
+    expect(source).not.toContain('showEventPin');
     expect(source).not.toContain("className = 'tour-pin'");
     expect(source).not.toContain('tour-pin-label');
     expect(source).not.toContain('formatTourDate(stop.date)');
-    expect(source).not.toContain('events.map((stop) => {');
     expect(source).toContain('tour-right-stack');
     expect(source).toContain('event-card');
     expect(source).toContain("addEventListener('click'");
@@ -58,5 +55,14 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('summaryTotal');
     expect(source).toContain('tour-left-stack');
     expect(source).not.toContain('totalTravelKm');
+  });
+
+  it('keeps every location pin on the map and stays on the right-side info after a tap', () => {
+    expect(source).toContain('showAllPins(map)');
+    expect(source).toContain('setTourCard(stop)');
+    expect(source).not.toContain('POPUP_HOLD_MS');
+    expect(source).not.toContain('tour-event-nav');
+    expect(source).not.toContain('stepEvent');
+    expect(source).not.toContain('flyToIceOffice');
   });
 });
