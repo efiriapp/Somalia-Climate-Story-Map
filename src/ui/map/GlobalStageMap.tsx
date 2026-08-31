@@ -15,13 +15,10 @@ import {
   distanceKm,
   greatCircle,
   pathCoordinates,
-  pointAlong,
-  slicePath,
   type LngLat,
 } from '../../application/flight-path';
 import {
   buildGlobalTour,
-  GLOBE_PADDING,
   GLOBE_VIEW,
   CITY_ZOOM,
   COUNTRY_ZOOM,
@@ -80,6 +77,8 @@ const CompassIcon = () => (
 
 const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
 const TOUR_FLY_MS = 9000;
+const STAGE_PADDING = { top: 72, bottom: 80, left: 148, right: 332 };
+let flyTimer = 0;
 
 const emptyLine: GeoJSON.Feature = {
   type: 'Feature',
@@ -93,32 +92,25 @@ const lineData = (path: LngLat[]): GeoJSON.Feature => ({
   geometry: { type: 'LineString', coordinates: pathCoordinates(path) },
 });
 
-const flyAlong = (
-  map: Map,
-  path: LngLat[],
-  setRaf: (id: number) => void,
-  onDone: () => void,
-) => {
-  const started = performance.now();
-  const step = (now: number) => {
-    const raw = Math.min(1, (now - started) / TOUR_FLY_MS);
-    const t = raw * raw * (3 - 2 * raw);
-    const point = pointAlong(path, t);
-    const source = map.getSource('tour-path') as GeoJSONSource | undefined;
-    source?.setData(lineData(slicePath(path, t)));
-    map.jumpTo({
-      center: [point.lng, point.lat],
-      zoom: CRUISE_ZOOM,
-      pitch: 0,
-      bearing: 0,
-    });
-    if (raw < 1) {
-      setRaf(requestAnimationFrame(step));
-    } else {
-      onDone();
-    }
-  };
-  setRaf(requestAnimationFrame(step));
+const flyAlong = (map: Map, path: LngLat[], onDone: () => void) => {
+  const end = path.at(-1);
+  if (!end) {
+    onDone();
+    return;
+  }
+  const source = map.getSource('tour-path') as GeoJSONSource | undefined;
+  source?.setData(lineData(path));
+  map.stop();
+  map.easeTo({
+    center: [end.lng, end.lat],
+    zoom: CRUISE_ZOOM,
+    pitch: 0,
+    bearing: 0,
+    duration: TOUR_FLY_MS,
+    essential: true,
+  });
+  window.clearTimeout(flyTimer);
+  flyTimer = window.setTimeout(onDone, TOUR_FLY_MS);
 };
 
 export function GlobalStageMap({ stories, onClose }: Props) {
@@ -130,7 +122,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const measurePointsRef = useRef<LngLat[]>([]);
   const touringRef = useRef(false);
   const tourToken = useRef(0);
-  const rafRef = useRef(0);
   const holdRef = useRef(0);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -159,8 +150,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   };
 
   const stopMotion = () => {
-    cancelAnimationFrame(rafRef.current);
     window.clearTimeout(holdRef.current);
+    window.clearTimeout(flyTimer);
+    mapRef.current?.stop();
   };
 
   const hidePins = () => {
@@ -234,9 +226,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     setTourCard(null);
-    flyAlong(map, greatCircle(from, iceOffice), (id) => {
-      rafRef.current = id;
-    }, () => {
+    flyAlong(map, greatCircle(from, iceOffice), () => {
       if (token !== tourToken.current) {
         return;
       }
@@ -257,9 +247,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     setActiveId(stop.storyId);
     setTourCard(null);
-    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), (id) => {
-      rafRef.current = id;
-    }, () => {
+    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), () => {
       if (token !== tourToken.current) {
         return;
       }
@@ -377,14 +365,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   }, [measuring]);
 
   useEffect(() => {
-    mapRef.current?.setPadding({
-      ...GLOBE_PADDING,
-      left: 148,
-      right: tourCard ? 332 : GLOBE_PADDING.right,
-    });
-  }, [tourCard]);
-
-  useEffect(() => {
     if (!host.current) {
       return;
     }
@@ -402,7 +382,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       refreshExpiredTiles: false,
       attributionControl: false,
     });
-    map.setPadding(GLOBE_PADDING);
+    map.setPadding(STAGE_PADDING);
     map.addControl(new NavigationControl({ visualizePitch: false, showCompass: false }), 'top-right');
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
     mapRef.current = map;

@@ -91,11 +91,16 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('onClick={() => stepEvent(1)}');
   });
 
-  it('flies the tour slowly at a steady zoom so pins and map tiles do not shake', () => {
+  it('flies the tour with MapLibre easeTo so pins and map tiles stay glued and do not shake', () => {
     expect(source).toContain('TOUR_FLY_MS = 9000');
     expect(source).not.toContain('cruiseThenArrive');
     expect(source).not.toContain('PLACE_FLY_MS');
-    expect(source).toMatch(/jumpTo\(\{[\s\S]{0,140}zoom:\s*CRUISE_ZOOM/);
+    expect(source).not.toContain('jumpTo');
+    expect(source).not.toContain('requestAnimationFrame');
+    expect(source).toMatch(/easeTo\(\{[\s\S]{0,180}zoom:\s*CRUISE_ZOOM/);
+    expect(source).toContain('duration: TOUR_FLY_MS');
     expect(source).toContain('refreshExpiredTiles: false');
+    expect(source).not.toContain('tourCard ? 332');
+    expect(source).toContain('right: 332');
   });
 });
