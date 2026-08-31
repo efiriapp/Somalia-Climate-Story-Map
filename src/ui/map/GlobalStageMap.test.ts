@@ -18,7 +18,6 @@ describe('GlobalStageMap', () => {
   it('tours date-sorted places with classic pins, city zoom, and a center-right card', () => {
     expect(source).toContain('a.date.localeCompare');
     expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}CITY_ZOOM/);
-    expect(source).toContain('showPinPopup(map, stop)');
     expect(source).toContain('CITY_EASE_MS');
     expect(source).toContain('MOGADISHU_HOME.lng');
     expect(source).not.toContain('flyToStop(token, { lng: stop.lng, lat: stop.lat }, next)');
@@ -32,7 +31,6 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('tour-right-stack');
     expect(source).toContain('event-card');
     expect(source).toContain("addEventListener('click'");
-    expect(source).toContain('new Popup');
     expect(source).not.toContain("addEventListener('mouseenter'");
     expect(source).not.toContain('labeledPin');
     expect(source).not.toContain("addEventListener('wheel'");
@@ -61,8 +59,18 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('showAllPins(map)');
     expect(source).toContain('setTourCard(stop)');
     expect(source).not.toContain('POPUP_HOLD_MS');
-    expect(source).not.toContain('tour-event-nav');
-    expect(source).not.toContain('stepEvent');
     expect(source).not.toContain('flyToIceOffice');
+    expect(source).not.toContain('showPinPopup');
+    expect(source).not.toContain('new Popup');
+  });
+
+  it('tours the map with Back and Next and closes the stayed right-side card with X', () => {
+    expect(source).toContain('tour-event-nav');
+    expect(source).toContain('stepEvent');
+    expect(source).toMatch(/>\s*Back\s*</);
+    expect(source).toMatch(/>\s*Next\s*</);
+    expect(source).toContain('event-card-close');
+    expect(source).toContain('aria-label="Close event"');
+    expect(source).toContain('setTourCard(null)');
   });
 });

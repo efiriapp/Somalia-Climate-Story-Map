@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { AttributionControl, Map, Marker, NavigationControl, Popup, type GeoJSONSource } from 'maplibre-gl';
+import { AttributionControl, Map, Marker, NavigationControl, type GeoJSONSource } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
   continentOfCountry,
@@ -28,7 +28,8 @@ import {
   CITY_ZOOM,
   MOGADISHU_HOME,
   formatTourDate,
-  tourPopupHtml,
+  nextTourIndex,
+  prevTourIndex,
   type TourStop,
 } from '../../application/global-tour';
 import { styleForLayer } from '../../application/map-layers';
@@ -126,7 +127,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const mapRef = useRef<Map | null>(null);
   const markersRef = useRef<Marker[]>([]);
   const homeMarkerRef = useRef<Marker | null>(null);
-  const popupRef = useRef<Popup | null>(null);
   const measuringRef = useRef(false);
   const measurePointsRef = useRef<LngLat[]>([]);
   const touringRef = useRef(false);
@@ -153,11 +153,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const activeStop = events.find((stop) => stop.storyId === activeId);
   const activeContinent = activeStop ? continentOfCountry(activeStop.country) : undefined;
 
-  const clearPopup = () => {
-    popupRef.current?.remove();
-    popupRef.current = null;
-  };
-
   const clearTourPath = (map: Map | null) => {
     const source = map?.getSource('tour-path') as GeoJSONSource | undefined;
     source?.setData(emptyLine);
@@ -166,24 +161,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const stopMotion = () => {
     cancelAnimationFrame(rafRef.current);
     window.clearTimeout(holdRef.current);
-  };
-
-  const showPinPopup = (map: Map, stop: TourStop) => {
-    const html = tourPopupHtml(stop);
-    clearPopup();
-    if (!html) {
-      return;
-    }
-    popupRef.current = new Popup({
-      closeButton: true,
-      closeOnClick: false,
-      maxWidth: '280px',
-      offset: 22,
-      className: 'tour-map-popup',
-    })
-      .setLngLat([stop.lng, stop.lat])
-      .setHTML(html)
-      .addTo(map);
   };
 
   const hidePins = () => {
@@ -228,7 +205,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!map) {
       return;
     }
-    showPinPopup(map, stop);
     map.easeTo({
       center: [stop.lng, stop.lat],
       zoom: CITY_ZOOM,
@@ -245,8 +221,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     touringRef.current = true;
-    clearPopup();
     setActiveId(stop.storyId);
+    setTourCard(stop);
     flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 0, (id) => {
       rafRef.current = id;
     }, () => {
@@ -264,8 +240,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         if (token !== tourToken.current) {
           return;
         }
-        setTourCard(stop);
-        showPinPopup(map, stop);
         touringRef.current = false;
       }, CITY_EASE_MS);
     });
@@ -279,8 +253,29 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const token = tourToken.current + 1;
     tourToken.current = token;
     stopMotion();
-    setTourCard(null);
+    setTourCard(stop);
     flyToStop(token, { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat }, stop);
+  };
+
+  const stepEvent = (delta: number) => {
+    if (events.length === 0) {
+      return;
+    }
+    const map = mapRef.current;
+    const index = events.findIndex((stop) => stop.storyId === activeId);
+    const fromIndex = index < 0 ? (delta > 0 ? -1 : 0) : index;
+    const nextIndex = delta > 0 ? nextTourIndex(fromIndex, events.length) : prevTourIndex(Math.max(fromIndex, 0));
+    const stop = events[nextIndex];
+    if (!map || !stop) {
+      return;
+    }
+    const token = tourToken.current + 1;
+    tourToken.current = token;
+    stopMotion();
+    const origin = index >= 0
+      ? { lng: events[index].lng, lat: events[index].lat }
+      : { lng: map.getCenter().lng, lat: map.getCenter().lat };
+    flyToStop(token, origin, stop);
   };
 
   const goHome = () => {
@@ -288,7 +283,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     tourToken.current += 1;
     stopMotion();
     touringRef.current = false;
-    clearPopup();
     setTourCard(null);
     setActiveId(null);
     setSearchOpen(false);
@@ -403,7 +397,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       window.removeEventListener('resize', fitScreen);
       tourToken.current += 1;
       stopMotion();
-      clearPopup();
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
       homeMarkerRef.current?.remove();
@@ -468,6 +461,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             <CompassIcon />
           </button>
         </div>
+        <div className="tour-event-nav">
+          <button type="button" aria-label="Back" onClick={() => stepEvent(-1)}>
+            Back
+          </button>
+          <button type="button" aria-label="Next" onClick={() => stepEvent(1)}>
+            Next
+          </button>
+        </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}
         <div className="tour-left-stack">
           <ContinentSummaryCards
@@ -488,6 +489,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           <div className="tour-right-stack">
             <aside className="event-slider">
             <article className="event-card active" aria-label="Tour event">
+              <button
+                type="button"
+                className="event-card-close"
+                aria-label="Close event"
+                onClick={() => setTourCard(null)}
+              >
+                ×
+              </button>
               {tourCard.images[0] ? <img src={tourCard.images[0]} alt="" /> : null}
               <p className="event-card-date">{formatTourDate(tourCard.date)}</p>
               <h3>{tourCard.title}</h3>
