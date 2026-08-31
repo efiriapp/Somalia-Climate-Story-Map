@@ -17,6 +17,8 @@ describe('ICE at Global Stage events', () => {
     expect(map).toContain('CITY_ZOOM');
     expect(map).toContain('MOGADISHU_HOME');
     expect(map).toContain('setTourCard(stop)');
+    expect(map).toContain('PIN_HOLD_MS = 5000');
+    expect(map).toContain('flyHomeToSomalia');
     expect(map).toContain('tour-event-nav');
     expect(map).toMatch(/>\s*Back\s*</);
     expect(map).toMatch(/>\s*Next\s*</);

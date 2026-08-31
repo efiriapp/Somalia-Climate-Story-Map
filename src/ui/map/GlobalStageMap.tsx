@@ -26,6 +26,7 @@ import {
   GLOBE_PADDING,
   GLOBE_VIEW,
   CITY_ZOOM,
+  COUNTRY_ZOOM,
   MOGADISHU_HOME,
   formatTourDate,
   nextTourIndex,
@@ -78,6 +79,8 @@ const CompassIcon = () => (
     <path d="m12 4 2.2 6.4L12 20l-2.2-6.4z" />
   </Icon>
 );
+
+const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
 
 const emptyLine: GeoJSON.Feature = {
   type: 'Feature',
@@ -148,6 +151,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const visitTotal = useMemo(() => summaryTotal(stories, defaultTourFilter()), [stories]);
   const eventsRef = useRef(events);
   eventsRef.current = events;
+  const directionRef = useRef(1);
   const openStopRef = useRef<(stop: TourStop) => void>(() => undefined);
   const searchHits = useMemo(() => searchTourStops(events, searchQuery), [events, searchQuery]);
   const activeStop = events.find((stop) => stop.storyId === activeId);
@@ -215,6 +219,40 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   };
   openStopRef.current = openStop;
 
+  const iceOffice = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
+
+  const landAtHome = (map: Map, onDone: () => void) => {
+    map.easeTo({
+      center: [iceOffice.lng, iceOffice.lat],
+      zoom: COUNTRY_ZOOM,
+      pitch: 0,
+      bearing: 0,
+      duration: CITY_EASE_MS,
+    });
+    holdRef.current = window.setTimeout(onDone, CITY_EASE_MS);
+  };
+
+  const flyHomeToSomalia = (token: number, from: LngLat, onArrive: () => void) => {
+    const map = mapRef.current;
+    if (!map) {
+      return;
+    }
+    setTourCard(null);
+    flyAlong(map, greatCircle(from, iceOffice), CRUISE_ZOOM, 0, (id) => {
+      rafRef.current = id;
+    }, () => {
+      if (token !== tourToken.current) {
+        return;
+      }
+      landAtHome(map, () => {
+        if (token !== tourToken.current) {
+          return;
+        }
+        onArrive();
+      });
+    });
+  };
+
   const flyToStop = (token: number, from: LngLat, stop: TourStop) => {
     const map = mapRef.current;
     if (!map || !stop.storyId) {
@@ -222,7 +260,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     touringRef.current = true;
     setActiveId(stop.storyId);
-    setTourCard(stop);
+    setTourCard(null);
     flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 0, (id) => {
       rafRef.current = id;
     }, () => {
@@ -240,12 +278,36 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         if (token !== tourToken.current) {
           return;
         }
-        touringRef.current = false;
+        setTourCard(stop);
+        const pinHold = PIN_HOLD_MS;
+        holdRef.current = window.setTimeout(() => {
+          if (token !== tourToken.current) {
+            return;
+          }
+          setTourCard(null);
+          flyHomeToSomalia(token, { lng: stop.lng, lat: stop.lat }, () => {
+            if (token !== tourToken.current) {
+              return;
+            }
+            const list = eventsRef.current;
+            const index = list.findIndex((item) => item.storyId === stop.storyId);
+            const nextIndex = directionRef.current > 0
+              ? nextTourIndex(index, list.length)
+              : prevTourIndex(Math.max(index, 0));
+            const next = nextIndex === index ? null : list[nextIndex];
+            if (!next) {
+              touringRef.current = false;
+              clearTourPath(mapRef.current);
+              return;
+            }
+            flyToStop(token, iceOffice, next);
+          });
+        }, pinHold);
       }, CITY_EASE_MS);
     });
   };
 
-  const runPlaceTour = (stop: TourStop) => {
+  const runPlaceTour = (stop: TourStop, direction = 1) => {
     const map = mapRef.current;
     if (!map || !stop.storyId) {
       return;
@@ -253,29 +315,22 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const token = tourToken.current + 1;
     tourToken.current = token;
     stopMotion();
-    setTourCard(stop);
-    flyToStop(token, { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat }, stop);
+    directionRef.current = direction;
+    setTourCard(null);
+    flyToStop(token, iceOffice, stop);
   };
 
   const stepEvent = (delta: number) => {
     if (events.length === 0) {
       return;
     }
-    const map = mapRef.current;
     const index = events.findIndex((stop) => stop.storyId === activeId);
     const fromIndex = index < 0 ? (delta > 0 ? -1 : 0) : index;
     const nextIndex = delta > 0 ? nextTourIndex(fromIndex, events.length) : prevTourIndex(Math.max(fromIndex, 0));
     const stop = events[nextIndex];
-    if (!map || !stop) {
-      return;
+    if (stop) {
+      runPlaceTour(stop, delta);
     }
-    const token = tourToken.current + 1;
-    tourToken.current = token;
-    stopMotion();
-    const origin = index >= 0
-      ? { lng: events[index].lng, lat: events[index].lat }
-      : { lng: map.getCenter().lng, lat: map.getCenter().lat };
-    flyToStop(token, origin, stop);
   };
 
   const goHome = () => {
@@ -493,7 +548,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 type="button"
                 className="event-card-close"
                 aria-label="Close event"
-                onClick={() => setTourCard(null)}
+                onClick={() => {
+                  tourToken.current += 1;
+                  stopMotion();
+                  touringRef.current = false;
+                  setTourCard(null);
+                }}
               >
                 ×
               </button>

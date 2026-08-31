@@ -55,9 +55,10 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('totalTravelKm');
   });
 
-  it('keeps every location pin on the map and stays on the right-side info after a tap', () => {
+  it('keeps every location pin on the map and always shows the right-side info after a tap', () => {
     expect(source).toContain('showAllPins(map)');
-    expect(source).toContain('setTourCard(stop)');
+    expect(source).toContain('openStop');
+    expect(source).toMatch(/const openStop[\s\S]{0,280}setTourCard\(stop\)/);
     expect(source).not.toContain('POPUP_HOLD_MS');
     expect(source).not.toContain('flyToIceOffice');
     expect(source).not.toContain('showPinPopup');
@@ -72,5 +73,14 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('event-card-close');
     expect(source).toContain('aria-label="Close event"');
     expect(source).toContain('setTourCard(null)');
+  });
+
+  it('hides the right-side card until the tour lands on a pin, holds 5s, then returns home to Somalia', () => {
+    expect(source).toContain('PIN_HOLD_MS = 5000');
+    expect(source).toContain('flyHomeToSomalia');
+    expect(source).toContain('COUNTRY_ZOOM');
+    expect(source).toMatch(/touringRef\.current = true[\s\S]{0,180}setTourCard\(null\)/);
+    expect(source).toMatch(/CITY_EASE_MS[\s\S]{0,220}setTourCard\(stop\)/);
+    expect(source).toMatch(/PIN_HOLD_MS[\s\S]{0,220}flyHomeToSomalia/);
   });
 });
