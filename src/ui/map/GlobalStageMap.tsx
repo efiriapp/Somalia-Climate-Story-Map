@@ -12,8 +12,6 @@ import {
 import {
   CITY_EASE_MS,
   CRUISE_ZOOM,
-  PLACE_FLY_MS,
-  cruiseThenArrive,
   distanceKm,
   greatCircle,
   pathCoordinates,
@@ -81,6 +79,7 @@ const CompassIcon = () => (
 );
 
 const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
+const TOUR_FLY_MS = 9000;
 
 const emptyLine: GeoJSON.Feature = {
   type: 'Feature',
@@ -97,26 +96,23 @@ const lineData = (path: LngLat[]): GeoJSON.Feature => ({
 const flyAlong = (
   map: Map,
   path: LngLat[],
-  endZoom: number,
-  endPitch: number,
   setRaf: (id: number) => void,
   onDone: () => void,
 ) => {
-  const startZoom = map.getZoom();
-  const startPitch = map.getPitch();
   const started = performance.now();
   const step = (now: number) => {
-    const t = Math.min(1, (now - started) / PLACE_FLY_MS);
+    const raw = Math.min(1, (now - started) / TOUR_FLY_MS);
+    const t = raw * raw * (3 - 2 * raw);
     const point = pointAlong(path, t);
     const source = map.getSource('tour-path') as GeoJSONSource | undefined;
     source?.setData(lineData(slicePath(path, t)));
     map.jumpTo({
       center: [point.lng, point.lat],
-      zoom: cruiseThenArrive(t, startZoom, CRUISE_ZOOM, endZoom),
-      pitch: startPitch + (endPitch - startPitch) * t,
-      bearing: map.getBearing(),
+      zoom: CRUISE_ZOOM,
+      pitch: 0,
+      bearing: 0,
     });
-    if (t < 1) {
+    if (raw < 1) {
       setRaf(requestAnimationFrame(step));
     } else {
       onDone();
@@ -213,7 +209,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       center: [stop.lng, stop.lat],
       zoom: CITY_ZOOM,
       pitch: 0,
-      bearing: 8,
+      bearing: 0,
       duration: CITY_EASE_MS,
     });
   };
@@ -238,7 +234,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     setTourCard(null);
-    flyAlong(map, greatCircle(from, iceOffice), CRUISE_ZOOM, 0, (id) => {
+    flyAlong(map, greatCircle(from, iceOffice), (id) => {
       rafRef.current = id;
     }, () => {
       if (token !== tourToken.current) {
@@ -261,7 +257,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     setActiveId(stop.storyId);
     setTourCard(null);
-    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), CRUISE_ZOOM, 0, (id) => {
+    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), (id) => {
       rafRef.current = id;
     }, () => {
       if (token !== tourToken.current) {
@@ -271,7 +267,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         center: [stop.lng, stop.lat],
         zoom: CITY_ZOOM,
         pitch: 0,
-        bearing: 8,
+        bearing: 0,
         duration: CITY_EASE_MS,
       });
       holdRef.current = window.setTimeout(() => {
@@ -403,6 +399,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       maxZoom: GLOBE_VIEW.maxZoom,
       maxPitch: 0,
       fadeDuration: 0,
+      refreshExpiredTiles: false,
       attributionControl: false,
     });
     map.setPadding(GLOBE_PADDING);

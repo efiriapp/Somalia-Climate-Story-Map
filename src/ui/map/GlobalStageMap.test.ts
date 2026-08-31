@@ -83,4 +83,19 @@ describe('GlobalStageMap', () => {
     expect(source).toMatch(/CITY_EASE_MS[\s\S]{0,220}setTourCard\(stop\)/);
     expect(source).toMatch(/PIN_HOLD_MS[\s\S]{0,220}flyHomeToSomalia/);
   });
+
+  it('leaves the map still until Next starts the tour', () => {
+    expect(source).toContain('showAllPins(map)');
+    expect(source).not.toMatch(/showAllPins\(map\);[\s\S]{0,200}runPlaceTour/);
+    expect(source).not.toContain('eventsRef.current[0]');
+    expect(source).toContain('onClick={() => stepEvent(1)}');
+  });
+
+  it('flies the tour slowly at a steady zoom so pins and map tiles do not shake', () => {
+    expect(source).toContain('TOUR_FLY_MS = 9000');
+    expect(source).not.toContain('cruiseThenArrive');
+    expect(source).not.toContain('PLACE_FLY_MS');
+    expect(source).toMatch(/jumpTo\(\{[\s\S]{0,140}zoom:\s*CRUISE_ZOOM/);
+    expect(source).toContain('refreshExpiredTiles: false');
+  });
 });
