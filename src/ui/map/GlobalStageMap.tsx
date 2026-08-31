@@ -77,6 +77,8 @@ const CompassIcon = () => (
 
 const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
 const TOUR_FLY_MS = 9000;
+const HOME_FLY_MS = 22000;
+const HOME_HOLD_MS = 4000;
 const STAGE_PADDING = { top: 72, bottom: 80, left: 148, right: 332 };
 let flyTimer = 0;
 
@@ -92,25 +94,20 @@ const lineData = (path: LngLat[]): GeoJSON.Feature => ({
   geometry: { type: 'LineString', coordinates: pathCoordinates(path) },
 });
 
-const flyAlong = (map: Map, path: LngLat[], onDone: () => void) => {
+const startTourPath = (map: Map, path: LngLat[]): LngLat | null => {
   const end = path.at(-1);
   if (!end) {
-    onDone();
-    return;
+    return null;
   }
   const source = map.getSource('tour-path') as GeoJSONSource | undefined;
   source?.setData(lineData(path));
   map.stop();
-  map.easeTo({
-    center: [end.lng, end.lat],
-    zoom: CRUISE_ZOOM,
-    pitch: 0,
-    bearing: 0,
-    duration: TOUR_FLY_MS,
-    essential: true,
-  });
+  return end;
+};
+
+const afterEase = (duration: number, onDone: () => void) => {
   window.clearTimeout(flyTimer);
-  flyTimer = window.setTimeout(onDone, TOUR_FLY_MS);
+  flyTimer = window.setTimeout(onDone, duration);
 };
 
 export function GlobalStageMap({ stories, onClose }: Props) {
@@ -209,33 +206,36 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   const iceOffice = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
 
-  const landAtHome = (map: Map, onDone: () => void) => {
-    map.easeTo({
-      center: [iceOffice.lng, iceOffice.lat],
-      zoom: COUNTRY_ZOOM,
-      pitch: 0,
-      bearing: 0,
-      duration: CITY_EASE_MS,
-    });
-    holdRef.current = window.setTimeout(onDone, CITY_EASE_MS);
-  };
-
   const flyHomeToSomalia = (token: number, from: LngLat, onArrive: () => void) => {
     const map = mapRef.current;
     if (!map) {
       return;
     }
     setTourCard(null);
-    flyAlong(map, greatCircle(from, iceOffice), () => {
+    const end = startTourPath(map, greatCircle(from, iceOffice));
+    if (!end) {
+      onArrive();
+      return;
+    }
+    map.easeTo({
+      center: [end.lng, end.lat],
+      zoom: COUNTRY_ZOOM,
+      pitch: 0,
+      bearing: 0,
+      duration: HOME_FLY_MS,
+      essential: true,
+      easing: (t) => t,
+    });
+    afterEase(HOME_FLY_MS, () => {
       if (token !== tourToken.current) {
         return;
       }
-      landAtHome(map, () => {
+      holdRef.current = window.setTimeout(() => {
         if (token !== tourToken.current) {
           return;
         }
         onArrive();
-      });
+      }, HOME_HOLD_MS);
     });
   };
 
@@ -247,7 +247,20 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     setActiveId(stop.storyId);
     setTourCard(null);
-    flyAlong(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }), () => {
+    const end = startTourPath(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }));
+    if (!end) {
+      return;
+    }
+    map.easeTo({
+      center: [end.lng, end.lat],
+      zoom: CRUISE_ZOOM,
+      pitch: 0,
+      bearing: 0,
+      duration: TOUR_FLY_MS,
+      essential: true,
+      easing: (t) => t,
+    });
+    afterEase(TOUR_FLY_MS, () => {
       if (token !== tourToken.current) {
         return;
       }
@@ -332,11 +345,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     measure?.setData(emptyLine);
     clearTourPath(map);
     map?.easeTo({
-      center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
-      zoom: GLOBE_VIEW.zoom,
-      pitch: GLOBE_VIEW.pitch,
-      bearing: GLOBE_VIEW.bearing,
-      duration: 1200,
+      center: [iceOffice.lng, iceOffice.lat],
+      zoom: COUNTRY_ZOOM,
+      pitch: 0,
+      bearing: 0,
+      duration: 2800,
     });
   };
 
@@ -371,8 +384,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const map = new Map({
       container: host.current,
       style: styleForLayer('osm'),
-      center: [GLOBE_VIEW.lng, GLOBE_VIEW.lat],
-      zoom: GLOBE_VIEW.zoom,
+      center: [MOGADISHU_HOME.lng, MOGADISHU_HOME.lat],
+      zoom: COUNTRY_ZOOM,
       pitch: GLOBE_VIEW.pitch,
       bearing: GLOBE_VIEW.bearing,
       minZoom: GLOBE_VIEW.minZoom,

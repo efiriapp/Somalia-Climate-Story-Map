@@ -103,4 +103,14 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('tourCard ? 332');
     expect(source).toContain('right: 332');
   });
+
+  it('returns home to Somalia slowly at country-level zoom', () => {
+    expect(source).toContain('HOME_FLY_MS = 22000');
+    expect(source).toContain('HOME_HOLD_MS = 4000');
+    expect(source).toContain('duration: HOME_FLY_MS');
+    expect(source).toContain('HOME_HOLD_MS');
+    expect(source).toMatch(/zoom:\s*COUNTRY_ZOOM/);
+    expect(source).toMatch(/new Map\(\{[\s\S]{0,280}zoom:\s*COUNTRY_ZOOM/);
+    expect(source).not.toContain('landAtHome');
+  });
 });
