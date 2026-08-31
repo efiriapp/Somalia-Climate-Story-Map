@@ -52,4 +52,11 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('CRUISE_ZOOM, 28');
     expect(source).toContain('visualizePitch: false');
   });
+
+  it('shows a Total visit count inside the continent cards', () => {
+    expect(source).toContain('ContinentSummaryCards');
+    expect(source).toContain('summaryTotal');
+    expect(source).toContain('tour-left-stack');
+    expect(source).not.toContain('totalTravelKm');
+  });
 });

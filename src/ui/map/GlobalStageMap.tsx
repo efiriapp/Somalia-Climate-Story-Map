@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AttributionControl, Map, Marker, NavigationControl, Popup, type GeoJSONSource } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { searchTourStops } from '../../application/continent-visits';
+import {
+  continentOfCountry,
+  continentSummaries,
+  defaultTourFilter,
+  firstEventIndexByContinent,
+  searchTourStops,
+  summaryTotal,
+} from '../../application/continent-visits';
 import {
   CITY_EASE_MS,
   CRUISE_ZOOM,
@@ -30,6 +37,7 @@ import {
 } from '../../application/global-tour';
 import { styleForLayer } from '../../application/map-layers';
 import type { Story } from '../../domain/story';
+import { ContinentSummaryCards } from './ContinentSummaryCards';
 
 type Props = {
   stories: Story[];
@@ -135,17 +143,19 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [measuring, setMeasuring] = useState(false);
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [tourCard, setTourCard] = useState<TourStop | null>(null);
+  const tour = useMemo(() => buildGlobalTour(stories), [stories]);
   const events = useMemo(
-    () =>
-      buildGlobalTour(stories)
-        .filter((stop) => stop.kind === 'event')
-        .sort((a, b) => a.date.localeCompare(b.date)),
-    [stories],
+    () => tour.filter((stop) => stop.kind === 'event').sort((a, b) => a.date.localeCompare(b.date)),
+    [tour],
   );
+  const summaries = useMemo(() => continentSummaries(stories, defaultTourFilter()), [stories]);
+  const visitTotal = useMemo(() => summaryTotal(stories, defaultTourFilter()), [stories]);
   const eventsRef = useRef(events);
   eventsRef.current = events;
   const directionRef = useRef(1);
   const searchHits = useMemo(() => searchTourStops(events, searchQuery), [events, searchQuery]);
+  const activeStop = events.find((stop) => stop.storyId === activeId);
+  const activeContinent = activeStop ? continentOfCountry(activeStop.country) : undefined;
 
   const clearPopup = () => {
     popupRef.current?.remove();
@@ -376,6 +386,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   useEffect(() => {
     mapRef.current?.setPadding({
       ...GLOBE_PADDING,
+      left: 148,
       right: tourCard ? 332 : GLOBE_PADDING.right,
     });
   }, [tourCard]);
@@ -517,6 +528,21 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </button>
         </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}
+        <div className="tour-left-stack">
+          <ContinentSummaryCards
+            cards={summaries}
+            total={visitTotal}
+            activeContinent={activeContinent}
+            activeTotal={!activeContinent}
+            onContinent={(continent) => {
+              const stop = tour[firstEventIndexByContinent(tour, continent)];
+              if (stop?.kind === 'event') {
+                runPlaceTour(stop);
+              }
+            }}
+            onTotal={goHome}
+          />
+        </div>
         {tourCard ? (
           <div className="tour-right-stack">
             <aside className="event-slider">
