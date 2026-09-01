@@ -78,7 +78,7 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
   }
 
   return (
-    <article className="detail climate-impact" aria-label="Climate Impact">
+    <article className="detail climate-impact climate-impact-hub" aria-label="Climate Impact">
       <p className="story-type">Climate Impact</p>
       <h1>{climateImpactHub.title}</h1>
       <p className="story-lede">{climateImpactHub.lede}</p>

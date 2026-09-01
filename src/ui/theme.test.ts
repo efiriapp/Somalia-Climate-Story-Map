@@ -132,6 +132,13 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.climate-impact-card[\s\S]{0,220}background:\s*var\(--white\)/);
   });
 
+  it('lets three Climate Impact hub cards fill the screen with large photos', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.climate-impact-hub[\s\S]{0,120}max-width:\s*min\(1180px/);
+    expect(css).toMatch(/\.climate-impact-grid[\s\S]{0,160}repeat\(3,\s*1fr\)/);
+    expect(css).toMatch(/\.climate-impact-card img[\s\S]{0,120}height:\s*2[6-9][0-9]px/);
+  });
+
   it('spreads Climate Impact photos as full-width or small rows, not one packed top gallery', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toContain('.story-spread');

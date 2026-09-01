@@ -9,6 +9,7 @@ const app = readFileSync(join(here, '..', 'App.tsx'), 'utf8');
 
 describe('ClimateImpactPage', () => {
   it('opens Floods, Droughts, Heat waves, El Niño, and La Niña from a Climate Impact hub', () => {
+    expect(source).toContain('climate-impact-hub');
     expect(source).toContain('climate-impact-grid');
     expect(source).toContain('climate-impact-card');
     expect(source).toContain('climateImpactPages');
