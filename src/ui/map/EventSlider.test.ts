@@ -14,7 +14,7 @@ describe('ICE at Global Stage events', () => {
     expect(map).toContain('event-card');
     expect(map).toContain('event-card-close');
     expect(map).toContain("new Marker({ color:");
-    expect(map).toContain('CITY_ZOOM');
+    expect(map).toContain('COUNTRY_ZOOM');
     expect(map).toContain('MOGADISHU_HOME');
     expect(map).toContain('setTourCard(stop)');
     expect(map).toContain('PIN_HOLD_MS = 5000');

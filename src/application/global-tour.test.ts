@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildGlobalTour, CITY_ZOOM, GLOBE_VIEW, formatTourDate, nextTourIndex, prevTourIndex, tourDateParts, tourPopupHtml } from './global-tour';
+import { buildGlobalTour, COUNTRY_ZOOM, GLOBE_VIEW, formatTourDate, nextTourIndex, prevTourIndex, tourDateParts, tourPopupHtml } from './global-tour';
 import type { Story } from '../domain/story';
 
 const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' | 'type'>): Story => ({
@@ -80,23 +80,16 @@ describe('buildGlobalTour', () => {
     }
   });
 
-  it('fills the map with a Somalia-centered 2D world view and zooms to city level at event stops', () => {
+  it('keeps every tour stop at country-level zoom', () => {
     expect(GLOBE_VIEW.lng).toBeCloseTo(45.32, 1);
     expect(GLOBE_VIEW.lat).toBeGreaterThan(0);
     expect(GLOBE_VIEW.lat).toBeLessThan(12);
-    expect(GLOBE_VIEW.zoom).toBeGreaterThanOrEqual(3.2);
-    expect(GLOBE_VIEW.zoom).toBeLessThan(4.2);
     expect(GLOBE_VIEW.pitch).toBe(0);
-    expect(GLOBE_VIEW.maxZoom).toBeGreaterThanOrEqual(11);
+    expect(COUNTRY_ZOOM).toBe(5.6);
     const tour = buildGlobalTour(catalog);
     for (const stop of tour) {
       expect(stop.pitch).toBe(0);
-      if (stop.kind === 'home') {
-        expect(stop.zoom).toBe(GLOBE_VIEW.zoom);
-      } else {
-        expect(stop.zoom).toBe(CITY_ZOOM);
-        expect(stop.zoom).toBeGreaterThanOrEqual(10);
-      }
+      expect(stop.zoom).toBe(COUNTRY_ZOOM);
     }
   });
 });

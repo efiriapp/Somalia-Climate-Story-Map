@@ -18,7 +18,7 @@ export const COUNTRY_ZOOM = 5.6;
 export const MOGADISHU_HOME = {
   lat: 2.0469,
   lng: 45.3182,
-  zoom: GLOBE_VIEW.zoom,
+  zoom: COUNTRY_ZOOM,
   pitch: GLOBE_VIEW.pitch,
   bearing: GLOBE_VIEW.bearing,
   title: 'Mogadishu, Somalia',
@@ -77,9 +77,9 @@ const eventStop = (story: Story): TourStop => ({
   images: story.images,
   lat: story.location.lat,
   lng: story.location.lng,
-  zoom: CITY_ZOOM,
+  zoom: COUNTRY_ZOOM,
   pitch: 0,
-  bearing: 12,
+  bearing: 0,
 });
 
 export const buildGlobalTour = (stories: Story[]): TourStop[] => {

@@ -15,10 +15,11 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('basemaps.cartocdn.com');
   });
 
-  it('tours date-sorted places with classic pins, city zoom, and a center-right card', () => {
+  it('tours date-sorted places with classic pins, country zoom, and a center-right card', () => {
     expect(source).toContain('a.date.localeCompare');
-    expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}CITY_ZOOM/);
-    expect(source).toContain('CITY_EASE_MS');
+    expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}COUNTRY_ZOOM/);
+    expect(source).not.toContain('CITY_ZOOM');
+    expect(source).not.toContain('CITY_EASE_MS');
     expect(source).toContain('MOGADISHU_HOME.lng');
     expect(source).not.toContain('flyToStop(token, { lng: stop.lng, lat: stop.lat }, next)');
     expect(source).toContain("new Marker({ color: '#063D39' })");
@@ -80,7 +81,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('flyHomeToSomalia');
     expect(source).toContain('COUNTRY_ZOOM');
     expect(source).toMatch(/touringRef\.current = true[\s\S]{0,180}setTourCard\(null\)/);
-    expect(source).toMatch(/CITY_EASE_MS[\s\S]{0,220}setTourCard\(stop\)/);
+    expect(source).toMatch(/TOUR_FLY_MS[\s\S]{0,220}setTourCard\(stop\)/);
     expect(source).toMatch(/PIN_HOLD_MS[\s\S]{0,220}flyHomeToSomalia/);
   });
 
@@ -92,12 +93,13 @@ describe('GlobalStageMap', () => {
   });
 
   it('flies the tour with MapLibre easeTo so pins and map tiles stay glued and do not shake', () => {
-    expect(source).toContain('TOUR_FLY_MS = 9000');
+    expect(source).toContain('TOUR_FLY_MS = 22000');
     expect(source).not.toContain('cruiseThenArrive');
     expect(source).not.toContain('PLACE_FLY_MS');
     expect(source).not.toContain('jumpTo');
     expect(source).not.toContain('requestAnimationFrame');
-    expect(source).toMatch(/easeTo\(\{[\s\S]{0,180}zoom:\s*CRUISE_ZOOM/);
+    expect(source).not.toContain('CRUISE_ZOOM');
+    expect(source).toMatch(/easeTo\(\{[\s\S]{0,180}zoom:\s*COUNTRY_ZOOM/);
     expect(source).toContain('duration: TOUR_FLY_MS');
     expect(source).toContain('refreshExpiredTiles: false');
     expect(source).not.toContain('tourCard ? 332');

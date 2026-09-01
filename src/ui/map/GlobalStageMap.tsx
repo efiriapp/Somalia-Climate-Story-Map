@@ -10,8 +10,6 @@ import {
   summaryTotal,
 } from '../../application/continent-visits';
 import {
-  CITY_EASE_MS,
-  CRUISE_ZOOM,
   distanceKm,
   greatCircle,
   pathCoordinates,
@@ -20,7 +18,6 @@ import {
 import {
   buildGlobalTour,
   GLOBE_VIEW,
-  CITY_ZOOM,
   COUNTRY_ZOOM,
   MOGADISHU_HOME,
   formatTourDate,
@@ -76,7 +73,7 @@ const CompassIcon = () => (
 );
 
 const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
-const TOUR_FLY_MS = 9000;
+const TOUR_FLY_MS = 22000;
 const HOME_FLY_MS = 22000;
 const HOME_HOLD_MS = 4000;
 const STAGE_PADDING = { top: 72, bottom: 80, left: 148, right: 332 };
@@ -196,10 +193,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     map.easeTo({
       center: [stop.lng, stop.lat],
-      zoom: CITY_ZOOM,
+      zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
-      duration: CITY_EASE_MS,
+      duration: 2800,
+      essential: true,
+      easing: (t) => t,
     });
   };
   openStopRef.current = openStop;
@@ -253,7 +252,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     map.easeTo({
       center: [end.lng, end.lat],
-      zoom: CRUISE_ZOOM,
+      zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
       duration: TOUR_FLY_MS,
@@ -264,43 +263,30 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       if (token !== tourToken.current) {
         return;
       }
-      map.easeTo({
-        center: [stop.lng, stop.lat],
-        zoom: CITY_ZOOM,
-        pitch: 0,
-        bearing: 0,
-        duration: CITY_EASE_MS,
-      });
+      setTourCard(stop);
       holdRef.current = window.setTimeout(() => {
         if (token !== tourToken.current) {
           return;
         }
-        setTourCard(stop);
-        const pinHold = PIN_HOLD_MS;
-        holdRef.current = window.setTimeout(() => {
+        setTourCard(null);
+        flyHomeToSomalia(token, { lng: stop.lng, lat: stop.lat }, () => {
           if (token !== tourToken.current) {
             return;
           }
-          setTourCard(null);
-          flyHomeToSomalia(token, { lng: stop.lng, lat: stop.lat }, () => {
-            if (token !== tourToken.current) {
-              return;
-            }
-            const list = eventsRef.current;
-            const index = list.findIndex((item) => item.storyId === stop.storyId);
-            const nextIndex = directionRef.current > 0
-              ? nextTourIndex(index, list.length)
-              : prevTourIndex(Math.max(index, 0));
-            const next = nextIndex === index ? null : list[nextIndex];
-            if (!next) {
-              touringRef.current = false;
-              clearTourPath(mapRef.current);
-              return;
-            }
-            flyToStop(token, iceOffice, next);
-          });
-        }, pinHold);
-      }, CITY_EASE_MS);
+          const list = eventsRef.current;
+          const index = list.findIndex((item) => item.storyId === stop.storyId);
+          const nextIndex = directionRef.current > 0
+            ? nextTourIndex(index, list.length)
+            : prevTourIndex(Math.max(index, 0));
+          const next = nextIndex === index ? null : list[nextIndex];
+          if (!next) {
+            touringRef.current = false;
+            clearTourPath(mapRef.current);
+            return;
+          }
+          flyToStop(token, iceOffice, next);
+        });
+      }, PIN_HOLD_MS);
     });
   };
 
