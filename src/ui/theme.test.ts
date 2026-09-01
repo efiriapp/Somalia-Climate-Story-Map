@@ -27,7 +27,7 @@ describe('ICE green brand', () => {
     expect(css).toContain('.event-card');
     expect(css).toContain('.event-card-close');
     expect(css).toMatch(/\.event-slider[\s\S]{0,120}background:\s*(transparent|#fff|#ffffff|var\(--white\))/);
-    expect(css).toMatch(/\.event-card img[\s\S]{0,80}height:\s*1[5-7][0-9]px/);
+    expect(css).toMatch(/\.event-card img[\s\S]{0,80}height:\s*2[0-4][0-9]px/);
     expect(css).toContain('.continent-board');
     expect(css).toContain('.continent-table');
     expect(css).toContain('.tour-filter-slide');
@@ -130,5 +130,16 @@ describe('ICE green brand', () => {
     expect(css).toContain('.climate-impact-grid');
     expect(css).toContain('.climate-impact-card');
     expect(css).toMatch(/\.climate-impact-card[\s\S]{0,220}background:\s*var\(--white\)/);
+  });
+
+  it('spreads Climate Impact photos as full-width or small rows, not one packed top gallery', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toContain('.story-spread');
+    expect(css).toContain('.story-spread-first');
+    expect(css).toContain('.story-spread-middle');
+    expect(css).toContain('.story-spread-end');
+    expect(css).toMatch(/\.story-spread-first[\s\S]{0,220}grid-template-columns:\s*1fr/);
+    expect(css).toMatch(/\.story-spread-single[\s\S]{0,180}grid-template-columns:\s*1fr/);
+    expect(css).toMatch(/\.story-spread img[\s\S]{0,120}object-fit:\s*cover/);
   });
 });
