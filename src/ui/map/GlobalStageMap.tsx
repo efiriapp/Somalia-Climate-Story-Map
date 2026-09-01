@@ -74,8 +74,7 @@ const CompassIcon = () => (
 );
 
 const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
-const TOUR_FLY_MS = 15000;
-const HOME_FLY_MS = 15000;
+const TILE_SETTLE_MS = 900;
 const HOME_HOLD_MS = 4000;
 const HOME_PIN = '#063D39';
 const EVENT_PIN = '#2E7D57';
@@ -109,6 +108,28 @@ const startTourPath = (map: Map, path: LngLat[]): LngLat | null => {
 const afterEase = (duration: number, onDone: () => void) => {
   window.clearTimeout(flyTimer);
   flyTimer = window.setTimeout(onDone, duration);
+};
+
+const jumpToView = (map: Map, center: LngLat, onDone: () => void) => {
+  map.stop();
+  map.jumpTo({
+    center: [center.lng, center.lat],
+    zoom: COUNTRY_ZOOM,
+    pitch: 0,
+    bearing: 0,
+  });
+  let settled = false;
+  const finish = () => {
+    if (settled) {
+      return;
+    }
+    settled = true;
+    map.off('idle', finish);
+    window.clearTimeout(flyTimer);
+    onDone();
+  };
+  map.once('idle', finish);
+  afterEase(TILE_SETTLE_MS, finish);
 };
 
 export function GlobalStageMap({ stories, onClose }: Props) {
@@ -198,14 +219,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     showAllPins(map, stop.storyId);
-    map.easeTo({
+    map.jumpTo({
       center: [stop.lng, stop.lat],
       zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
-      duration: 2800,
-      essential: true,
-      easing: (t) => t,
     });
   };
   openStopRef.current = openStop;
@@ -224,16 +242,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       onArrive();
       return;
     }
-    map.easeTo({
-      center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
-      zoom: COUNTRY_ZOOM,
-      pitch: 0,
-      bearing: 0,
-      duration: HOME_FLY_MS,
-      essential: true,
-      easing: (t) => t,
-    });
-    afterEase(HOME_FLY_MS, () => {
+    jumpToView(map, { lng: SOMALIA_HOME.lng, lat: SOMALIA_HOME.lat }, () => {
       if (token !== tourToken.current) {
         return;
       }
@@ -259,16 +268,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!end) {
       return;
     }
-    map.easeTo({
-      center: [end.lng, end.lat],
-      zoom: COUNTRY_ZOOM,
-      pitch: 0,
-      bearing: 0,
-      duration: TOUR_FLY_MS,
-      essential: true,
-      easing: (t) => t,
-    });
-    afterEase(TOUR_FLY_MS, () => {
+    jumpToView(map, end, () => {
       if (token !== tourToken.current) {
         return;
       }
@@ -345,12 +345,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (map) {
       showAllPins(map);
     }
-    map?.easeTo({
+    map?.jumpTo({
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
-      duration: 2800,
     });
   };
 
@@ -392,7 +391,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       minZoom: GLOBE_VIEW.minZoom,
       maxZoom: GLOBE_VIEW.maxZoom,
       maxPitch: 0,
-      fadeDuration: 0,
+      fadeDuration: 300,
       refreshExpiredTiles: false,
       attributionControl: false,
     });
