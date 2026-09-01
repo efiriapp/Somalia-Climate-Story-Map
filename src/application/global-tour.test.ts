@@ -85,7 +85,7 @@ describe('buildGlobalTour', () => {
     expect(GLOBE_VIEW.lat).toBeGreaterThan(0);
     expect(GLOBE_VIEW.lat).toBeLessThan(12);
     expect(GLOBE_VIEW.pitch).toBe(0);
-    expect(COUNTRY_ZOOM).toBe(5.6);
+    expect(COUNTRY_ZOOM).toBe(7);
     const tour = buildGlobalTour(catalog);
     for (const stop of tour) {
       expect(stop.pitch).toBe(0);

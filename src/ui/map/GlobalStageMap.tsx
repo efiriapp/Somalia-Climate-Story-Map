@@ -73,8 +73,8 @@ const CompassIcon = () => (
 );
 
 const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
-const TOUR_FLY_MS = 22000;
-const HOME_FLY_MS = 22000;
+const TOUR_FLY_MS = 15000;
+const HOME_FLY_MS = 15000;
 const HOME_HOLD_MS = 4000;
 const STAGE_PADDING = { top: 72, bottom: 80, left: 148, right: 332 };
 let flyTimer = 0;

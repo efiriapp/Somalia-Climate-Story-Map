@@ -93,7 +93,7 @@ describe('GlobalStageMap', () => {
   });
 
   it('flies the tour with MapLibre easeTo so pins and map tiles stay glued and do not shake', () => {
-    expect(source).toContain('TOUR_FLY_MS = 22000');
+    expect(source).toContain('TOUR_FLY_MS = 15000');
     expect(source).not.toContain('cruiseThenArrive');
     expect(source).not.toContain('PLACE_FLY_MS');
     expect(source).not.toContain('jumpTo');
@@ -107,7 +107,7 @@ describe('GlobalStageMap', () => {
   });
 
   it('returns home to Somalia slowly at country-level zoom', () => {
-    expect(source).toContain('HOME_FLY_MS = 22000');
+    expect(source).toContain('HOME_FLY_MS = 15000');
     expect(source).toContain('HOME_HOLD_MS = 4000');
     expect(source).toContain('duration: HOME_FLY_MS');
     expect(source).toContain('HOME_HOLD_MS');
