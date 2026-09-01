@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildGlobalTour, COUNTRY_ZOOM, GLOBE_VIEW, formatTourDate, nextTourIndex, prevTourIndex, tourDateParts, tourPopupHtml } from './global-tour';
+import { buildGlobalTour, COUNTRY_ZOOM, GLOBE_VIEW, MOGADISHU_HOME, SOMALIA_HOME, formatTourDate, nextTourIndex, prevTourIndex, tourDateParts, tourPopupHtml } from './global-tour';
 import type { Story } from '../domain/story';
 
 const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' | 'type'>): Story => ({
@@ -78,6 +78,14 @@ describe('buildGlobalTour', () => {
         expect(tour[i + 1]?.kind).toBe('home');
       }
     }
+  });
+
+  it('frames default and home so Somalia sits lower and the north stays in view', () => {
+    expect(SOMALIA_HOME.lat).toBe(GLOBE_VIEW.lat);
+    expect(SOMALIA_HOME.lat).toBeGreaterThan(MOGADISHU_HOME.lat);
+    expect(SOMALIA_HOME.lat).toBeGreaterThanOrEqual(6);
+    expect(SOMALIA_HOME.lng).toBe(MOGADISHU_HOME.lng);
+    expect(SOMALIA_HOME.zoom).toBe(COUNTRY_ZOOM);
   });
 
   it('keeps every tour stop at country-level zoom', () => {

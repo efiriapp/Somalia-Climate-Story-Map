@@ -22,8 +22,8 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('CITY_EASE_MS');
     expect(source).toContain('MOGADISHU_HOME.lng');
     expect(source).not.toContain('flyToStop(token, { lng: stop.lng, lat: stop.lat }, next)');
-    expect(source).toContain("new Marker({ color: '#063D39' })");
-    expect(source).toContain("new Marker({ color: '#2E7D57' })");
+    expect(source).toContain("HOME_PIN = '#063D39'");
+    expect(source).toContain("EVENT_PIN = '#2E7D57'");
     expect(source).toContain('showAllPins');
     expect(source).not.toContain('showEventPin');
     expect(source).not.toContain("className = 'tour-pin'");
@@ -106,6 +106,13 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('right: 332');
   });
 
+  it('turns the destination pin red while the tour flies to that place', () => {
+    expect(source).toContain("ACTIVE_PIN = '#C62828'");
+    expect(source).toContain('showAllPins(map, stop.storyId)');
+    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,220}showAllPins\(map,\s*'home'\)/);
+    expect(source).toMatch(/showAllPins = \(map: Map, activeId[\s\S]{0,80}null/);
+  });
+
   it('returns home to Somalia slowly at country-level zoom', () => {
     expect(source).toContain('HOME_FLY_MS = 15000');
     expect(source).toContain('HOME_HOLD_MS = 4000');
@@ -113,6 +120,10 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('HOME_HOLD_MS');
     expect(source).toMatch(/zoom:\s*COUNTRY_ZOOM/);
     expect(source).toMatch(/new Map\(\{[\s\S]{0,280}zoom:\s*COUNTRY_ZOOM/);
+    expect(source).toMatch(/new Map\(\{[\s\S]{0,200}SOMALIA_HOME/);
+    expect(source).toMatch(/goHome[\s\S]{0,900}SOMALIA_HOME/);
+    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,400}SOMALIA_HOME/);
+    expect(source).toContain('.setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])');
     expect(source).not.toContain('landAtHome');
   });
 });

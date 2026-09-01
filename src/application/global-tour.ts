@@ -24,6 +24,12 @@ export const MOGADISHU_HOME = {
   title: 'Mogadishu, Somalia',
 };
 
+export const SOMALIA_HOME = {
+  lat: GLOBE_VIEW.lat,
+  lng: GLOBE_VIEW.lng,
+  zoom: COUNTRY_ZOOM,
+};
+
 export type TourStop = {
   kind: 'home' | 'event';
   storyId: string | null;

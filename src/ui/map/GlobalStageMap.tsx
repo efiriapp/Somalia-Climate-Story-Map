@@ -20,6 +20,7 @@ import {
   GLOBE_VIEW,
   COUNTRY_ZOOM,
   MOGADISHU_HOME,
+  SOMALIA_HOME,
   formatTourDate,
   nextTourIndex,
   prevTourIndex,
@@ -76,6 +77,9 @@ const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
 const TOUR_FLY_MS = 15000;
 const HOME_FLY_MS = 15000;
 const HOME_HOLD_MS = 4000;
+const HOME_PIN = '#063D39';
+const EVENT_PIN = '#2E7D57';
+const ACTIVE_PIN = '#C62828';
 const STAGE_PADDING = { top: 72, bottom: 80, left: 148, right: 332 };
 let flyTimer = 0;
 
@@ -156,14 +160,16 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     homeMarkerRef.current = null;
   };
 
-  const showAllPins = (map: Map) => {
+  const showAllPins = (map: Map, activeId: string | null = null) => {
     hidePins();
-    homeMarkerRef.current = new Marker({ color: '#063D39' })
+    homeMarkerRef.current = new Marker({ color: activeId === 'home' ? ACTIVE_PIN : HOME_PIN })
       .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
       .addTo(map);
     const pins: Marker[] = [];
     for (const stop of eventsRef.current) {
-      const marker = new Marker({ color: '#2E7D57' }).setLngLat([stop.lng, stop.lat]).addTo(map);
+      const marker = new Marker({ color: stop.storyId === activeId ? ACTIVE_PIN : EVENT_PIN })
+        .setLngLat([stop.lng, stop.lat])
+        .addTo(map);
       const pin = marker.getElement();
       pin.style.cursor = 'pointer';
       pin.addEventListener('click', (event) => {
@@ -191,6 +197,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!map) {
       return;
     }
+    showAllPins(map, stop.storyId);
     map.easeTo({
       center: [stop.lng, stop.lat],
       zoom: COUNTRY_ZOOM,
@@ -210,6 +217,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!map) {
       return;
     }
+    showAllPins(map, 'home');
     setTourCard(null);
     const end = startTourPath(map, greatCircle(from, iceOffice));
     if (!end) {
@@ -217,7 +225,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     map.easeTo({
-      center: [end.lng, end.lat],
+      center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
@@ -246,6 +254,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     setActiveId(stop.storyId);
     setTourCard(null);
+    showAllPins(map, stop.storyId);
     const end = startTourPath(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }));
     if (!end) {
       return;
@@ -282,6 +291,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           if (!next) {
             touringRef.current = false;
             clearTourPath(mapRef.current);
+            if (mapRef.current) {
+              showAllPins(mapRef.current);
+            }
             return;
           }
           flyToStop(token, iceOffice, next);
@@ -330,8 +342,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const measure = map?.getSource('measure-line') as GeoJSONSource | undefined;
     measure?.setData(emptyLine);
     clearTourPath(map);
+    if (map) {
+      showAllPins(map);
+    }
     map?.easeTo({
-      center: [iceOffice.lng, iceOffice.lat],
+      center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
@@ -370,7 +385,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const map = new Map({
       container: host.current,
       style: styleForLayer('osm'),
-      center: [MOGADISHU_HOME.lng, MOGADISHU_HOME.lat],
+      center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: GLOBE_VIEW.pitch,
       bearing: GLOBE_VIEW.bearing,
@@ -529,6 +544,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                   stopMotion();
                   touringRef.current = false;
                   setTourCard(null);
+                  if (mapRef.current) {
+                    showAllPins(mapRef.current);
+                  }
                 }}
               >
                 ×
