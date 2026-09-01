@@ -514,12 +514,13 @@ select {
 
 .story-spread-middle,
 .story-spread-end {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 }
 
 .story-spread img {
   width: 100%;
   height: 280px;
+  max-height: none;
   object-fit: cover;
   border-radius: 8px;
 }
