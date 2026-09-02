@@ -1754,6 +1754,9 @@ select {
   left: 50%;
   bottom: 100%;
   pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   transform: translate(-50%, -4px);
   white-space: nowrap;
   padding: 0.18rem 0.45rem;
@@ -1765,6 +1768,15 @@ select {
   line-height: 1.2;
   letter-spacing: 0.02em;
   box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
+}
+
+.pin-flag-icon {
+  display: block;
+  width: 20px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 .global-stage-map .maplibregl-marker:has(.pin-date-label) {

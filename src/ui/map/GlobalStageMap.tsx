@@ -27,6 +27,7 @@ import {
   type TourStop,
 } from '../../application/global-tour';
 import { styleForLayer } from '../../application/map-layers';
+import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 
@@ -209,7 +210,19 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       if (touringRef.current && stop.storyId === activeId) {
         const label = document.createElement('span');
         label.className = 'pin-date-label';
-        label.textContent = formatTourDate(stop.date);
+        const flagUrl = flagIconUrl(stop.country);
+        if (flagUrl) {
+          const flag = document.createElement('img');
+          flag.className = 'pin-flag-icon';
+          flag.src = flagUrl;
+          flag.alt = '';
+          flag.width = 20;
+          flag.height = 15;
+          label.appendChild(flag);
+        }
+        const date = document.createElement('span');
+        date.textContent = formatTourDate(stop.date);
+        label.appendChild(date);
         pin.appendChild(label);
       }
       pin.addEventListener('click', (event) => {

@@ -153,7 +153,9 @@ describe('ICE green brand', () => {
   it('places a date label above the Global Stage pin without replacing the marker', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toContain('.pin-date-label');
+    expect(css).toContain('.pin-flag-icon');
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,220}bottom:\s*100%/);
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,280}pointer-events:\s*none/);
+    expect(css).toMatch(/\.pin-date-label[\s\S]{0,220}inline-flex/);
   });
 });
