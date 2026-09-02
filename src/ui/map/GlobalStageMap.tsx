@@ -74,7 +74,10 @@ const CompassIcon = () => (
 );
 
 const PIN_HOLD_MS = 5000; // then flyHomeToSomalia
-const TILE_SETTLE_MS = 900;
+const JUMP_MS = 1800;
+const LAND_MS = 1600;
+const ORIGIN_HOLD_MS = 900;
+const OVERVIEW_ZOOM = 3;
 const HOME_HOLD_MS = 4000;
 const HOME_PIN = '#063D39';
 const EVENT_PIN = '#2E7D57';
@@ -110,26 +113,36 @@ const afterEase = (duration: number, onDone: () => void) => {
   flyTimer = window.setTimeout(onDone, duration);
 };
 
-const jumpToView = (map: Map, center: LngLat, onDone: () => void) => {
+const storyJumpFromSomalia = (map: Map, to: LngLat, onDone: () => void) => {
   map.stop();
   map.jumpTo({
-    center: [center.lng, center.lat],
+    center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
     zoom: COUNTRY_ZOOM,
     pitch: 0,
     bearing: 0,
   });
-  let settled = false;
-  const finish = () => {
-    if (settled) {
-      return;
-    }
-    settled = true;
-    map.off('idle', finish);
-    window.clearTimeout(flyTimer);
-    onDone();
-  };
-  map.once('idle', finish);
-  afterEase(TILE_SETTLE_MS, finish);
+  afterEase(ORIGIN_HOLD_MS, () => {
+    map.flyTo({
+      center: [to.lng, to.lat],
+      zoom: OVERVIEW_ZOOM,
+      pitch: 0,
+      bearing: 0,
+      duration: JUMP_MS,
+      curve: 1.8,
+      essential: true,
+    });
+    afterEase(JUMP_MS, () => {
+      map.easeTo({
+        center: [to.lng, to.lat],
+        zoom: COUNTRY_ZOOM,
+        pitch: 0,
+        bearing: 0,
+        duration: LAND_MS,
+        essential: true,
+      });
+      afterEase(LAND_MS, onDone);
+    });
+  });
 };
 
 export function GlobalStageMap({ stories, onClose }: Props) {
@@ -219,11 +232,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     showAllPins(map, stop.storyId);
-    map.jumpTo({
+    map.easeTo({
       center: [stop.lng, stop.lat],
       zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
+      duration: JUMP_MS,
+      essential: true,
     });
   };
   openStopRef.current = openStop;
@@ -242,16 +257,38 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       onArrive();
       return;
     }
-    jumpToView(map, { lng: SOMALIA_HOME.lng, lat: SOMALIA_HOME.lat }, () => {
+    map.flyTo({
+      center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
+      zoom: OVERVIEW_ZOOM,
+      pitch: 0,
+      bearing: 0,
+      duration: JUMP_MS,
+      curve: 1.8,
+      essential: true,
+    });
+    afterEase(JUMP_MS, () => {
       if (token !== tourToken.current) {
         return;
       }
-      holdRef.current = window.setTimeout(() => {
+      map.easeTo({
+        center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
+        zoom: COUNTRY_ZOOM,
+        pitch: 0,
+        bearing: 0,
+        duration: LAND_MS,
+        essential: true,
+      });
+      afterEase(LAND_MS, () => {
         if (token !== tourToken.current) {
           return;
         }
-        onArrive();
-      }, HOME_HOLD_MS);
+        holdRef.current = window.setTimeout(() => {
+          if (token !== tourToken.current) {
+            return;
+          }
+          onArrive();
+        }, HOME_HOLD_MS);
+      });
     });
   };
 
@@ -264,11 +301,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setActiveId(stop.storyId);
     setTourCard(null);
     showAllPins(map, stop.storyId);
-    const end = startTourPath(map, greatCircle(from, { lng: stop.lng, lat: stop.lat }));
+    const end = startTourPath(
+      map,
+      greatCircle({ lng: SOMALIA_HOME.lng, lat: SOMALIA_HOME.lat }, { lng: stop.lng, lat: stop.lat }),
+    );
     if (!end) {
       return;
     }
-    jumpToView(map, end, () => {
+    storyJumpFromSomalia(map, end, () => {
       if (token !== tourToken.current) {
         return;
       }
@@ -345,11 +385,13 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (map) {
       showAllPins(map);
     }
-    map?.jumpTo({
+    map?.easeTo({
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: 0,
       bearing: 0,
+      duration: JUMP_MS,
+      essential: true,
     });
   };
 
@@ -416,7 +458,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           id: 'tour-path',
           type: 'line',
           source: 'tour-path',
-          paint: { 'line-color': '#4CAF7D', 'line-width': 3, 'line-opacity': 0.85 },
+          paint: { 'line-color': '#4CAF7D', 'line-width': 5, 'line-opacity': 0.9 },
         });
       }
       map.resize();

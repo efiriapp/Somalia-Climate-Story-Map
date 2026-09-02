@@ -81,7 +81,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('flyHomeToSomalia');
     expect(source).toContain('COUNTRY_ZOOM');
     expect(source).toMatch(/touringRef\.current = true[\s\S]{0,180}setTourCard\(null\)/);
-    expect(source).toMatch(/jumpToView\(map, end[\s\S]{0,220}setTourCard\(stop\)/);
+    expect(source).toMatch(/storyJumpFromSomalia\(map, end[\s\S]{0,220}setTourCard\(stop\)/);
     expect(source).toMatch(/PIN_HOLD_MS[\s\S]{0,220}flyHomeToSomalia/);
   });
 
@@ -92,13 +92,23 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('onClick={() => stepEvent(1)}');
   });
 
-  it('jumps the tour from place to place and waits for tiles to settle without panning across the world', () => {
-    expect(source).toContain('TILE_SETTLE_MS = 900');
-    expect(source).toContain('jumpToView');
-    expect(source).toContain('jumpTo');
-    expect(source).toMatch(/jumpTo\(\{[\s\S]{0,180}zoom:\s*COUNTRY_ZOOM/);
-    expect(source).toContain("once('idle'");
-    expect(source).toContain('fadeDuration: 300');
+  it('jumps from Somalia to each place at country zoom so the user can follow the story-map move', () => {
+    expect(source).toContain('JUMP_MS = 1800');
+    expect(source).toContain('LAND_MS = 1600');
+    expect(source).toContain('ORIGIN_HOLD_MS = 900');
+    expect(source).toContain('OVERVIEW_ZOOM = 3');
+    expect(source).toContain('storyJumpFromSomalia');
+    expect(source).toMatch(/jumpTo\(\{[\s\S]{0,160}SOMALIA_HOME/);
+    expect(source).toMatch(/storyJumpFromSomalia[\s\S]{0,720}map\.flyTo\(/);
+    expect(source).toMatch(/flyTo\(\{[\s\S]{0,220}zoom:\s*OVERVIEW_ZOOM/);
+    expect(source).toContain('curve: 1.8');
+    expect(source).toContain('duration: JUMP_MS');
+    expect(source).toContain('duration: LAND_MS');
+    expect(source).toMatch(/easeTo\(\{[\s\S]{0,180}zoom:\s*COUNTRY_ZOOM/);
+    expect(source).toContain('greatCircle({ lng: SOMALIA_HOME.lng, lat: SOMALIA_HOME.lat }');
+    expect(source).toContain("'line-width': 5");
+    expect(source).not.toContain('jumpToView');
+    expect(source).not.toContain('TILE_SETTLE_MS');
     expect(source).not.toContain('cruiseThenArrive');
     expect(source).not.toContain('PLACE_FLY_MS');
     expect(source).not.toContain('TOUR_FLY_MS');
@@ -106,6 +116,7 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('requestAnimationFrame');
     expect(source).not.toContain('CRUISE_ZOOM');
     expect(source).toContain('refreshExpiredTiles: false');
+    expect(source).toContain('fadeDuration: 300');
     expect(source).not.toContain('tourCard ? 332');
     expect(source).toContain('right: 332');
   });
@@ -117,14 +128,15 @@ describe('GlobalStageMap', () => {
     expect(source).toMatch(/showAllPins = \(map: Map, activeId[\s\S]{0,80}null/);
   });
 
-  it('returns home to Somalia at country-level zoom with a jump, not a long pan', () => {
+  it('returns home to Somalia at country-level zoom with a story-map jump', () => {
     expect(source).toContain('HOME_HOLD_MS = 4000');
     expect(source).toContain('HOME_HOLD_MS');
     expect(source).toMatch(/zoom:\s*COUNTRY_ZOOM/);
     expect(source).toMatch(/new Map\(\{[\s\S]{0,280}zoom:\s*COUNTRY_ZOOM/);
     expect(source).toMatch(/new Map\(\{[\s\S]{0,200}SOMALIA_HOME/);
     expect(source).toMatch(/goHome[\s\S]{0,900}SOMALIA_HOME/);
-    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,500}jumpToView/);
+    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,700}OVERVIEW_ZOOM/);
+    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,900}COUNTRY_ZOOM/);
     expect(source).toContain('.setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])');
     expect(source).not.toContain('landAtHome');
   });
