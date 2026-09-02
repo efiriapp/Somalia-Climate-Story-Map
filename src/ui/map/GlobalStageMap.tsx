@@ -206,6 +206,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         .addTo(map);
       const pin = marker.getElement();
       pin.style.cursor = 'pointer';
+      if (touringRef.current && stop.storyId === activeId) {
+        const label = document.createElement('span');
+        label.className = 'pin-date-label';
+        label.textContent = formatTourDate(stop.date);
+        pin.appendChild(label);
+      }
       pin.addEventListener('click', (event) => {
         event.stopPropagation();
         if (measuringRef.current) {

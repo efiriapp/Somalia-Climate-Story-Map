@@ -1749,6 +1749,28 @@ select {
   z-index: 1;
 }
 
+.pin-date-label {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  pointer-events: none;
+  transform: translate(-50%, -4px);
+  white-space: nowrap;
+  padding: 0.18rem 0.45rem;
+  border-radius: 6px;
+  background: #063D39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
+}
+
+.global-stage-map .maplibregl-marker:has(.pin-date-label) {
+  z-index: 20;
+}
+
 .global-stage-map .maplibregl-marker:has(.tour-plane),
 .global-stage-map .tour-plane {
   z-index: 40 !important;

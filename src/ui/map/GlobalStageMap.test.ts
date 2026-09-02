@@ -28,12 +28,11 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('showEventPin');
     expect(source).not.toContain("className = 'tour-pin'");
     expect(source).not.toContain('tour-pin-label');
-    expect(source).not.toContain('formatTourDate(stop.date)');
+    expect(source).not.toContain('labeledPin');
     expect(source).toContain('tour-right-stack');
     expect(source).toContain('event-card');
     expect(source).toContain("addEventListener('click'");
     expect(source).not.toContain("addEventListener('mouseenter'");
-    expect(source).not.toContain('labeledPin');
     expect(source).not.toContain("addEventListener('wheel'");
     expect(source).not.toContain('createPlaneMarker');
     expect(source).not.toContain('setPlaying(true)');
@@ -119,6 +118,15 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('fadeDuration: 300');
     expect(source).not.toContain('tourCard ? 332');
     expect(source).toContain('right: 332');
+  });
+
+  it('shows a date label on the destination pin while the tour is coming to that place', () => {
+    expect(source).toContain('pin-date-label');
+    expect(source).toContain('formatTourDate(stop.date)');
+    expect(source).toMatch(/touringRef\.current[\s\S]{0,120}stop\.storyId === activeId[\s\S]{0,280}pin-date-label/);
+    expect(source).not.toContain("className = 'tour-pin'");
+    expect(source).not.toContain('labeledPin');
+    expect(source).not.toContain('new Popup');
   });
 
   it('turns the destination pin red while the tour flies to that place', () => {
