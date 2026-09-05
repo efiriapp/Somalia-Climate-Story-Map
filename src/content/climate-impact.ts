@@ -42,6 +42,73 @@ export function splitStoryImages(images: string[]): {
   };
 }
 
+const floodVideos: ClimateImpactVideo[] = [
+  {
+    title: 'Deadly floods continue to ravage Somalia',
+    url: 'https://youtu.be/MjYZsu23LkE?si=BWEGsOJenPTaupxF',
+    outlet: 'AP',
+  },
+  {
+    title: 'Somalia floods: Heavy rains force thousands from their homes',
+    url: 'https://youtu.be/PrBU7HGTpuE?si=UqUn5gi2RCVo1QT0',
+    outlet: 'Al Jazeera',
+  },
+  {
+    title: "Flood damage in Somalia's capital",
+    url: 'https://youtube.com/shorts/Pk0ZU1EsmWU?si=SYWrS1masvd1aVTX',
+    outlet: 'Reuters',
+  },
+];
+
+const droughtVideos: ClimateImpactVideo[] = [
+  {
+    title: "Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
+    url: 'https://youtu.be/dK7wk-8RtFs?si=U8lw5eBVH46MINiC',
+    outlet: 'Africanews',
+  },
+  {
+    title: 'Somalia suffering worst drought in decades',
+    url: 'https://youtu.be/8pk6KZQDSaw?si=gKX1eNaBOA1chxYJ',
+    outlet: 'Al Jazeera',
+  },
+];
+
+const elNinoVideos: ClimateImpactVideo[] = [
+  {
+    title: "Flash floods hit Somalia's capital",
+    url: 'https://youtu.be/RhG4kaaX2j0',
+    outlet: 'Reuters',
+  },
+  {
+    title: 'Somalia floods: Heavy rains force thousands from their homes',
+    url: 'https://youtu.be/PrBU7HGTpuE?si=UqUn5gi2RCVo1QT0',
+    outlet: 'Al Jazeera',
+  },
+  {
+    title: 'Deadly floods continue to ravage Somalia',
+    url: 'https://youtu.be/MjYZsu23LkE?si=BWEGsOJenPTaupxF',
+    outlet: 'AP',
+  },
+];
+
+const laNinaVideos: ClimateImpactVideo[] = [
+  {
+    title: 'East Africa drought set to get worse: U.N., agencies',
+    url: 'https://youtu.be/qvf5zL8trjA',
+    outlet: 'Reuters',
+  },
+  {
+    title: 'Somalia: One in three people face severe food shortages as drought deepens, Save the Children warns',
+    url: 'https://youtu.be/dDK0Z43leuY',
+    outlet: 'Al Jazeera',
+  },
+  {
+    title: "Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
+    url: 'https://youtu.be/dK7wk-8RtFs?si=U8lw5eBVH46MINiC',
+    outlet: 'Africanews',
+  },
+];
+
 export const climateImpactHub = {
   title: 'Climate Impact',
   lede: 'Somalia already lives with floods, droughts, heat waves, El Niño, and La Niña. These pages tell those stories with ICE Institute evidence: how each hazard hits people, livestock, cities, and the economy.',
@@ -111,23 +178,7 @@ export const climateImpactPages: ClimateImpactPage[] = [
       '/images/climate-impact/flood-3.jpg',
       '/images/climate-impact/flood-4.webp',
     ],
-    videos: [
-      {
-        title: 'Deadly floods continue to ravage Somalia',
-        url: 'https://youtu.be/MjYZsu23LkE?si=BWEGsOJenPTaupxF',
-        outlet: 'AP',
-      },
-      {
-        title: 'Somalia floods: Heavy rains force thousands from their homes',
-        url: 'https://youtu.be/PrBU7HGTpuE?si=UqUn5gi2RCVo1QT0',
-        outlet: 'Al Jazeera',
-      },
-      {
-        title: "Flood damage in Somalia's capital",
-        url: 'https://youtube.com/shorts/Pk0ZU1EsmWU?si=SYWrS1masvd1aVTX',
-        outlet: 'Reuters',
-      },
-    ],
+    videos: floodVideos,
     sourceLabel: 'State of Climate in Somalia 2026',
     sourceUrl:
       'https://ice.simad.edu.so/2026/04/24/state-of-climate-in-somalia-2026-trends-risks-and-pathways-to-resilience/',
@@ -202,18 +253,7 @@ export const climateImpactPages: ClimateImpactPage[] = [
       '/images/climate-impact/drought-2.jpg',
       '/images/climate-impact/droughts.webp',
     ],
-    videos: [
-      {
-        title: "Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
-        url: 'https://youtu.be/dK7wk-8RtFs?si=U8lw5eBVH46MINiC',
-        outlet: 'Africanews',
-      },
-      {
-        title: 'Somalia suffering worst drought in decades',
-        url: 'https://youtu.be/8pk6KZQDSaw?si=gKX1eNaBOA1chxYJ',
-        outlet: 'Al Jazeera',
-      },
-    ],
+    videos: droughtVideos,
     sourceLabel: 'State of Climate in Somalia 2026',
     sourceUrl:
       'https://ice.simad.edu.so/2026/04/24/state-of-climate-in-somalia-2026-trends-risks-and-pathways-to-resilience/',
@@ -330,7 +370,7 @@ export const climateImpactPages: ClimateImpactPage[] = [
       },
     ],
     images: ['/images/climate-impact/el-nino.jpg'],
-    videos: [],
+    videos: elNinoVideos,
     sourceLabel: 'State of Climate in Somalia 2026',
     sourceUrl:
       'https://ice.simad.edu.so/2026/04/24/state-of-climate-in-somalia-2026-trends-risks-and-pathways-to-resilience/',
@@ -378,7 +418,7 @@ export const climateImpactPages: ClimateImpactPage[] = [
       '/images/climate-impact/drought-2.jpg',
       '/images/climate-impact/drought-3.jpg',
     ],
-    videos: [],
+    videos: laNinaVideos,
     sourceLabel: 'State of Climate in Somalia 2026',
     sourceUrl:
       'https://ice.simad.edu.so/2026/04/24/state-of-climate-in-somalia-2026-trends-risks-and-pathways-to-resilience/',

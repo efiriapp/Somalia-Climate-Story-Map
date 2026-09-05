@@ -160,8 +160,42 @@ describe('Climate Impact pages', () => {
         outlet: 'Al Jazeera',
       },
     ]);
-    expect(pageById('el-nino')?.videos).toEqual([]);
-    expect(pageById('la-nina')?.videos).toEqual([]);
+    expect(pageById('el-nino')?.videos).toEqual([
+      {
+        title: "Flash floods hit Somalia's capital",
+        url: 'https://youtu.be/RhG4kaaX2j0',
+        outlet: 'Reuters',
+      },
+      {
+        title: 'Somalia floods: Heavy rains force thousands from their homes',
+        url: 'https://youtu.be/PrBU7HGTpuE?si=UqUn5gi2RCVo1QT0',
+        outlet: 'Al Jazeera',
+      },
+      {
+        title: 'Deadly floods continue to ravage Somalia',
+        url: 'https://youtu.be/MjYZsu23LkE?si=BWEGsOJenPTaupxF',
+        outlet: 'AP',
+      },
+    ]);
+    expect(pageById('la-nina')?.videos).toEqual([
+      {
+        title: 'East Africa drought set to get worse: U.N., agencies',
+        url: 'https://youtu.be/qvf5zL8trjA',
+        outlet: 'Reuters',
+      },
+      {
+        title: 'Somalia: One in three people face severe food shortages as drought deepens, Save the Children warns',
+        url: 'https://youtu.be/dDK0Z43leuY',
+        outlet: 'Al Jazeera',
+      },
+      {
+        title: "Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
+        url: 'https://youtu.be/dK7wk-8RtFs?si=U8lw5eBVH46MINiC',
+        outlet: 'Africanews',
+      },
+    ]);
+    expect(pageById('el-nino')?.videos).not.toEqual(pageById('floods')?.videos);
+    expect(pageById('la-nina')?.videos).not.toEqual(pageById('droughts')?.videos);
     expect(pageById('heat-waves')?.videos).toEqual([
       {
         title: 'Heatwaves in Mogadishu',
