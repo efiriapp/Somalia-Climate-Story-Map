@@ -49,11 +49,16 @@ describe('RegionMapTour', () => {
     );
   });
 
-  it('shows district name labels and turns the touring pin red', () => {
-    expect(source).toContain('districtPinMarkup');
-    expect(source).toContain('district-pin-icon');
-    expect(source).toContain('L.divIcon');
-    expect(source).toContain('districtPinMarkup(district, active)');
-    expect(source).toContain('districtIcon(stop.district, stop === activeStop)');
+  it('keeps the Leaflet pin and labels it with only the district name', () => {
+    expect(source).toContain('Icon.Default');
+    expect(source).not.toContain('L.divIcon');
+    expect(source).not.toContain('districtPinMarkup');
+    expect(source).toContain('<Tooltip');
+    expect(source).toContain('permanent');
+    expect(source).toContain('{stop.district}');
+    expect(source).toContain('districtLabelClass(stop === activeStop)');
+    expect(source).toContain('stop === activeStop ? \'on\' : \'off\'');
+    expect(source).toMatch(/<Tooltip[\s\S]{0,220}\{stop\.district\}[\s\S]{0,80}<\/Tooltip>/);
+    expect(source).not.toMatch(/<Tooltip[\s\S]{0,220}stop\.(title|region)/);
   });
 });

@@ -6,7 +6,7 @@ import {
   ACTIVE_DISTRICT_PIN,
   DISTRICT_ZOOM,
   buildRegionMapTour,
-  districtPinMarkup,
+  districtLabelClass,
   tourFlightPlan,
 } from './region-map-tour';
 
@@ -84,13 +84,10 @@ describe('tourFlightPlan', () => {
   });
 });
 
-describe('districtPinMarkup', () => {
-  it('labels every district and turns the touring place red', () => {
+describe('districtLabelClass', () => {
+  it('keeps the district name label forest green until that place is touring', () => {
     expect(ACTIVE_DISTRICT_PIN).toBe('#C62828');
-    expect(districtPinMarkup('Ceelgula', false)).toContain('district-pin-label');
-    expect(districtPinMarkup('Ceelgula', false)).toContain('Ceelgula');
-    expect(districtPinMarkup('Ceelgula', false)).not.toContain('is-active');
-    expect(districtPinMarkup('Baydhaba', true)).toContain('Baydhaba');
-    expect(districtPinMarkup('Baydhaba', true)).toContain('is-active');
+    expect(districtLabelClass(false)).toBe('district-pin-label');
+    expect(districtLabelClass(true)).toBe('district-pin-label is-active');
   });
 });

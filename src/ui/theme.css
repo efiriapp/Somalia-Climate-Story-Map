@@ -789,8 +789,7 @@ select {
   filter: drop-shadow(0 4px 8px rgba(6, 61, 57, 0.35));
 }
 
-.region-pin-marker,
-.district-pin-marker {
+.region-pin-marker {
   display: block;
   width: 28px;
   height: 28px;
@@ -802,26 +801,9 @@ select {
   box-shadow: inset 0 0 0 5px var(--mint);
 }
 
-.district-pin-icon {
-  background: transparent;
-  border: 0;
-}
-
-.district-pin {
-  position: relative;
-  display: block;
-  width: 28px;
-  height: 36px;
-}
-
-.district-pin-label {
-  position: absolute;
-  left: 50%;
-  bottom: 100%;
-  pointer-events: none;
-  transform: translate(-50%, -4px);
-  white-space: nowrap;
+.leaflet-tooltip.district-pin-label {
   padding: 0.18rem 0.45rem;
+  border: 0;
   border-radius: 6px;
   background: #063D39;
   color: #fff;
@@ -832,18 +814,17 @@ select {
   box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
 }
 
-.district-pin.is-active {
-  z-index: 20;
+.leaflet-tooltip.district-pin-label::before {
+  border-top-color: #063D39;
 }
 
-.district-pin.is-active .district-pin-label,
-.district-pin.is-active .district-pin-marker {
+.leaflet-tooltip.district-pin-label.is-active {
   background: #C62828;
   box-shadow: 0 4px 10px rgba(198, 40, 40, 0.32);
 }
 
-.district-pin.is-active .district-pin-marker {
-  box-shadow: inset 0 0 0 5px #ffcdd2;
+.leaflet-tooltip.district-pin-label.is-active::before {
+  border-top-color: #C62828;
 }
 
 .region-pin-popup .leaflet-popup-content-wrapper {

@@ -22,8 +22,8 @@ export const ORIGIN_HOLD_MS = 700;
 export const DISTRICT_FLY_MS = 2800;
 export const ACTIVE_DISTRICT_PIN = '#C62828';
 
-export const districtPinMarkup = (district: string, active: boolean): string =>
-  `<span class="district-pin${active ? ' is-active' : ''}"><span class="district-pin-label">${district}</span><span class="district-pin-marker"></span></span>`;
+export const districtLabelClass = (active: boolean): string =>
+  active ? 'district-pin-label is-active' : 'district-pin-label';
 
 export type RegionMapStop = {
   region: string;

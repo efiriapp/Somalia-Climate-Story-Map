@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, useMap, LayersControl } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, LayersControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -12,7 +12,7 @@ import {
   DISTRICT_ZOOM,
   ORIGIN_HOLD_MS,
   buildRegionMapTour,
-  districtPinMarkup,
+  districtLabelClass,
   tourFlightPlan,
   type RegionMapStop,
 } from '../../application/region-map-tour';
@@ -32,14 +32,6 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   shadowUrl: markerShadow,
 });
-
-const districtIcon = (district: string, active: boolean) =>
-  L.divIcon({
-    className: 'district-pin-icon',
-    html: districtPinMarkup(district, active),
-    iconSize: [28, 36],
-    iconAnchor: [14, 36],
-  });
 
 const flyToSomaliaThenDistrict = (
   map: L.Map,
@@ -194,9 +186,8 @@ export function RegionMapTour({ story }: Props) {
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
           {stops.map((stop) => (
             <Marker
-              key={`${stop.regionSlug}-${stop.district}`}
+              key={`${stop.regionSlug}-${stop.district}-${stop === activeStop ? 'on' : 'off'}`}
               position={[stop.lat, stop.lng]}
-              icon={districtIcon(stop.district, stop === activeStop)}
               eventHandlers={{
                 click: () => {
                   if (!lockedRef.current) {
@@ -209,6 +200,9 @@ export function RegionMapTour({ story }: Props) {
                 },
               }}
             >
+              <Tooltip permanent direction="top" offset={[0, -36]} className={districtLabelClass(stop === activeStop)}>
+                {stop.district}
+              </Tooltip>
               <Popup className="region-pin-popup">
                 <strong>{stop.district}</strong>
                 <p>{stop.title}</p>
