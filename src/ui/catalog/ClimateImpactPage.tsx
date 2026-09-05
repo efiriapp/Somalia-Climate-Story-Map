@@ -2,7 +2,11 @@ import { Fragment, useLayoutEffect } from 'react';
 import type { ClimateHazardId } from '../../content/climate-impact';
 import { climateImpactHub, climateImpactPages, splitStoryImages } from '../../content/climate-impact';
 import { scrollPageToTop } from '../../application/scroll-page-top';
-import { climateMediaCredit } from '../../application/media-source-credit';
+import {
+  climateMediaCredit,
+  formatMediaSourceCredit,
+  videoEmbedCredit,
+} from '../../application/media-source-credit';
 import { videoEmbedSrc } from '../../application/youtube-embed';
 import { MediaSourceCredit } from './MediaSourceCredit';
 
@@ -70,8 +74,11 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
         {page.videos.map((video) => {
           const embedSrc = videoEmbedSrc(video.url);
           return embedSrc ? (
-            <div className="story-video" key={video.url}>
-              <iframe title={video.title} src={embedSrc} allowFullScreen />
+            <div key={video.url}>
+              <div className="story-video">
+                <iframe title={video.title} src={embedSrc} allowFullScreen />
+              </div>
+              <MediaSourceCredit credit={videoEmbedCredit(video.title)} />
             </div>
           ) : null;
         })}
@@ -100,6 +107,7 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
           </button>
         ))}
       </div>
+      <MediaSourceCredit credit={{ text: formatMediaSourceCredit('ICE Institute') }} />
     </article>
   );
 }

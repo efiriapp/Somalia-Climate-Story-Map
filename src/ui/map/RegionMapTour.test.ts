@@ -56,6 +56,12 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('region-slide-photos');
   });
 
+  it('credits the tour slide photo with the ICE story source line', () => {
+    expect(source).toContain('MediaSourceCredit');
+    expect(source).toContain('storyMediaCredit(story)');
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('activeStop.description'));
+  });
+
   it('keeps the Leaflet pin and does not show name labels', () => {
     expect(source).toContain('Icon.Default');
     expect(source).not.toContain('L.divIcon');

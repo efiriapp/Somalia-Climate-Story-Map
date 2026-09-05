@@ -35,6 +35,11 @@ describe('platform topbar', () => {
     expect(source).toContain("'research-story'");
   });
 
+  it('credits research-story photos when the simple detail page shows an image', () => {
+    expect(source).toContain('MediaSourceCredit');
+    expect(source).toContain('storyMediaCredit(detail)');
+  });
+
   it('scrolls to the top of the page when a catalog story opens', () => {
     expect(source).toContain('useLayoutEffect');
     expect(source).toMatch(/useLayoutEffect\([\s\S]{0,220}scrollPageToTop/);

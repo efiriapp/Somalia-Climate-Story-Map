@@ -20,4 +20,10 @@ describe('GlobalStagePage', () => {
     expect(app).toContain("openScreen('global-stage')");
     expect(stories).toContain("type: 'global-stage'");
   });
+
+  it('ends each event that has photos with the ICE source credit', () => {
+    expect(source).toContain('MediaSourceCredit');
+    expect(source).toContain('storyMediaCredit(story)');
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('More information'));
+  });
 });

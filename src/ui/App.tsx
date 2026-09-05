@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { filterCatalog } from '../application/filter-catalog';
+import { storyMediaCredit } from '../application/media-source-credit';
 import { resolveMapView } from '../application/resolve-map-view';
 import { scrollPageToTop } from '../application/scroll-page-top';
 import { aboutIce } from '../content/about-ice';
@@ -10,6 +11,7 @@ import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
 import { ClimateImpactPage } from './catalog/ClimateImpactPage';
+import { MediaSourceCredit } from './catalog/MediaSourceCredit';
 import { MapPane } from './map/MapPane';
 import { GlobalStageMap } from './map/GlobalStageMap';
 import type { ClimateHazardId } from '../content/climate-impact';
@@ -134,6 +136,7 @@ export default function App() {
               </a>
             </p>
           ) : null}
+          <MediaSourceCredit credit={storyMediaCredit(detail)} />
         </article>
       ) : (
         <>

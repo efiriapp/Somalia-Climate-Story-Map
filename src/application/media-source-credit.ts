@@ -56,3 +56,7 @@ export const climateMediaCredit = (page: ClimateMediaFields): MediaCredit | null
     url: page.sourceUrl || undefined,
   };
 };
+
+export const videoEmbedCredit = (title: string): MediaCredit => ({
+  text: `Source: ${title.trim()}`,
+});

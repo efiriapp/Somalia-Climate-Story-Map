@@ -652,6 +652,12 @@ select {
   line-height: 1.45;
 }
 
+.story-video + .media-source {
+  width: calc(100% + 6rem);
+  max-width: calc(720px + 6rem);
+  margin: -0.35rem auto 0;
+}
+
 .event-card .media-source {
   margin: 0;
   padding: 0 0.7rem 0.75rem;
@@ -794,6 +800,12 @@ select {
   padding-bottom: 1rem;
   font-size: 0.92rem;
   line-height: 1.55;
+}
+
+.region-slide-card .media-source {
+  margin: 0;
+  padding: 0 1rem 0.85rem;
+  font-size: 0.78rem;
 }
 
 .modern-pin-wrap {

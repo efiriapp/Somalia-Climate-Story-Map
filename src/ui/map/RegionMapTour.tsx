@@ -18,7 +18,9 @@ import {
 } from '../../application/region-map-tour';
 import { scrollPageToTop } from '../../application/scroll-page-top';
 import { scrollTourIndex } from '../../application/scroll-tour';
+import { storyMediaCredit } from '../../application/media-source-credit';
 import type { Story } from '../../domain/story';
+import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 
 type Props = {
   story: Story;
@@ -234,6 +236,7 @@ export function RegionMapTour({ story }: Props) {
             {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
             <h3>{activeStop.title}</h3>
             <p>{activeStop.description}</p>
+            <MediaSourceCredit credit={storyMediaCredit(story)} />
           </aside>
         ) : null}
       </div>

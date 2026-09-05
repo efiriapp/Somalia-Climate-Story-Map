@@ -1,5 +1,7 @@
 import { formatTourDate } from '../../application/global-tour';
+import { storyMediaCredit } from '../../application/media-source-credit';
 import type { Story } from '../../domain/story';
+import { MediaSourceCredit } from './MediaSourceCredit';
 
 type Props = {
   stories: Story[];
@@ -45,6 +47,7 @@ export function GlobalStagePage({ stories }: Props) {
               </a>
             </p>
           ) : null}
+          <MediaSourceCredit credit={storyMediaCredit(story)} />
         </article>
       ))}
     </div>

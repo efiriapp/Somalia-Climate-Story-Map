@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { climateImpactPages } from '../content/climate-impact';
 import { stories } from '../content/stories';
-import { climateMediaCredit, formatMediaSourceCredit, storyMediaCredit } from './media-source-credit';
+import {
+  climateMediaCredit,
+  formatMediaSourceCredit,
+  storyMediaCredit,
+  videoEmbedCredit,
+} from './media-source-credit';
 
 describe('formatMediaSourceCredit', () => {
   it('credits ICE Institute and a specific primary source', () => {
@@ -48,6 +53,17 @@ describe('climateMediaCredit', () => {
     expect(climateMediaCredit(page!)).toEqual({
       text: 'Source: ICE Institute — Somalia Country Climate and Development Report',
       url: 'https://ice.simad.edu.so/2026/03/03/somalia-country-climate-and-development-report/',
+    });
+  });
+});
+
+describe('videoEmbedCredit', () => {
+  it('credits a news film by its title without claiming ICE Institute filmed it', () => {
+    expect(videoEmbedCredit('Deadly floods continue to ravage Somalia')).toEqual({
+      text: 'Source: Deadly floods continue to ravage Somalia',
+    });
+    expect(videoEmbedCredit("Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC")).toEqual({
+      text: "Source: Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
     });
   });
 });
