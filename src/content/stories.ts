@@ -484,6 +484,88 @@ export const stories: Story[] = [
     ],
   },
   {
+    id: 'green-champions',
+    title: 'Green Champions: ICE Student Leaders for Climate Action',
+    type: 'ice-story',
+    region: 'banaadir',
+    district: 'wadajir',
+    date: '2025-08-23',
+    themes: ['youth', 'education'],
+    sdgs: [13, 4, 17],
+    location: mogadishu,
+    country: 'Somalia',
+    website: 'https://ice.simad.edu.so/2025/08/23/green-champions-the-class-of-2025/',
+    summary:
+      'Green Champions is ICE Institute’s flagship student leadership programme at SIMAD University. Since 2023 it has selected yearly cohorts of students who research climate issues, run events, and take sustainability into campus and community life. The Class of 2025 brought ten students from different faculties after an open competition. The programme treats young Somalis as climate leaders now, not only as the leaders of tomorrow.',
+    body: 'Green Champions trains SIMAD University students to lead climate research, events, and community outreach with ICE Institute.',
+    featuredPerson: 'ICE Green Champions',
+    placeLabel: 'SIMAD University, Mogadishu',
+    sourceCard: {
+      place: 'SIMAD University, Mogadishu',
+      city: 'Mogadishu',
+      regionLabel: 'Banaadir',
+      country: 'Somalia',
+      category: 'Youth Leadership',
+      impactAreas: ['Youth', 'Education', 'Climate Action', 'Community Outreach'],
+      featuredPerson: 'ICE Green Champions',
+      primarySource: 'ICE Institute — Green Champions programme',
+      extras: [
+        { label: 'Class of 2025', value: 'https://ice.simad.edu.so/2025/08/23/green-champions-the-class-of-2025/' },
+        { label: 'Class of 2024', value: 'https://ice.simad.edu.so/2024/08/29/introducing-the-new-cohort-of-green-champions-class-of-2024/' },
+        { label: 'Inaugural class', value: 'https://ice.simad.edu.so/2023/08/09/the-class-of-2023/' },
+      ],
+    },
+    stats: [
+      { label: 'Launched', value: '2023' },
+      { label: '2025 cohort', value: '10 students' },
+      { label: 'Place', value: 'SIMAD University, Mogadishu' },
+      { label: 'Work', value: 'Research, events, and outreach' },
+      { label: '2026 applications closed', value: '7 August 2026' },
+    ],
+    images: [
+      '/images/ice-stories/green-champions-2025.jpg',
+      '/images/ice-stories/green-champions-2024.jpg',
+      '/images/ice-stories/green-champions-2023.jpeg',
+    ],
+    chapters: [
+      {
+        heading: 'A flagship programme for student climate leaders',
+        paragraphs: [
+          'Green Champions is more than a volunteer club. ICE Institute at SIMAD University built it as a competitive leadership and capacity-building programme so students can gain knowledge, practical skills, mentorship, and professional networks for environmental sustainability and climate action. Climate change is already affecting Somalia through droughts, floods, environmental degradation, biodiversity loss, food insecurity, and displacement. ICE established Green Champions to identify and nurture students who can become changemakers on campus, in their communities, and across Somalia.',
+          'Participants join a network of young leaders who advance sustainability through research, advocacy, awareness campaigns, community engagement, innovation, and practical environmental action. ICE’s values of integrity, innovation, inclusivity, and impact sit behind the programme. The institute’s message is direct: young people are not only the leaders of tomorrow. They are the leaders of today.',
+        ],
+      },
+      {
+        heading: 'The inaugural class of 2023',
+        paragraphs: [
+          'The first Green Champions cohort was announced on 9 August 2023. ICE described a yearly, cohort-based network of student volunteers who share a passion for the environment, sustainability, and climate action. Their primary goal is to advocate and drive a green transformation for Somalia, aligning their work with the Somali National Youth Development Plan, the Universal Declaration of Human Rights, the Sustainable Development Goals, and the Paris Agreement.',
+          'Selected volunteers receive training, workshops, and educational resources so they can become effective advocates and leaders. They also gain networking with environmental organisations, government bodies, and international agencies, and mentorship from professors and experienced practitioners. ICE designs community outreach so the work is planned, targeted, and tied to local needs rather than remaining theoretical.',
+        ],
+      },
+      {
+        heading: 'Class of 2024 and the green transformation',
+        paragraphs: [
+          'In August 2024 ICE selected the Green Champions Class of 2024 after an open call for senior SIMAD University students who were fluent in English, willing to volunteer, able to work in a team, and interested in sustainability and climate action. The new cohort was asked to lead environmental awareness, community outreach, and innovative responses to local climate challenges.',
+          'Throughout the year they received specialised training, mentorship, and access to resources so their work would last beyond a single campaign. ICE framed their efforts against national and international frameworks: the Somali National Youth Development Plan, the SDGs, and the Paris Agreement. The call for Cohort II described the same package the first class received: training and workshops, networking, mentorship, and community outreach.',
+        ],
+      },
+      {
+        heading: 'Ten champions for 2025',
+        paragraphs: [
+          'On 23 August 2025 ICE announced the Class of 2025: ten young people chosen through an open and competitive application process, representing diverse programmes across SIMAD University. Since the 2023 launch, previous cohorts have supported ICE through research, data collection, event management, and outreach. The 2025 cohort continues that work.',
+          'As Green Champions they support evidence-based studies and climate monitoring, help organise forums, symposiums, and awareness campaigns, lead outreach with fellow students and local communities, and grow as leaders through mentorship, training, and national and international networks. ICE welcomed them as changemakers who can amplify local voices and drive climate action.',
+        ],
+      },
+      {
+        heading: 'The 2026 cohort and what students gain',
+        paragraphs: [
+          'Applications for the Green Champions Cohort 2026 opened on 29 July 2026 and closed on 7 August 2026. ICE invited students from all faculties. Climate action, the institute argued, needs diverse perspectives and interdisciplinary collaboration. Successful applicants join a journey of learning, leadership, collaboration, and action with fellow students shaping Somalia’s environmental future.',
+          'A Green Champion can develop leadership and project-management skills, learn from climate experts and policymakers, strengthen their understanding of climate change and environmental governance, join workshops and community campaigns, expand a professional network, contribute to ICE initiatives, and receive recognition on completion. The platform is meant to turn passion into action, ideas into impact, and learning into lasting change for a greener, more resilient Somalia.',
+        ],
+      },
+    ],
+  },
+  {
     id: 'decoding-cop27',
     title: 'Decoding COP27 Comes at a Critical Moment',
     type: 'global-stage',
