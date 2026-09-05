@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react';
 import { formatTourDate } from '../../application/global-tour';
 import { scrollPageToTop } from '../../application/scroll-page-top';
 import { youtubeEmbedSrc } from '../../application/youtube-embed';
+import { splitStoryImages } from '../../content/climate-impact';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
@@ -19,6 +20,8 @@ export function StoryDetail({ story, onBack }: Props) {
     : [{ heading: 'The story', paragraphs: [story.body] }];
   const embedSrc = story.videoUrl ? youtubeEmbedSrc(story.videoUrl) : null;
   const source = story.sourceCard;
+  const { first, middle, last } = splitStoryImages(story.images);
+  const midChapterIndex = Math.max(0, Math.floor((chapters.length - 1) / 2));
 
   useLayoutEffect(() => {
     scrollPageToTop();
@@ -36,10 +39,9 @@ export function StoryDetail({ story, onBack }: Props) {
         {formatTourDate(story.date)} · {story.placeLabel ?? story.location.name} · SDG {story.sdgs.join(', ')}
       </p>
       <p className="story-lede">{story.summary}</p>
-
-      {story.images.length > 0 ? (
-        <div className="story-gallery">
-          {story.images.map((src) => (
+      {first.length > 0 ? (
+        <div className={`story-spread story-spread-first${first.length === 1 ? ' story-spread-single' : ''}`}>
+          {first.map((src) => (
             <img key={src} src={src} alt="" />
           ))}
         </div>
@@ -68,8 +70,22 @@ export function StoryDetail({ story, onBack }: Props) {
               <RegionMapTour story={story} />
             </section>
           ) : null}
+          {index === midChapterIndex && middle.length > 0 ? (
+            <div className="story-spread story-spread-middle">
+              {middle.map((src) => (
+                <img key={src} src={src} alt="" />
+              ))}
+            </div>
+          ) : null}
         </section>
       ))}
+      {last.length > 0 ? (
+        <div className="story-spread story-spread-end">
+          {last.map((src) => (
+            <img key={src} src={src} alt="" />
+          ))}
+        </div>
+      ) : null}
 
       {story.tourStops?.length ? null : (
         <section className="story-map">

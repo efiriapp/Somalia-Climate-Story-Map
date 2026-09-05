@@ -751,6 +751,12 @@ select {
   box-shadow: 0 10px 28px rgba(18, 33, 31, 0.18);
 }
 
+.region-slide-photos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
 .region-slide-card img {
   display: block;
   width: 100%;

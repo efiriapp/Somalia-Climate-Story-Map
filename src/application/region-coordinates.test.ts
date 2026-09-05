@@ -14,5 +14,6 @@ describe('regionCenter', () => {
     expect(regionCenter('liido-beach')).toEqual({ lat: 2.037, lng: 45.347 });
     expect(regionCenter('mogadishu-primary-school')).toEqual({ lat: 2.0223, lng: 45.2974 });
     expect(regionCenter('boondheere-orphan-girls')).toEqual({ lat: 2.0448, lng: 45.3406 });
+    expect(regionCenter('wadajir')).toEqual({ lat: 2.0469, lng: 45.3182 });
   });
 });

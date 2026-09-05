@@ -11,7 +11,8 @@ describe('RegionMapTour', () => {
     expect(source).toContain('LayersControl');
     expect(source).toContain('Icon.Default');
     expect(source).not.toContain('basemaps.cartocdn.com');
-    expect(source).not.toContain('arcgisonline');
+    expect(source).toContain('arcgisonline');
+    expect(source).toContain('World_Imagery');
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('stop.district');
     expect(source).toContain('<Popup');
@@ -45,20 +46,18 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('tour-right-stack');
     expect(source).not.toContain('event-slider');
     expect(source).toMatch(
-      /activeStop\.images\[0\][\s\S]{0,80}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
+      /activeStop\.images\.map[\s\S]{0,160}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
     );
+    expect(source).not.toContain('activeStop.images[0]');
   });
 
-  it('keeps the Leaflet pin and labels it with only the district name', () => {
+  it('keeps the Leaflet pin and does not show name labels', () => {
     expect(source).toContain('Icon.Default');
     expect(source).not.toContain('L.divIcon');
     expect(source).not.toContain('districtPinMarkup');
-    expect(source).toContain('<Tooltip');
-    expect(source).toContain('permanent');
-    expect(source).toContain('{stop.district}');
-    expect(source).toContain('districtLabelClass(stop === activeStop)');
-    expect(source).toContain('stop === activeStop ? \'on\' : \'off\'');
-    expect(source).toMatch(/<Tooltip[\s\S]{0,220}\{stop\.district\}[\s\S]{0,80}<\/Tooltip>/);
-    expect(source).not.toMatch(/<Tooltip[\s\S]{0,220}stop\.(title|region)/);
+    expect(source).not.toContain('<Tooltip');
+    expect(source).not.toContain('districtLabelClass');
+    expect(source).toContain('stop.flyLat');
+    expect(source).toContain('DISTRICT_ZOOM');
   });
 });

@@ -22,6 +22,7 @@ const PLACE_LABELS: Record<string, string> = {
 };
 
 export const DISTRICT_ZOOM = 9;
+export const DISTRICT_CLUSTER_SPAN = 0.25;
 export const ORIGIN_HOLD_MS = 700;
 export const DISTRICT_FLY_MS = 2800;
 export const ACTIVE_DISTRICT_PIN = '#C62828';
@@ -38,6 +39,20 @@ export type RegionMapStop = {
   images: string[];
   lat: number;
   lng: number;
+  flyLat: number;
+  flyLng: number;
+};
+
+export const isDistrictCluster = (stops: { lat: number; lng: number }[]): boolean => {
+  if (stops.length < 2) {
+    return false;
+  }
+  const lats = stops.map((stop) => stop.lat);
+  const lngs = stops.map((stop) => stop.lng);
+  return (
+    Math.max(...lats) - Math.min(...lats) < DISTRICT_CLUSTER_SPAN &&
+    Math.max(...lngs) - Math.min(...lngs) < DISTRICT_CLUSTER_SPAN
+  );
 };
 
 export type TourFlightStep = {
@@ -49,7 +64,12 @@ export type TourFlightStep = {
   showSlider: boolean;
 };
 
-export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightStep[] => [
+export const tourFlightPlan = (stop: {
+  lat: number;
+  lng: number;
+  flyLat?: number;
+  flyLng?: number;
+}): TourFlightStep[] => [
   {
     lat: SOMALIA_VIEW.center.lat,
     lng: SOMALIA_VIEW.center.lng,
@@ -59,8 +79,8 @@ export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightSt
     showSlider: false,
   },
   {
-    lat: stop.lat,
-    lng: stop.lng,
+    lat: stop.flyLat ?? stop.lat,
+    lng: stop.flyLng ?? stop.lng,
     zoom: DISTRICT_ZOOM,
     durationMs: DISTRICT_FLY_MS,
     showPin: true,
@@ -68,8 +88,8 @@ export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightSt
   },
 ];
 
-export const buildRegionMapTour = (story: Story): RegionMapStop[] =>
-  (story.tourStops ?? []).map((stop) => {
+export const buildRegionMapTour = (story: Story): RegionMapStop[] => {
+  const pins = (story.tourStops ?? []).map((stop) => {
     const place = stop.place ?? stop.region;
     const center = regionCenter(place);
     return {
@@ -83,3 +103,10 @@ export const buildRegionMapTour = (story: Story): RegionMapStop[] =>
       lng: center.lng,
     };
   });
+  const district = isDistrictCluster(pins) && story.district ? regionCenter(story.district) : null;
+  return pins.map((stop) => ({
+    ...stop,
+    flyLat: district?.lat ?? stop.lat,
+    flyLng: district?.lng ?? stop.lng,
+  }));
+};

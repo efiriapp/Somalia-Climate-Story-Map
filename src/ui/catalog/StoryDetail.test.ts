@@ -17,7 +17,9 @@ describe('StoryDetail', () => {
     expect(domain).toContain('sourceCard?:');
     expect(source).toContain('story-detail');
     expect(source).toContain('story-stats');
-    expect(source).toContain('story-gallery');
+    expect(source).toContain('splitStoryImages');
+    expect(source).toContain('story-spread');
+    expect(source).not.toContain('story-gallery');
     expect(source).toContain('story-video');
     expect(source).toContain('youtubeEmbedSrc');
     expect(source).toContain('story-source');

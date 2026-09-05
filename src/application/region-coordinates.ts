@@ -9,6 +9,7 @@ const PLACES: Record<string, RegionCenter> = {
   'liido-beach': { lat: 2.037, lng: 45.347 },
   'mogadishu-primary-school': { lat: 2.0223, lng: 45.2974 },
   'boondheere-orphan-girls': { lat: 2.0448, lng: 45.3406 },
+  wadajir: { lat: 2.0469, lng: 45.3182 },
 };
 
 export const regionCenter = (slug: string): RegionCenter => {

@@ -24,6 +24,8 @@ describe('buildRegionMapTour', () => {
     ]);
     expect(tour[0]).toMatchObject({
       ...regionCenter('ceelgula'),
+      flyLat: regionCenter('ceelgula').lat,
+      flyLng: regionCenter('ceelgula').lng,
       district: 'Ceelgula',
       images: ['/images/ice-stories/mudug.jpg'],
     });
@@ -69,13 +71,18 @@ describe('buildRegionMapTour', () => {
     expect(tour[0]).toMatchObject(regionCenter('liido-beach'));
     expect(tour[1]).toMatchObject(regionCenter('mogadishu-primary-school'));
     expect(tour[2]).toMatchObject(regionCenter('boondheere-orphan-girls'));
+    const district = regionCenter('wadajir');
+    for (const stop of tour) {
+      expect(stop.flyLat).toBe(district.lat);
+      expect(stop.flyLng).toBe(district.lng);
+    }
   });
 });
 
 describe('tourFlightPlan', () => {
   it('starts at Somalia country zoom, then flies to the helped district', () => {
     const next = regionCenter('xuduley');
-    expect(tourFlightPlan(next)).toEqual([
+    expect(tourFlightPlan({ ...next, flyLat: next.lat, flyLng: next.lng })).toEqual([
       {
         lat: SOMALIA_VIEW.center.lat,
         lng: SOMALIA_VIEW.center.lng,

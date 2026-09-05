@@ -539,6 +539,13 @@ export const stories: Story[] = [
       '/images/ice-stories/green-champions-2.jpg',
       '/images/ice-stories/green-champions-3.jpg',
       '/images/ice-stories/green-champions-4.jpg',
+      '/images/ice-stories/mogadishu-outreach-1.jpg',
+      '/images/ice-stories/mogadishu-outreach-2.jpg',
+      '/images/ice-stories/school-outreach-1.jpg',
+      '/images/ice-stories/school-outreach-2.jpg',
+      '/images/ice-stories/school-outreach-3.jpg',
+      '/images/ice-stories/school-outreach-4.jpg',
+      '/images/ice-stories/school-outreach-5.jpg',
     ],
     tourStops: [
       {
@@ -561,9 +568,8 @@ export const stories: Story[] = [
         description:
           'Students participated in interactive climate awareness sessions covering climate change, environmental conservation, waste management, tree planting, and sustainable practices. The engagement encouraged students to reflect on environmental challenges within their communities and consider practical actions they can take at school and at home.',
         images: [
-          '/images/ice-stories/school-outreach-2.jpg',
-          '/images/ice-stories/school-outreach-3.jpg',
-          '/images/ice-stories/school-outreach-4.jpg',
+          '/images/ice-stories/mogadishu-outreach-1.jpg',
+          '/images/ice-stories/mogadishu-outreach-2.jpg',
         ],
       },
       {
@@ -574,6 +580,9 @@ export const stories: Story[] = [
           'Green Champions delivered climate awareness sessions directly across classrooms, supported by climate education toolkits and informational booklets to encourage continued learning. The outreach reached more than 2,000 girls, expanding access to climate education and strengthening young people’s understanding of environmental responsibility.',
         images: [
           '/images/ice-stories/school-outreach-1.jpg',
+          '/images/ice-stories/school-outreach-2.jpg',
+          '/images/ice-stories/school-outreach-3.jpg',
+          '/images/ice-stories/school-outreach-4.jpg',
           '/images/ice-stories/school-outreach-5.jpg',
         ],
       },

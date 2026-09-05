@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, LayersControl } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, useMap, LayersControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -12,7 +12,6 @@ import {
   DISTRICT_ZOOM,
   ORIGIN_HOLD_MS,
   buildRegionMapTour,
-  districtLabelClass,
   tourFlightPlan,
   type RegionMapStop,
 } from '../../application/region-map-tour';
@@ -49,8 +48,8 @@ const flyToSomaliaThenDistrict = (
   const [, district] = tourFlightPlan(stop);
   let arriveTimer = 0;
   const homeTimer = window.setTimeout(() => {
-    map.flyTo([district.lat, district.lng], DISTRICT_ZOOM, {
-      duration: DISTRICT_FLY_MS / 1000,
+    map.flyTo([stop.flyLat, stop.flyLng], DISTRICT_ZOOM, {
+      duration: district.durationMs / 1000,
       easeLinearity: 0.25,
     });
     arriveTimer = window.setTimeout(onArrive, DISTRICT_FLY_MS);
@@ -177,8 +176,14 @@ export function RegionMapTour({ story }: Props) {
           whenReady={() => scrollPageToTop()}
         >
           <LayersControl position="topleft">
-            {leafletBasemaps.map((layer, index) => (
-              <LayersControl.BaseLayer key={layer.id} name={layer.name} checked={index === 0}>
+            <LayersControl.BaseLayer name="Esri" checked>
+              <TileLayer
+                attribution="Tiles &copy; Esri"
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+              />
+            </LayersControl.BaseLayer>
+            {leafletBasemaps.map((layer) => (
+              <LayersControl.BaseLayer key={layer.id} name={layer.name}>
                 <TileLayer attribution={layer.attribution} url={layer.url} />
               </LayersControl.BaseLayer>
             ))}
@@ -200,9 +205,6 @@ export function RegionMapTour({ story }: Props) {
                 },
               }}
             >
-              <Tooltip permanent direction="top" offset={[0, -36]} className={districtLabelClass(stop === activeStop)}>
-                {stop.district}
-              </Tooltip>
               <Popup className="region-pin-popup">
                 <strong>{stop.district}</strong>
                 <p>{stop.title}</p>
@@ -220,7 +222,11 @@ export function RegionMapTour({ story }: Props) {
         </div>
         {sliderOpen && activeStop ? (
           <aside className="region-slide-card" aria-label={activeStop.title}>
-            {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
+            <div className="region-slide-photos">
+              {activeStop.images.map((src) => (
+                <img key={src} src={src} alt="" />
+              ))}
+            </div>
             <h3>{activeStop.title}</h3>
             <p>{activeStop.description}</p>
           </aside>
