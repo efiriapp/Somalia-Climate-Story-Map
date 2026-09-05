@@ -78,7 +78,7 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
               <div className="story-video">
                 <iframe title={video.title} src={embedSrc} allowFullScreen />
               </div>
-              <MediaSourceCredit credit={videoEmbedCredit(video.title)} />
+              <MediaSourceCredit credit={videoEmbedCredit(video.title, video.outlet)} />
             </div>
           ) : null;
         })}

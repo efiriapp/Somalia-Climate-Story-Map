@@ -57,6 +57,14 @@ export const climateMediaCredit = (page: ClimateMediaFields): MediaCredit | null
   };
 };
 
-export const videoEmbedCredit = (title: string): MediaCredit => ({
-  text: `Source: ${title.trim()}`,
-});
+export const videoEmbedCredit = (title: string, outlet?: string): MediaCredit => {
+  const trimmedTitle = title.trim();
+  const trimmedOutlet = outlet?.trim();
+  if (!trimmedOutlet) {
+    return { text: `Source: ${trimmedTitle}` };
+  }
+  if (trimmedTitle.toLowerCase().includes(trimmedOutlet.toLowerCase())) {
+    return { text: `Source: ${trimmedTitle}` };
+  }
+  return { text: `Source: ${trimmedOutlet} — ${trimmedTitle}` };
+};

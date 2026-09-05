@@ -8,6 +8,7 @@ export type ClimateImpactChapter = {
 export type ClimateImpactVideo = {
   title: string;
   url: string;
+  outlet: string;
 };
 
 export type ClimateImpactPage = {
@@ -114,14 +115,17 @@ export const climateImpactPages: ClimateImpactPage[] = [
       {
         title: 'Deadly floods continue to ravage Somalia',
         url: 'https://youtu.be/MjYZsu23LkE?si=BWEGsOJenPTaupxF',
+        outlet: 'AP',
       },
       {
         title: 'Somalia floods: Heavy rains force thousands from their homes',
         url: 'https://youtu.be/PrBU7HGTpuE?si=UqUn5gi2RCVo1QT0',
+        outlet: 'Al Jazeera',
       },
       {
         title: "Flood damage in Somalia's capital",
         url: 'https://youtube.com/shorts/Pk0ZU1EsmWU?si=SYWrS1masvd1aVTX',
+        outlet: 'Reuters',
       },
     ],
     sourceLabel: 'State of Climate in Somalia 2026',
@@ -202,10 +206,12 @@ export const climateImpactPages: ClimateImpactPage[] = [
       {
         title: "Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
         url: 'https://youtu.be/dK7wk-8RtFs?si=U8lw5eBVH46MINiC',
+        outlet: 'Africanews',
       },
       {
         title: 'Somalia suffering worst drought in decades',
         url: 'https://youtu.be/8pk6KZQDSaw?si=gKX1eNaBOA1chxYJ',
+        outlet: 'Al Jazeera',
       },
     ],
     sourceLabel: 'State of Climate in Somalia 2026',
@@ -270,10 +276,12 @@ export const climateImpactPages: ClimateImpactPage[] = [
       {
         title: 'Heatwaves in Mogadishu',
         url: 'https://youtu.be/cwHvMhb_aZ0?si=V_fN6mdrNqnX7IfV',
+        outlet: 'Somali Cable',
       },
       {
         title: 'Isbedelka cimilada: kulul daran ee ka jira Muqdisho',
         url: 'https://youtu.be/hohCFuGV7Xs?si=rgM-ycmIB-C-mvR3',
+        outlet: 'Goobjoog',
       },
     ],
     sourceLabel: 'Somalia Country Climate and Development Report',

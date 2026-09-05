@@ -58,12 +58,18 @@ describe('climateMediaCredit', () => {
 });
 
 describe('videoEmbedCredit', () => {
-  it('credits a news film by its title without claiming ICE Institute filmed it', () => {
-    expect(videoEmbedCredit('Deadly floods continue to ravage Somalia')).toEqual({
-      text: 'Source: Deadly floods continue to ravage Somalia',
+  it('credits a news film with the outlet name and title, not ICE Institute', () => {
+    expect(videoEmbedCredit('Deadly floods continue to ravage Somalia', 'AP')).toEqual({
+      text: 'Source: AP — Deadly floods continue to ravage Somalia',
     });
-    expect(videoEmbedCredit("Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC")).toEqual({
-      text: "Source: Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
+    expect(videoEmbedCredit("Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC", 'Africanews')).toEqual({
+      text: "Source: Africanews — Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
+    });
+  });
+
+  it('does not repeat the outlet when the title already names it', () => {
+    expect(videoEmbedCredit("Reuters: Flood damage in Somalia's capital", 'Reuters')).toEqual({
+      text: "Source: Reuters: Flood damage in Somalia's capital",
     });
   });
 });
