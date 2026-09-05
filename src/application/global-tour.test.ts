@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildGlobalTour, COUNTRY_ZOOM, GLOBE_VIEW, MOGADISHU_HOME, SOMALIA_HOME, formatTourDate, nextTourIndex, prevTourIndex, tourDateParts, tourPopupHtml } from './global-tour';
+import { buildGlobalTour, COUNTRY_ZOOM, GLOBE_VIEW, ICE_OFFICE_LABEL, ICE_OFFICE_LOGO, MOGADISHU_HOME, SOMALIA_HOME, formatTourDate, nextTourIndex, prevTourIndex, tourDateParts, tourPopupHtml } from './global-tour';
 import type { Story } from '../domain/story';
 
 const story = (overrides: Partial<Story> & Pick<Story, 'id' | 'title' | 'date' | 'type'>): Story => ({
@@ -86,6 +86,10 @@ describe('buildGlobalTour', () => {
     expect(SOMALIA_HOME.lat).toBeGreaterThanOrEqual(6);
     expect(SOMALIA_HOME.lng).toBe(MOGADISHU_HOME.lng);
     expect(SOMALIA_HOME.zoom).toBe(COUNTRY_ZOOM);
+    expect(ICE_OFFICE_LABEL).toBe(
+      'ICE Office, SIMAD University Town Campus, Zoobe, KM5, Mogadishu, Somalia.',
+    );
+    expect(ICE_OFFICE_LOGO).toBe('/logos/ice-lockup.png');
   });
 
   it('keeps every tour stop at country-level zoom', () => {

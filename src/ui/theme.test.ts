@@ -117,6 +117,7 @@ describe('ICE green brand', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toContain('.story-source');
     expect(css).toMatch(/\.story-source[\s\S]{0,160}background:\s*(var\(--chip\)|#e8f5ee)/);
+    expect(css).toContain('.media-source');
   });
 
   it('makes ICE story videos 3rem wider on each side', () => {
@@ -161,5 +162,8 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,220}bottom:\s*100%/);
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,280}pointer-events:\s*none/);
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,220}inline-flex/);
+    expect(css).toContain('.ice-office-label');
+    expect(css).toMatch(/\.ice-office-label[\s\S]{0,220}bottom:\s*100%/);
+    expect(css).toContain('.ice-office-logo');
   });
 });

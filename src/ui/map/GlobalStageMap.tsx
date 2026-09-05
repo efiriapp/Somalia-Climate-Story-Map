@@ -19,6 +19,8 @@ import {
   buildGlobalTour,
   GLOBE_VIEW,
   COUNTRY_ZOOM,
+  ICE_OFFICE_LABEL,
+  ICE_OFFICE_LOGO,
   MOGADISHU_HOME,
   SOMALIA_HOME,
   formatTourDate,
@@ -27,8 +29,10 @@ import {
   type TourStop,
 } from '../../application/global-tour';
 import { styleForLayer } from '../../application/map-layers';
+import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
+import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 
 type Props = {
@@ -200,6 +204,16 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     homeMarkerRef.current = new Marker({ color: activeId === 'home' ? ACTIVE_PIN : HOME_PIN })
       .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
       .addTo(map);
+    const homePin = homeMarkerRef.current.getElement();
+    const office = document.createElement('span');
+    office.className = 'ice-office-label';
+    office.textContent = ICE_OFFICE_LABEL;
+    const logo = document.createElement('img');
+    logo.className = 'ice-office-logo';
+    logo.src = ICE_OFFICE_LOGO;
+    logo.alt = '';
+    office.prepend(logo);
+    homePin.appendChild(office);
     const pins: Marker[] = [];
     for (const stop of eventsRef.current) {
       const marker = new Marker({ color: stop.storyId === activeId ? ACTIVE_PIN : EVENT_PIN })
@@ -626,6 +640,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                   </a>
                 </p>
               ) : null}
+              <MediaSourceCredit credit={storyMediaCredit(tourCard)} />
             </article>
             </aside>
           </div>

@@ -65,6 +65,12 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('new Popup');
   });
 
+  it('ends an event card that has photos with a visible source credit', () => {
+    expect(source).toContain('MediaSourceCredit');
+    expect(source).toContain('storyMediaCredit(tourCard)');
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('More information'));
+  });
+
   it('tours the map with Back and Next and closes the stayed right-side card with X', () => {
     expect(source).toContain('tour-event-nav');
     expect(source).toContain('stepEvent');
@@ -149,5 +155,20 @@ describe('GlobalStageMap', () => {
     expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,900}COUNTRY_ZOOM/);
     expect(source).toContain('.setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])');
     expect(source).not.toContain('landAtHome');
+  });
+
+  it('keeps a permanent ICE Office address label on the Mogadishu home pin', () => {
+    expect(source).toContain('ICE_OFFICE_LABEL');
+    expect(source).toContain('ice-office-label');
+    expect(source).toMatch(/homeMarkerRef\.current[\s\S]{0,400}ice-office-label/);
+    expect(source).toMatch(/ice-office-label[\s\S]{0,200}ICE_OFFICE_LABEL/);
+  });
+
+  it('keeps the local ICE logo on the Mogadishu home pin with the address label', () => {
+    expect(source).toContain('ICE_OFFICE_LOGO');
+    expect(source).toContain('ice-office-logo');
+    expect(source).toMatch(/homeMarkerRef\.current[\s\S]{0,800}ice-office-logo/);
+    expect(source).toMatch(/ice-office-logo[\s\S]{0,240}ICE_OFFICE_LOGO/);
+    expect(source).not.toContain('new Popup');
   });
 });

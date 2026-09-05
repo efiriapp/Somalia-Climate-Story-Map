@@ -645,6 +645,19 @@ select {
   font-weight: 600;
 }
 
+.media-source {
+  margin: 1.6rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.event-card .media-source {
+  margin: 0;
+  padding: 0 0.7rem 0.75rem;
+  font-size: 11px;
+}
+
 .story-video-card {
   display: block;
   position: relative;
@@ -1781,6 +1794,38 @@ select {
   z-index: 1;
 }
 
+.ice-office-label {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.28rem;
+  transform: translate(-50%, -4px);
+  width: max-content;
+  max-width: 220px;
+  padding: 0.28rem 0.5rem;
+  border-radius: 6px;
+  background: #063D39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
+}
+
+.ice-office-logo {
+  display: block;
+  width: 148px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
 .pin-date-label {
   position: absolute;
   left: 50%;
@@ -1811,7 +1856,8 @@ select {
   flex-shrink: 0;
 }
 
-.global-stage-map .maplibregl-marker:has(.pin-date-label) {
+.global-stage-map .maplibregl-marker:has(.pin-date-label),
+.global-stage-map .maplibregl-marker:has(.ice-office-label) {
   z-index: 20;
 }
 
