@@ -13,8 +13,8 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('basemaps.cartocdn.com');
     expect(source).toContain('arcgisonline');
     expect(source).toContain('World_Imagery');
-    expect(source).toMatch(/name="Streets"[\s\S]{0,80}checked/);
-    expect(source).not.toMatch(/name="Esri"[\s\S]{0,40}checked/);
+    expect(source).toMatch(/name="Esri"[\s\S]{0,80}checked/);
+    expect(source).not.toMatch(/name="Streets"[\s\S]{0,40}checked/);
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('stop.district');
     expect(source).toContain('<Popup');
@@ -26,7 +26,8 @@ describe('RegionMapTour', () => {
     expect(source).toContain('ORIGIN_HOLD_MS');
     expect(source).toContain('DISTRICT_FLY_MS');
     expect(source).toContain('DISTRICT_ZOOM');
-    expect(source).not.toContain('BUILDING_ZOOM');
+    expect(source).toContain('BUILDING_ZOOM');
+    expect(source).toContain('stop.zoom');
     expect(source).not.toContain('animate: false');
     expect(source).toContain('useState(-1)');
     expect(source).toContain('scrollWheelZoom={false}');
@@ -61,6 +62,6 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('<Tooltip');
     expect(source).not.toContain('districtLabelClass');
     expect(source).toContain('stop.flyLat');
-    expect(source).toContain('DISTRICT_ZOOM');
+    expect(source).toContain('stop.zoom');
   });
 });

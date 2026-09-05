@@ -4,6 +4,7 @@ import { SOMALIA_VIEW } from './resolve-map-view';
 import { regionCenter } from './region-coordinates';
 import {
   ACTIVE_DISTRICT_PIN,
+  BUILDING_ZOOM,
   DISTRICT_ZOOM,
   buildRegionMapTour,
   districtLabelClass,
@@ -26,6 +27,7 @@ describe('buildRegionMapTour', () => {
       ...regionCenter('ceelgula'),
       flyLat: regionCenter('ceelgula').lat,
       flyLng: regionCenter('ceelgula').lng,
+      zoom: DISTRICT_ZOOM,
       district: 'Ceelgula',
       images: ['/images/ice-stories/mudug.jpg'],
     });
@@ -68,13 +70,13 @@ describe('buildRegionMapTour', () => {
       'Mogadishu Primary and Secondary School',
       'Boondheere Orphan Girls Centre',
     ]);
-    expect(tour[0]).toMatchObject(regionCenter('liido-beach'));
-    expect(tour[1]).toMatchObject(regionCenter('mogadishu-primary-school'));
-    expect(tour[2]).toMatchObject(regionCenter('boondheere-orphan-girls'));
-    const district = regionCenter('wadajir');
+    expect(tour[0]).toMatchObject({ ...regionCenter('liido-beach'), zoom: BUILDING_ZOOM });
+    expect(tour[1]).toMatchObject({ ...regionCenter('mogadishu-primary-school'), zoom: BUILDING_ZOOM });
+    expect(tour[2]).toMatchObject({ ...regionCenter('boondheere-orphan-girls'), zoom: BUILDING_ZOOM });
     for (const stop of tour) {
-      expect(stop.flyLat).toBe(district.lat);
-      expect(stop.flyLng).toBe(district.lng);
+      expect(stop.flyLat).toBe(stop.lat);
+      expect(stop.flyLng).toBe(stop.lng);
+      expect(stop.zoom).toBe(BUILDING_ZOOM);
     }
   });
 });
@@ -101,7 +103,17 @@ describe('tourFlightPlan', () => {
       },
     ]);
     expect(DISTRICT_ZOOM).toBe(9);
+    expect(BUILDING_ZOOM).toBe(17);
     expect(SOMALIA_VIEW.zoom).toBe(6);
+  });
+
+  it('flies close city stops to building zoom', () => {
+    const next = regionCenter('liido-beach');
+    expect(tourFlightPlan({ ...next, flyLat: next.lat, flyLng: next.lng, zoom: BUILDING_ZOOM })[1]).toMatchObject({
+      lat: next.lat,
+      lng: next.lng,
+      zoom: BUILDING_ZOOM,
+    });
   });
 });
 

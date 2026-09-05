@@ -8,6 +8,7 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
 import { leafletBasemaps } from '../../application/leaflet-basemaps';
 import {
+  BUILDING_ZOOM,
   DISTRICT_FLY_MS,
   DISTRICT_ZOOM,
   ORIGIN_HOLD_MS,
@@ -48,7 +49,7 @@ const flyToSomaliaThenDistrict = (
   const [, district] = tourFlightPlan(stop);
   let arriveTimer = 0;
   const homeTimer = window.setTimeout(() => {
-    map.flyTo([stop.flyLat, stop.flyLng], DISTRICT_ZOOM, {
+    map.flyTo([stop.flyLat, stop.flyLng], stop.zoom, {
       duration: district.durationMs / 1000,
       easeLinearity: 0.25,
     });
@@ -176,14 +177,14 @@ export function RegionMapTour({ story }: Props) {
           whenReady={() => scrollPageToTop()}
         >
           <LayersControl position="topleft">
-            <LayersControl.BaseLayer name="Streets" checked>
-              <TileLayer attribution={leafletBasemaps[0].attribution} url={leafletBasemaps[0].url} />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer name="Esri">
+            <LayersControl.BaseLayer name="Esri" checked>
               <TileLayer
                 attribution="Tiles &copy; Esri"
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
               />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Streets">
+              <TileLayer attribution={leafletBasemaps[0].attribution} url={leafletBasemaps[0].url} />
             </LayersControl.BaseLayer>
             {leafletBasemaps.slice(1).map((layer) => (
               <LayersControl.BaseLayer key={layer.id} name={layer.name}>

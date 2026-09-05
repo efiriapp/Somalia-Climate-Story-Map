@@ -22,6 +22,7 @@ const PLACE_LABELS: Record<string, string> = {
 };
 
 export const DISTRICT_ZOOM = 9;
+export const BUILDING_ZOOM = 17;
 export const DISTRICT_CLUSTER_SPAN = 0.25;
 export const ORIGIN_HOLD_MS = 700;
 export const DISTRICT_FLY_MS = 2800;
@@ -41,6 +42,7 @@ export type RegionMapStop = {
   lng: number;
   flyLat: number;
   flyLng: number;
+  zoom: number;
 };
 
 export const isDistrictCluster = (stops: { lat: number; lng: number }[]): boolean => {
@@ -69,6 +71,7 @@ export const tourFlightPlan = (stop: {
   lng: number;
   flyLat?: number;
   flyLng?: number;
+  zoom?: number;
 }): TourFlightStep[] => [
   {
     lat: SOMALIA_VIEW.center.lat,
@@ -81,7 +84,7 @@ export const tourFlightPlan = (stop: {
   {
     lat: stop.flyLat ?? stop.lat,
     lng: stop.flyLng ?? stop.lng,
-    zoom: DISTRICT_ZOOM,
+    zoom: stop.zoom ?? DISTRICT_ZOOM,
     durationMs: DISTRICT_FLY_MS,
     showPin: true,
     showSlider: true,
@@ -103,10 +106,12 @@ export const buildRegionMapTour = (story: Story): RegionMapStop[] => {
       lng: center.lng,
     };
   });
-  const district = isDistrictCluster(pins) && story.district ? regionCenter(story.district) : null;
+  const buildingTour =
+    isDistrictCluster(pins) || pins.every((stop) => stop.regionSlug === 'banaadir');
   return pins.map((stop) => ({
     ...stop,
-    flyLat: district?.lat ?? stop.lat,
-    flyLng: district?.lng ?? stop.lng,
+    flyLat: stop.lat,
+    flyLng: stop.lng,
+    zoom: buildingTour ? BUILDING_ZOOM : DISTRICT_ZOOM,
   }));
 };
