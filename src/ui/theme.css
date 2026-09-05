@@ -789,7 +789,8 @@ select {
   filter: drop-shadow(0 4px 8px rgba(6, 61, 57, 0.35));
 }
 
-.region-pin-marker {
+.region-pin-marker,
+.district-pin-marker {
   display: block;
   width: 28px;
   height: 28px;
@@ -799,6 +800,50 @@ select {
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   box-shadow: inset 0 0 0 5px var(--mint);
+}
+
+.district-pin-icon {
+  background: transparent;
+  border: 0;
+}
+
+.district-pin {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 36px;
+}
+
+.district-pin-label {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  pointer-events: none;
+  transform: translate(-50%, -4px);
+  white-space: nowrap;
+  padding: 0.18rem 0.45rem;
+  border-radius: 6px;
+  background: #063D39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 10px rgba(6, 61, 57, 0.28);
+}
+
+.district-pin.is-active {
+  z-index: 20;
+}
+
+.district-pin.is-active .district-pin-label,
+.district-pin.is-active .district-pin-marker {
+  background: #C62828;
+  box-shadow: 0 4px 10px rgba(198, 40, 40, 0.32);
+}
+
+.district-pin.is-active .district-pin-marker {
+  box-shadow: inset 0 0 0 5px #ffcdd2;
 }
 
 .region-pin-popup .leaflet-popup-content-wrapper {

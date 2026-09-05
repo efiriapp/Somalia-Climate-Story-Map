@@ -12,6 +12,7 @@ import {
   DISTRICT_ZOOM,
   ORIGIN_HOLD_MS,
   buildRegionMapTour,
+  districtPinMarkup,
   tourFlightPlan,
   type RegionMapStop,
 } from '../../application/region-map-tour';
@@ -31,6 +32,14 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   shadowUrl: markerShadow,
 });
+
+const districtIcon = (district: string, active: boolean) =>
+  L.divIcon({
+    className: 'district-pin-icon',
+    html: districtPinMarkup(district, active),
+    iconSize: [28, 36],
+    iconAnchor: [14, 36],
+  });
 
 const flyToSomaliaThenDistrict = (
   map: L.Map,
@@ -187,6 +196,7 @@ export function RegionMapTour({ story }: Props) {
             <Marker
               key={`${stop.regionSlug}-${stop.district}`}
               position={[stop.lat, stop.lng]}
+              icon={districtIcon(stop.district, stop === activeStop)}
               eventHandlers={{
                 click: () => {
                   if (!lockedRef.current) {

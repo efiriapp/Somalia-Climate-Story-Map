@@ -20,6 +20,10 @@ const PLACE_LABELS: Record<string, string> = {
 export const DISTRICT_ZOOM = 9;
 export const ORIGIN_HOLD_MS = 700;
 export const DISTRICT_FLY_MS = 2800;
+export const ACTIVE_DISTRICT_PIN = '#C62828';
+
+export const districtPinMarkup = (district: string, active: boolean): string =>
+  `<span class="district-pin${active ? ' is-active' : ''}"><span class="district-pin-label">${district}</span><span class="district-pin-marker"></span></span>`;
 
 export type RegionMapStop = {
   region: string;

@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { stories } from '../content/stories';
 import { SOMALIA_VIEW } from './resolve-map-view';
 import { regionCenter } from './region-coordinates';
-import { DISTRICT_ZOOM, buildRegionMapTour, tourFlightPlan } from './region-map-tour';
+import {
+  ACTIVE_DISTRICT_PIN,
+  DISTRICT_ZOOM,
+  buildRegionMapTour,
+  districtPinMarkup,
+  tourFlightPlan,
+} from './region-map-tour';
 
 describe('buildRegionMapTour', () => {
   it('tours SIMAD drought places from Ceelgula to Lower Juba', () => {
@@ -75,5 +81,16 @@ describe('tourFlightPlan', () => {
     ]);
     expect(DISTRICT_ZOOM).toBe(9);
     expect(SOMALIA_VIEW.zoom).toBe(6);
+  });
+});
+
+describe('districtPinMarkup', () => {
+  it('labels every district and turns the touring place red', () => {
+    expect(ACTIVE_DISTRICT_PIN).toBe('#C62828');
+    expect(districtPinMarkup('Ceelgula', false)).toContain('district-pin-label');
+    expect(districtPinMarkup('Ceelgula', false)).toContain('Ceelgula');
+    expect(districtPinMarkup('Ceelgula', false)).not.toContain('is-active');
+    expect(districtPinMarkup('Baydhaba', true)).toContain('Baydhaba');
+    expect(districtPinMarkup('Baydhaba', true)).toContain('is-active');
   });
 });

@@ -106,6 +106,9 @@ describe('ICE green brand', () => {
     expect(css).toContain('.region-pin-marker');
     expect(css).toContain('.modern-pin');
     expect(css).toContain('.region-pin-popup');
+    expect(css).toContain('.district-pin-label');
+    expect(css).toMatch(/\.district-pin-label[\s\S]{0,220}bottom:\s*100%/);
+    expect(css).toMatch(/\.district-pin\.is-active[\s\S]{0,280}#C62828/);
     expect(css).not.toContain('region-slide-in');
   });
 

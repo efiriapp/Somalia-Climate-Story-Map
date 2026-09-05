@@ -48,4 +48,12 @@ describe('RegionMapTour', () => {
       /activeStop\.images\[0\][\s\S]{0,80}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
     );
   });
+
+  it('shows district name labels and turns the touring pin red', () => {
+    expect(source).toContain('districtPinMarkup');
+    expect(source).toContain('district-pin-icon');
+    expect(source).toContain('L.divIcon');
+    expect(source).toContain('districtPinMarkup(district, active)');
+    expect(source).toContain('districtIcon(stop.district, stop === activeStop)');
+  });
 });
