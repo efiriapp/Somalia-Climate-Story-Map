@@ -13,8 +13,8 @@ describe('ClimateImpactPage', () => {
     expect(source).toContain('climate-impact-grid');
     expect(source).toContain('climate-impact-card');
     expect(source).toContain('climateImpactPages');
-    expect(source).toContain('{item.title}');
-    expect(source).toContain('Back to Climate Impact');
+    expect(source).toContain('hazardTitle(item.id, copy)');
+    expect(source).toContain('copy.backClimate');
     expect(app).toContain('ClimateImpactPage');
     expect(app).toContain("openScreen('climate-impact')");
   });

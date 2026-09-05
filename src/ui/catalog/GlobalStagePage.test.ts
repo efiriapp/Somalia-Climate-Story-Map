@@ -16,7 +16,7 @@ describe('GlobalStagePage', () => {
     expect(source).toContain('story.summary');
     expect(source).toContain('story.body');
     expect(source).toContain('formatTourDate');
-    expect(app).toContain('ICE at Global Stage');
+    expect(app).toContain('copy.globalStage');
     expect(app).toContain("openScreen('global-stage')");
     expect(stories).toContain("type: 'global-stage'");
   });

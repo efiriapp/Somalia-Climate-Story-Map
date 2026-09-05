@@ -131,6 +131,11 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.story-video \+ \.media-source/);
   });
 
+  it('pins the Somali language toggle to the right of the primary nav', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toMatch(/\.nav-language[\s\S]{0,80}margin-left:\s*auto/);
+  });
+
   it('styles the Climate Impact hazard cards', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toContain('.climate-impact-grid');

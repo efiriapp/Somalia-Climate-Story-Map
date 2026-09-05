@@ -7,7 +7,9 @@ import {
   formatMediaSourceCredit,
   videoEmbedCredit,
 } from '../../application/media-source-credit';
+import { hazardTitle } from '../../application/locale';
 import { videoEmbedSrc } from '../../application/youtube-embed';
+import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
 
 type Props = {
@@ -30,6 +32,7 @@ function StorySpread({ images, className }: { images: string[]; className: strin
 }
 
 export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
+  const { copy } = useLocale();
   const page = climateImpactPages.find((item) => item.id === selectedId);
 
   useLayoutEffect(() => {
@@ -40,12 +43,12 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
     const { first, middle, last } = splitStoryImages(page.images);
     const midChapterIndex = Math.floor((page.chapters.length - 1) / 2);
     return (
-      <article className="detail climate-impact" aria-label={page.title}>
+      <article className="detail climate-impact" aria-label={hazardTitle(page.id, copy)}>
         <button className="back" type="button" onClick={onBack}>
-          ← Back to Climate Impact
+          {copy.backClimate}
         </button>
-        <p className="story-type">{page.kicker}</p>
-        <h1>{page.title}</h1>
+        <p className="story-type">{copy.climateImpact}</p>
+        <h1>{hazardTitle(page.id, copy)}</h1>
         <p className="story-lede">{page.lede}</p>
         <StorySpread images={first} className="story-spread-first" />
         {page.paragraphs.map((paragraph) => (
@@ -66,7 +69,7 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
         ))}
         <StorySpread images={last} className="story-spread-end" />
         <p>
-          <strong>More information:</strong>{' '}
+          <strong>{copy.moreInfo}</strong>{' '}
           <a href={page.sourceUrl} target="_blank" rel="noreferrer">
             {page.sourceLabel}
           </a>
@@ -88,9 +91,9 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
   }
 
   return (
-    <article className="detail climate-impact climate-impact-hub" aria-label="Climate Impact">
-      <p className="story-type">Climate Impact</p>
-      <h1>{climateImpactHub.title}</h1>
+    <article className="detail climate-impact climate-impact-hub" aria-label={copy.climateImpact}>
+      <p className="story-type">{copy.climateImpact}</p>
+      <h1>{copy.climateImpact}</h1>
       <p className="story-lede">{climateImpactHub.lede}</p>
       <div className="climate-impact-grid">
         {climateImpactPages.map((item) => (
@@ -101,8 +104,8 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
             onClick={() => onSelect(item.id)}
           >
             {item.images[0] ? <img src={item.images[0]} alt="" /> : null}
-            <p className="story-type">{item.kicker}</p>
-            <h2>{item.title}</h2>
+            <p className="story-type">{copy.climateImpact}</p>
+            <h2>{hazardTitle(item.id, copy)}</h2>
             <p>{item.lede}</p>
           </button>
         ))}

@@ -7,6 +7,7 @@ import { splitStoryImages } from '../../content/climate-impact';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
+import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 const CITY_ZOOM = 12;
 
 export function StoryDetail({ story, onBack }: Props) {
+  const { copy } = useLocale();
   const chapters = story.chapters?.length
     ? story.chapters
     : [{ heading: 'The story', paragraphs: [story.body] }];
@@ -40,9 +42,9 @@ export function StoryDetail({ story, onBack }: Props) {
   return (
     <article className="detail story-detail">
       <button className="back" type="button" onClick={onBack}>
-        ← Back to catalog
+        {copy.backCatalog}
       </button>
-      <p className="story-type">{story.type === 'research-story' ? 'Research' : 'Story'}</p>
+      <p className="story-type">{story.type === 'research-story' ? copy.researchLabel : copy.story}</p>
       <h1>{story.title}</h1>
       {story.featuredPerson ? <p className="story-person">{story.featuredPerson}</p> : null}
       <p className="story-meta">
@@ -190,7 +192,7 @@ export function StoryDetail({ story, onBack }: Props) {
 
       {story.website ? (
         <p>
-          <strong>More information:</strong>{' '}
+          <strong>{copy.moreInfo}</strong>{' '}
           <a href={story.website} target="_blank" rel="noreferrer">
             {story.website}
           </a>

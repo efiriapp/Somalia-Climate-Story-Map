@@ -1,6 +1,8 @@
 import { siteFooter } from '../../content/site-footer';
+import { useLocale } from './LocaleContext';
 
 export function SiteFooter() {
+  const { copy } = useLocale();
   return (
     <footer className="site-footer" role="contentinfo">
       <div className="site-footer-brand">
@@ -9,7 +11,7 @@ export function SiteFooter() {
         <div>
           <strong>{siteFooter.institute}</strong>
           <p>{siteFooter.university}</p>
-          <p>{siteFooter.platform}</p>
+          <p>{copy.platform}</p>
         </div>
       </div>
       <p className="site-footer-comment">{siteFooter.comment}</p>

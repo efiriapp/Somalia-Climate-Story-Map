@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { filterCatalog } from '../application/filter-catalog';
+import { chromeCopy, type Locale } from '../application/locale';
 import { storyMediaCredit } from '../application/media-source-credit';
 import { resolveMapView } from '../application/resolve-map-view';
 import { scrollPageToTop } from '../application/scroll-page-top';
@@ -7,6 +8,7 @@ import { aboutIce } from '../content/about-ice';
 import { stories as catalog } from '../content/stories';
 import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '../domain/story';
 import { FilterPanel } from './chrome/FilterPanel';
+import { LocaleProvider } from './chrome/LocaleContext';
 import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
@@ -28,6 +30,8 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [impactHazard, setImpactHazard] = useState<ClimateHazardId | null>(null);
   const [screen, setScreen] = useState<Screen>('stories');
+  const [locale, setLocale] = useState<Locale>('en');
+  const copy = chromeCopy(locale);
 
   const scoped = useMemo(
     () => catalog.filter((story) => story.type === catalogTypeFor(screen)),
@@ -42,6 +46,10 @@ export default function App() {
     scrollPageToTop();
   }, [selectedId]);
 
+  useLayoutEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
   const openScreen = (next: Screen) => {
     setScreen(next);
     setSelectedId(null);
@@ -49,10 +57,11 @@ export default function App() {
   };
 
   return (
+    <LocaleProvider locale={locale} setLocale={setLocale}>
     <div>
       <header className="topbar">
         <img className="topbar-logo" src="/logos/simad.webp" alt="SIMAD University" />
-        <div className="topbar-title">Somali Climate Data Storytelling Platform</div>
+        <div className="topbar-title">{copy.platform}</div>
         <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
       </header>
       <nav className="nav" aria-label="Primary">
@@ -61,46 +70,55 @@ export default function App() {
           className={screen === 'about' ? 'active' : ''}
           onClick={() => openScreen('about')}
         >
-          About ICE Institute
+          {copy.about}
         </button>
         <button
           type="button"
           className={screen === 'research' ? 'active' : ''}
           onClick={() => openScreen('research')}
         >
-          ICE Institute Research Stories
+          {copy.research}
         </button>
         <button
           type="button"
           className={screen === 'stories' ? 'active' : ''}
           onClick={() => openScreen('stories')}
         >
-          Stories
+          {copy.stories}
         </button>
         <button
           type="button"
           className={screen === 'climate-impact' ? 'active' : ''}
           onClick={() => openScreen('climate-impact')}
         >
-          Climate Impact
+          {copy.climateImpact}
         </button>
         <button
           type="button"
           className={screen === 'global-stage' ? 'active' : ''}
           onClick={() => openScreen('global-stage')}
         >
-          ICE at Global Stage
+          {copy.globalStage}
+        </button>
+        <button
+          type="button"
+          className={`nav-language${locale === 'so' ? ' active' : ''}`}
+          aria-pressed={locale === 'so'}
+          aria-label={copy.languageToggleLabel}
+          onClick={() => setLocale(locale === 'en' ? 'so' : 'en')}
+        >
+          {copy.languageToggle}
         </button>
       </nav>
 
       {screen === 'about' ? (
-        <article className="detail about-ice" aria-label="About ICE Institute">
-          <h1>{aboutIce.title}</h1>
+        <article className="detail about-ice" aria-label={copy.about}>
+          <h1>{copy.about}</h1>
           {aboutIce.paragraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 24)}>{paragraph}</p>
           ))}
           <p>
-            <strong>More information:</strong>{' '}
+            <strong>{copy.moreInfo}</strong>{' '}
             <a href={aboutIce.website} target="_blank" rel="noreferrer">
               {aboutIce.website}
             </a>
@@ -119,9 +137,9 @@ export default function App() {
       ) : detail ? (
         <article className="detail">
           <button className="back" type="button" onClick={() => setSelectedId(null)}>
-            ← Back to catalog
+            {copy.backCatalog}
           </button>
-          <p className="story-type">{detail.type === 'research-story' ? 'Research' : 'Story'}</p>
+          <p className="story-type">{detail.type === 'research-story' ? copy.researchLabel : copy.story}</p>
           <h1>{detail.title}</h1>
           {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
           <p className="story-meta">
@@ -130,7 +148,7 @@ export default function App() {
           <p>{detail.body}</p>
           {detail.website ? (
             <p>
-              <strong>More information:</strong>{' '}
+              <strong>{copy.moreInfo}</strong>{' '}
               <a href={detail.website} target="_blank" rel="noreferrer">
                 {detail.website}
               </a>
@@ -141,11 +159,11 @@ export default function App() {
       ) : (
         <>
           <div className="search-wrap">
-            <p className="kicker">Search</p>
+            <p className="kicker">{copy.search}</p>
             <input
               className="search-input"
               value={draft.query}
-              placeholder="Search by keywords"
+              placeholder={copy.searchPlaceholder}
               onChange={(event) => setDraft({ ...draft, query: event.target.value })}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
@@ -158,7 +176,7 @@ export default function App() {
               type="button"
               onClick={() => setAdvancedOpen((open) => !open)}
             >
-              {advancedOpen ? '▼' : '►'} Advanced options
+              {advancedOpen ? '▼' : '►'} {copy.advanced}
             </button>
             {advancedOpen ? (
               <FilterPanel
@@ -175,7 +193,7 @@ export default function App() {
               />
             ) : null}
             <h2 className="section-title">
-              {screen === 'research' ? 'ICE Institute Research Stories' : 'Latest stories'}
+              {screen === 'research' ? copy.research : copy.latestStories}
             </h2>
           </div>
           {screen === 'stories' ? (
@@ -183,7 +201,7 @@ export default function App() {
               stories={matches}
               selectedId={selectedId}
               onSelect={setSelectedId}
-              typeLabel="Story"
+              typeLabel={copy.story}
               layout="grid"
             />
           ) : (
@@ -194,7 +212,7 @@ export default function App() {
                   stories={matches}
                   selectedId={selectedId}
                   onSelect={setSelectedId}
-                  typeLabel="Research"
+                  typeLabel={copy.researchLabel}
                 />
               </div>
             </div>
@@ -203,5 +221,6 @@ export default function App() {
       )}
       {screen === 'global-stage' ? null : <SiteFooter />}
     </div>
+    </LocaleProvider>
   );
 }

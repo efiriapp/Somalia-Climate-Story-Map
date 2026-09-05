@@ -50,7 +50,7 @@ describe('StoryDetail', () => {
   it('ends the page with a visible source credit for pictures and video', () => {
     expect(source).toContain('MediaSourceCredit');
     expect(source).toContain('storyMediaCredit(story)');
-    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('More information'));
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('copy.moreInfo'));
   });
 });
 

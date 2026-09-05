@@ -9,20 +9,21 @@ describe('platform topbar', () => {
   it('places the platform title between the SIMAD and ICE logos', () => {
     expect(source).toContain('src="/logos/simad.webp"');
     expect(source).toContain('src="/logos/ice-mark.png"');
-    expect(source).toContain('Somali Climate Data Storytelling Platform');
+    expect(source).toContain('copy.platform');
     expect(source).not.toContain('Climate Story Map | Somalia');
     expect(source).toMatch(
-      /topbar-logo[\s\S]+topbar-title[\s\S]+Somali Climate Data Storytelling Platform[\s\S]+topbar-logo ice/,
+      /topbar-logo[\s\S]+topbar-title[\s\S]+copy.platform[\s\S]+topbar-logo ice/,
     );
   });
 
   it('places About, Research, Stories, Climate Impact, then ICE at Global Stage as a full-screen globe', () => {
-    expect(source).toContain('About ICE Institute');
-    expect(source).toContain('ICE Institute Research Stories');
-    expect(source).toContain('Climate Impact');
-    expect(source).toContain('ICE at Global Stage');
+    expect(source).toContain('copy.about');
+    expect(source).toContain('copy.research');
+    expect(source).toContain('copy.stories');
+    expect(source).toContain('copy.climateImpact');
+    expect(source).toContain('copy.globalStage');
     expect(source).toMatch(
-      /About ICE Institute[\s\S]+ICE Institute Research Stories[\s\S]+>[\s\n]*Stories[\s\n]*<[\s\S]+Climate Impact[\s\S]+ICE at Global Stage/,
+      /copy.about[\s\S]+copy.research[\s\S]+copy.stories[\s\S]+copy.climateImpact[\s\S]+copy.globalStage/,
     );
     expect(source).toContain("openScreen('global-stage')");
     expect(source).toContain("openScreen('climate-impact')");
@@ -33,6 +34,9 @@ describe('platform topbar', () => {
     expect(source).toContain("openScreen('research')");
     expect(source).toContain('aboutIce');
     expect(source).toContain("'research-story'");
+    expect(source).toContain('nav-language');
+    expect(source).toContain('chromeCopy');
+    expect(source.indexOf("openScreen('global-stage')")).toBeLessThan(source.indexOf('nav-language'));
   });
 
   it('credits research-story photos when the simple detail page shows an image', () => {
