@@ -178,7 +178,7 @@ describe('global-stage source pages', () => {
       featuredPerson: 'Green Champions',
       country: 'Somalia',
       website: 'https://ice.simad.edu.so/',
-      mapTitle: 'Green Friday and school outreach',
+      mapTitle: 'Green Champions Actions',
     });
     expect(story?.summary).toContain('flagship student leadership programme at SIMAD University');
     expect(story?.summary).toContain('Class of 2025 brought ten students');
@@ -187,11 +187,30 @@ describe('global-stage source pages', () => {
     expect(story?.chapters?.some((chapter) => /Liido Beach/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Mogadishu Primary and Secondary School/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Boondheere Orphan Girls Centre/i.test(chapter.paragraphs.join(' ')))).toBe(true);
-    expect(story?.images).toEqual(['/images/ice-stories/green-champions-2026.jpg']);
+    expect(story?.images).toEqual([
+      '/images/ice-stories/green-champions-1.jpg',
+      '/images/ice-stories/green-champions-2.jpg',
+      '/images/ice-stories/green-champions-3.jpg',
+      '/images/ice-stories/green-champions-4.jpg',
+    ]);
     expect(story?.tourStops?.map((stop) => stop.place)).toEqual([
       'liido-beach',
       'mogadishu-primary-school',
       'boondheere-orphan-girls',
+    ]);
+    expect(story?.tourStops?.map((stop) => stop.images[0])).toEqual([
+      '/images/ice-stories/green-champions-1.jpg',
+      '/images/ice-stories/school-outreach-2.jpg',
+      '/images/ice-stories/school-outreach-1.jpg',
+    ]);
+    expect(story?.tourStops?.[1].images).toEqual([
+      '/images/ice-stories/school-outreach-2.jpg',
+      '/images/ice-stories/school-outreach-3.jpg',
+      '/images/ice-stories/school-outreach-4.jpg',
+    ]);
+    expect(story?.tourStops?.[2].images).toEqual([
+      '/images/ice-stories/school-outreach-1.jpg',
+      '/images/ice-stories/school-outreach-5.jpg',
     ]);
   });
 
