@@ -489,12 +489,12 @@ export const stories: Story[] = [
     type: 'ice-story',
     region: 'banaadir',
     district: 'wadajir',
-    date: '2025-08-23',
+    date: '2026-07-29',
     themes: ['youth', 'education'],
     sdgs: [13, 4, 17],
     location: mogadishu,
     country: 'Somalia',
-    website: 'https://ice.simad.edu.so/2025/08/23/green-champions-the-class-of-2025/',
+    website: 'https://ice.simad.edu.so/2026/07/29/applications-open-become-a-green-champion-2026/',
     summary:
       'Green Champions is ICE Institute’s flagship student leadership programme at SIMAD University. Since 2023 it has selected yearly cohorts of students who research climate issues, run events, and take sustainability into campus and community life. The Class of 2025 brought ten students from different faculties after an open competition. The programme treats young Somalis as climate leaders now, not only as the leaders of tomorrow.',
     body: 'Green Champions trains SIMAD University students to lead climate research, events, and community outreach with ICE Institute.',
@@ -509,24 +509,8 @@ export const stories: Story[] = [
       impactAreas: ['Youth', 'Education', 'Climate Action', 'Community Outreach'],
       featuredPerson: 'ICE Green Champions',
       primarySource: 'ICE Institute — Green Champions programme',
-      extras: [
-        { label: 'Class of 2025', value: 'https://ice.simad.edu.so/2025/08/23/green-champions-the-class-of-2025/' },
-        { label: 'Class of 2024', value: 'https://ice.simad.edu.so/2024/08/29/introducing-the-new-cohort-of-green-champions-class-of-2024/' },
-        { label: 'Inaugural class', value: 'https://ice.simad.edu.so/2023/08/09/the-class-of-2023/' },
-      ],
     },
-    stats: [
-      { label: 'Launched', value: '2023' },
-      { label: '2025 cohort', value: '10 students' },
-      { label: 'Place', value: 'SIMAD University, Mogadishu' },
-      { label: 'Work', value: 'Research, events, and outreach' },
-      { label: '2026 applications closed', value: '7 August 2026' },
-    ],
-    images: [
-      '/images/ice-stories/green-champions-2025.jpg',
-      '/images/ice-stories/green-champions-2024.jpg',
-      '/images/ice-stories/green-champions-2023.jpeg',
-    ],
+    images: ['/images/ice-stories/green-champions-2026.jpg'],
     chapters: [
       {
         heading: 'A flagship programme for student climate leaders',

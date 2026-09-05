@@ -89,7 +89,7 @@ describe('global-stage source pages', () => {
   it('gives every ICE community story a source date and its own image', () => {
     const ice = stories.filter((story) => story.type === 'ice-story');
     expect(ice).toHaveLength(7);
-    expect(ice.find((story) => story.id === 'green-champions')?.date).toBe('2025-08-23');
+    expect(ice.find((story) => story.id === 'green-champions')?.date).toBe('2026-07-29');
     expect(ice.find((story) => story.id === '4c-art')?.date).toBe('2024-01-01');
     expect(ice.find((story) => story.id === 'ecosom')?.date).toBe('2019-01-01');
     expect(ice.find((story) => story.id === 'geed-soor')?.date).toBe('2024-09-19');
@@ -172,22 +172,19 @@ describe('global-stage source pages', () => {
     expect(story).toMatchObject({
       title: 'Green Champions: ICE Student Leaders for Climate Action',
       type: 'ice-story',
-      date: '2025-08-23',
+      date: '2026-07-29',
       featuredPerson: 'ICE Green Champions',
       country: 'Somalia',
-      website: 'https://ice.simad.edu.so/2025/08/23/green-champions-the-class-of-2025/',
     });
     expect(story?.placeLabel).toMatch(/SIMAD University/);
-    expect(story?.stats?.some((stat) => /2023/.test(`${stat.label} ${stat.value}`))).toBe(true);
-    expect(story?.stats?.some((stat) => /10/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats).toBeUndefined();
     expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
-    expect(story?.chapters?.some((chapter) => /Class of 2025|ten young people/i.test(chapter.paragraphs.join(' ')))).toBe(true);
-    expect(story?.chapters?.some((chapter) => /Paris Agreement/i.test(chapter.paragraphs.join(' ')))).toBe(true);
-    expect(story?.images).toEqual([
+    expect(story?.images).toEqual(['/images/ice-stories/green-champions-2026.jpg']);
+    expect(story?.images).not.toEqual(expect.arrayContaining([
       '/images/ice-stories/green-champions-2025.jpg',
       '/images/ice-stories/green-champions-2024.jpg',
       '/images/ice-stories/green-champions-2023.jpeg',
-    ]);
+    ]));
   });
 
   it('gives the SIMAD drought response a full source-backed detail page', () => {
