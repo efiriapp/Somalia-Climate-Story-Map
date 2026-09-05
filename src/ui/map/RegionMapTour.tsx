@@ -177,7 +177,10 @@ export function RegionMapTour({ story }: Props) {
           whenReady={() => scrollPageToTop()}
         >
           <LayersControl position="topleft">
-            <LayersControl.BaseLayer name="Satellite" checked>
+            <LayersControl.BaseLayer name="Streets" checked>
+              <TileLayer attribution={leafletBasemaps[0].attribution} url={leafletBasemaps[0].url} />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Satellite">
               <TileLayer attribution={leafletBasemaps[1].attribution} url={leafletBasemaps[1].url} />
             </LayersControl.BaseLayer>
             <LayersControl.BaseLayer name="Esri">
@@ -185,9 +188,6 @@ export function RegionMapTour({ story }: Props) {
                 attribution="Tiles &copy; Esri"
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
               />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer name="Streets">
-              <TileLayer attribution={leafletBasemaps[0].attribution} url={leafletBasemaps[0].url} />
             </LayersControl.BaseLayer>
             {leafletBasemaps
               .filter((layer) => layer.id === 'terrain')
