@@ -2,7 +2,9 @@ import { Fragment, useLayoutEffect } from 'react';
 import type { ClimateHazardId } from '../../content/climate-impact';
 import { climateImpactHub, climateImpactPages, splitStoryImages } from '../../content/climate-impact';
 import { scrollPageToTop } from '../../application/scroll-page-top';
-import { youtubeEmbedSrc } from '../../application/youtube-embed';
+import { climateMediaCredit } from '../../application/media-source-credit';
+import { videoEmbedSrc } from '../../application/youtube-embed';
+import { MediaSourceCredit } from './MediaSourceCredit';
 
 type Props = {
   selectedId: ClimateHazardId | null;
@@ -66,13 +68,14 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
           </a>
         </p>
         {page.videos.map((video) => {
-          const embedSrc = youtubeEmbedSrc(video.url);
+          const embedSrc = videoEmbedSrc(video.url);
           return embedSrc ? (
             <div className="story-video" key={video.url}>
               <iframe title={video.title} src={embedSrc} allowFullScreen />
             </div>
           ) : null;
         })}
+        <MediaSourceCredit credit={climateMediaCredit(page)} />
       </article>
     );
   }

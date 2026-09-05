@@ -23,7 +23,7 @@ describe('ClimateImpactPage', () => {
     expect(source).toContain('item.images[0]');
     expect(source).toContain('splitStoryImages');
     expect(source).toContain('page.chapters');
-    expect(source).toContain('youtubeEmbedSrc');
+    expect(source).toContain('videoEmbedSrc');
     expect(source).toContain('page.videos');
     expect(source).toContain('story-video');
   });
@@ -43,4 +43,11 @@ describe('ClimateImpactPage', () => {
     expect(source.indexOf('story-spread-end')).toBeLessThan(source.indexOf('page.videos.map'));
     expect(source.indexOf('sourceUrl')).toBeLessThan(source.indexOf('page.videos.map'));
   });
+
+  it('ends each hazard page with a visible source credit for pictures and video', () => {
+    expect(source).toContain('MediaSourceCredit');
+    expect(source).toContain('climateMediaCredit(page)');
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('page.videos.map'));
+  });
 });
+

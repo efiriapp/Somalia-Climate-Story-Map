@@ -9,6 +9,12 @@ describe('youtubeEmbedSrc', () => {
     expect(youtubeEmbedSrc('https://youtu.be/WcUbn9Oo0A8?si=gdNaN6eA4qSAnDHz')).toBe(
       'https://www.youtube.com/embed/WcUbn9Oo0A8',
     );
+    expect(youtubeEmbedSrc('https://youtube.com/shorts/Pk0ZU1EsmWU?si=SYWrS1masvd1aVTX')).toBe(
+      'https://www.youtube.com/embed/Pk0ZU1EsmWU',
+    );
+    expect(youtubeEmbedSrc('https://www.youtube.com/shorts/Pk0ZU1EsmWU')).toBe(
+      'https://www.youtube.com/embed/Pk0ZU1EsmWU',
+    );
     expect(youtubeEmbedSrc('https://ice.simad.edu.so/')).toBeNull();
   });
 });

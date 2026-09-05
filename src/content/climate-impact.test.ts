@@ -131,8 +131,30 @@ describe('Climate Impact pages', () => {
   });
 
   it('keeps a video slot at the end of each page and embeds the heat-wave source films', () => {
-    expect(pageById('floods')?.videos).toEqual([]);
-    expect(pageById('droughts')?.videos).toEqual([]);
+    expect(pageById('floods')?.videos).toEqual([
+      {
+        title: 'Deadly floods continue to ravage Somalia',
+        url: 'https://youtu.be/MjYZsu23LkE?si=BWEGsOJenPTaupxF',
+      },
+      {
+        title: 'Somalia floods: Heavy rains force thousands from their homes',
+        url: 'https://youtu.be/PrBU7HGTpuE?si=UqUn5gi2RCVo1QT0',
+      },
+      {
+        title: "Flood damage in Somalia's capital",
+        url: 'https://youtube.com/shorts/Pk0ZU1EsmWU?si=SYWrS1masvd1aVTX',
+      },
+    ]);
+    expect(pageById('droughts')?.videos).toEqual([
+      {
+        title: "Somalia's drought leaves 6.5 million on brink of hunger crisis, says ICRC",
+        url: 'https://youtu.be/dK7wk-8RtFs?si=U8lw5eBVH46MINiC',
+      },
+      {
+        title: 'Somalia suffering worst drought in decades',
+        url: 'https://youtu.be/8pk6KZQDSaw?si=gKX1eNaBOA1chxYJ',
+      },
+    ]);
     expect(pageById('el-nino')?.videos).toEqual([]);
     expect(pageById('la-nina')?.videos).toEqual([]);
     expect(pageById('heat-waves')?.videos).toEqual([
