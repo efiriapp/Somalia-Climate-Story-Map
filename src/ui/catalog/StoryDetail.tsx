@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react';
+import { Fragment, useLayoutEffect } from 'react';
 import { formatTourDate } from '../../application/global-tour';
 import { scrollPageToTop } from '../../application/scroll-page-top';
 import { youtubeEmbedSrc } from '../../application/youtube-embed';
@@ -20,7 +20,12 @@ export function StoryDetail({ story, onBack }: Props) {
     : [{ heading: 'The story', paragraphs: [story.body] }];
   const embedSrc = story.videoUrl ? youtubeEmbedSrc(story.videoUrl) : null;
   const source = story.sourceCard;
-  const { first, middle, last } = splitStoryImages(story.images);
+  const hasChapterImages = chapters.some(
+    (chapter) => (chapter.images?.length ?? 0) > 0 || (chapter.imagesAfter?.flat().length ?? 0) > 0,
+  );
+  const { first, middle, last } = hasChapterImages
+    ? { first: [] as string[], middle: [] as string[], last: [] as string[] }
+    : splitStoryImages(story.images);
   const midChapterIndex = Math.max(0, Math.floor((chapters.length - 1) / 2));
 
   useLayoutEffect(() => {
@@ -61,8 +66,20 @@ export function StoryDetail({ story, onBack }: Props) {
       {chapters.map((chapter, index) => (
         <section className="story-chapter" key={chapter.heading}>
           <h2>{chapter.heading}</h2>
-          {chapter.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+          {chapter.paragraphs.map((paragraph, paragraphIndex) => (
+            <Fragment key={paragraph.slice(0, 48)}>
+              <p>{paragraph}</p>
+              {(chapter.imagesAfter?.[paragraphIndex] ?? []).map((src) => (
+                <div className="story-spread story-spread-single" key={src}>
+                  <img src={src} alt="" />
+                </div>
+              ))}
+            </Fragment>
+          ))}
+          {(chapter.images ?? []).map((src) => (
+            <div className="story-spread story-spread-single" key={src}>
+              <img src={src} alt="" />
+            </div>
           ))}
           {index === 0 && story.tourStops?.length ? (
             <section className="story-map story-map-bleed">

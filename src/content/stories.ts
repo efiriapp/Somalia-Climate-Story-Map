@@ -554,12 +554,7 @@ export const stories: Story[] = [
         title: 'Green Friday Session 2 — Liido Beach',
         description:
           'The second Green Friday session brought youth climate engagement into a community setting at Liido Beach, linking environmental awareness with practical action and conservation. The activity provided an opportunity for young people to engage directly with environmental issues affecting their surroundings.',
-        images: [
-          '/images/ice-stories/green-champions-1.jpg',
-          '/images/ice-stories/green-champions-2.jpg',
-          '/images/ice-stories/green-champions-3.jpg',
-          '/images/ice-stories/green-champions-4.jpg',
-        ],
+        images: ['/images/ice-stories/green-champions-1.jpg'],
       },
       {
         region: 'banaadir',
@@ -567,10 +562,7 @@ export const stories: Story[] = [
         title: 'Mogadishu Primary and Secondary School',
         description:
           'Students participated in interactive climate awareness sessions covering climate change, environmental conservation, waste management, tree planting, and sustainable practices. The engagement encouraged students to reflect on environmental challenges within their communities and consider practical actions they can take at school and at home.',
-        images: [
-          '/images/ice-stories/mogadishu-outreach-1.jpg',
-          '/images/ice-stories/mogadishu-outreach-2.jpg',
-        ],
+        images: ['/images/ice-stories/mogadishu-outreach-1.jpg'],
       },
       {
         region: 'banaadir',
@@ -578,13 +570,7 @@ export const stories: Story[] = [
         title: 'Boondheere Orphan Girls Centre',
         description:
           'Green Champions delivered climate awareness sessions directly across classrooms, supported by climate education toolkits and informational booklets to encourage continued learning. The outreach reached more than 2,000 girls, expanding access to climate education and strengthening young people’s understanding of environmental responsibility.',
-        images: [
-          '/images/ice-stories/school-outreach-1.jpg',
-          '/images/ice-stories/school-outreach-2.jpg',
-          '/images/ice-stories/school-outreach-3.jpg',
-          '/images/ice-stories/school-outreach-4.jpg',
-          '/images/ice-stories/school-outreach-5.jpg',
-        ],
+        images: ['/images/ice-stories/school-outreach-1.jpg'],
       },
     ],
     chapters: [
@@ -601,6 +587,16 @@ export const stories: Story[] = [
           'The first Green Friday session focused on strengthening environmental awareness and encouraging practical, everyday climate action. Discussions and activities explored sustainable living, waste reduction, water conservation, tree planting, environmental responsibility, and youth-led environmental solutions.',
           'The second Green Friday session brought youth climate engagement into a community setting at Liido Beach, linking environmental awareness with practical action and conservation. The activity provided an opportunity for young people to engage directly with environmental issues affecting their surroundings.',
         ],
+        imagesAfter: [
+          [],
+          [],
+          [
+            '/images/ice-stories/green-champions-1.jpg',
+            '/images/ice-stories/green-champions-2.jpg',
+            '/images/ice-stories/green-champions-3.jpg',
+            '/images/ice-stories/green-champions-4.jpg',
+          ],
+        ],
       },
       {
         heading: 'School outreach',
@@ -608,6 +604,17 @@ export const stories: Story[] = [
           'Green Champions extended climate education beyond the classroom through two school outreach activities, creating direct opportunities for young learners to explore climate and environmental challenges.',
           'At Mogadishu Primary and Secondary School, students participated in interactive climate awareness sessions covering climate change, environmental conservation, waste management, tree planting, and sustainable practices. The engagement encouraged students to reflect on environmental challenges within their communities and consider practical actions they can take at school and at home.',
           'At Boondheere Orphan Girls Centre, Green Champions delivered climate awareness sessions directly across classrooms, supported by climate education toolkits and informational booklets to encourage continued learning. The outreach reached more than 2,000 girls, expanding access to climate education and strengthening young people’s understanding of environmental responsibility.',
+        ],
+        imagesAfter: [
+          [],
+          ['/images/ice-stories/mogadishu-outreach-1.jpg', '/images/ice-stories/mogadishu-outreach-2.jpg'],
+          [
+            '/images/ice-stories/school-outreach-1.jpg',
+            '/images/ice-stories/school-outreach-2.jpg',
+            '/images/ice-stories/school-outreach-3.jpg',
+            '/images/ice-stories/school-outreach-4.jpg',
+            '/images/ice-stories/school-outreach-5.jpg',
+          ],
         ],
       },
       {

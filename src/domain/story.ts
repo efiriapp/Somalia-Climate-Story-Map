@@ -41,7 +41,7 @@ export type Story = {
     extras?: { label: string; value: string }[];
   };
   stats?: { label: string; value: string }[];
-  chapters?: { heading: string; paragraphs: string[] }[];
+  chapters?: { heading: string; paragraphs: string[]; images?: string[]; imagesAfter?: string[][] }[];
   tourStops?: { region: string; place?: string; title: string; description: string; images: string[] }[];
 };
 

@@ -13,6 +13,8 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('basemaps.cartocdn.com');
     expect(source).toContain('arcgisonline');
     expect(source).toContain('World_Imagery');
+    expect(source).toMatch(/name="Streets"[\s\S]{0,80}checked/);
+    expect(source).not.toMatch(/name="Esri"[\s\S]{0,40}checked/);
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('stop.district');
     expect(source).toContain('<Popup');
@@ -46,9 +48,10 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('tour-right-stack');
     expect(source).not.toContain('event-slider');
     expect(source).toMatch(
-      /activeStop\.images\.map[\s\S]{0,160}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
+      /activeStop\.images\[0\][\s\S]{0,80}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
     );
-    expect(source).not.toContain('activeStop.images[0]');
+    expect(source).not.toContain('activeStop.images.map');
+    expect(source).not.toContain('region-slide-photos');
   });
 
   it('keeps the Leaflet pin and does not show name labels', () => {

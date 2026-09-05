@@ -176,13 +176,16 @@ export function RegionMapTour({ story }: Props) {
           whenReady={() => scrollPageToTop()}
         >
           <LayersControl position="topleft">
-            <LayersControl.BaseLayer name="Esri" checked>
+            <LayersControl.BaseLayer name="Streets" checked>
+              <TileLayer attribution={leafletBasemaps[0].attribution} url={leafletBasemaps[0].url} />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Esri">
               <TileLayer
                 attribution="Tiles &copy; Esri"
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
               />
             </LayersControl.BaseLayer>
-            {leafletBasemaps.map((layer) => (
+            {leafletBasemaps.slice(1).map((layer) => (
               <LayersControl.BaseLayer key={layer.id} name={layer.name}>
                 <TileLayer attribution={layer.attribution} url={layer.url} />
               </LayersControl.BaseLayer>
@@ -222,11 +225,7 @@ export function RegionMapTour({ story }: Props) {
         </div>
         {sliderOpen && activeStop ? (
           <aside className="region-slide-card" aria-label={activeStop.title}>
-            <div className="region-slide-photos">
-              {activeStop.images.map((src) => (
-                <img key={src} src={src} alt="" />
-              ))}
-            </div>
+            {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
             <h3>{activeStop.title}</h3>
             <p>{activeStop.description}</p>
           </aside>

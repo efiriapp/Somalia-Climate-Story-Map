@@ -12,6 +12,10 @@ describe('StoryDetail', () => {
   it('shows chapters, stats, gallery, video, and a map for a tapped ICE story', () => {
     expect(domain).toContain('place?:');
     expect(domain).toContain('chapters?:');
+    expect(domain).toContain('imagesAfter?:');
+    expect(source).toContain('imagesAfter');
+    expect(source).toContain('chapter.images');
+    expect(source).toContain('story-spread-single');
     expect(domain).toContain('stats?:');
     expect(domain).toContain('videoTitle?:');
     expect(domain).toContain('sourceCard?:');

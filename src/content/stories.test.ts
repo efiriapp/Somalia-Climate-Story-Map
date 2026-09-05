@@ -187,6 +187,27 @@ describe('global-stage source pages', () => {
     expect(story?.chapters?.some((chapter) => /Liido Beach/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Mogadishu Primary and Secondary School/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Boondheere Orphan Girls Centre/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.chapters?.find((chapter) => chapter.heading === 'Green Friday')?.imagesAfter).toEqual([
+      [],
+      [],
+      [
+        '/images/ice-stories/green-champions-1.jpg',
+        '/images/ice-stories/green-champions-2.jpg',
+        '/images/ice-stories/green-champions-3.jpg',
+        '/images/ice-stories/green-champions-4.jpg',
+      ],
+    ]);
+    expect(story?.chapters?.find((chapter) => chapter.heading === 'School outreach')?.imagesAfter).toEqual([
+      [],
+      ['/images/ice-stories/mogadishu-outreach-1.jpg', '/images/ice-stories/mogadishu-outreach-2.jpg'],
+      [
+        '/images/ice-stories/school-outreach-1.jpg',
+        '/images/ice-stories/school-outreach-2.jpg',
+        '/images/ice-stories/school-outreach-3.jpg',
+        '/images/ice-stories/school-outreach-4.jpg',
+        '/images/ice-stories/school-outreach-5.jpg',
+      ],
+    ]);
     expect(story?.images).toEqual([
       '/images/ice-stories/green-champions-1.jpg',
       '/images/ice-stories/green-champions-2.jpg',
@@ -205,21 +226,10 @@ describe('global-stage source pages', () => {
       'mogadishu-primary-school',
       'boondheere-orphan-girls',
     ]);
-    expect(story?.tourStops?.map((stop) => stop.images[0])).toEqual([
-      '/images/ice-stories/green-champions-1.jpg',
-      '/images/ice-stories/mogadishu-outreach-1.jpg',
-      '/images/ice-stories/school-outreach-1.jpg',
-    ]);
-    expect(story?.tourStops?.[1].images).toEqual([
-      '/images/ice-stories/mogadishu-outreach-1.jpg',
-      '/images/ice-stories/mogadishu-outreach-2.jpg',
-    ]);
-    expect(story?.tourStops?.[2].images).toEqual([
-      '/images/ice-stories/school-outreach-1.jpg',
-      '/images/ice-stories/school-outreach-2.jpg',
-      '/images/ice-stories/school-outreach-3.jpg',
-      '/images/ice-stories/school-outreach-4.jpg',
-      '/images/ice-stories/school-outreach-5.jpg',
+    expect(story?.tourStops?.map((stop) => stop.images)).toEqual([
+      ['/images/ice-stories/green-champions-1.jpg'],
+      ['/images/ice-stories/mogadishu-outreach-1.jpg'],
+      ['/images/ice-stories/school-outreach-1.jpg'],
     ]);
   });
 
