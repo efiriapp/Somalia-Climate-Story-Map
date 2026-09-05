@@ -13,7 +13,8 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('basemaps.cartocdn.com');
     expect(source).toContain('arcgisonline');
     expect(source).toContain('World_Imagery');
-    expect(source).toMatch(/name="Esri"[\s\S]{0,80}checked/);
+    expect(source).toMatch(/name="Satellite"[\s\S]{0,80}checked/);
+    expect(source).not.toMatch(/name="Esri"[\s\S]{0,40}checked/);
     expect(source).not.toMatch(/name="Streets"[\s\S]{0,40}checked/);
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('stop.district');

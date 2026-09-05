@@ -177,7 +177,10 @@ export function RegionMapTour({ story }: Props) {
           whenReady={() => scrollPageToTop()}
         >
           <LayersControl position="topleft">
-            <LayersControl.BaseLayer name="Esri" checked>
+            <LayersControl.BaseLayer name="Satellite" checked>
+              <TileLayer attribution={leafletBasemaps[1].attribution} url={leafletBasemaps[1].url} />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Esri">
               <TileLayer
                 attribution="Tiles &copy; Esri"
                 url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
@@ -186,11 +189,13 @@ export function RegionMapTour({ story }: Props) {
             <LayersControl.BaseLayer name="Streets">
               <TileLayer attribution={leafletBasemaps[0].attribution} url={leafletBasemaps[0].url} />
             </LayersControl.BaseLayer>
-            {leafletBasemaps.slice(1).map((layer) => (
-              <LayersControl.BaseLayer key={layer.id} name={layer.name}>
-                <TileLayer attribution={layer.attribution} url={layer.url} />
-              </LayersControl.BaseLayer>
-            ))}
+            {leafletBasemaps
+              .filter((layer) => layer.id === 'terrain')
+              .map((layer) => (
+                <LayersControl.BaseLayer key={layer.id} name={layer.name}>
+                  <TileLayer attribution={layer.attribution} url={layer.url} />
+                </LayersControl.BaseLayer>
+              ))}
           </LayersControl>
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
           {stops.map((stop) => (

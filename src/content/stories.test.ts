@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { regionCenter } from '../application/region-coordinates';
 import { stories } from './stories';
 
 const publicDir = join(dirname(fileURLToPath(import.meta.url)), '../../public');
@@ -137,6 +138,7 @@ describe('global-stage source pages', () => {
     expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
     expect(story?.images).toHaveLength(2);
     expect(story?.location.name).toMatch(/Liido Beach/);
+    expect(story?.location).toMatchObject(regionCenter('liido-beach'));
   });
 
   it('gives ECOSOM a full source-backed detail page', () => {

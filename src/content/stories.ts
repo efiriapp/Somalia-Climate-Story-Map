@@ -323,7 +323,7 @@ export const stories: Story[] = [
     date: '2024-01-01',
     themes: ['youth', 'oceans'],
     sdgs: [14, 11, 13],
-    location: { name: 'Liido Beach, Mogadishu', lat: 2.037, lng: 45.347 },
+    location: { name: 'Liido Beach, Mogadishu', lat: 2.0349, lng: 45.3517 },
     country: 'Somalia',
     website: 'https://ice.simad.edu.so/',
     summary: 'Every Friday, young Somalis led by Abdisatar Arabow clean plastic and debris from Liido Beach in Abdiaziz District. What began with a handful of volunteers became a multi-year campaign after research found tens of thousands of litter items, mostly plastic, on the shore. The work protects marine life, public health, and a beach families still use for rest and business. Volunteers also teach beachgoers and shops why dumping plastic into the ocean threatens biodiversity along Somalia’s coast.',
