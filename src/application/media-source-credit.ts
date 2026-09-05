@@ -7,6 +7,7 @@ type StoryMediaFields = {
   images: string[];
   website?: string;
   videoUrl?: string;
+  videos?: { url: string }[];
   sourceCard?: { primarySource: string };
   chapters?: { images?: string[]; imagesAfter?: string[][] }[];
   tourStops?: { images: string[] }[];
@@ -30,6 +31,7 @@ export const formatMediaSourceCredit = (label: string): string => {
 const storyHasEmbeddedMedia = (story: StoryMediaFields): boolean =>
   story.images.length > 0 ||
   Boolean(story.videoUrl) ||
+  (story.videos?.length ?? 0) > 0 ||
   (story.chapters ?? []).some(
     (chapter) => (chapter.images?.length ?? 0) > 0 || (chapter.imagesAfter?.flat().length ?? 0) > 0,
   ) ||

@@ -1,11 +1,13 @@
 import { Fragment, useLayoutEffect } from 'react';
 import { formatTourDate } from '../../application/global-tour';
 import { scrollPageToTop } from '../../application/scroll-page-top';
-import { youtubeEmbedSrc } from '../../application/youtube-embed';
+import { storyMediaCredit } from '../../application/media-source-credit';
+import { videoEmbedSrc } from '../../application/youtube-embed';
 import { splitStoryImages } from '../../content/climate-impact';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
+import { MediaSourceCredit } from './MediaSourceCredit';
 
 type Props = {
   story: Story;
@@ -18,7 +20,10 @@ export function StoryDetail({ story, onBack }: Props) {
   const chapters = story.chapters?.length
     ? story.chapters
     : [{ heading: 'The story', paragraphs: [story.body] }];
-  const embedSrc = story.videoUrl ? youtubeEmbedSrc(story.videoUrl) : null;
+  const videos = [
+    ...(story.videoTitle && story.videoUrl ? [{ title: story.videoTitle, url: story.videoUrl }] : []),
+    ...(story.videos ?? []),
+  ];
   const source = story.sourceCard;
   const hasChapterImages = chapters.some(
     (chapter) => (chapter.images?.length ?? 0) > 0 || (chapter.imagesAfter?.flat().length ?? 0) > 0,
@@ -117,11 +122,19 @@ export function StoryDetail({ story, onBack }: Props) {
         </section>
       )}
 
-      {embedSrc && story.videoTitle ? (
-        <div className="story-video">
-          <iframe title={story.videoTitle} src={embedSrc} allowFullScreen />
-        </div>
-      ) : null}
+      {videos.map((video) => {
+        const embedSrc = videoEmbedSrc(video.url);
+        return embedSrc ? (
+          <div className="story-video" key={video.url}>
+            <iframe
+              title={video.title}
+              src={embedSrc}
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        ) : null;
+      })}
 
       {source ? (
         <section className="story-source" aria-label="Story Map Location">
@@ -183,6 +196,7 @@ export function StoryDetail({ story, onBack }: Props) {
           </a>
         </p>
       ) : null}
+      <MediaSourceCredit credit={storyMediaCredit(story)} />
     </article>
   );
 }

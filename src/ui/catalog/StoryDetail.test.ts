@@ -18,6 +18,7 @@ describe('StoryDetail', () => {
     expect(source).toContain('story-spread-single');
     expect(domain).toContain('stats?:');
     expect(domain).toContain('videoTitle?:');
+    expect(domain).toContain('videos?:');
     expect(domain).toContain('sourceCard?:');
     expect(source).toContain('story-detail');
     expect(source).toContain('story-stats');
@@ -25,7 +26,8 @@ describe('StoryDetail', () => {
     expect(source).toContain('story-spread');
     expect(source).not.toContain('story-gallery');
     expect(source).toContain('story-video');
-    expect(source).toContain('youtubeEmbedSrc');
+    expect(source).toContain('videoEmbedSrc');
+    expect(source).toContain('story.videos');
     expect(source).toContain('story-source');
     expect(source).toContain('Story Map Location');
     expect(source.indexOf('chapters.map')).toBeLessThan(source.indexOf('story-video'));
@@ -44,4 +46,11 @@ describe('StoryDetail', () => {
     expect(app).toContain('StoryDetail');
     expect(app).toContain('scrollPageToTop');
   });
+
+  it('ends the page with a visible source credit for pictures and video', () => {
+    expect(source).toContain('MediaSourceCredit');
+    expect(source).toContain('storyMediaCredit(story)');
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('More information'));
+  });
 });
+

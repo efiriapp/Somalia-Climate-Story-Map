@@ -29,6 +29,7 @@ export type Story = {
   mapTitle?: string;
   videoTitle?: string;
   videoUrl?: string;
+  videos?: { title: string; url: string }[];
   sourceCard?: {
     place: string;
     city: string;

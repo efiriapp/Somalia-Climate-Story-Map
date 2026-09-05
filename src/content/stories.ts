@@ -333,6 +333,12 @@ export const stories: Story[] = [
     mapTitle: 'Liido Beach',
     videoTitle: 'Beach Cleaning Campaign in Mogadishu | Ololaha nadaafada Xeebta Liido ee Muqdishu',
     videoUrl: 'https://youtu.be/gi083zfLVC4',
+    videos: [
+      {
+        title: 'Liido Beach Cleanup | Green Champions',
+        url: 'https://www.facebook.com/reel/1412656927441281/',
+      },
+    ],
     sourceCard: {
       place: 'Liido Beach, Abdiaziz District, Mogadishu',
       city: 'Mogadishu',
@@ -513,6 +519,14 @@ export const stories: Story[] = [
     featuredPerson: 'Green Champions',
     placeLabel: 'SIMAD University, Mogadishu',
     mapTitle: 'Green Champions Actions',
+    videoTitle: 'Liido Beach Cleanup | Green Champions',
+    videoUrl: 'https://www.facebook.com/reel/1412656927441281/',
+    videos: [
+      {
+        title: 'School outreach | Green Champions',
+        url: 'https://www.facebook.com/ICESomalia/videos/1459612665336518/',
+      },
+    ],
     sourceCard: {
       place: 'SIMAD University, Mogadishu',
       city: 'Mogadishu',

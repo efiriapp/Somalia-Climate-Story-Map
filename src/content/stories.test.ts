@@ -139,6 +139,13 @@ describe('global-stage source pages', () => {
     expect(story?.images).toHaveLength(2);
     expect(story?.location.name).toMatch(/Liido Beach/);
     expect(story?.location).toMatchObject(regionCenter('liido-beach'));
+    expect(story?.videos).toEqual([
+      {
+        title: 'Liido Beach Cleanup | Green Champions',
+        url: 'https://www.facebook.com/reel/1412656927441281/',
+      },
+    ]);
+    expect(story?.videos?.some((video) => video.url.includes('1459612665336518'))).toBe(false);
   });
 
   it('gives ECOSOM a full source-backed detail page', () => {
@@ -186,6 +193,14 @@ describe('global-stage source pages', () => {
     expect(story?.summary).toContain('Class of 2025 brought ten students');
     expect(story?.stats?.some((stat) => /2,000\+/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /474/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.videoTitle).toBe('Liido Beach Cleanup | Green Champions');
+    expect(story?.videoUrl).toBe('https://www.facebook.com/reel/1412656927441281/');
+    expect(story?.videos).toEqual([
+      {
+        title: 'School outreach | Green Champions',
+        url: 'https://www.facebook.com/ICESomalia/videos/1459612665336518/',
+      },
+    ]);
     expect(story?.chapters?.some((chapter) => /Liido Beach/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Mogadishu Primary and Secondary School/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.chapters?.some((chapter) => /Boondheere Orphan Girls Centre/i.test(chapter.paragraphs.join(' ')))).toBe(true);
