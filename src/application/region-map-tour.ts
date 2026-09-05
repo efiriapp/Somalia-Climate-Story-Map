@@ -17,9 +17,9 @@ const PLACE_LABELS: Record<string, string> = {
   'lower-juba': 'Lower Juba',
 };
 
-export const BUILDING_ZOOM = 15;
-export const HOME_FLY_MS = 3500;
-export const DISTRICT_FLY_MS = 4500;
+export const DISTRICT_ZOOM = 9;
+export const ORIGIN_HOLD_MS = 700;
+export const DISTRICT_FLY_MS = 2800;
 
 export type RegionMapStop = {
   region: string;
@@ -46,14 +46,14 @@ export const tourFlightPlan = (stop: { lat: number; lng: number }): TourFlightSt
     lat: SOMALIA_VIEW.center.lat,
     lng: SOMALIA_VIEW.center.lng,
     zoom: SOMALIA_VIEW.zoom,
-    durationMs: HOME_FLY_MS,
-    showPin: false,
+    durationMs: ORIGIN_HOLD_MS,
+    showPin: true,
     showSlider: false,
   },
   {
     lat: stop.lat,
     lng: stop.lng,
-    zoom: BUILDING_ZOOM,
+    zoom: DISTRICT_ZOOM,
     durationMs: DISTRICT_FLY_MS,
     showPin: true,
     showSlider: true,

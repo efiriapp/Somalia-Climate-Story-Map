@@ -9,7 +9,8 @@ import { SOMALIA_VIEW } from '../../application/resolve-map-view';
 import { leafletBasemaps } from '../../application/leaflet-basemaps';
 import {
   DISTRICT_FLY_MS,
-  HOME_FLY_MS,
+  DISTRICT_ZOOM,
+  ORIGIN_HOLD_MS,
   buildRegionMapTour,
   tourFlightPlan,
   type RegionMapStop,
@@ -39,28 +40,20 @@ const flyToSomaliaThenDistrict = (
 ): (() => void) => {
   map.invalidateSize();
   map.stop();
+  onHome();
+  map.setView([SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng], SOMALIA_VIEW.zoom);
   if (!stop) {
-    map.flyTo([SOMALIA_VIEW.center.lat, SOMALIA_VIEW.center.lng], SOMALIA_VIEW.zoom, {
-      duration: HOME_FLY_MS / 1000,
-      easeLinearity: 0.12,
-    });
-    onHome();
     return () => undefined;
   }
-  const [home, district] = tourFlightPlan(stop);
-  onHome();
-  map.flyTo([home.lat, home.lng], home.zoom, {
-    duration: home.durationMs / 1000,
-    easeLinearity: 0.12,
-  });
+  const [, district] = tourFlightPlan(stop);
   let arriveTimer = 0;
   const homeTimer = window.setTimeout(() => {
-    map.flyTo([district.lat, district.lng], district.zoom, {
-      duration: district.durationMs / 1000,
-      easeLinearity: 0.12,
+    map.flyTo([district.lat, district.lng], DISTRICT_ZOOM, {
+      duration: DISTRICT_FLY_MS / 1000,
+      easeLinearity: 0.25,
     });
-    arriveTimer = window.setTimeout(onArrive, district.durationMs);
-  }, home.durationMs);
+    arriveTimer = window.setTimeout(onArrive, DISTRICT_FLY_MS);
+  }, ORIGIN_HOLD_MS);
   return () => {
     window.clearTimeout(homeTimer);
     window.clearTimeout(arriveTimer);
@@ -91,7 +84,6 @@ function JumpOnStop({
 export function RegionMapTour({ story }: Props) {
   const stops = useMemo(() => buildRegionMapTour(story), [story]);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [pinVisible, setPinVisible] = useState(false);
   const [sliderOpen, setSliderOpen] = useState(false);
   const indexRef = useRef(-1);
   const lockedRef = useRef(false);
@@ -107,15 +99,29 @@ export function RegionMapTour({ story }: Props) {
   }, []);
 
   const onHome = useCallback(() => {
-    setPinVisible(false);
     setSliderOpen(false);
     window.clearTimeout(hideRef.current);
   }, []);
 
   const onArrive = useCallback(() => {
-    setPinVisible(true);
     showSlider();
   }, [showSlider]);
+
+  const stepDistrict = (delta: number) => {
+    if (lockedRef.current || stops.length === 0) {
+      return;
+    }
+    const from = activeIndex < 0 ? (delta > 0 ? -1 : 0) : activeIndex;
+    const next = delta > 0 ? Math.min(from + 1, stops.length - 1) : Math.max(from - 1, -1);
+    if (next === activeIndex) {
+      return;
+    }
+    lockedRef.current = true;
+    setActiveIndex(next);
+    window.setTimeout(() => {
+      lockedRef.current = false;
+    }, ORIGIN_HOLD_MS + DISTRICT_FLY_MS);
+  };
 
   const onWheel = (event: WheelEvent<HTMLDivElement>) => {
     const next = scrollTourIndex(event.deltaY, indexRef.current, stops.length);
@@ -149,7 +155,7 @@ export function RegionMapTour({ story }: Props) {
       setActiveIndex(next);
       window.setTimeout(() => {
         lockedRef.current = false;
-      }, HOME_FLY_MS + DISTRICT_FLY_MS);
+      }, ORIGIN_HOLD_MS + DISTRICT_FLY_MS);
     };
     node.addEventListener('wheel', handle, { passive: false, capture: true });
     return () => {
@@ -177,15 +183,37 @@ export function RegionMapTour({ story }: Props) {
             ))}
           </LayersControl>
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
-          {pinVisible && activeStop ? (
-            <Marker position={[activeStop.lat, activeStop.lng]}>
+          {stops.map((stop) => (
+            <Marker
+              key={`${stop.regionSlug}-${stop.district}`}
+              position={[stop.lat, stop.lng]}
+              eventHandlers={{
+                click: () => {
+                  if (!lockedRef.current) {
+                    lockedRef.current = true;
+                    setActiveIndex(stops.indexOf(stop));
+                    window.setTimeout(() => {
+                      lockedRef.current = false;
+                    }, ORIGIN_HOLD_MS + DISTRICT_FLY_MS);
+                  }
+                },
+              }}
+            >
               <Popup className="region-pin-popup">
-                <strong>{activeStop.district}</strong>
-                <p>{activeStop.title}</p>
+                <strong>{stop.district}</strong>
+                <p>{stop.title}</p>
               </Popup>
             </Marker>
-          ) : null}
+          ))}
         </MapContainer>
+        <div className="tour-event-nav">
+          <button type="button" aria-label="Back" onClick={() => stepDistrict(-1)}>
+            Back
+          </button>
+          <button type="button" aria-label="Next" onClick={() => stepDistrict(1)}>
+            Next
+          </button>
+        </div>
         {sliderOpen && activeStop ? (
           <aside className="region-slide-card" aria-label={activeStop.title}>
             {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}

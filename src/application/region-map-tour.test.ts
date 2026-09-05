@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { stories } from '../content/stories';
 import { SOMALIA_VIEW } from './resolve-map-view';
 import { regionCenter } from './region-coordinates';
-import { BUILDING_ZOOM, buildRegionMapTour, tourFlightPlan } from './region-map-tour';
+import { DISTRICT_ZOOM, buildRegionMapTour, tourFlightPlan } from './region-map-tour';
 
 describe('buildRegionMapTour', () => {
   it('tours SIMAD drought places from Ceelgula to Lower Juba', () => {
@@ -53,27 +53,27 @@ describe('buildRegionMapTour', () => {
 });
 
 describe('tourFlightPlan', () => {
-  it('returns to Somalia country zoom before flying to building-level place zoom', () => {
+  it('starts at Somalia country zoom, then flies to the helped district', () => {
     const next = regionCenter('xuduley');
     expect(tourFlightPlan(next)).toEqual([
       {
         lat: SOMALIA_VIEW.center.lat,
         lng: SOMALIA_VIEW.center.lng,
         zoom: SOMALIA_VIEW.zoom,
-        durationMs: 3500,
-        showPin: false,
+        durationMs: 700,
+        showPin: true,
         showSlider: false,
       },
       {
         lat: next.lat,
         lng: next.lng,
-        zoom: BUILDING_ZOOM,
-        durationMs: 4500,
+        zoom: DISTRICT_ZOOM,
+        durationMs: 2800,
         showPin: true,
         showSlider: true,
       },
     ]);
-    expect(BUILDING_ZOOM).toBe(15);
+    expect(DISTRICT_ZOOM).toBe(9);
     expect(SOMALIA_VIEW.zoom).toBe(6);
   });
 });

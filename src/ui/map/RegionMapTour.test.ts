@@ -13,14 +13,17 @@ describe('RegionMapTour', () => {
     expect(source).not.toContain('basemaps.cartocdn.com');
     expect(source).not.toContain('arcgisonline');
     expect(source).toContain('buildRegionMapTour');
-    expect(source).toContain('activeStop.district');
+    expect(source).toContain('stop.district');
     expect(source).toContain('<Popup');
     expect(source).toContain('region-pin-popup');
-    expect(source).toContain('activeStop.district');
+    expect(source).toContain('stop.district');
     expect(source).toContain('SOMALIA_VIEW');
     expect(source).toContain('flyTo');
-    expect(source).toContain('HOME_FLY_MS');
+    expect(source).toContain('setView');
+    expect(source).toContain('ORIGIN_HOLD_MS');
     expect(source).toContain('DISTRICT_FLY_MS');
+    expect(source).toContain('DISTRICT_ZOOM');
+    expect(source).not.toContain('BUILDING_ZOOM');
     expect(source).not.toContain('animate: false');
     expect(source).toContain('useState(-1)');
     expect(source).toContain('scrollWheelZoom={false}');
@@ -35,13 +38,14 @@ describe('RegionMapTour', () => {
     expect(source).toContain('tourFlightPlan');
     expect(source).toContain('setSliderOpen(false)');
     expect(source).toContain('setSliderOpen(true)');
-    expect(source).not.toContain('stops.map((stop, index)');
+    expect(source).toContain('stops.map((stop)');
+    expect(source).toMatch(/>\s*Back\s*</);
+    expect(source).toMatch(/>\s*Next\s*</);
+    expect(source).toContain('stepDistrict');
     expect(source).not.toContain('tour-right-stack');
     expect(source).not.toContain('event-slider');
     expect(source).toMatch(
       /activeStop\.images\[0\][\s\S]{0,80}<h3>\{activeStop\.title\}<\/h3>[\s\S]{0,80}<p>\{activeStop\.description\}<\/p>/,
     );
-    expect(source).not.toContain('Back');
-    expect(source).not.toContain('Next');
   });
 });

@@ -64,7 +64,7 @@ export function StoryDetail({ story, onBack }: Props) {
           ))}
           {index === 0 && story.tourStops?.length ? (
             <section className="story-map story-map-bleed">
-              <h2>SIMAD supported drought impact</h2>
+              <h2>Districts SIMAD supported in the drought</h2>
               <RegionMapTour story={story} />
             </section>
           ) : null}
