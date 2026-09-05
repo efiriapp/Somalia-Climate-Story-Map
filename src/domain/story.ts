@@ -26,6 +26,7 @@ export type Story = {
   website: string;
   featuredPerson?: string;
   placeLabel?: string;
+  mapTitle?: string;
   videoTitle?: string;
   videoUrl?: string;
   sourceCard?: {

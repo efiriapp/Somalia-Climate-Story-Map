@@ -9,4 +9,10 @@ describe('regionCenter', () => {
     expect(regionCenter('far-libaax')).toEqual({ lat: 4.87458, lng: 44.86873 });
     expect(regionCenter('lower-juba')).toEqual({ lat: 0.07222, lng: 42.75056 });
   });
+
+  it('returns the Green Champions outreach places', () => {
+    expect(regionCenter('liido-beach')).toEqual({ lat: 2.037, lng: 45.347 });
+    expect(regionCenter('mogadishu-primary-school')).toEqual({ lat: 2.0223, lng: 45.2974 });
+    expect(regionCenter('boondheere-orphan-girls')).toEqual({ lat: 2.0448, lng: 45.3406 });
+  });
 });

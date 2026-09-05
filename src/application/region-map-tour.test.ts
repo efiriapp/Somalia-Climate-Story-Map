@@ -56,6 +56,20 @@ describe('buildRegionMapTour', () => {
     const storyText = [story?.summary, story?.body, ...(story?.chapters ?? []).flatMap((chapter) => chapter.paragraphs)].join(' ');
     expect(storyText).not.toMatch(/SoDMA|SODMA|FAO|SWALIM|XAJSi/i);
   });
+
+  it('tours Green Champions from Liido Beach to the two school outreaches', () => {
+    const story = stories.find((item) => item.id === 'green-champions');
+    const tour = buildRegionMapTour(story!);
+
+    expect(tour.map((stop) => stop.district)).toEqual([
+      'Liido Beach',
+      'Mogadishu Primary and Secondary School',
+      'Boondheere Orphan Girls Centre',
+    ]);
+    expect(tour[0]).toMatchObject(regionCenter('liido-beach'));
+    expect(tour[1]).toMatchObject(regionCenter('mogadishu-primary-school'));
+    expect(tour[2]).toMatchObject(regionCenter('boondheere-orphan-girls'));
+  });
 });
 
 describe('tourFlightPlan', () => {

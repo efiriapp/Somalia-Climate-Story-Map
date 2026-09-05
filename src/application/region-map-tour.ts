@@ -7,6 +7,7 @@ const REGION_LABELS: Record<string, string> = {
   bay: 'Baay',
   hiraan: 'Hiiraan',
   'lower-juba': 'Lower Juba',
+  banaadir: 'Banaadir',
 };
 
 const PLACE_LABELS: Record<string, string> = {
@@ -15,6 +16,9 @@ const PLACE_LABELS: Record<string, string> = {
   xuduley: 'Xuduley',
   'far-libaax': 'Far-libaax',
   'lower-juba': 'Lower Juba',
+  'liido-beach': 'Liido Beach',
+  'mogadishu-primary-school': 'Mogadishu Primary and Secondary School',
+  'boondheere-orphan-girls': 'Boondheere Orphan Girls Centre',
 };
 
 export const DISTRICT_ZOOM = 9;

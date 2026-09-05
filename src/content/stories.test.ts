@@ -129,6 +129,8 @@ describe('global-stage source pages', () => {
     expect(story?.videoTitle).toMatch(/Beach Cleaning Campaign/);
     expect(story?.videoUrl).toContain('gi083zfLVC4');
     expect(story?.placeLabel).toMatch(/Liido Beach/);
+    expect(story?.mapTitle).toBe('Liido Beach');
+    expect(story?.tourStops?.map((stop) => stop.place)).toEqual(['liido-beach']);
     expect(story?.stats?.some((stat) => /119,873/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /89\.47/.test(`${stat.label} ${stat.value}`))).toBe(true);
     expect(story?.stats?.some((stat) => /147/.test(`${stat.label} ${stat.value}`))).toBe(true);
@@ -170,21 +172,27 @@ describe('global-stage source pages', () => {
   it('gives Green Champions a full source-backed detail page', () => {
     const story = stories.find((item) => item.id === 'green-champions');
     expect(story).toMatchObject({
-      title: 'Green Champions: ICE Student Leaders for Climate Action',
+      title: 'Green Champions: A Year of Youth-Led Climate Action',
       type: 'ice-story',
       date: '2026-07-29',
-      featuredPerson: 'ICE Green Champions',
+      featuredPerson: 'Green Champions',
       country: 'Somalia',
+      website: 'https://ice.simad.edu.so/',
+      mapTitle: 'Green Friday and school outreach',
     });
-    expect(story?.placeLabel).toMatch(/SIMAD University/);
-    expect(story?.stats).toBeUndefined();
-    expect(story?.chapters?.length).toBeGreaterThanOrEqual(4);
+    expect(story?.summary).toContain('flagship student leadership programme at SIMAD University');
+    expect(story?.summary).toContain('Class of 2025 brought ten students');
+    expect(story?.stats?.some((stat) => /2,000\+/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.stats?.some((stat) => /474/.test(`${stat.label} ${stat.value}`))).toBe(true);
+    expect(story?.chapters?.some((chapter) => /Liido Beach/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.chapters?.some((chapter) => /Mogadishu Primary and Secondary School/i.test(chapter.paragraphs.join(' ')))).toBe(true);
+    expect(story?.chapters?.some((chapter) => /Boondheere Orphan Girls Centre/i.test(chapter.paragraphs.join(' ')))).toBe(true);
     expect(story?.images).toEqual(['/images/ice-stories/green-champions-2026.jpg']);
-    expect(story?.images).not.toEqual(expect.arrayContaining([
-      '/images/ice-stories/green-champions-2025.jpg',
-      '/images/ice-stories/green-champions-2024.jpg',
-      '/images/ice-stories/green-champions-2023.jpeg',
-    ]));
+    expect(story?.tourStops?.map((stop) => stop.place)).toEqual([
+      'liido-beach',
+      'mogadishu-primary-school',
+      'boondheere-orphan-girls',
+    ]);
   });
 
   it('gives the SIMAD drought response a full source-backed detail page', () => {

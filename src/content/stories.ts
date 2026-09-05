@@ -330,6 +330,7 @@ export const stories: Story[] = [
     body: 'At Liido Beach, young Somalis organise cleanups that protect the ocean and public space. The campaign treats the coastline as a shared climate commons.',
     featuredPerson: 'Abdisatar Arabow',
     placeLabel: 'Liido Beach, Abdiaziz District, Mogadishu',
+    mapTitle: 'Liido Beach',
     videoTitle: 'Beach Cleaning Campaign in Mogadishu | Ololaha nadaafada Xeebta Liido ee Muqdishu',
     videoUrl: 'https://youtu.be/gi083zfLVC4',
     sourceCard: {
@@ -351,6 +352,16 @@ export const stories: Story[] = [
       { label: 'Dumping', value: '36.61% of plastic waste' },
     ],
     images: ['/images/ice-stories/liido-1.png', '/images/ice-stories/liido-2.jpeg'],
+    tourStops: [
+      {
+        region: 'banaadir',
+        place: 'liido-beach',
+        title: 'Liido Beach cleanup',
+        description:
+          'Every Friday, young Somalis led by Abdisatar Arabow clean plastic and debris from Liido Beach in Abdiaziz District. The campaign treats the coastline as a shared climate commons and teaches beachgoers why dumping plastic into the ocean threatens marine life.',
+        images: ['/images/ice-stories/liido-1.png', '/images/ice-stories/liido-2.jpeg'],
+      },
+    ],
     chapters: [
       {
         heading: 'Every Friday at Liido Beach',
@@ -405,6 +416,7 @@ export const stories: Story[] = [
     body: 'SIMAD University works with communities facing drought, linking campus knowledge to water, food, and climate resilience on the ground.',
     featuredPerson: 'SIMAD University',
     placeLabel: 'SIMAD University, Mogadishu',
+    mapTitle: 'Districts SIMAD supported in the drought',
     sourceCard: {
       place: 'SIMAD University, Mogadishu',
       city: 'Mogadishu',
@@ -485,7 +497,7 @@ export const stories: Story[] = [
   },
   {
     id: 'green-champions',
-    title: 'Green Champions: ICE Student Leaders for Climate Action',
+    title: 'Green Champions: A Year of Youth-Led Climate Action',
     type: 'ice-story',
     region: 'banaadir',
     district: 'wadajir',
@@ -494,12 +506,13 @@ export const stories: Story[] = [
     sdgs: [13, 4, 17],
     location: mogadishu,
     country: 'Somalia',
-    website: 'https://ice.simad.edu.so/2026/07/29/applications-open-become-a-green-champion-2026/',
+    website: 'https://ice.simad.edu.so/',
     summary:
       'Green Champions is ICE Institute’s flagship student leadership programme at SIMAD University. Since 2023 it has selected yearly cohorts of students who research climate issues, run events, and take sustainability into campus and community life. The Class of 2025 brought ten students from different faculties after an open competition. The programme treats young Somalis as climate leaders now, not only as the leaders of tomorrow.',
-    body: 'Green Champions trains SIMAD University students to lead climate research, events, and community outreach with ICE Institute.',
-    featuredPerson: 'ICE Green Champions',
+    body: 'Green Champions is advancing youth-led climate action by transforming climate knowledge into practical environmental awareness, community engagement, and action.',
+    featuredPerson: 'Green Champions',
     placeLabel: 'SIMAD University, Mogadishu',
+    mapTitle: 'Green Friday and school outreach',
     sourceCard: {
       place: 'SIMAD University, Mogadishu',
       city: 'Mogadishu',
@@ -507,44 +520,74 @@ export const stories: Story[] = [
       country: 'Somalia',
       category: 'Youth Leadership',
       impactAreas: ['Youth', 'Education', 'Climate Action', 'Community Outreach'],
-      featuredPerson: 'ICE Green Champions',
+      featuredPerson: 'Green Champions',
       primarySource: 'ICE Institute — Green Champions programme',
     },
+    stats: [
+      { label: 'Flagship projects', value: '3' },
+      { label: 'CCIS faculty sessions', value: '9' },
+      { label: 'School students reached', value: '2,000+' },
+      { label: 'University students engaged', value: '474' },
+      { label: 'Green Friday sessions', value: '2' },
+      { label: 'School outreach activities', value: '2' },
+      { label: 'Major events held', value: '6' },
+      { label: 'Girls reached through outreach', value: '2,000+' },
+      { label: 'Green Friday initiative', value: '12 months' },
+    ],
     images: ['/images/ice-stories/green-champions-2026.jpg'],
+    tourStops: [
+      {
+        region: 'banaadir',
+        place: 'liido-beach',
+        title: 'Green Friday Session 2 — Liido Beach',
+        description:
+          'The second Green Friday session brought youth climate engagement into a community setting at Liido Beach, linking environmental awareness with practical action and conservation. The activity provided an opportunity for young people to engage directly with environmental issues affecting their surroundings.',
+        images: ['/images/ice-stories/liido-1.png'],
+      },
+      {
+        region: 'banaadir',
+        place: 'mogadishu-primary-school',
+        title: 'Mogadishu Primary and Secondary School',
+        description:
+          'Students participated in interactive climate awareness sessions covering climate change, environmental conservation, waste management, tree planting, and sustainable practices. The engagement encouraged students to reflect on environmental challenges within their communities and consider practical actions they can take at school and at home.',
+        images: ['/images/ice-stories/green-champions-2026.jpg'],
+      },
+      {
+        region: 'banaadir',
+        place: 'boondheere-orphan-girls',
+        title: 'Boondheere Orphan Girls Centre',
+        description:
+          'Green Champions delivered climate awareness sessions directly across classrooms, supported by climate education toolkits and informational booklets to encourage continued learning. The outreach reached more than 2,000 girls, expanding access to climate education and strengthening young people’s understanding of environmental responsibility.',
+        images: ['/images/ice-stories/green-champions-2026.jpg'],
+      },
+    ],
     chapters: [
       {
-        heading: 'A flagship programme for student climate leaders',
+        heading: 'A year of youth-led climate action',
         paragraphs: [
-          'Green Champions is more than a volunteer club. ICE Institute at SIMAD University built it as a competitive leadership and capacity-building programme so students can gain knowledge, practical skills, mentorship, and professional networks for environmental sustainability and climate action. Climate change is already affecting Somalia through droughts, floods, environmental degradation, biodiversity loss, food insecurity, and displacement. ICE established Green Champions to identify and nurture students who can become changemakers on campus, in their communities, and across Somalia.',
-          'Participants join a network of young leaders who advance sustainability through research, advocacy, awareness campaigns, community engagement, innovation, and practical environmental action. ICE’s values of integrity, innovation, inclusivity, and impact sit behind the programme. The institute’s message is direct: young people are not only the leaders of tomorrow. They are the leaders of today.',
+          'Green Champions is advancing youth-led climate action by transforming climate knowledge into practical environmental awareness, community engagement, and action. Through schools, universities, Green Friday activities, and community outreach, the initiative creates opportunities for young people to understand environmental challenges and become active contributors to more sustainable communities.',
         ],
       },
       {
-        heading: 'The inaugural class of 2023',
+        heading: 'Green Friday',
         paragraphs: [
-          'The first Green Champions cohort was announced on 9 August 2023. ICE described a yearly, cohort-based network of student volunteers who share a passion for the environment, sustainability, and climate action. Their primary goal is to advocate and drive a green transformation for Somalia, aligning their work with the Somali National Youth Development Plan, the Universal Declaration of Human Rights, the Sustainable Development Goals, and the Paris Agreement.',
-          'Selected volunteers receive training, workshops, and educational resources so they can become effective advocates and leaders. They also gain networking with environmental organisations, government bodies, and international agencies, and mentorship from professors and experienced practitioners. ICE designs community outreach so the work is planned, targeted, and tied to local needs rather than remaining theoretical.',
+          'Green Friday serves as a key youth engagement platform, connecting climate awareness with practical environmental action and volunteerism.',
+          'The first Green Friday session focused on strengthening environmental awareness and encouraging practical, everyday climate action. Discussions and activities explored sustainable living, waste reduction, water conservation, tree planting, environmental responsibility, and youth-led environmental solutions.',
+          'The second Green Friday session brought youth climate engagement into a community setting at Liido Beach, linking environmental awareness with practical action and conservation. The activity provided an opportunity for young people to engage directly with environmental issues affecting their surroundings.',
         ],
       },
       {
-        heading: 'Class of 2024 and the green transformation',
+        heading: 'School outreach',
         paragraphs: [
-          'In August 2024 ICE selected the Green Champions Class of 2024 after an open call for senior SIMAD University students who were fluent in English, willing to volunteer, able to work in a team, and interested in sustainability and climate action. The new cohort was asked to lead environmental awareness, community outreach, and innovative responses to local climate challenges.',
-          'Throughout the year they received specialised training, mentorship, and access to resources so their work would last beyond a single campaign. ICE framed their efforts against national and international frameworks: the Somali National Youth Development Plan, the SDGs, and the Paris Agreement. The call for Cohort II described the same package the first class received: training and workshops, networking, mentorship, and community outreach.',
+          'Green Champions extended climate education beyond the classroom through two school outreach activities, creating direct opportunities for young learners to explore climate and environmental challenges.',
+          'At Mogadishu Primary and Secondary School, students participated in interactive climate awareness sessions covering climate change, environmental conservation, waste management, tree planting, and sustainable practices. The engagement encouraged students to reflect on environmental challenges within their communities and consider practical actions they can take at school and at home.',
+          'At Boondheere Orphan Girls Centre, Green Champions delivered climate awareness sessions directly across classrooms, supported by climate education toolkits and informational booklets to encourage continued learning. The outreach reached more than 2,000 girls, expanding access to climate education and strengthening young people’s understanding of environmental responsibility.',
         ],
       },
       {
-        heading: 'Ten champions for 2025',
+        heading: 'From awareness to action',
         paragraphs: [
-          'On 23 August 2025 ICE announced the Class of 2025: ten young people chosen through an open and competitive application process, representing diverse programmes across SIMAD University. Since the 2023 launch, previous cohorts have supported ICE through research, data collection, event management, and outreach. The 2025 cohort continues that work.',
-          'As Green Champions they support evidence-based studies and climate monitoring, help organise forums, symposiums, and awareness campaigns, lead outreach with fellow students and local communities, and grow as leaders through mentorship, training, and national and international networks. ICE welcomed them as changemakers who can amplify local voices and drive climate action.',
-        ],
-      },
-      {
-        heading: 'The 2026 cohort and what students gain',
-        paragraphs: [
-          'Applications for the Green Champions Cohort 2026 opened on 29 July 2026 and closed on 7 August 2026. ICE invited students from all faculties. Climate action, the institute argued, needs diverse perspectives and interdisciplinary collaboration. Successful applicants join a journey of learning, leadership, collaboration, and action with fellow students shaping Somalia’s environmental future.',
-          'A Green Champion can develop leadership and project-management skills, learn from climate experts and policymakers, strengthen their understanding of climate change and environmental governance, join workshops and community campaigns, expand a professional network, contribute to ICE initiatives, and receive recognition on completion. The platform is meant to turn passion into action, ideas into impact, and learning into lasting change for a greener, more resilient Somalia.',
+          'Through its Green Friday sessions and school outreach, Green Champions is building a pathway from climate knowledge to meaningful action. By taking climate education into schools and public spaces, the initiative empowers young people to understand environmental challenges, participate in solutions, and carry sustainable practices into their schools, homes, and wider communities.',
         ],
       },
     ],

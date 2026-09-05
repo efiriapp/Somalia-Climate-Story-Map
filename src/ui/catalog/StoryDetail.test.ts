@@ -26,7 +26,8 @@ describe('StoryDetail', () => {
     expect(source.indexOf('story-video')).toBeLessThan(source.indexOf('story-source'));
     expect(source).toContain('MapPane');
     expect(source).toContain('RegionMapTour');
-    expect(source).toContain('Districts SIMAD supported in the drought');
+    expect(source).toContain('story.mapTitle');
+    expect(source).not.toContain('Districts SIMAD supported in the drought');
     expect(source).not.toContain('SIMAD supported drought impact');
     expect(source).toContain('story-map-bleed');
     expect(source.indexOf('story-lede')).toBeLessThan(source.indexOf('story-map-bleed'));
