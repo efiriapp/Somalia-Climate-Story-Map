@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect } from 'react';
+import { Fragment, useLayoutEffect, useMemo } from 'react';
 import type { ClimateHazardId } from '../../content/climate-impact';
 import { climateImpactPages, splitStoryImages } from '../../content/climate-impact';
 import { scrollPageToTop } from '../../application/scroll-page-top';
@@ -9,15 +9,23 @@ import {
 } from '../../application/media-source-credit';
 import { hazardTitle } from '../../application/locale';
 import { localizeClimateHub, localizeClimatePage } from '../../application/localize-content';
+import {
+  labelForRelatedTarget,
+  relatedTargetsForClimateHub,
+  relatedTargetsForHazard,
+  type RelatedTarget,
+} from '../../application/related-links';
 import { videoEmbedSrc } from '../../application/youtube-embed';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
-import { RelatedClimateLink } from './RelatedClimateLink';
+import { RelatedLinks } from './RelatedLinks';
 
 type Props = {
   selectedId: ClimateHazardId | null;
   onSelect: (id: ClimateHazardId) => void;
   onBack: () => void;
+  onOpenRelated?: (target: RelatedTarget) => void;
+  relatedStoryTitle?: (id: string) => string | undefined;
 };
 
 function StorySpread({ images, className }: { images: string[]; className: string }) {
@@ -33,11 +41,39 @@ function StorySpread({ images, className }: { images: string[]; className: strin
   );
 }
 
-export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
+export function ClimateImpactPage({
+  selectedId,
+  onSelect,
+  onBack,
+  onOpenRelated,
+  relatedStoryTitle,
+}: Props) {
   const { copy, locale } = useLocale();
   const hub = localizeClimateHub(locale);
   const pages = climateImpactPages.map((item) => localizeClimatePage(item, locale));
   const page = pages.find((item) => item.id === selectedId);
+  const hubLinks = useMemo(() => {
+    if (!onOpenRelated) return [];
+    return relatedTargetsForClimateHub().map((target) => ({
+      target,
+      label: labelForRelatedTarget(
+        target,
+        copy,
+        target.kind === 'story' ? relatedStoryTitle?.(target.id) : undefined,
+      ),
+    }));
+  }, [onOpenRelated, copy, relatedStoryTitle]);
+  const pageLinks = useMemo(() => {
+    if (!onOpenRelated || !page) return [];
+    return relatedTargetsForHazard(page.id).map((target) => ({
+      target,
+      label: labelForRelatedTarget(
+        target,
+        copy,
+        target.kind === 'story' ? relatedStoryTitle?.(target.id) : undefined,
+      ),
+    }));
+  }, [onOpenRelated, page, copy, relatedStoryTitle]);
 
   useLayoutEffect(() => {
     scrollPageToTop();
@@ -89,12 +125,7 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
             </div>
           ) : null;
         })}
-        {page.id === 'el-nino' ? (
-          <RelatedClimateLink label={copy.relatedFloods} onClick={() => onSelect('floods')} />
-        ) : null}
-        {page.id === 'la-nina' ? (
-          <RelatedClimateLink label={copy.seeAlsoDroughts} onClick={() => onSelect('droughts')} />
-        ) : null}
+        {onOpenRelated ? <RelatedLinks links={pageLinks} onOpen={onOpenRelated} /> : null}
         <MediaSourceCredit credit={climateMediaCredit(page)} />
       </article>
     );
@@ -120,6 +151,7 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
           </button>
         ))}
       </div>
+      {onOpenRelated ? <RelatedLinks links={hubLinks} onOpen={onOpenRelated} /> : null}
       <MediaSourceCredit credit={{ text: formatMediaSourceCredit('ICE Institute') }} />
     </article>
   );

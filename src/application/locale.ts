@@ -70,8 +70,7 @@ export const CHROME = {
     mogadishuHome: 'Mogadishu, Somalia',
     iceOfficeLabel: 'ICE Office, SIMAD University Town Campus, Zoobe, KM5, Mogadishu, Somalia.',
     sourceWord: 'Source',
-    relatedFloods: 'Related: Floods',
-    seeAlsoDroughts: 'See also Droughts',
+    relatedPrefix: 'Related: ',
     exploreClimateImpact: 'Explore Climate Impact',
   },
   so: {
@@ -143,8 +142,7 @@ export const CHROME = {
     mogadishuHome: 'Muqdisho, Soomaaliya',
     iceOfficeLabel: 'Xafiiska ICE, Xarunta Magaalada ee Jaamacadda SIMAD, Zoobe, KM5, Muqdisho, Soomaaliya.',
     sourceWord: 'Isha',
-    relatedFloods: 'La xiriira: Daadad',
-    seeAlsoDroughts: 'Sidoo kale eeg Abaaraha',
+    relatedPrefix: 'La xiriira: ',
     exploreClimateImpact: 'Sahami Saamaynta Cimilada',
   },
 } as const;

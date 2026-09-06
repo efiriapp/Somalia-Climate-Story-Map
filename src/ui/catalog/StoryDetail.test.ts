@@ -53,13 +53,16 @@ describe('StoryDetail', () => {
     expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('copy.moreInfo'));
   });
 
-  it('offers a Climate Impact CTA on the SIMAD drought story when a callback is provided', () => {
-    expect(source).toContain('onOpenClimateImpact');
-    expect(source).toContain("story.id === 'simad-drought'");
-    expect(source).toContain('RelatedClimateLink');
-    expect(source).toContain('copy.exploreClimateImpact');
-    expect(app).toContain('onOpenClimateImpact');
-    expect(app).toMatch(/onOpenClimateImpact[\s\S]{0,180}climate-impact/);
+  it('offers related CTAs from the shared related-links map when a callback is provided', () => {
+    expect(source).toContain('onOpenRelated');
+    expect(source).toContain('relatedTargetsForStory');
+    expect(source).toContain('RelatedLinks');
+    expect(source).toContain('labelForRelatedTarget');
+    expect(source.indexOf('RelatedLinks')).toBeLessThan(source.lastIndexOf('MediaSourceCredit'));
+    expect(app).toContain('onOpenRelated');
+    expect(app).toContain('openRelated');
+    expect(app).toMatch(/openRelated[\s\S]{0,400}climate-impact/);
+    expect(app).toMatch(/setImpactHazard\(target\.id\)/);
   });
 });
 

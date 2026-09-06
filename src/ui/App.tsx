@@ -4,6 +4,11 @@ import { filterCatalog } from '../application/filter-catalog';
 import { chromeCopy, formatLocaleDate, type Locale } from '../application/locale';
 import { localizeAbout, localizeStory } from '../application/localize-content';
 import { storyMediaCredit } from '../application/media-source-credit';
+import {
+  labelForRelatedTarget,
+  relatedTargetsForStory,
+  type RelatedTarget,
+} from '../application/related-links';
 import { resolveMapView } from '../application/resolve-map-view';
 import { scrollPageToTop } from '../application/scroll-page-top';
 import { stories as catalog } from '../content/stories';
@@ -15,6 +20,7 @@ import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
 import { ClimateImpactPage } from './catalog/ClimateImpactPage';
 import { MediaSourceCredit } from './catalog/MediaSourceCredit';
+import { RelatedLinks } from './catalog/RelatedLinks';
 import { MapPane } from './map/MapPane';
 import { GlobalStageMap } from './map/GlobalStageMap';
 import type { ClimateHazardId } from '../content/climate-impact';
@@ -63,6 +69,40 @@ export default function App() {
     setSelectedId(null);
     setImpactHazard(null);
   };
+
+  const relatedStoryTitle = (id: string) =>
+    localizedCatalog.find((story) => story.id === id)?.title;
+
+  const openRelated = (target: RelatedTarget) => {
+    if (target.kind === 'hub') {
+      setSelectedId(null);
+      setScreen('climate-impact');
+      setImpactHazard(null);
+      return;
+    }
+    if (target.kind === 'hazard') {
+      setSelectedId(null);
+      setScreen('climate-impact');
+      setImpactHazard(target.id);
+      return;
+    }
+    const story = localizedCatalog.find((item) => item.id === target.id);
+    if (!story) return;
+    setImpactHazard(null);
+    setSelectedId(story.id);
+    setScreen(story.type === 'research-story' ? 'research' : 'stories');
+  };
+
+  const researchRelatedLinks = detail
+    ? relatedTargetsForStory(detail.id).map((target) => ({
+        target,
+        label: labelForRelatedTarget(
+          target,
+          copy,
+          target.kind === 'story' ? relatedStoryTitle(target.id) : undefined,
+        ),
+      }))
+    : [];
 
   return (
     <LocaleProvider locale={locale} setLocale={setLocale}>
@@ -160,6 +200,8 @@ export default function App() {
           selectedId={impactHazard}
           onSelect={setImpactHazard}
           onBack={() => setImpactHazard(null)}
+          onOpenRelated={openRelated}
+          relatedStoryTitle={relatedStoryTitle}
         />
       ) : screen === 'global-stage' ? (
         <GlobalStageMap stories={localizedCatalog} onClose={() => openScreen('stories')} />
@@ -167,11 +209,8 @@ export default function App() {
         <StoryDetail
           story={detail}
           onBack={() => setSelectedId(null)}
-          onOpenClimateImpact={() => {
-            setSelectedId(null);
-            setScreen('climate-impact');
-            setImpactHazard('droughts');
-          }}
+          onOpenRelated={openRelated}
+          relatedStoryTitle={relatedStoryTitle}
         />
       ) : detail ? (
         <article className="detail">
@@ -193,6 +232,7 @@ export default function App() {
               </a>
             </p>
           ) : null}
+          <RelatedLinks links={researchRelatedLinks} onOpen={openRelated} />
           <MediaSourceCredit credit={storyMediaCredit(detail)} />
         </article>
       ) : (

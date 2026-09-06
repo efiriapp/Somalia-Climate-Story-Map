@@ -63,9 +63,12 @@ describe('platform topbar', () => {
     expect(source).toMatch(/selectedId[\s\S]{0,220}scrollPageToTop/);
   });
 
-  it('opens Climate Impact with Droughts from the SIMAD drought story CTA', () => {
-    expect(source).toContain('onOpenClimateImpact');
-    expect(source).toMatch(/setScreen\('climate-impact'\)/);
-    expect(source).toMatch(/setImpactHazard\('droughts'\)/);
+  it('opens related climate hazards and stories through a shared openRelated handler', () => {
+    expect(source).toContain('openRelated');
+    expect(source).toContain("setScreen('climate-impact')");
+    expect(source).toContain('setImpactHazard(target.id)');
+    expect(source).toContain("setScreen(story.type === 'research-story' ? 'research' : 'stories')");
+    expect(source).toContain('RelatedLinks');
+    expect(source).toContain('relatedTargetsForStory');
   });
 });

@@ -1,5 +1,10 @@
-import { Fragment, useLayoutEffect } from 'react';
+import { Fragment, useLayoutEffect, useMemo } from 'react';
 import { formatLocaleDate } from '../../application/locale';
+import {
+  labelForRelatedTarget,
+  relatedTargetsForStory,
+  type RelatedTarget,
+} from '../../application/related-links';
 import { scrollPageToTop } from '../../application/scroll-page-top';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { videoEmbedSrc } from '../../application/youtube-embed';
@@ -9,18 +14,30 @@ import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
-import { RelatedClimateLink } from './RelatedClimateLink';
+import { RelatedLinks } from './RelatedLinks';
 
 type Props = {
   story: Story;
   onBack: () => void;
-  onOpenClimateImpact?: () => void;
+  onOpenRelated?: (target: RelatedTarget) => void;
+  relatedStoryTitle?: (id: string) => string | undefined;
 };
 
 const CITY_ZOOM = 12;
 
-export function StoryDetail({ story, onBack, onOpenClimateImpact }: Props) {
+export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }: Props) {
   const { copy, locale } = useLocale();
+  const relatedLinks = useMemo(() => {
+    if (!onOpenRelated) return [];
+    return relatedTargetsForStory(story.id).map((target) => ({
+      target,
+      label: labelForRelatedTarget(
+        target,
+        copy,
+        target.kind === 'story' ? relatedStoryTitle?.(target.id) : undefined,
+      ),
+    }));
+  }, [story.id, onOpenRelated, copy, relatedStoryTitle]);
   const chapters = story.chapters?.length
     ? story.chapters
     : [{ heading: copy.theStory, paragraphs: [story.body] }];
@@ -200,9 +217,7 @@ export function StoryDetail({ story, onBack, onOpenClimateImpact }: Props) {
           </a>
         </p>
       ) : null}
-      {story.id === 'simad-drought' && onOpenClimateImpact ? (
-        <RelatedClimateLink label={copy.exploreClimateImpact} onClick={onOpenClimateImpact} />
-      ) : null}
+      {onOpenRelated ? <RelatedLinks links={relatedLinks} onOpen={onOpenRelated} /> : null}
       <MediaSourceCredit credit={storyMediaCredit(story)} />
     </article>
   );

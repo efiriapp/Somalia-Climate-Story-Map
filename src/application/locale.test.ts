@@ -23,11 +23,9 @@ describe('chromeCopy', () => {
     expect(locales).toHaveLength(2);
     expect(hazardTitle('floods', chromeCopy('so'))).toBe('Daadad');
     expect(hazardTitle('el-nino', chromeCopy('en'))).toBe('El Niño');
-    expect(chromeCopy('en').relatedFloods).toBe('Related: Floods');
-    expect(chromeCopy('en').seeAlsoDroughts).toBe('See also Droughts');
+    expect(chromeCopy('en').relatedPrefix).toBe('Related: ');
     expect(chromeCopy('en').exploreClimateImpact).toBe('Explore Climate Impact');
-    expect(chromeCopy('so').relatedFloods).toMatch(/Daadad/);
-    expect(chromeCopy('so').seeAlsoDroughts).toMatch(/Abaaraha/);
+    expect(chromeCopy('so').relatedPrefix).toBe('La xiriira: ');
     expect(chromeCopy('so').exploreClimateImpact).toMatch(/Saamaynta Cimilada/);
   });
 });

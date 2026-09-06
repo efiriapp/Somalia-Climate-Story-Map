@@ -1008,6 +1008,17 @@ select {
   margin: 1.75rem 0 1.25rem;
 }
 
+.related-climate-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 1.75rem 0 1.25rem;
+}
+
+.related-climate-list .related-climate {
+  margin: 0;
+}
+
 .related-climate-link {
   display: inline-block;
   border: 1px solid var(--leaf);

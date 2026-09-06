@@ -61,15 +61,14 @@ describe('ClimateImpactPage', () => {
     expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('climate-impact-grid'));
   });
 
-  it('cross-links El Niño to Floods and La Niña to Droughts with a visible related CTA', () => {
-    expect(source).toContain('RelatedClimateLink');
-    expect(source).toContain("page.id === 'el-nino'");
-    expect(source).toContain("onSelect('floods')");
-    expect(source).toContain('copy.relatedFloods');
-    expect(source).toContain("page.id === 'la-nina'");
-    expect(source).toContain("onSelect('droughts')");
-    expect(source).toContain('copy.seeAlsoDroughts');
-    expect(source.indexOf('RelatedClimateLink')).toBeLessThan(source.lastIndexOf('MediaSourceCredit'));
+  it('renders related CTAs from the shared related-links map before the media credit', () => {
+    expect(source).toContain('RelatedLinks');
+    expect(source).toContain('relatedTargetsForHazard');
+    expect(source).toContain('relatedTargetsForClimateHub');
+    expect(source).toContain('onOpenRelated');
+    expect(source).toContain('labelForRelatedTarget');
+    expect(source.indexOf('RelatedLinks')).toBeLessThan(source.lastIndexOf('MediaSourceCredit'));
+    expect(app).toContain('onOpenRelated={openRelated}');
   });
 });
 
