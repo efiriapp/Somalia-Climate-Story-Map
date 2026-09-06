@@ -23,16 +23,17 @@ import {
   ICE_OFFICE_LOGO,
   MOGADISHU_HOME,
   SOMALIA_HOME,
-  formatTourDate,
   nextTourIndex,
   prevTourIndex,
   type TourStop,
 } from '../../application/global-tour';
+import { countryLabel, formatLocaleDate } from '../../application/locale';
 import { styleForLayer } from '../../application/map-layers';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
+import { useLocale } from '../chrome/LocaleContext';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 
 type Props = {
@@ -151,6 +152,11 @@ const storyJumpFromSomalia = (map: Map, to: LngLat, onDone: () => void) => {
 };
 
 export function GlobalStageMap({ stories, onClose }: Props) {
+  const { copy, locale } = useLocale();
+  const localeRef = useRef(locale);
+  const copyRef = useRef(copy);
+  localeRef.current = locale;
+  copyRef.current = copy;
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const markersRef = useRef<Marker[]>([]);
@@ -207,7 +213,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const homePin = homeMarkerRef.current.getElement();
     const office = document.createElement('span');
     office.className = 'ice-office-label';
-    office.textContent = ICE_OFFICE_LABEL;
+    office.textContent = localeRef.current === 'en' ? ICE_OFFICE_LABEL : copyRef.current.iceOfficeLabel;
     const logo = document.createElement('img');
     logo.className = 'ice-office-logo';
     logo.src = ICE_OFFICE_LOGO;
@@ -235,7 +241,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           label.appendChild(flag);
         }
         const date = document.createElement('span');
-        date.textContent = formatTourDate(stop.date);
+        date.textContent = formatLocaleDate(stop.date, localeRef.current);
         label.appendChild(date);
         pin.appendChild(label);
       }
@@ -527,18 +533,18 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   }, []);
 
   return (
-    <section className="global-stage" aria-label="ICE Institute at Global Stage">
+    <section className="global-stage" aria-label={copy.globalStageTitle}>
       <div className="global-stage-scene">
         <div className="global-stage-map" ref={host} />
-        <h1 className="tour-title">ICE Institute at Global Stage</h1>
-        <button type="button" className="tour-back simple" aria-label="Back to main" onClick={onClose}>
-          Back to main
+        <h1 className="tour-title">{copy.globalStageTitle}</h1>
+        <button type="button" className="tour-back simple" aria-label={copy.backToMain} onClick={onClose}>
+          {copy.backToMain}
         </button>
         <div className="tour-icon-bar simple">
           <div className="tour-layer-wrap">
             <button
               type="button"
-              aria-label="Search tour"
+              aria-label={copy.searchTour}
               aria-pressed={searchOpen}
               onClick={() => {
                 setSearchOpen((open) => !open);
@@ -552,7 +558,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 <input
                   className="tour-search-input"
                   value={searchQuery}
-                  placeholder="Search country or event..."
+                  placeholder={copy.searchCountryOrEvent}
                   onChange={(event) => setSearchQuery(event.target.value)}
                 />
                 {searchHits.map((hit) => (
@@ -564,29 +570,29 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                       runPlaceTour(hit);
                     }}
                   >
-                    {hit.country}: {hit.title}
+                    {countryLabel(hit.country, locale)}: {hit.title}
                   </button>
                 ))}
-                {searchHits.length === 0 ? <p>No matches</p> : null}
+                {searchHits.length === 0 ? <p>{copy.noMatches}</p> : null}
               </div>
             ) : null}
           </div>
-          <button type="button" aria-label="Go home" onClick={goHome}>
+          <button type="button" aria-label={copy.goHome} onClick={goHome}>
             <HomeIcon />
           </button>
-          <button type="button" aria-label="Measure distance" aria-pressed={measuring} onClick={toggleMeasure}>
+          <button type="button" aria-label={copy.measureDistance} aria-pressed={measuring} onClick={toggleMeasure}>
             <MeasureIcon />
           </button>
-          <button type="button" aria-label="Reset compass" onClick={resetCompass}>
+          <button type="button" aria-label={copy.resetCompass} onClick={resetCompass}>
             <CompassIcon />
           </button>
         </div>
         <div className="tour-event-nav">
-          <button type="button" aria-label="Back" onClick={() => stepEvent(-1)}>
-            Back
+          <button type="button" aria-label={copy.tourBack} onClick={() => stepEvent(-1)}>
+            {copy.tourBack}
           </button>
-          <button type="button" aria-label="Next" onClick={() => stepEvent(1)}>
-            Next
+          <button type="button" aria-label={copy.tourNext} onClick={() => stepEvent(1)}>
+            {copy.tourNext}
           </button>
         </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}
@@ -608,11 +614,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         {tourCard ? (
           <div className="tour-right-stack">
             <aside className="event-slider">
-            <article className="event-card active" aria-label="Tour event">
+            <article className="event-card active" aria-label={copy.tourEvent}>
               <button
                 type="button"
                 className="event-card-close"
-                aria-label="Close event"
+                aria-label={copy.closeEvent}
                 onClick={() => {
                   tourToken.current += 1;
                   stopMotion();
@@ -626,15 +632,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 ×
               </button>
               {tourCard.images[0] ? <img src={tourCard.images[0]} alt="" /> : null}
-              <p className="event-card-date">{formatTourDate(tourCard.date)}</p>
-              <h3>{tourCard.title}</h3>
+              <p className="event-card-date">{formatLocaleDate(tourCard.date, locale)}</p>
+              <h3>{tourCard.kind === 'home' ? copy.mogadishuHome : tourCard.title}</h3>
               <p className="event-card-place">
-                {tourCard.place} · {tourCard.country}
+                {tourCard.kind === 'home' ? copy.mogadishuHome : tourCard.place} · {countryLabel(tourCard.country, locale)}
               </p>
-              <p>{tourCard.summary}</p>
+              <p>{tourCard.kind === 'home' ? copy.iceHomeSummary : tourCard.summary}</p>
               {tourCard.website ? (
                 <p className="event-card-more">
-                  <strong>More information:</strong>{' '}
+                  <strong>{copy.moreInfo}</strong>{' '}
                   <a href={tourCard.website} target="_blank" rel="noreferrer">
                     {tourCard.website}
                   </a>

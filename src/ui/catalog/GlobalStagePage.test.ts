@@ -15,7 +15,7 @@ describe('GlobalStagePage', () => {
     expect(source).toContain('story.images');
     expect(source).toContain('story.summary');
     expect(source).toContain('story.body');
-    expect(source).toContain('formatTourDate');
+    expect(source).toContain('formatLocaleDate');
     expect(app).toContain('copy.globalStage');
     expect(app).toContain("openScreen('global-stage')");
     expect(stories).toContain("type: 'global-stage'");
@@ -24,6 +24,6 @@ describe('GlobalStagePage', () => {
   it('ends each event that has photos with the ICE source credit', () => {
     expect(source).toContain('MediaSourceCredit');
     expect(source).toContain('storyMediaCredit(story)');
-    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('More information'));
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('copy.moreInfo'));
   });
 });

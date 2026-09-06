@@ -12,7 +12,7 @@ describe('ICE stories grid', () => {
   it('renders filtered ICE stories as hoverable image cards', () => {
     expect(source).toContain('story-grid');
     expect(source).toContain('story.images[0]');
-    expect(source).toContain('formatTourDate');
+    expect(source).toContain('formatLocaleDate');
     expect(app).toMatch(/screen === 'stories'[\s\S]{0,200}StoryList/);
     expect(app).toContain('filterCatalog(scoped, applied)');
     expect(css).toContain('.story-grid');

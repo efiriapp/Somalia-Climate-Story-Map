@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { searchByLabel } from '../../domain/somalia';
+import { useLocale } from './LocaleContext';
 
 export type SearchOption = { slug: string; label: string };
 
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export function SearchSelect({ label, allLabel, value, options, onChange }: Props) {
+  const { copy } = useLocale();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const root = useRef<HTMLDivElement>(null);
@@ -72,7 +74,7 @@ export function SearchSelect({ label, allLabel, value, options, onChange }: Prop
               {option.label}
             </button>
           ))}
-          {matches.length === 0 ? <p className="search-select-empty">No matches</p> : null}
+          {matches.length === 0 ? <p className="search-select-empty">{copy.noMatches}</p> : null}
         </div>
       ) : null}
     </div>

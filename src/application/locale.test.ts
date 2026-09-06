@@ -15,6 +15,9 @@ describe('chromeCopy', () => {
     expect(chromeCopy('so').droughts).toBe('Abaaraha');
     expect(chromeCopy('so').heatWaves).toBe('Hirarka kulaylka');
     expect(chromeCopy('so').languageToggle).toBe('English');
+    expect(chromeCopy('so').apply).toBe('Codso');
+    expect(chromeCopy('so').noStories).toMatch(/sheekooyin/);
+    expect(chromeCopy('so').storyMapLocation).toMatch(/Khariidadda/);
     expect(CHROME.en.platform).toContain('Somali Climate');
     const locales: Locale[] = ['en', 'so'];
     expect(locales).toHaveLength(2);

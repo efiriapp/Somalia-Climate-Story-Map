@@ -20,8 +20,8 @@ describe('ICE at Global Stage events', () => {
     expect(map).toContain('PIN_HOLD_MS = 5000');
     expect(map).toContain('flyHomeToSomalia');
     expect(map).toContain('tour-event-nav');
-    expect(map).toMatch(/>\s*Back\s*</);
-    expect(map).toMatch(/>\s*Next\s*</);
+    expect(map).toContain('copy.tourBack');
+    expect(map).toContain('copy.tourNext');
     expect(map).not.toContain('POPUP_HOLD_MS');
     expect(map).not.toContain('showPinPopup');
     expect(map).not.toContain('new Popup');

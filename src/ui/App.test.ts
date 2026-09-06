@@ -32,11 +32,15 @@ describe('platform topbar', () => {
     expect(source).not.toContain('GlobalStagePage');
     expect(source).toContain("openScreen('about')");
     expect(source).toContain("openScreen('research')");
-    expect(source).toContain('aboutIce');
+    expect(source).toContain('localizeAbout');
     expect(source).toContain("'research-story'");
     expect(source).toContain('nav-language');
     expect(source).toContain('chromeCopy');
     expect(source.indexOf("openScreen('global-stage')")).toBeLessThan(source.indexOf('nav-language'));
+    expect(source).toContain('flagIconUrl');
+    expect(source).toContain('nav-language-flag');
+    expect(source).toContain("flagIconUrl('Somalia')");
+    expect(source).toContain("flagIconUrl('United Kingdom')");
   });
 
   it('credits research-story photos when the simple detail page shows an image', () => {

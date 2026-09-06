@@ -1,4 +1,6 @@
 import type { ContinentId, ContinentSummary } from '../../application/continent-visits';
+import { continentLabel } from '../../application/locale';
+import { useLocale } from '../chrome/LocaleContext';
 
 type Props = {
   cards: ContinentSummary[];
@@ -17,15 +19,16 @@ export function ContinentSummaryCards({
   onContinent,
   onTotal,
 }: Props) {
+  const { copy, locale } = useLocale();
   return (
-    <ul className="continent-summary-cards" aria-label="Continent summary">
+    <ul className="continent-summary-cards" aria-label={copy.continentSummary}>
       <li>
         <button
           type="button"
           className={activeTotal ? 'continent-summary-card total active' : 'continent-summary-card total'}
           onClick={onTotal}
         >
-          <span>Total</span>
+          <span>{copy.total}</span>
           <strong>{total}</strong>
         </button>
       </li>
@@ -36,7 +39,7 @@ export function ContinentSummaryCards({
             className={card.continent === activeContinent ? 'continent-summary-card active' : 'continent-summary-card'}
             onClick={() => onContinent(card.continent)}
           >
-            <span>{card.continent}</span>
+            <span>{continentLabel(card.continent, locale)}</span>
             <strong>{card.count}</strong>
           </button>
         </li>

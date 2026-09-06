@@ -68,16 +68,16 @@ describe('GlobalStageMap', () => {
   it('ends an event card that has photos with a visible source credit', () => {
     expect(source).toContain('MediaSourceCredit');
     expect(source).toContain('storyMediaCredit(tourCard)');
-    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('More information'));
+    expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('copy.moreInfo'));
   });
 
   it('tours the map with Back and Next and closes the stayed right-side card with X', () => {
     expect(source).toContain('tour-event-nav');
     expect(source).toContain('stepEvent');
-    expect(source).toMatch(/>\s*Back\s*</);
-    expect(source).toMatch(/>\s*Next\s*</);
+    expect(source).toContain('copy.tourBack');
+    expect(source).toContain('copy.tourNext');
     expect(source).toContain('event-card-close');
-    expect(source).toContain('aria-label="Close event"');
+    expect(source).toContain('copy.closeEvent');
     expect(source).toContain('setTourCard(null)');
   });
 
@@ -130,7 +130,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('pin-date-label');
     expect(source).toContain('pin-flag-icon');
     expect(source).toContain('flagIconUrl(stop.country)');
-    expect(source).toContain('formatTourDate(stop.date)');
+    expect(source).toContain('formatLocaleDate(stop.date, localeRef.current)');
     expect(source).toMatch(/touringRef\.current[\s\S]{0,120}stop\.storyId === activeId[\s\S]{0,280}pin-date-label/);
     expect(source).not.toContain("className = 'tour-pin'");
     expect(source).not.toContain('labeledPin');

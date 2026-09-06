@@ -1,6 +1,7 @@
-import { formatTourDate } from '../../application/global-tour';
+import { countryLabel, formatLocaleDate } from '../../application/locale';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import type { Story } from '../../domain/story';
+import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 };
 
 export function GlobalStagePage({ stories }: Props) {
+  const { copy, locale } = useLocale();
   const events = stories
     .filter((story) => story.type === 'global-stage')
     .slice()
@@ -16,18 +18,15 @@ export function GlobalStagePage({ stories }: Props) {
   return (
     <div className="global-stage-page">
       <header className="global-stage-page-intro">
-        <p className="story-type">ICE at Global Stage</p>
-        <h1>ICE Institute around the world</h1>
-        <p>
-          Every ICE Institute global event is collected here as a full text page, with images,
-          dates, places, and the complete story of how Somali climate work reached the world.
-        </p>
+        <p className="story-type">{copy.globalStage}</p>
+        <h1>{copy.globalStageAroundWorld}</h1>
+        <p>{copy.globalStageIntro}</p>
       </header>
       {events.map((story) => (
         <article className="global-stage-article" key={story.id}>
           <h2>{story.title}</h2>
           <p className="story-meta">
-            {formatTourDate(story.date)} · {story.location.name} · {story.country}
+            {formatLocaleDate(story.date, locale)} · {story.location.name} · {countryLabel(story.country, locale)}
             {story.sdgs.length ? ` · SDG ${story.sdgs.join(', ')}` : ''}
           </p>
           {story.images.length > 0 ? (
@@ -41,7 +40,7 @@ export function GlobalStagePage({ stories }: Props) {
           <p>{story.body}</p>
           {story.website ? (
             <p>
-              <strong>More information:</strong>{' '}
+              <strong>{copy.moreInfo}</strong>{' '}
               <a href={story.website} target="_blank" rel="noreferrer">
                 {story.website}
               </a>

@@ -11,7 +11,7 @@ const source = readFileSync(
 describe('ContinentSummaryCards', () => {
   it('shows a Total visit count inside the continent cards', () => {
     expect(source).toContain('continent-summary-card total');
-    expect(source).toContain('<span>Total</span>');
+    expect(source).toContain('{copy.total}');
     expect(source).toContain('{total}');
     expect(source).not.toContain('Total travel');
     expect(source).not.toContain(' km');

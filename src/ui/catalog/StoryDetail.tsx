@@ -1,5 +1,5 @@
 import { Fragment, useLayoutEffect } from 'react';
-import { formatTourDate } from '../../application/global-tour';
+import { formatLocaleDate } from '../../application/locale';
 import { scrollPageToTop } from '../../application/scroll-page-top';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { videoEmbedSrc } from '../../application/youtube-embed';
@@ -18,10 +18,10 @@ type Props = {
 const CITY_ZOOM = 12;
 
 export function StoryDetail({ story, onBack }: Props) {
-  const { copy } = useLocale();
+  const { copy, locale } = useLocale();
   const chapters = story.chapters?.length
     ? story.chapters
-    : [{ heading: 'The story', paragraphs: [story.body] }];
+    : [{ heading: copy.theStory, paragraphs: [story.body] }];
   const videos = [
     ...(story.videoTitle && story.videoUrl ? [{ title: story.videoTitle, url: story.videoUrl }] : []),
     ...(story.videos ?? []),
@@ -48,7 +48,7 @@ export function StoryDetail({ story, onBack }: Props) {
       <h1>{story.title}</h1>
       {story.featuredPerson ? <p className="story-person">{story.featuredPerson}</p> : null}
       <p className="story-meta">
-        {formatTourDate(story.date)} · {story.placeLabel ?? story.location.name} · SDG {story.sdgs.join(', ')}
+        {formatLocaleDate(story.date, locale)} · {story.placeLabel ?? story.location.name} · SDG {story.sdgs.join(', ')}
       </p>
       <p className="story-lede">{story.summary}</p>
       {first.length > 0 ? (
@@ -90,7 +90,7 @@ export function StoryDetail({ story, onBack }: Props) {
           ))}
           {index === 0 && story.tourStops?.length ? (
             <section className="story-map story-map-bleed">
-              <h2>{story.mapTitle ?? 'On the map'}</h2>
+              <h2>{story.mapTitle ?? copy.onTheMap}</h2>
               <RegionMapTour story={story} />
             </section>
           ) : null}
@@ -113,7 +113,7 @@ export function StoryDetail({ story, onBack }: Props) {
 
       {story.tourStops?.length ? null : (
         <section className="story-map">
-          <h2>On the map</h2>
+          <h2>{copy.onTheMap}</h2>
           <p>{story.placeLabel ?? story.location.name}</p>
           <MapPane
             stories={[story]}
@@ -139,39 +139,39 @@ export function StoryDetail({ story, onBack }: Props) {
       })}
 
       {source ? (
-        <section className="story-source" aria-label="Story Map Location">
-          <h2>📍 Story Map Location</h2>
+        <section className="story-source" aria-label={copy.storyMapLocation}>
+          <h2>📍 {copy.storyMapLocation}</h2>
           <dl>
             <div>
-              <dt>Place</dt>
+              <dt>{copy.place}</dt>
               <dd>{source.place}</dd>
             </div>
             <div>
-              <dt>City</dt>
+              <dt>{copy.city}</dt>
               <dd>{source.city}</dd>
             </div>
             <div>
-              <dt>Region</dt>
+              <dt>{copy.regionLabel}</dt>
               <dd>{source.regionLabel}</dd>
             </div>
             <div>
-              <dt>Country</dt>
+              <dt>{copy.country}</dt>
               <dd>{source.country}</dd>
             </div>
             <div>
-              <dt>Story category</dt>
+              <dt>{copy.storyCategory}</dt>
               <dd>{source.category}</dd>
             </div>
             <div>
-              <dt>Impact areas</dt>
+              <dt>{copy.impactAreas}</dt>
               <dd>{source.impactAreas.join(' • ')}</dd>
             </div>
             <div>
-              <dt>Featured person</dt>
+              <dt>{copy.featuredPerson}</dt>
               <dd>{source.featuredPerson}</dd>
             </div>
             <div>
-              <dt>Primary source</dt>
+              <dt>{copy.primarySource}</dt>
               <dd>{source.primarySource}</dd>
             </div>
             {source.extras?.map((row) => (
@@ -182,7 +182,7 @@ export function StoryDetail({ story, onBack }: Props) {
             ))}
             {story.videoTitle ? (
               <div>
-                <dt>ICE video</dt>
+                <dt>{copy.iceVideo}</dt>
                 <dd>{story.videoTitle}</dd>
               </div>
             ) : null}

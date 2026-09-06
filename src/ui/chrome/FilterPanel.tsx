@@ -1,7 +1,9 @@
+import { themeLabel } from '../../application/locale';
 import { THEMES } from '../../domain/themes';
 import { districtsForRegion, REGIONS, type RegionSlug } from '../../domain/somalia';
 import { type FilterCriteria, type SortKey, type Story } from '../../domain/story';
 import { SearchSelect } from './SearchSelect';
+import { useLocale } from './LocaleContext';
 
 type Props = {
   stories: Story[];
@@ -19,6 +21,7 @@ const sdgsIn = (stories: Story[]) =>
   [...new Set(stories.flatMap((story) => story.sdgs))].sort((a, b) => a - b);
 
 export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
+  const { copy, locale } = useLocale();
   const region = (draft.region === 'all' ? 'all' : draft.region) as RegionSlug | 'all';
   const districts = districtsForRegion(region);
 
@@ -26,8 +29,8 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
     <div>
       <div className="filter-grid">
         <SearchSelect
-          label="Region"
-          allLabel="All regions"
+          label={copy.region}
+          allLabel={copy.allRegions}
           value={draft.region}
           options={REGIONS}
           onChange={(nextRegion) => {
@@ -41,8 +44,8 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
           }}
         />
         <SearchSelect
-          label="District"
-          allLabel="All districts"
+          label={copy.district}
+          allLabel={copy.allDistricts}
           value={draft.district}
           options={districts}
           onChange={(nextDistrict) =>
@@ -63,10 +66,10 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
               })
             }
           >
-            <option value="">Themes</option>
+            <option value="">{copy.themes}</option>
             {THEMES.map((theme) => (
               <option key={theme.slug} value={theme.slug}>
-                {theme.label}
+                {themeLabel(theme.slug, locale)}
               </option>
             ))}
           </select>
@@ -82,7 +85,7 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
               })
             }
           >
-            <option value="">SDGs</option>
+            <option value="">{copy.sdgs}</option>
             {sdgsIn(stories).map((sdg) => (
               <option key={sdg} value={sdg}>
                 SDG {sdg}
@@ -101,7 +104,7 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
               })
             }
           >
-            <option value="">Date — any</option>
+            <option value="">{copy.dateAny}</option>
             {yearsIn(stories).map((year) => (
               <option key={year} value={year}>
                 {year}
@@ -115,16 +118,16 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
             value={draft.sort}
             onChange={(event) => onDraftChange({ ...draft, sort: event.target.value as SortKey })}
           >
-            <option value="keywords">Sort by most keywords</option>
-            <option value="newest">Sort by newest</option>
-            <option value="oldest">Sort by oldest</option>
-            <option value="title">Sort by title</option>
+            <option value="keywords">{copy.sortKeywords}</option>
+            <option value="newest">{copy.sortNewest}</option>
+            <option value="oldest">{copy.sortOldest}</option>
+            <option value="title">{copy.sortTitle}</option>
           </select>
         </label>
       </div>
       <div className="apply-row">
         <button className="apply" type="button" onClick={onApply}>
-          Apply
+          {copy.apply}
         </button>
       </div>
     </div>

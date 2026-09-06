@@ -20,6 +20,7 @@ import { scrollPageToTop } from '../../application/scroll-page-top';
 import { scrollTourIndex } from '../../application/scroll-tour';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import type { Story } from '../../domain/story';
+import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 
 type Props = {
@@ -85,6 +86,7 @@ function JumpOnStop({
 }
 
 export function RegionMapTour({ story }: Props) {
+  const { copy } = useLocale();
   const stops = useMemo(() => buildRegionMapTour(story), [story]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [sliderOpen, setSliderOpen] = useState(false);
@@ -224,11 +226,11 @@ export function RegionMapTour({ story }: Props) {
           ))}
         </MapContainer>
         <div className="tour-event-nav">
-          <button type="button" aria-label="Back" onClick={() => stepDistrict(-1)}>
-            Back
+          <button type="button" aria-label={copy.tourBack} onClick={() => stepDistrict(-1)}>
+            {copy.tourBack}
           </button>
-          <button type="button" aria-label="Next" onClick={() => stepDistrict(1)}>
-            Next
+          <button type="button" aria-label={copy.tourNext} onClick={() => stepDistrict(1)}>
+            {copy.tourNext}
           </button>
         </div>
         {sliderOpen && activeStop ? (

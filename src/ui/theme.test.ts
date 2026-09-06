@@ -134,6 +134,8 @@ describe('ICE green brand', () => {
   it('pins the Somali language toggle to the right of the primary nav', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.nav-language[\s\S]{0,80}margin-left:\s*auto/);
+    expect(css).toContain('.nav-language-flag');
+    expect(css).toContain('.visually-hidden');
   });
 
   it('styles the Climate Impact hazard cards', () => {

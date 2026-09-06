@@ -44,8 +44,8 @@ describe('RegionMapTour', () => {
     expect(source).toContain('setSliderOpen(false)');
     expect(source).toContain('setSliderOpen(true)');
     expect(source).toContain('stops.map((stop)');
-    expect(source).toMatch(/>\s*Back\s*</);
-    expect(source).toMatch(/>\s*Next\s*</);
+    expect(source).toContain('copy.tourBack');
+    expect(source).toContain('copy.tourNext');
     expect(source).toContain('stepDistrict');
     expect(source).not.toContain('tour-right-stack');
     expect(source).not.toContain('event-slider');

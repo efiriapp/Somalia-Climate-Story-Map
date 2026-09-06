@@ -1,5 +1,6 @@
-import { formatTourDate } from '../../application/global-tour';
+import { formatLocaleDate } from '../../application/locale';
 import type { Story } from '../../domain/story';
+import { useLocale } from '../chrome/LocaleContext';
 
 type Props = {
   stories: Story[];
@@ -16,10 +17,11 @@ export function StoryList({
   typeLabel = 'Story',
   layout = 'list',
 }: Props) {
+  const { copy, locale } = useLocale();
   if (stories.length === 0) {
     return (
       <div className="empty">
-        <p>No stories match these filters.</p>
+        <p>{copy.noStories}</p>
       </div>
     );
   }
@@ -44,7 +46,7 @@ export function StoryList({
             <div className="story-type">{typeLabel}</div>
             <h3>{story.title}</h3>
             <div className="story-meta">
-              {formatTourDate(story.date)} · {story.location.name}
+              {formatLocaleDate(story.date, locale)} · {story.location.name}
             </div>
           </div>
         </button>

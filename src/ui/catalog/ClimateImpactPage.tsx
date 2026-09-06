@@ -1,6 +1,6 @@
 import { Fragment, useLayoutEffect } from 'react';
 import type { ClimateHazardId } from '../../content/climate-impact';
-import { climateImpactHub, climateImpactPages, splitStoryImages } from '../../content/climate-impact';
+import { climateImpactPages, splitStoryImages } from '../../content/climate-impact';
 import { scrollPageToTop } from '../../application/scroll-page-top';
 import {
   climateMediaCredit,
@@ -8,6 +8,7 @@ import {
   videoEmbedCredit,
 } from '../../application/media-source-credit';
 import { hazardTitle } from '../../application/locale';
+import { localizeClimateHub, localizeClimatePage } from '../../application/localize-content';
 import { videoEmbedSrc } from '../../application/youtube-embed';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
@@ -32,8 +33,10 @@ function StorySpread({ images, className }: { images: string[]; className: strin
 }
 
 export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
-  const { copy } = useLocale();
-  const page = climateImpactPages.find((item) => item.id === selectedId);
+  const { copy, locale } = useLocale();
+  const hub = localizeClimateHub(locale);
+  const pages = climateImpactPages.map((item) => localizeClimatePage(item, locale));
+  const page = pages.find((item) => item.id === selectedId);
 
   useLayoutEffect(() => {
     scrollPageToTop();
@@ -94,9 +97,9 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
     <article className="detail climate-impact climate-impact-hub" aria-label={copy.climateImpact}>
       <p className="story-type">{copy.climateImpact}</p>
       <h1>{copy.climateImpact}</h1>
-      <p className="story-lede">{climateImpactHub.lede}</p>
+      <p className="story-lede">{hub.lede}</p>
       <div className="climate-impact-grid">
-        {climateImpactPages.map((item) => (
+        {pages.map((item) => (
           <button
             key={item.id}
             type="button"

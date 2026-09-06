@@ -12,8 +12,9 @@ const copy = readFileSync(join(here, '../../content/site-footer.ts'), 'utf8');
 describe('SiteFooter', () => {
   it('uses one standard footer with ICE credits on catalog and story pages', () => {
     expect(source).toContain('site-footer');
-    expect(source).toContain('siteFooter.comment');
-    expect(source).toContain('siteFooter.copyright');
+    expect(source).toContain('localizeFooter');
+    expect(source).toContain('footer.comment');
+    expect(source).toContain('footer.copyright');
     expect(copy).toContain('Institute of Climate and Environment');
     expect(copy).toContain('SIMAD University');
     expect(copy).toContain('climate storytelling series');

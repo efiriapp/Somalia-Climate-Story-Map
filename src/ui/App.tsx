@@ -1,10 +1,11 @@
 import { useLayoutEffect, useMemo, useState } from 'react';
+import { flagIconUrl } from '../application/country-flag';
 import { filterCatalog } from '../application/filter-catalog';
-import { chromeCopy, type Locale } from '../application/locale';
+import { chromeCopy, formatLocaleDate, type Locale } from '../application/locale';
+import { localizeAbout, localizeStory } from '../application/localize-content';
 import { storyMediaCredit } from '../application/media-source-credit';
 import { resolveMapView } from '../application/resolve-map-view';
 import { scrollPageToTop } from '../application/scroll-page-top';
-import { aboutIce } from '../content/about-ice';
 import { stories as catalog } from '../content/stories';
 import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '../domain/story';
 import { FilterPanel } from './chrome/FilterPanel';
@@ -32,14 +33,20 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('stories');
   const [locale, setLocale] = useState<Locale>('en');
   const copy = chromeCopy(locale);
+  const about = localizeAbout(locale);
+  const flagSrc = locale === 'en' ? flagIconUrl('Somalia') : flagIconUrl('United Kingdom');
 
+  const localizedCatalog = useMemo(
+    () => catalog.map((story) => localizeStory(story, locale)),
+    [locale],
+  );
   const scoped = useMemo(
-    () => catalog.filter((story) => story.type === catalogTypeFor(screen)),
-    [screen],
+    () => localizedCatalog.filter((story) => story.type === catalogTypeFor(screen)),
+    [localizedCatalog, screen],
   );
   const matches = useMemo(() => filterCatalog(scoped, applied), [scoped, applied]);
   const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
-  const detail = selectedId ? catalog.find((story) => story.id === selectedId) : undefined;
+  const detail = selectedId ? localizedCatalog.find((story) => story.id === selectedId) : undefined;
 
   useLayoutEffect(() => {
     if (!selectedId) return;
@@ -104,23 +111,26 @@ export default function App() {
           type="button"
           className={`nav-language${locale === 'so' ? ' active' : ''}`}
           aria-pressed={locale === 'so'}
-          aria-label={copy.languageToggleLabel}
+          aria-label={copy.languageToggle}
           onClick={() => setLocale(locale === 'en' ? 'so' : 'en')}
         >
-          {copy.languageToggle}
+          {flagSrc ? (
+            <img className="nav-language-flag" src={flagSrc} alt="" width={28} height={20} />
+          ) : null}
+          <span className="visually-hidden">{copy.languageToggle}</span>
         </button>
       </nav>
 
       {screen === 'about' ? (
         <article className="detail about-ice" aria-label={copy.about}>
           <h1>{copy.about}</h1>
-          {aboutIce.paragraphs.map((paragraph) => (
+          {about.paragraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 24)}>{paragraph}</p>
           ))}
           <p>
             <strong>{copy.moreInfo}</strong>{' '}
-            <a href={aboutIce.website} target="_blank" rel="noreferrer">
-              {aboutIce.website}
+            <a href={about.website} target="_blank" rel="noreferrer">
+              {about.website}
             </a>
           </p>
         </article>
@@ -131,7 +141,7 @@ export default function App() {
           onBack={() => setImpactHazard(null)}
         />
       ) : screen === 'global-stage' ? (
-        <GlobalStageMap stories={catalog} onClose={() => openScreen('stories')} />
+        <GlobalStageMap stories={localizedCatalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
         <StoryDetail story={detail} onBack={() => setSelectedId(null)} />
       ) : detail ? (
@@ -143,7 +153,7 @@ export default function App() {
           <h1>{detail.title}</h1>
           {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
           <p className="story-meta">
-            {detail.date} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
+            {formatLocaleDate(detail.date, locale)} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
           </p>
           <p>{detail.body}</p>
           {detail.website ? (
