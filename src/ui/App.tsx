@@ -164,7 +164,15 @@ export default function App() {
       ) : screen === 'global-stage' ? (
         <GlobalStageMap stories={localizedCatalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
-        <StoryDetail story={detail} onBack={() => setSelectedId(null)} />
+        <StoryDetail
+          story={detail}
+          onBack={() => setSelectedId(null)}
+          onOpenClimateImpact={() => {
+            setSelectedId(null);
+            setScreen('climate-impact');
+            setImpactHazard('droughts');
+          }}
+        />
       ) : detail ? (
         <article className="detail">
           <button className="back" type="button" onClick={() => setSelectedId(null)}>

@@ -60,5 +60,16 @@ describe('ClimateImpactPage', () => {
     expect(source).toContain('formatMediaSourceCredit');
     expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('climate-impact-grid'));
   });
+
+  it('cross-links El Niño to Floods and La Niña to Droughts with a visible related CTA', () => {
+    expect(source).toContain('RelatedClimateLink');
+    expect(source).toContain("page.id === 'el-nino'");
+    expect(source).toContain("onSelect('floods')");
+    expect(source).toContain('copy.relatedFloods');
+    expect(source).toContain("page.id === 'la-nina'");
+    expect(source).toContain("onSelect('droughts')");
+    expect(source).toContain('copy.seeAlsoDroughts');
+    expect(source.indexOf('RelatedClimateLink')).toBeLessThan(source.lastIndexOf('MediaSourceCredit'));
+  });
 });
 

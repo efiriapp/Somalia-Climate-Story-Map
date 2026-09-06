@@ -12,6 +12,7 @@ import { localizeClimateHub, localizeClimatePage } from '../../application/local
 import { videoEmbedSrc } from '../../application/youtube-embed';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
+import { RelatedClimateLink } from './RelatedClimateLink';
 
 type Props = {
   selectedId: ClimateHazardId | null;
@@ -88,6 +89,12 @@ export function ClimateImpactPage({ selectedId, onSelect, onBack }: Props) {
             </div>
           ) : null;
         })}
+        {page.id === 'el-nino' ? (
+          <RelatedClimateLink label={copy.relatedFloods} onClick={() => onSelect('floods')} />
+        ) : null}
+        {page.id === 'la-nina' ? (
+          <RelatedClimateLink label={copy.seeAlsoDroughts} onClick={() => onSelect('droughts')} />
+        ) : null}
         <MediaSourceCredit credit={climateMediaCredit(page)} />
       </article>
     );

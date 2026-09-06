@@ -62,4 +62,10 @@ describe('platform topbar', () => {
     expect(source).toMatch(/useLayoutEffect\([\s\S]{0,220}scrollPageToTop/);
     expect(source).toMatch(/selectedId[\s\S]{0,220}scrollPageToTop/);
   });
+
+  it('opens Climate Impact with Droughts from the SIMAD drought story CTA', () => {
+    expect(source).toContain('onOpenClimateImpact');
+    expect(source).toMatch(/setScreen\('climate-impact'\)/);
+    expect(source).toMatch(/setImpactHazard\('droughts'\)/);
+  });
 });

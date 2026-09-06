@@ -52,5 +52,14 @@ describe('StoryDetail', () => {
     expect(source).toContain('storyMediaCredit(story)');
     expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('copy.moreInfo'));
   });
+
+  it('offers a Climate Impact CTA on the SIMAD drought story when a callback is provided', () => {
+    expect(source).toContain('onOpenClimateImpact');
+    expect(source).toContain("story.id === 'simad-drought'");
+    expect(source).toContain('RelatedClimateLink');
+    expect(source).toContain('copy.exploreClimateImpact');
+    expect(app).toContain('onOpenClimateImpact');
+    expect(app).toMatch(/onOpenClimateImpact[\s\S]{0,180}climate-impact/);
+  });
 });
 

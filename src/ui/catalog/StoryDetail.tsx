@@ -9,15 +9,17 @@ import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
+import { RelatedClimateLink } from './RelatedClimateLink';
 
 type Props = {
   story: Story;
   onBack: () => void;
+  onOpenClimateImpact?: () => void;
 };
 
 const CITY_ZOOM = 12;
 
-export function StoryDetail({ story, onBack }: Props) {
+export function StoryDetail({ story, onBack, onOpenClimateImpact }: Props) {
   const { copy, locale } = useLocale();
   const chapters = story.chapters?.length
     ? story.chapters
@@ -197,6 +199,9 @@ export function StoryDetail({ story, onBack }: Props) {
             {story.website}
           </a>
         </p>
+      ) : null}
+      {story.id === 'simad-drought' && onOpenClimateImpact ? (
+        <RelatedClimateLink label={copy.exploreClimateImpact} onClick={onOpenClimateImpact} />
       ) : null}
       <MediaSourceCredit credit={storyMediaCredit(story)} />
     </article>
