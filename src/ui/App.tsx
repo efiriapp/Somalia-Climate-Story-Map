@@ -34,7 +34,8 @@ export default function App() {
   const [locale, setLocale] = useState<Locale>('en');
   const copy = chromeCopy(locale);
   const about = localizeAbout(locale);
-  const flagSrc = locale === 'en' ? flagIconUrl('Somalia') : flagIconUrl('United Kingdom');
+  const ukFlagSrc = flagIconUrl('United Kingdom');
+  const soFlagSrc = flagIconUrl('Somalia');
 
   const localizedCatalog = useMemo(
     () => catalog.map((story) => localizeStory(story, locale)),
@@ -109,14 +110,34 @@ export default function App() {
         </button>
         <button
           type="button"
-          className={`nav-language${locale === 'so' ? ' active' : ''}`}
+          className={`nav-language${locale === 'so' ? ' is-so' : ' is-en'}`}
           aria-pressed={locale === 'so'}
           aria-label={copy.languageToggle}
           onClick={() => setLocale(locale === 'en' ? 'so' : 'en')}
         >
-          {flagSrc ? (
-            <img className="nav-language-flag" src={flagSrc} alt="" width={28} height={20} />
-          ) : null}
+          <span className="nav-language-label nav-language-en" aria-hidden="true">EN</span>
+          <span className="nav-language-track" aria-hidden="true">
+            {ukFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-en"
+                src={ukFlagSrc}
+                alt=""
+                width={22}
+                height={16}
+              />
+            ) : null}
+            {soFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-so"
+                src={soFlagSrc}
+                alt=""
+                width={22}
+                height={16}
+              />
+            ) : null}
+            <span className="nav-language-thumb" />
+          </span>
+          <span className="nav-language-label nav-language-so" aria-hidden="true">SO</span>
           <span className="visually-hidden">{copy.languageToggle}</span>
         </button>
       </nav>

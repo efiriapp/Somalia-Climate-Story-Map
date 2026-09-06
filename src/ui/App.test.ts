@@ -38,9 +38,18 @@ describe('platform topbar', () => {
     expect(source).toContain('chromeCopy');
     expect(source.indexOf("openScreen('global-stage')")).toBeLessThan(source.indexOf('nav-language'));
     expect(source).toContain('flagIconUrl');
-    expect(source).toContain('nav-language-flag');
     expect(source).toContain("flagIconUrl('Somalia')");
     expect(source).toContain("flagIconUrl('United Kingdom')");
+    expect(source).toContain('nav-language-label');
+    expect(source).toContain('nav-language-en');
+    expect(source).toContain('nav-language-so');
+    expect(source).toContain('>EN<');
+    expect(source).toContain('>SO<');
+    expect(source).toContain('nav-language-track');
+    expect(source).toContain('nav-language-thumb');
+    expect(source).toContain('nav-language-flag');
+    expect(source).toContain('aria-pressed');
+    expect(source).toMatch(/setLocale\(locale === 'en' \? 'so' : 'en'\)/);
   });
 
   it('credits research-story photos when the simple detail page shows an image', () => {

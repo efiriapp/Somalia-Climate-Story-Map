@@ -134,7 +134,12 @@ describe('ICE green brand', () => {
   it('pins the Somali language toggle to the right of the primary nav', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.nav-language[\s\S]{0,80}margin-left:\s*auto/);
+    expect(css).toContain('.nav-language-label');
+    expect(css).toContain('.nav-language-track');
+    expect(css).toContain('.nav-language-thumb');
     expect(css).toContain('.nav-language-flag');
+    expect(css).toMatch(/\.nav-language[\s\S]{0,400}border-radius:\s*999px|\.nav-language-track[\s\S]{0,200}border-radius:\s*999px/);
+    expect(css).toMatch(/\.nav-language\.is-so[\s\S]{0,280}\.nav-language-thumb|\.nav-language\.is-so[\s\S]{0,280}translate/);
     expect(css).toContain('.visually-hidden');
   });
 
