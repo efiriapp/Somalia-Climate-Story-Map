@@ -64,5 +64,13 @@ describe('StoryDetail', () => {
     expect(app).toMatch(/openRelated[\s\S]{0,400}climate-impact/);
     expect(app).toMatch(/setImpactHazard\(target\.id\)/);
   });
+
+  it('shows related pages as image cards before the final media credit', () => {
+    expect(source).toContain('RelatedLinks');
+    expect(source.indexOf('RelatedLinks')).toBeLessThan(source.lastIndexOf('MediaSourceCredit'));
+    const relatedLinks = readFileSync(join(here, 'RelatedLinks.tsx'), 'utf8');
+    expect(relatedLinks).toContain('related-link-cards');
+    expect(relatedLinks).toContain('imageForRelatedTarget');
+  });
 });
 

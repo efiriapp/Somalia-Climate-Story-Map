@@ -150,6 +150,16 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.climate-impact-card[\s\S]{0,220}background:\s*var\(--white\)/);
   });
 
+  it('styles related see-also targets as compact image cards', () => {
+    const css = readFileSync(themePath, 'utf8');
+    expect(css).toContain('.related-link-cards');
+    expect(css).toContain('.related-link-card');
+    expect(css).toMatch(/\.related-link-cards[\s\S]{0,220}display:\s*grid/);
+    expect(css).toMatch(/\.related-link-card[\s\S]{0,220}background:\s*var\(--white\)/);
+    expect(css).toMatch(/\.related-link-card img[\s\S]{0,160}object-fit:\s*cover/);
+    expect(css).toMatch(/\.related-link-card[\s\S]{0,280}(var\(--forest\)|#063D39)/);
+  });
+
   it('lets three Climate Impact hub cards fill the screen with large photos', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.climate-impact-hub[\s\S]{0,120}max-width:\s*min\(1180px/);

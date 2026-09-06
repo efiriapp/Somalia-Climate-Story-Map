@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { climateImpactPages } from '../content/climate-impact';
+import { stories } from '../content/stories';
 import { chromeCopy } from './locale';
 import {
+  imageForRelatedTarget,
   labelForRelatedTarget,
   relatedTargetsForHazard,
   relatedTargetsForStory,
@@ -94,5 +97,26 @@ describe('labelForRelatedTarget', () => {
     expect(labelForRelatedTarget(hub, so)).toMatch(/Saamaynta Cimilada/);
     expect(labelForRelatedTarget(story, en, 'Green Champions')).toBe('Related: Green Champions');
     expect(labelForRelatedTarget(story, so, 'Green Champions')).toMatch(/Green Champions/);
+  });
+});
+
+describe('imageForRelatedTarget', () => {
+  it('uses the first story image, or falls back to chapter or tour images', () => {
+    const green = stories.find((story) => story.id === 'green-champions');
+    const liido = stories.find((story) => story.id === 'liido-beach-cleanup');
+    expect(green?.images[0]).toBeTruthy();
+    expect(liido?.images[0]).toBeTruthy();
+    expect(imageForRelatedTarget({ kind: 'story', id: 'green-champions' })).toBe(green?.images[0]);
+    expect(imageForRelatedTarget({ kind: 'story', id: 'liido-beach-cleanup' })).toBe(liido?.images[0]);
+  });
+
+  it('uses the first climate hazard image and the hub visual from the first climate page', () => {
+    const floods = climateImpactPages.find((page) => page.id === 'floods');
+    const droughts = climateImpactPages.find((page) => page.id === 'droughts');
+    expect(floods?.images[0]).toBeTruthy();
+    expect(droughts?.images[0]).toBeTruthy();
+    expect(imageForRelatedTarget({ kind: 'hazard', id: 'floods' })).toBe(floods?.images[0]);
+    expect(imageForRelatedTarget({ kind: 'hazard', id: 'droughts' })).toBe(droughts?.images[0]);
+    expect(imageForRelatedTarget({ kind: 'hub' })).toBe(climateImpactPages[0]?.images[0]);
   });
 });

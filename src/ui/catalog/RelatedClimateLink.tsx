@@ -1,14 +1,14 @@
 type Props = {
   label: string;
+  image?: string;
   onClick: () => void;
 };
 
-export function RelatedClimateLink({ label, onClick }: Props) {
+export function RelatedClimateLink({ label, image, onClick }: Props) {
   return (
-    <p className="related-climate">
-      <button type="button" className="related-climate-link" onClick={onClick}>
-        {label}
-      </button>
-    </p>
+    <button type="button" className="related-link-card" onClick={onClick}>
+      {image ? <img src={image} alt="" /> : <span className="related-link-card-fallback" aria-hidden="true" />}
+      <span className="related-link-card-label">{label}</span>
+    </button>
   );
 }

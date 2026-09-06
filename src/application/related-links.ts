@@ -1,4 +1,7 @@
 import type { ClimateHazardId } from '../content/climate-impact';
+import { climateImpactPages } from '../content/climate-impact';
+import { stories } from '../content/stories';
+import type { Story } from '../domain/story';
 import { chromeCopy, hazardTitle } from './locale';
 
 export type RelatedTarget =
@@ -58,4 +61,29 @@ export const labelForRelatedTarget = (
   if (target.kind === 'hub') return copy.exploreClimateImpact;
   if (target.kind === 'hazard') return `${copy.relatedPrefix}${hazardTitle(target.id, copy)}`;
   return `${copy.relatedPrefix}${storyTitle ?? target.id}`;
+};
+
+const firstStoryImage = (story: Story): string | undefined => {
+  if (story.images[0]) return story.images[0];
+  for (const chapter of story.chapters ?? []) {
+    if (chapter.images?.[0]) return chapter.images[0];
+    for (const after of chapter.imagesAfter ?? []) {
+      if (after[0]) return after[0];
+    }
+  }
+  for (const stop of story.tourStops ?? []) {
+    if (stop.images[0]) return stop.images[0];
+  }
+  return undefined;
+};
+
+export const imageForRelatedTarget = (target: RelatedTarget): string | undefined => {
+  if (target.kind === 'hub') {
+    return climateImpactPages.find((page) => page.images[0])?.images[0];
+  }
+  if (target.kind === 'hazard') {
+    return climateImpactPages.find((page) => page.id === target.id)?.images[0];
+  }
+  const story = stories.find((item) => item.id === target.id);
+  return story ? firstStoryImage(story) : undefined;
 };
