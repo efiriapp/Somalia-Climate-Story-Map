@@ -197,5 +197,10 @@ describe('ICE green brand', () => {
     expect(css).toContain('.ice-office-label');
     expect(css).toMatch(/\.ice-office-label[\s\S]{0,220}bottom:\s*100%/);
     expect(css).toContain('.ice-office-logo');
+    // ICE office chip matches country pin-date labels (compact flag-sized logo).
+    expect(css).toMatch(/\.ice-office-label[\s\S]{0,220}inline-flex/);
+    expect(css).toMatch(/\.ice-office-logo[\s\S]{0,160}width:\s*20px/);
+    expect(css).toMatch(/\.ice-office-logo[\s\S]{0,160}height:\s*15px/);
+    expect(css).not.toMatch(/\.ice-office-logo[\s\S]{0,80}width:\s*148px/);
   });
 });

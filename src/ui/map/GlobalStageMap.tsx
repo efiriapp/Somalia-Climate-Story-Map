@@ -218,6 +218,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     logo.className = 'ice-office-logo';
     logo.src = ICE_OFFICE_LOGO;
     logo.alt = '';
+    logo.width = 20;
+    logo.height = 15;
     office.prepend(logo);
     homePin.appendChild(office);
     const pins: Marker[] = [];
