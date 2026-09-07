@@ -238,8 +238,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           flag.className = 'pin-flag-icon';
           flag.src = flagUrl;
           flag.alt = '';
-          flag.width = 32;
-          flag.height = 24;
+          flag.width = 48;
+          flag.height = 36;
           label.appendChild(flag);
         }
         const date = document.createElement('span');
