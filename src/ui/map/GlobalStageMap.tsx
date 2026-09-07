@@ -18,6 +18,7 @@ import {
 import {
   buildGlobalTour,
   GLOBE_VIEW,
+  CITY_ZOOM,
   COUNTRY_ZOOM,
   ICE_OFFICE_LABEL,
   ICE_OFFICE_LOGO,
@@ -140,7 +141,7 @@ const storyJumpFromSomalia = (map: Map, to: LngLat, onDone: () => void) => {
     afterEase(JUMP_MS, () => {
       map.easeTo({
         center: [to.lng, to.lat],
-        zoom: COUNTRY_ZOOM,
+        zoom: CITY_ZOOM,
         pitch: 0,
         bearing: 0,
         duration: LAND_MS,
@@ -207,27 +208,39 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   const showAllPins = (map: Map, activeId: string | null = null) => {
     hidePins();
-    homeMarkerRef.current = new Marker({ color: activeId === 'home' ? ACTIVE_PIN : HOME_PIN })
-      .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
-      .addTo(map);
-    const homePin = homeMarkerRef.current.getElement();
-    const office = document.createElement('span');
-    office.className = 'ice-office-label';
-    const logo = document.createElement('img');
-    logo.className = 'ice-office-logo';
-    logo.src = ICE_OFFICE_LOGO;
-    logo.alt = '';
-    logo.width = 48;
-    logo.height = 36;
-    office.appendChild(logo);
-    const officeText = document.createElement('span');
-    officeText.className = 'ice-office-text';
-    officeText.textContent =
-      localeRef.current === 'en' ? ICE_OFFICE_LABEL : copyRef.current.iceOfficeLabel;
-    office.appendChild(officeText);
-    homePin.appendChild(office);
+    const focusEvent = Boolean(activeId && activeId !== 'home');
+    const focusHome = activeId === 'home';
+
+    if (!focusEvent) {
+      homeMarkerRef.current = new Marker({ color: focusHome ? ACTIVE_PIN : HOME_PIN })
+        .setLngLat([MOGADISHU_HOME.lng, MOGADISHU_HOME.lat])
+        .addTo(map);
+      const homePin = homeMarkerRef.current.getElement();
+      const office = document.createElement('span');
+      office.className = 'ice-office-label';
+      const logo = document.createElement('img');
+      logo.className = 'ice-office-logo';
+      logo.src = ICE_OFFICE_LOGO;
+      logo.alt = '';
+      logo.width = 48;
+      logo.height = 36;
+      office.appendChild(logo);
+      const officeText = document.createElement('span');
+      officeText.className = 'ice-office-text';
+      officeText.textContent =
+        localeRef.current === 'en' ? ICE_OFFICE_LABEL : copyRef.current.iceOfficeLabel;
+      office.appendChild(officeText);
+      homePin.appendChild(office);
+    }
+
     const pins: Marker[] = [];
     for (const stop of eventsRef.current) {
+      if (focusHome) {
+        continue;
+      }
+      if (focusEvent && stop.storyId !== activeId) {
+        continue;
+      }
       const marker = new Marker({ color: stop.storyId === activeId ? ACTIVE_PIN : EVENT_PIN })
         .setLngLat([stop.lng, stop.lat])
         .addTo(map);
@@ -280,7 +293,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     showAllPins(map, stop.storyId);
     map.easeTo({
       center: [stop.lng, stop.lat],
-      zoom: COUNTRY_ZOOM,
+      zoom: CITY_ZOOM,
       pitch: 0,
       bearing: 0,
       duration: JUMP_MS,

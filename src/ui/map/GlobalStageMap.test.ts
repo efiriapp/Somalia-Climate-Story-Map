@@ -15,10 +15,10 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('basemaps.cartocdn.com');
   });
 
-  it('tours date-sorted places with classic pins, country zoom, and a center-right card', () => {
+  it('tours date-sorted places with classic pins, city zoom on the stop, and a center-right card', () => {
     expect(source).toContain('a.date.localeCompare');
-    expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}COUNTRY_ZOOM/);
-    expect(source).not.toContain('CITY_ZOOM');
+    expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}CITY_ZOOM/);
+    expect(source).toContain('CITY_ZOOM');
     expect(source).not.toContain('CITY_EASE_MS');
     expect(source).toContain('MOGADISHU_HOME.lng');
     expect(source).not.toContain('flyToStop(token, { lng: stop.lng, lat: stop.lat }, next)');
@@ -55,10 +55,13 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('totalTravelKm');
   });
 
-  it('keeps every location pin on the map and always shows the right-side info after a tap', () => {
+  it('hides other location pins while focused on one stop and still opens the right-side card', () => {
     expect(source).toContain('showAllPins(map)');
     expect(source).toContain('openStop');
     expect(source).toMatch(/const openStop[\s\S]{0,280}setTourCard\(stop\)/);
+    expect(source).toMatch(
+      /focusEvent[\s\S]{0,220}continue|stop\.storyId !== activeId[\s\S]{0,80}continue/,
+    );
     expect(source).not.toContain('POPUP_HOLD_MS');
     expect(source).not.toContain('flyToIceOffice');
     expect(source).not.toContain('showPinPopup');
@@ -97,7 +100,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('onClick={() => stepEvent(1)}');
   });
 
-  it('jumps from Somalia to each place at country zoom so the user can follow the story-map move', () => {
+  it('jumps from Somalia to each place at city zoom so the user can follow the story-map move', () => {
     expect(source).toContain('JUMP_MS = 1800');
     expect(source).toContain('LAND_MS = 1600');
     expect(source).toContain('ORIGIN_HOLD_MS = 900');
@@ -109,7 +112,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('curve: 1.8');
     expect(source).toContain('duration: JUMP_MS');
     expect(source).toContain('duration: LAND_MS');
-    expect(source).toMatch(/easeTo\(\{[\s\S]{0,180}zoom:\s*COUNTRY_ZOOM/);
+    expect(source).toMatch(/easeTo\(\{[\s\S]{0,180}zoom:\s*CITY_ZOOM/);
     expect(source).toContain('greatCircle({ lng: SOMALIA_HOME.lng, lat: SOMALIA_HOME.lat }');
     expect(source).toContain("'line-width': 5");
     expect(source).not.toContain('jumpToView');
