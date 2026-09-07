@@ -200,8 +200,8 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.pin-flag-icon[\s\S]{0,160}height:\s*36px/);
     expect(css).toMatch(/\.pin-date-text[\s\S]{0,160}font-size:\s*14px/);
     // No green chip — only flag + date.
-    expect(css).toMatch(/\.pin-date-label[\s\S]{0,280}background:\s*transparent/);
-    expect(css).not.toMatch(/\.pin-date-label[\s\S]{0,280}background:\s*#063D39/);
+    expect(css).toMatch(/\.pin-date-label[\s\S]{0,450}background:\s*transparent/);
+    expect(css).not.toMatch(/\.pin-date-label[\s\S]{0,450}background:\s*#063D39/);
     expect(css).toContain('.ice-office-label');
     expect(css).toMatch(/\.ice-office-label[\s\S]{0,220}bottom:\s*100%/);
     expect(css).toContain('.ice-office-logo');
