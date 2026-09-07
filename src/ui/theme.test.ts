@@ -141,7 +141,14 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.nav-language[\s\S]{0,400}border-radius:\s*999px|\.nav-language-track[\s\S]{0,200}border-radius:\s*999px/);
     expect(css).toMatch(/\.nav-language\.is-so[\s\S]{0,280}\.nav-language-thumb|\.nav-language\.is-so[\s\S]{0,280}translate/);
     expect(css).toMatch(/\.nav-language\.is-ar[\s\S]{0,280}\.nav-language-thumb/);
-    expect(css).toMatch(/\.nav-language-track[\s\S]{0,400}width:\s*5\.1rem/);
+    // Keep EN–SO–AR order and thumb math stable when the page is RTL (Arabic).
+    expect(css).toMatch(/\.nav-language[\s\S]{0,200}direction:\s*ltr/);
+    expect(css).toMatch(/\.nav[\s\S]{0,200}direction:\s*ltr/);
+    // Larger control so labels and flags are easy to see and tap.
+    expect(css).toMatch(/\.nav-language-track[\s\S]{0,400}width:\s*10\.5rem/);
+    expect(css).toMatch(/\.nav-language-label[\s\S]{0,120}font-size:\s*15px/);
+    expect(css).toMatch(/\.nav-language-flag[\s\S]{0,120}width:\s*32px/);
+    expect(css).toMatch(/\.nav-language-option[\s\S]{0,500}min-height:\s*3\.35rem/);
     expect(css).toContain('.visually-hidden');
   });
 

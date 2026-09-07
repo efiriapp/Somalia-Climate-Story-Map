@@ -61,6 +61,16 @@ describe('platform topbar', () => {
     expect(source).toMatch(/document\.documentElement\.lang\s*=\s*locale/);
     expect(source).toMatch(/document\.documentElement\.dir\s*=\s*locale === 'ar' \? 'rtl' : 'ltr'/);
     expect(source).not.toMatch(/setLocale\(locale === 'en' \? 'so' : 'en'\)/);
+    // Each locale button owns its flag so the visible switcher hits setLocale.
+    expect(source).toMatch(
+      /className="nav-language-option nav-language-en"(?:(?!<\/button>)[\s\S])*nav-language-flag-en(?:(?!<\/button>)[\s\S])*<\/button>/,
+    );
+    expect(source).toMatch(
+      /className="nav-language-option nav-language-so"(?:(?!<\/button>)[\s\S])*nav-language-flag-so(?:(?!<\/button>)[\s\S])*<\/button>/,
+    );
+    expect(source).toMatch(
+      /className="nav-language-option nav-language-ar"(?:(?!<\/button>)[\s\S])*nav-language-flag-ar(?:(?!<\/button>)[\s\S])*<\/button>/,
+    );
   });
 
   it('credits research-story photos when the simple detail page shows an image', () => {

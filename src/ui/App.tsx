@@ -155,6 +155,9 @@ export default function App() {
           role="group"
           aria-label={copy.languageToggleLabel}
         >
+          <span className="nav-language-track" aria-hidden="true">
+            <span className="nav-language-thumb" />
+          </span>
           <button
             type="button"
             className="nav-language-option nav-language-en"
@@ -163,6 +166,15 @@ export default function App() {
             onClick={() => setLocale('en')}
           >
             <span className="nav-language-label" aria-hidden="true">EN</span>
+            {ukFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-en"
+                src={ukFlagSrc}
+                alt=""
+                width={32}
+                height={22}
+              />
+            ) : null}
           </button>
           <button
             type="button"
@@ -172,6 +184,15 @@ export default function App() {
             onClick={() => setLocale('so')}
           >
             <span className="nav-language-label" aria-hidden="true">SO</span>
+            {soFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-so"
+                src={soFlagSrc}
+                alt=""
+                width={32}
+                height={22}
+              />
+            ) : null}
           </button>
           <button
             type="button"
@@ -181,37 +202,16 @@ export default function App() {
             onClick={() => setLocale('ar')}
           >
             <span className="nav-language-label" aria-hidden="true">AR</span>
-          </button>
-          <span className="nav-language-track" aria-hidden="true">
-            {ukFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-en"
-                src={ukFlagSrc}
-                alt=""
-                width={22}
-                height={16}
-              />
-            ) : null}
-            {soFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-so"
-                src={soFlagSrc}
-                alt=""
-                width={22}
-                height={16}
-              />
-            ) : null}
             {saFlagSrc ? (
               <img
                 className="nav-language-flag nav-language-flag-ar"
                 src={saFlagSrc}
                 alt=""
-                width={22}
-                height={16}
+                width={32}
+                height={22}
               />
             ) : null}
-            <span className="nav-language-thumb" />
-          </span>
+          </button>
           <span className="visually-hidden">{copy.languageToggle}</span>
         </div>
       </nav>

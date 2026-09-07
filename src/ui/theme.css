@@ -88,6 +88,7 @@ select {
   padding: 0 1.5rem;
   min-height: 48px;
   overflow-x: auto;
+  direction: ltr;
 }
 
 .nav button {
@@ -110,16 +111,16 @@ select {
 
 .nav-language {
   margin-left: auto;
+  direction: ltr;
+  position: relative;
   display: inline-grid;
-  grid-template-columns: auto auto auto;
-  grid-template-rows: auto auto;
-  align-items: center;
-  justify-items: center;
-  column-gap: 0.45rem;
-  row-gap: 0.28rem;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  justify-items: stretch;
   background: transparent !important;
-  padding: 0.3rem 0.45rem !important;
+  padding: 0 !important;
   border-radius: 999px;
+  flex-shrink: 0;
 }
 
 .nav-language:hover,
@@ -130,16 +131,32 @@ select {
   background: transparent !important;
 }
 
-.nav-language-option {
+.nav-language-option,
+.nav button.nav-language-option,
+.nav button.nav-language-option:hover,
+.nav button.nav-language-option:focus,
+.nav button.nav-language-option:active,
+.nav button.nav-language-option[aria-pressed='true'] {
   appearance: none;
   border: 0;
   background: transparent !important;
-  padding: 0.15rem 0.2rem !important;
+  padding: 0.4rem 0.35rem !important;
   margin: 0;
   cursor: pointer;
   color: inherit;
   font: inherit;
   line-height: 1;
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  min-height: 3.35rem;
+  min-width: 3.1rem;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .nav-language-option.nav-language-en {
@@ -158,60 +175,59 @@ select {
 }
 
 .nav-language-label {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(6, 61, 57, 0.55);
   transition: color 0.2s ease;
 }
 
 .nav-language.is-en .nav-language-en .nav-language-label,
 .nav-language.is-so .nav-language-so .nav-language-label,
 .nav-language.is-ar .nav-language-ar .nav-language-label {
-  color: #fff;
+  color: var(--forest);
 }
 
 .nav-language-track {
   grid-column: 1 / -1;
-  grid-row: 2;
+  grid-row: 1;
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 5.1rem;
-  height: 1.55rem;
-  padding: 0 0.28rem;
+  width: 10.5rem;
+  height: 100%;
+  min-height: 3.35rem;
   box-sizing: border-box;
   border-radius: 999px;
-  background: linear-gradient(180deg, #e8ecea 0%, #d5dcd8 100%);
+  background: linear-gradient(180deg, #eef2f0 0%, #d7dfdb 100%);
   box-shadow:
     inset 0 1px 3px rgba(20, 40, 32, 0.28),
     inset 0 -1px 1px rgba(255, 255, 255, 0.55);
   overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .nav-language-flag {
-  width: 18px;
-  height: 13px;
+  width: 32px;
+  height: 22px;
   object-fit: cover;
-  border-radius: 2px;
+  border-radius: 3px;
   display: block;
-  opacity: 0.95;
+  opacity: 0.98;
   pointer-events: none;
-  z-index: 0;
+  box-shadow: 0 0 0 1px rgba(20, 40, 32, 0.14);
 }
 
 .nav-language-thumb {
   position: absolute;
   top: 50%;
-  left: 0.18rem;
-  width: 1.22rem;
-  height: 1.22rem;
-  border-radius: 50%;
+  left: 0.2rem;
+  width: calc((100% - 0.4rem) / 3);
+  height: calc(100% - 0.4rem);
+  border-radius: 999px;
   background: #fff;
   box-shadow:
-    0 1px 3px rgba(20, 40, 32, 0.35),
+    0 1px 4px rgba(20, 40, 32, 0.35),
     0 0 0 1px rgba(20, 40, 32, 0.06);
   transform: translateY(-50%);
   transition: left 0.22s ease;
@@ -220,11 +236,11 @@ select {
 }
 
 .nav-language.is-so .nav-language-thumb {
-  left: calc(50% - 0.61rem);
+  left: calc(0.2rem + (100% - 0.4rem) / 3);
 }
 
 .nav-language.is-ar .nav-language-thumb {
-  left: calc(100% - 1.4rem);
+  left: calc(0.2rem + 2 * ((100% - 0.4rem) / 3));
 }
 
 .visually-hidden {
