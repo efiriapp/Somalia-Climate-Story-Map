@@ -40,16 +40,27 @@ describe('platform topbar', () => {
     expect(source).toContain('flagIconUrl');
     expect(source).toContain("flagIconUrl('Somalia')");
     expect(source).toContain("flagIconUrl('United Kingdom')");
+    expect(source).toContain("flagIconUrl('Saudi Arabia')");
     expect(source).toContain('nav-language-label');
     expect(source).toContain('nav-language-en');
     expect(source).toContain('nav-language-so');
+    expect(source).toContain('nav-language-ar');
     expect(source).toContain('>EN<');
     expect(source).toContain('>SO<');
+    expect(source).toContain('>AR<');
     expect(source).toContain('nav-language-track');
     expect(source).toContain('nav-language-thumb');
     expect(source).toContain('nav-language-flag');
-    expect(source).toContain('aria-pressed');
-    expect(source).toMatch(/setLocale\(locale === 'en' \? 'so' : 'en'\)/);
+    expect(source).toContain('nav-language-flag-en');
+    expect(source).toContain('nav-language-flag-so');
+    expect(source).toContain('nav-language-flag-ar');
+    expect(source).toContain("setLocale('en')");
+    expect(source).toContain("setLocale('so')");
+    expect(source).toContain("setLocale('ar')");
+    expect(source).toMatch(/is-\$\{locale\}|is-en|is-so|is-ar/);
+    expect(source).toMatch(/document\.documentElement\.lang\s*=\s*locale/);
+    expect(source).toMatch(/document\.documentElement\.dir\s*=\s*locale === 'ar' \? 'rtl' : 'ltr'/);
+    expect(source).not.toMatch(/setLocale\(locale === 'en' \? 'so' : 'en'\)/);
   });
 
   it('credits research-story photos when the simple detail page shows an image', () => {

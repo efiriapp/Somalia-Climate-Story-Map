@@ -1,6 +1,7 @@
 const COUNTRY_FLAG_CODE: Record<string, string> = {
   Somalia: 'so',
   'United Kingdom': 'gb',
+  'Saudi Arabia': 'sa',
   Egypt: 'eg',
   Rwanda: 'rw',
   Kenya: 'ke',

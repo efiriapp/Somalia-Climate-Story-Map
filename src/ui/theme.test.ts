@@ -131,7 +131,7 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.story-video \+ \.media-source/);
   });
 
-  it('pins the Somali language toggle to the right of the primary nav', () => {
+  it('pins the three-way EN–SO–AR language toggle to the right of the primary nav', () => {
     const css = readFileSync(themePath, 'utf8');
     expect(css).toMatch(/\.nav-language[\s\S]{0,80}margin-left:\s*auto/);
     expect(css).toContain('.nav-language-label');
@@ -140,6 +140,8 @@ describe('ICE green brand', () => {
     expect(css).toContain('.nav-language-flag');
     expect(css).toMatch(/\.nav-language[\s\S]{0,400}border-radius:\s*999px|\.nav-language-track[\s\S]{0,200}border-radius:\s*999px/);
     expect(css).toMatch(/\.nav-language\.is-so[\s\S]{0,280}\.nav-language-thumb|\.nav-language\.is-so[\s\S]{0,280}translate/);
+    expect(css).toMatch(/\.nav-language\.is-ar[\s\S]{0,280}\.nav-language-thumb/);
+    expect(css).toMatch(/\.nav-language-track[\s\S]{0,400}width:\s*5\.1rem/);
     expect(css).toContain('.visually-hidden');
   });
 

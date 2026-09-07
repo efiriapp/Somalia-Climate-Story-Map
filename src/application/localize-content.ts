@@ -6,79 +6,107 @@ import {
 } from '../content/climate-impact';
 import { siteFooter } from '../content/site-footer';
 import type { Story } from '../domain/story';
+import { ABOUT_AR, CLIMATE_HUB_AR, CLIMATE_PAGES_AR, FOOTER_AR } from '../content/ar/pages';
+import { STORY_AR, type StoryAr } from '../content/ar/stories';
 import { ABOUT_SO, CLIMATE_HUB_SO, CLIMATE_PAGES_SO, FOOTER_SO } from '../content/so/pages';
 import { STORY_SO, type StorySo } from '../content/so/stories';
 
-export const localizeAbout = (locale: Locale) => (locale === 'so' ? ABOUT_SO : aboutIce);
+type StoryLocale = StorySo | StoryAr;
 
-export const localizeClimateHub = (locale: Locale) =>
-  locale === 'so' ? CLIMATE_HUB_SO : climateImpactHub;
-
-export const localizeClimatePage = (page: ClimateImpactPage, locale: Locale): ClimateImpactPage => {
-  if (locale !== 'so') return page;
-  const so = CLIMATE_PAGES_SO[page.id];
-  if (!so) return page;
-  return {
-    ...page,
-    title: so.title ?? page.title,
-    kicker: so.kicker ?? page.kicker,
-    lede: so.lede ?? page.lede,
-    paragraphs: so.paragraphs ?? page.paragraphs,
-    chapters: page.chapters.map((chapter, index) => ({
-      ...chapter,
-      heading: so.chapters?.[index]?.heading ?? chapter.heading,
-      paragraphs: so.chapters?.[index]?.paragraphs ?? chapter.paragraphs,
-    })),
-    sourceLabel: so.sourceLabel ?? page.sourceLabel,
-  };
-};
-
-export const localizeStory = (story: Story, locale: Locale): Story => {
-  if (locale !== 'so') return story;
-  const so = STORY_SO[story.id] as StorySo | undefined;
-  if (!so) return story;
+const applyStoryPack = (story: Story, pack: StoryLocale | undefined): Story => {
+  if (!pack) return story;
   return {
     ...story,
-    title: so.title ?? story.title,
-    summary: so.summary ?? story.summary,
-    body: so.body ?? story.body,
-    featuredPerson: so.featuredPerson ?? story.featuredPerson,
-    placeLabel: so.placeLabel ?? story.placeLabel,
-    mapTitle: so.mapTitle ?? story.mapTitle,
+    title: pack.title ?? story.title,
+    summary: pack.summary ?? story.summary,
+    body: pack.body ?? story.body,
+    featuredPerson: pack.featuredPerson ?? story.featuredPerson,
+    placeLabel: pack.placeLabel ?? story.placeLabel,
+    mapTitle: pack.mapTitle ?? story.mapTitle,
     location: {
       ...story.location,
-      name: so.locationName ?? story.location.name,
+      name: pack.locationName ?? story.location.name,
     },
     chapters: story.chapters?.map((chapter, index) => ({
       ...chapter,
-      heading: so.chapters?.[index]?.heading ?? chapter.heading,
-      paragraphs: so.chapters?.[index]?.paragraphs ?? chapter.paragraphs,
+      heading: pack.chapters?.[index]?.heading ?? chapter.heading,
+      paragraphs: pack.chapters?.[index]?.paragraphs ?? chapter.paragraphs,
     })),
     tourStops: story.tourStops?.map((stop, index) => ({
       ...stop,
-      title: so.tourStops?.[index]?.title ?? stop.title,
-      description: so.tourStops?.[index]?.description ?? stop.description,
+      title: pack.tourStops?.[index]?.title ?? stop.title,
+      description: pack.tourStops?.[index]?.description ?? stop.description,
     })),
     stats: story.stats?.map((stat, index) => ({
       ...stat,
-      label: so.stats?.[index]?.label ?? stat.label,
-      value: so.stats?.[index]?.value ?? stat.value,
+      label: pack.stats?.[index]?.label ?? stat.label,
+      value: pack.stats?.[index]?.value ?? stat.value,
     })),
     sourceCard: story.sourceCard
       ? {
           ...story.sourceCard,
-          place: so.sourceCard?.place ?? story.sourceCard.place,
-          city: so.sourceCard?.city ?? story.sourceCard.city,
-          regionLabel: so.sourceCard?.regionLabel ?? story.sourceCard.regionLabel,
-          country: so.sourceCard?.country ?? story.sourceCard.country,
-          category: so.sourceCard?.category ?? story.sourceCard.category,
-          impactAreas: so.sourceCard?.impactAreas ?? story.sourceCard.impactAreas,
-          featuredPerson: so.sourceCard?.featuredPerson ?? story.sourceCard.featuredPerson,
-          primarySource: so.sourceCard?.primarySource ?? story.sourceCard.primarySource,
+          place: pack.sourceCard?.place ?? story.sourceCard.place,
+          city: pack.sourceCard?.city ?? story.sourceCard.city,
+          regionLabel: pack.sourceCard?.regionLabel ?? story.sourceCard.regionLabel,
+          country: pack.sourceCard?.country ?? story.sourceCard.country,
+          category: pack.sourceCard?.category ?? story.sourceCard.category,
+          impactAreas: pack.sourceCard?.impactAreas ?? story.sourceCard.impactAreas,
+          featuredPerson: pack.sourceCard?.featuredPerson ?? story.sourceCard.featuredPerson,
+          primarySource: pack.sourceCard?.primarySource ?? story.sourceCard.primarySource,
         }
       : story.sourceCard,
   };
 };
 
-export const localizeFooter = (locale: Locale) =>
-  locale === 'so' ? { ...siteFooter, ...FOOTER_SO } : siteFooter;
+const applyClimatePack = (
+  page: ClimateImpactPage,
+  pack:
+    | (typeof CLIMATE_PAGES_SO)[ClimateImpactPage['id']]
+    | (typeof CLIMATE_PAGES_AR)[ClimateImpactPage['id']]
+    | undefined,
+): ClimateImpactPage => {
+  if (!pack) return page;
+  return {
+    ...page,
+    title: pack.title ?? page.title,
+    kicker: pack.kicker ?? page.kicker,
+    lede: pack.lede ?? page.lede,
+    paragraphs: pack.paragraphs ?? page.paragraphs,
+    chapters: page.chapters.map((chapter, index) => ({
+      ...chapter,
+      heading: pack.chapters?.[index]?.heading ?? chapter.heading,
+      paragraphs: pack.chapters?.[index]?.paragraphs ?? chapter.paragraphs,
+    })),
+    sourceLabel: pack.sourceLabel ?? page.sourceLabel,
+  };
+};
+
+export const localizeAbout = (locale: Locale) => {
+  if (locale === 'so') return ABOUT_SO;
+  if (locale === 'ar') return ABOUT_AR;
+  return aboutIce;
+};
+
+export const localizeClimateHub = (locale: Locale) => {
+  if (locale === 'so') return CLIMATE_HUB_SO;
+  if (locale === 'ar') return CLIMATE_HUB_AR;
+  return climateImpactHub;
+};
+
+export const localizeClimatePage = (page: ClimateImpactPage, locale: Locale): ClimateImpactPage => {
+  if (locale === 'so') return applyClimatePack(page, CLIMATE_PAGES_SO[page.id]);
+  if (locale === 'ar') return applyClimatePack(page, CLIMATE_PAGES_AR[page.id]);
+  return page;
+};
+
+export const localizeStory = (story: Story, locale: Locale): Story => {
+  if (locale === 'so') return applyStoryPack(story, STORY_SO[story.id] as StorySo | undefined);
+  if (locale === 'ar') return applyStoryPack(story, STORY_AR[story.id] as StoryAr | undefined);
+  return story;
+};
+
+export const localizeFooter = (locale: Locale) => {
+  if (locale === 'so') return { ...siteFooter, ...FOOTER_SO };
+  if (locale === 'ar') return { ...siteFooter, ...FOOTER_AR };
+  return siteFooter;
+};

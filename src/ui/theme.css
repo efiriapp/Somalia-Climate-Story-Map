@@ -110,19 +110,51 @@ select {
 
 .nav-language {
   margin-left: auto;
-  display: inline-flex;
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto;
   align-items: center;
-  gap: 0.55rem;
+  justify-items: center;
+  column-gap: 0.45rem;
+  row-gap: 0.28rem;
   background: transparent !important;
-  padding: 0.35rem 0.5rem !important;
+  padding: 0.3rem 0.45rem !important;
   border-radius: 999px;
 }
 
 .nav-language:hover,
 .nav-language.active,
 .nav-language.is-en,
-.nav-language.is-so {
+.nav-language.is-so,
+.nav-language.is-ar {
   background: transparent !important;
+}
+
+.nav-language-option {
+  appearance: none;
+  border: 0;
+  background: transparent !important;
+  padding: 0.15rem 0.2rem !important;
+  margin: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+}
+
+.nav-language-option.nav-language-en {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.nav-language-option.nav-language-so {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.nav-language-option.nav-language-ar {
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .nav-language-label {
@@ -134,17 +166,20 @@ select {
   transition: color 0.2s ease;
 }
 
-.nav-language.is-en .nav-language-en,
-.nav-language.is-so .nav-language-so {
+.nav-language.is-en .nav-language-en .nav-language-label,
+.nav-language.is-so .nav-language-so .nav-language-label,
+.nav-language.is-ar .nav-language-ar .nav-language-label {
   color: #fff;
 }
 
 .nav-language-track {
+  grid-column: 1 / -1;
+  grid-row: 2;
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  width: 3.35rem;
+  width: 5.1rem;
   height: 1.55rem;
   padding: 0 0.28rem;
   box-sizing: border-box;
@@ -185,6 +220,10 @@ select {
 }
 
 .nav-language.is-so .nav-language-thumb {
+  left: calc(50% - 0.61rem);
+}
+
+.nav-language.is-ar .nav-language-thumb {
   left: calc(100% - 1.4rem);
 }
 

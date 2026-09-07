@@ -42,6 +42,7 @@ export default function App() {
   const about = localizeAbout(locale);
   const ukFlagSrc = flagIconUrl('United Kingdom');
   const soFlagSrc = flagIconUrl('Somalia');
+  const saFlagSrc = flagIconUrl('Saudi Arabia');
 
   const localizedCatalog = useMemo(
     () => catalog.map((story) => localizeStory(story, locale)),
@@ -62,6 +63,7 @@ export default function App() {
 
   useLayoutEffect(() => {
     document.documentElement.lang = locale;
+    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
   }, [locale]);
 
   const openScreen = (next: Screen) => {
@@ -148,14 +150,38 @@ export default function App() {
         >
           {copy.globalStage}
         </button>
-        <button
-          type="button"
-          className={`nav-language${locale === 'so' ? ' is-so' : ' is-en'}`}
-          aria-pressed={locale === 'so'}
-          aria-label={copy.languageToggle}
-          onClick={() => setLocale(locale === 'en' ? 'so' : 'en')}
+        <div
+          className={`nav-language is-${locale}`}
+          role="group"
+          aria-label={copy.languageToggleLabel}
         >
-          <span className="nav-language-label nav-language-en" aria-hidden="true">EN</span>
+          <button
+            type="button"
+            className="nav-language-option nav-language-en"
+            aria-pressed={locale === 'en'}
+            aria-label={copy.languageEnglish}
+            onClick={() => setLocale('en')}
+          >
+            <span className="nav-language-label" aria-hidden="true">EN</span>
+          </button>
+          <button
+            type="button"
+            className="nav-language-option nav-language-so"
+            aria-pressed={locale === 'so'}
+            aria-label={copy.languageSomali}
+            onClick={() => setLocale('so')}
+          >
+            <span className="nav-language-label" aria-hidden="true">SO</span>
+          </button>
+          <button
+            type="button"
+            className="nav-language-option nav-language-ar"
+            aria-pressed={locale === 'ar'}
+            aria-label={copy.languageArabic}
+            onClick={() => setLocale('ar')}
+          >
+            <span className="nav-language-label" aria-hidden="true">AR</span>
+          </button>
           <span className="nav-language-track" aria-hidden="true">
             {ukFlagSrc ? (
               <img
@@ -175,11 +201,19 @@ export default function App() {
                 height={16}
               />
             ) : null}
+            {saFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-ar"
+                src={saFlagSrc}
+                alt=""
+                width={22}
+                height={16}
+              />
+            ) : null}
             <span className="nav-language-thumb" />
           </span>
-          <span className="nav-language-label nav-language-so" aria-hidden="true">SO</span>
           <span className="visually-hidden">{copy.languageToggle}</span>
-        </button>
+        </div>
       </nav>
 
       {screen === 'about' ? (

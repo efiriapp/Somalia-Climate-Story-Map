@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { CHROME, chromeCopy, hazardTitle, type Locale } from './locale';
 
 describe('chromeCopy', () => {
-  it('returns Somali nav labels and English when the locale flips', () => {
+  it('returns Somali and Arabic nav labels alongside English', () => {
     expect(chromeCopy('en').about).toBe('About ICE Institute');
     expect(chromeCopy('en').globalStage).toBe('ICE at Global Stage');
-    expect(chromeCopy('en').languageToggle).toBe('Af-Soomaali');
+    expect(chromeCopy('en').languageToggle).toBe('Language');
     expect(chromeCopy('so').about).toBe('Ku saabsan Machadka ICE');
     expect(chromeCopy('so').research).toBe('Sheekooyinka Cilmi-baarista Machadka ICE');
     expect(chromeCopy('so').stories).toBe('Sheekooyin');
@@ -14,14 +14,27 @@ describe('chromeCopy', () => {
     expect(chromeCopy('so').floods).toBe('Daadad');
     expect(chromeCopy('so').droughts).toBe('Abaaraha');
     expect(chromeCopy('so').heatWaves).toBe('Hirarka kulaylka');
-    expect(chromeCopy('so').languageToggle).toBe('English');
+    expect(chromeCopy('so').languageToggle).toBe('Luqadda');
     expect(chromeCopy('so').apply).toBe('Codso');
     expect(chromeCopy('so').noStories).toMatch(/sheekooyin/);
     expect(chromeCopy('so').storyMapLocation).toMatch(/Khariidadda/);
+    expect(chromeCopy('ar').about).toMatch(/معهد ICE|معهد المناخ/);
+    expect(chromeCopy('ar').research).toMatch(/قصص بحث|أبحاث/);
+    expect(chromeCopy('ar').stories).toBe('القصص');
+    expect(chromeCopy('ar').climateImpact).toMatch(/أثر المناخ|تأثير المناخ/);
+    expect(chromeCopy('ar').globalStage).toMatch(/المسرح العالمي|المنصة العالمية/);
+    expect(chromeCopy('ar').floods).toBe('الفيضانات');
+    expect(chromeCopy('ar').droughts).toBe('الجفاف');
+    expect(chromeCopy('ar').heatWaves).toBe('موجات الحر');
+    expect(chromeCopy('ar').languageToggle).toBe('اللغة');
+    expect(chromeCopy('ar').apply).toMatch(/تطبيق|طبّق/);
+    expect(chromeCopy('ar').relatedPrefix).toMatch(/ذات صلة|ذات الصلة/);
+    expect(chromeCopy('ar').exploreClimateImpact).toMatch(/أثر المناخ|تأثير المناخ/);
     expect(CHROME.en.platform).toContain('Somali Climate');
-    const locales: Locale[] = ['en', 'so'];
-    expect(locales).toHaveLength(2);
+    const locales: Locale[] = ['en', 'so', 'ar'];
+    expect(locales).toHaveLength(3);
     expect(hazardTitle('floods', chromeCopy('so'))).toBe('Daadad');
+    expect(hazardTitle('floods', chromeCopy('ar'))).toBe('الفيضانات');
     expect(hazardTitle('el-nino', chromeCopy('en'))).toBe('El Niño');
     expect(chromeCopy('en').relatedPrefix).toBe('Related: ');
     expect(chromeCopy('en').exploreClimateImpact).toBe('Explore Climate Impact');

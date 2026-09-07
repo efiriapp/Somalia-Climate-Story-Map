@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'so';
+export type Locale = 'en' | 'so' | 'ar';
 
 export const CHROME = {
   en: {
@@ -12,8 +12,11 @@ export const CHROME = {
     globalStageAroundWorld: 'ICE Institute around the world',
     globalStageIntro:
       'Every ICE Institute global event is collected here as a full text page, with images, dates, places, and the complete story of how Somali climate work reached the world.',
-    languageToggle: 'Af-Soomaali',
-    languageToggleLabel: 'Switch to Somali',
+    languageToggle: 'Language',
+    languageToggleLabel: 'Choose language',
+    languageEnglish: 'English',
+    languageSomali: 'Af-Soomaali',
+    languageArabic: 'العربية',
     search: 'Search',
     searchPlaceholder: 'Search by keywords',
     advanced: 'Advanced options',
@@ -84,8 +87,11 @@ export const CHROME = {
     globalStageAroundWorld: 'Machadka ICE adduunka oo dhan',
     globalStageIntro:
       'Dhacdo kasta oo caalami ah oo Machadka ICE waa halkan lagu soo ururiyay bog qoraal oo dhamaystiran, oo leh sawirro, taariikho, goobo, iyo sheekada dhamaystiran ee sida shaqada cimilada Soomaaliyeed u gaadhay adduunka.',
-    languageToggle: 'English',
-    languageToggleLabel: 'U beddel Ingiriisiga',
+    languageToggle: 'Luqadda',
+    languageToggleLabel: 'Dooro luqadda',
+    languageEnglish: 'English',
+    languageSomali: 'Af-Soomaali',
+    languageArabic: 'العربية',
     search: 'Raadso',
     searchPlaceholder: 'Ku raadso erayada',
     advanced: 'Doorashooyin dheeraad ah',
@@ -145,6 +151,81 @@ export const CHROME = {
     relatedPrefix: 'La xiriira: ',
     exploreClimateImpact: 'Sahami Saamaynta Cimilada',
   },
+  ar: {
+    platform: 'منصة سرد بيانات المناخ الصومالية',
+    about: 'عن معهد ICE',
+    research: 'قصص أبحاث معهد ICE',
+    stories: 'القصص',
+    climateImpact: 'أثر المناخ',
+    globalStage: 'ICE على المسرح العالمي',
+    globalStageTitle: 'معهد ICE على المسرح العالمي',
+    globalStageAroundWorld: 'معهد ICE حول العالم',
+    globalStageIntro:
+      'يُجمع هنا كل حدث عالمي لمعهد ICE في صفحة نصية كاملة، مع الصور والتواريخ والأماكن والقصة الكاملة لكيفية وصول العمل المناخي الصومالي إلى العالم.',
+    languageToggle: 'اللغة',
+    languageToggleLabel: 'اختر اللغة',
+    languageEnglish: 'English',
+    languageSomali: 'Af-Soomaali',
+    languageArabic: 'العربية',
+    search: 'بحث',
+    searchPlaceholder: 'ابحث بالكلمات المفتاحية',
+    advanced: 'خيارات متقدمة',
+    latestStories: 'أحدث القصص',
+    backCatalog: '← العودة إلى القائمة',
+    backClimate: '← العودة إلى أثر المناخ',
+    moreInfo: 'مزيد من المعلومات:',
+    story: 'قصة',
+    researchLabel: 'بحث',
+    floods: 'الفيضانات',
+    droughts: 'الجفاف',
+    heatWaves: 'موجات الحر',
+    elNino: 'El Niño',
+    laNina: 'La Niña',
+    region: 'المنطقة',
+    allRegions: 'جميع المناطق',
+    district: 'المديرية',
+    allDistricts: 'جميع المديريات',
+    themes: 'المواضيع',
+    sdgs: 'أهداف التنمية المستدامة',
+    dateAny: 'التاريخ — أي',
+    sortKeywords: 'ترتيب حسب أكثر الكلمات',
+    sortNewest: 'ترتيب حسب الأحدث',
+    sortOldest: 'ترتيب حسب الأقدم',
+    sortTitle: 'ترتيب حسب العنوان',
+    apply: 'تطبيق',
+    noStories: 'لا توجد قصص تطابق هذه عوامل التصفية.',
+    onTheMap: 'على الخريطة',
+    theStory: 'القصة',
+    storyMapLocation: 'موقع خريطة القصة',
+    place: 'المكان',
+    city: 'المدينة',
+    regionLabel: 'المنطقة',
+    country: 'البلد',
+    storyCategory: 'فئة القصة',
+    impactAreas: 'مجالات الأثر',
+    featuredPerson: 'الشخصية البارزة',
+    primarySource: 'المصدر الرئيسي',
+    iceVideo: 'فيديو ICE',
+    backToMain: 'العودة إلى الصفحة الرئيسية',
+    searchTour: 'بحث الجولة',
+    searchCountryOrEvent: 'ابحث عن بلد أو حدث...',
+    noMatches: 'لا نتائج',
+    goHome: 'العودة إلى المنزل',
+    measureDistance: 'قياس المسافة',
+    resetCompass: 'إعادة ضبط البوصلة',
+    tourBack: 'السابق',
+    tourNext: 'التالي',
+    closeEvent: 'إغلاق الحدث',
+    tourEvent: 'حدث الجولة',
+    total: 'المجموع',
+    continentSummary: 'ملخص القارات',
+    iceHomeSummary: 'معهد ICE، جامعة SIMAD — المقر في مقديشو.',
+    mogadishuHome: 'مقديشو، الصومال',
+    iceOfficeLabel: 'مكتب ICE، الحرم الجامعي لجامعة SIMAD، زوبي، KM5، مقديشو، الصومال.',
+    sourceWord: 'مصدر',
+    relatedPrefix: 'ذات صلة: ',
+    exploreClimateImpact: 'استكشف أثر المناخ',
+  },
 } as const;
 
 export const THEME_LABELS: Record<Locale, Record<string, string>> = {
@@ -172,9 +253,21 @@ export const THEME_LABELS: Record<Locale, Record<string, string>> = {
     'climate-mobility': 'Dhaqdhaqaaqa cimilada',
     partnerships: 'Is-kaashiga',
   },
+  ar: {
+    youth: 'الشباب',
+    'green-enterprise': 'المشاريع الخضراء',
+    'waste-energy': 'النفايات والطاقة',
+    oceans: 'المحيطات والسواحل',
+    'drought-water': 'الجفاف والمياه',
+    'art-communication': 'الفن والتواصل',
+    education: 'التعليم',
+    'policy-diplomacy': 'السياسة والدبلوماسية',
+    'climate-mobility': 'التنقل المناخي',
+    partnerships: 'الشراكات',
+  },
 };
 
-export const COUNTRY_LABELS: Record<string, string> = {
+export const COUNTRY_LABELS_SO: Record<string, string> = {
   Somalia: 'Soomaaliya',
   Egypt: 'Masar',
   Qatar: 'Qatar',
@@ -191,9 +284,30 @@ export const COUNTRY_LABELS: Record<string, string> = {
   Brazil: 'Baraasiil',
 };
 
+export const COUNTRY_LABELS_AR: Record<string, string> = {
+  Somalia: 'الصومال',
+  Egypt: 'مصر',
+  Qatar: 'قطر',
+  Rwanda: 'رواندا',
+  Kenya: 'كينيا',
+  Zambia: 'زامبيا',
+  Ethiopia: 'إثيوبيا',
+  Ghana: 'غانا',
+  Djibouti: 'جيبوتي',
+  Azerbaijan: 'أذربيجان',
+  'United Arab Emirates': 'الإمارات العربية المتحدة',
+  Switzerland: 'سويسرا',
+  France: 'فرنسا',
+  Brazil: 'البرازيل',
+};
+
+/** @deprecated Prefer COUNTRY_LABELS_SO; kept for any legacy imports */
+export const COUNTRY_LABELS = COUNTRY_LABELS_SO;
+
 export const CONTINENT_LABELS: Record<Locale, Record<string, string>> = {
   en: { Africa: 'Africa', Asia: 'Asia', Europe: 'Europe', Americas: 'Americas' },
   so: { Africa: 'Afrika', Asia: 'Aasiya', Europe: 'Yurub', Americas: 'Ameerika' },
+  ar: { Africa: 'أفريقيا', Asia: 'آسيا', Europe: 'أوروبا', Americas: 'الأمريكتان' },
 };
 
 const MONTHS_SO = [
@@ -216,14 +330,25 @@ export const chromeCopy = (locale: Locale) => CHROME[locale];
 export const themeLabel = (slug: string, locale: Locale): string =>
   THEME_LABELS[locale][slug] ?? slug;
 
-export const countryLabel = (country: string, locale: Locale): string =>
-  locale === 'so' ? (COUNTRY_LABELS[country] ?? country) : country;
+export const countryLabel = (country: string, locale: Locale): string => {
+  if (locale === 'so') return COUNTRY_LABELS_SO[country] ?? country;
+  if (locale === 'ar') return COUNTRY_LABELS_AR[country] ?? country;
+  return country;
+};
 
 export const continentLabel = (continent: string, locale: Locale): string =>
   CONTINENT_LABELS[locale][continent] ?? continent;
 
 export const formatLocaleDate = (iso: string, locale: Locale): string => {
   const date = new Date(`${iso}T00:00:00Z`);
+  if (locale === 'ar') {
+    return new Intl.DateTimeFormat('ar', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(date);
+  }
   if (locale !== 'so') {
     return new Intl.DateTimeFormat('en-GB', {
       day: 'numeric',
@@ -235,8 +360,11 @@ export const formatLocaleDate = (iso: string, locale: Locale): string => {
   return `${date.getUTCDate()} ${MONTHS_SO[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 };
 
-export const localizeCreditText = (text: string, locale: Locale): string =>
-  locale === 'so' ? text.replace(/^Source:/, CHROME.so.sourceWord + ':') : text;
+export const localizeCreditText = (text: string, locale: Locale): string => {
+  if (locale === 'so') return text.replace(/^Source:/, CHROME.so.sourceWord + ':');
+  if (locale === 'ar') return text.replace(/^Source:/, CHROME.ar.sourceWord + ':');
+  return text;
+};
 
 export const hazardTitle = (
   id: 'floods' | 'droughts' | 'heat-waves' | 'el-nino' | 'la-nina',

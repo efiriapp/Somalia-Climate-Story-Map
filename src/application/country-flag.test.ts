@@ -18,6 +18,7 @@ describe('country flags', () => {
     expect(flagIconUrl('Ghana')).toBe('https://flagcdn.com/w40/gh.png');
     expect(flagIconUrl('Somalia')).toBe('https://flagcdn.com/w40/so.png');
     expect(flagIconUrl('United Kingdom')).toBe('https://flagcdn.com/w40/gb.png');
+    expect(flagIconUrl('Saudi Arabia')).toBe('https://flagcdn.com/w40/sa.png');
   });
 
   it('returns null for an unknown country', () => {
