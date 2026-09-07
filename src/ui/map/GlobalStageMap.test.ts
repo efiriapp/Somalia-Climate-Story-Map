@@ -126,12 +126,16 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('right: 332');
   });
 
-  it('shows a country flag and date on one line at the destination pin', () => {
+  it('stacks the country flag above the date on the destination pin', () => {
     expect(source).toContain('pin-date-label');
     expect(source).toContain('pin-flag-icon');
+    expect(source).toContain('pin-date-text');
     expect(source).toContain('flagIconUrl(stop.country)');
     expect(source).toContain('formatLocaleDate(stop.date, localeRef.current)');
     expect(source).toMatch(/touringRef\.current[\s\S]{0,120}stop\.storyId === activeId[\s\S]{0,280}pin-date-label/);
+    expect(source).toMatch(/pin-flag-icon[\s\S]{0,200}pin-date-text|appendChild\(flag\)[\s\S]{0,120}pin-date-text/);
+    expect(source).toMatch(/flag\.width\s*=\s*32/);
+    expect(source).toMatch(/flag\.height\s*=\s*24/);
     expect(source).not.toContain("className = 'tour-pin'");
     expect(source).not.toContain('labeledPin');
     expect(source).not.toContain('new Popup');

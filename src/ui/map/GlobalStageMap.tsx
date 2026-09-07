@@ -238,11 +238,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           flag.className = 'pin-flag-icon';
           flag.src = flagUrl;
           flag.alt = '';
-          flag.width = 20;
-          flag.height = 15;
+          flag.width = 32;
+          flag.height = 24;
           label.appendChild(flag);
         }
         const date = document.createElement('span');
+        date.className = 'pin-date-text';
         date.textContent = formatLocaleDate(stop.date, localeRef.current);
         label.appendChild(date);
         pin.appendChild(label);

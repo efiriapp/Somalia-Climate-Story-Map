@@ -194,6 +194,11 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,220}bottom:\s*100%/);
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,280}pointer-events:\s*none/);
     expect(css).toMatch(/\.pin-date-label[\s\S]{0,220}inline-flex/);
+    expect(css).toMatch(/\.pin-date-label[\s\S]{0,280}flex-direction:\s*column/);
+    expect(css).toContain('.pin-date-text');
+    expect(css).toMatch(/\.pin-flag-icon[\s\S]{0,160}width:\s*32px/);
+    expect(css).toMatch(/\.pin-flag-icon[\s\S]{0,160}height:\s*24px/);
+    expect(css).toMatch(/\.pin-date-text[\s\S]{0,160}font-size:\s*13px/);
     expect(css).toContain('.ice-office-label');
     expect(css).toMatch(/\.ice-office-label[\s\S]{0,220}bottom:\s*100%/);
     expect(css).toContain('.ice-office-logo');
