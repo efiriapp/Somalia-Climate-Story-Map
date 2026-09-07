@@ -86,9 +86,7 @@ describe('buildGlobalTour', () => {
     expect(SOMALIA_HOME.lat).toBeGreaterThanOrEqual(6);
     expect(SOMALIA_HOME.lng).toBe(MOGADISHU_HOME.lng);
     expect(SOMALIA_HOME.zoom).toBe(COUNTRY_ZOOM);
-    expect(ICE_OFFICE_LABEL).toBe(
-      'ICE Office, SIMAD University Town Campus, Zoobe, KM5, Mogadishu, Somalia.',
-    );
+    expect(ICE_OFFICE_LABEL).toBe('ICE Office Muqdisho, Somalia');
     expect(ICE_OFFICE_LOGO).toBe('/logos/ice-lockup.png');
   });
 

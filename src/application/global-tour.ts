@@ -15,8 +15,7 @@ export const GLOBE_PADDING = { top: 72, bottom: 80, left: 64, right: 64 };
 export const CITY_ZOOM = 11;
 export const COUNTRY_ZOOM = 5;
 
-export const ICE_OFFICE_LABEL =
-  'ICE Office, SIMAD University Town Campus, Zoobe, KM5, Mogadishu, Somalia.';
+export const ICE_OFFICE_LABEL = 'ICE Office Muqdisho, Somalia';
 
 export const ICE_OFFICE_LOGO = '/logos/ice-lockup.png';
 
