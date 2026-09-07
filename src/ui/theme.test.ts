@@ -205,10 +205,14 @@ describe('ICE green brand', () => {
     expect(css).toContain('.ice-office-label');
     expect(css).toMatch(/\.ice-office-label[\s\S]{0,220}bottom:\s*100%/);
     expect(css).toContain('.ice-office-logo');
-    // ICE office chip matches country pin-date labels (compact flag-sized logo).
-    expect(css).toMatch(/\.ice-office-label[\s\S]{0,220}inline-flex/);
-    expect(css).toMatch(/\.ice-office-logo[\s\S]{0,160}width:\s*20px/);
-    expect(css).toMatch(/\.ice-office-logo[\s\S]{0,160}height:\s*15px/);
+    expect(css).toContain('.ice-office-text');
+    // Same brand as tour pins: stacked logo + text, no green chip, flag-sized logo.
+    expect(css).toMatch(/\.ice-office-label[\s\S]{0,280}flex-direction:\s*column/);
+    expect(css).toMatch(/\.ice-office-label[\s\S]{0,450}background:\s*transparent/);
+    expect(css).not.toMatch(/\.ice-office-label[\s\S]{0,450}background:\s*#063D39/);
+    expect(css).toMatch(/\.ice-office-logo[\s\S]{0,160}width:\s*48px/);
+    expect(css).toMatch(/\.ice-office-logo[\s\S]{0,160}height:\s*36px/);
+    expect(css).toMatch(/\.ice-office-text[\s\S]{0,160}font-size:\s*14px/);
     expect(css).not.toMatch(/\.ice-office-logo[\s\S]{0,80}width:\s*148px/);
   });
 });

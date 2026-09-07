@@ -165,14 +165,17 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('ICE_OFFICE_LABEL');
     expect(source).toContain('ice-office-label');
     expect(source).toMatch(/homeMarkerRef\.current[\s\S]{0,400}ice-office-label/);
-    expect(source).toMatch(/ice-office-label[\s\S]{0,200}ICE_OFFICE_LABEL/);
+    expect(source).toMatch(/ice-office-label[\s\S]{0,500}ICE_OFFICE_LABEL/);
   });
 
   it('keeps the local ICE logo on the Mogadishu home pin with the address label', () => {
     expect(source).toContain('ICE_OFFICE_LOGO');
     expect(source).toContain('ice-office-logo');
+    expect(source).toContain('ice-office-text');
     expect(source).toMatch(/homeMarkerRef\.current[\s\S]{0,800}ice-office-logo/);
     expect(source).toMatch(/ice-office-logo[\s\S]{0,240}ICE_OFFICE_LOGO/);
+    expect(source).toMatch(/logo\.width\s*=\s*48/);
+    expect(source).toMatch(/logo\.height\s*=\s*36/);
     expect(source).not.toContain('new Popup');
   });
 });

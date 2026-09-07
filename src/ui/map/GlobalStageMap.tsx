@@ -213,14 +213,18 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const homePin = homeMarkerRef.current.getElement();
     const office = document.createElement('span');
     office.className = 'ice-office-label';
-    office.textContent = localeRef.current === 'en' ? ICE_OFFICE_LABEL : copyRef.current.iceOfficeLabel;
     const logo = document.createElement('img');
     logo.className = 'ice-office-logo';
     logo.src = ICE_OFFICE_LOGO;
     logo.alt = '';
-    logo.width = 20;
-    logo.height = 15;
-    office.prepend(logo);
+    logo.width = 48;
+    logo.height = 36;
+    office.appendChild(logo);
+    const officeText = document.createElement('span');
+    officeText.className = 'ice-office-text';
+    officeText.textContent =
+      localeRef.current === 'en' ? ICE_OFFICE_LABEL : copyRef.current.iceOfficeLabel;
+    office.appendChild(officeText);
     homePin.appendChild(office);
     const pins: Marker[] = [];
     for (const stop of eventsRef.current) {
