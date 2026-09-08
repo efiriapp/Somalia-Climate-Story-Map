@@ -6,14 +6,15 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'RegionMapTour.tsx'), 'utf8');
 
 describe('RegionMapTour', () => {
-  it('uses OpenStreetMap tiles, region pins, and a slider of image then title then description', () => {
-    expect(source).toContain('leafletBasemaps');
+  it('uses Equal Earth as the default basemap, region pins, and a slider of image then title then description', () => {
+    expect(source).toContain('EqualEarthBasemap');
     expect(source).toContain('LayersControl');
     expect(source).toContain('Icon.Default');
     expect(source).not.toContain('basemaps.cartocdn.com');
-    expect(source).toContain('arcgisonline');
-    expect(source).toContain('World_Imagery');
-    expect(source).toMatch(/name="Streets"[\s\S]{0,80}checked/);
+    expect(source).not.toContain('arcgisonline');
+    expect(source).not.toContain('World_Imagery');
+    expect(source).toMatch(/name="Equal Earth"[\s\S]{0,120}checked|EqualEarthBasemap/);
+    expect(source).not.toMatch(/name="Streets"[\s\S]{0,80}checked/);
     expect(source).not.toMatch(/name="Satellite"[\s\S]{0,40}checked/);
     expect(source).not.toMatch(/name="Esri"[\s\S]{0,40}checked/);
     expect(source).toContain('buildRegionMapTour');
@@ -26,8 +27,6 @@ describe('RegionMapTour', () => {
     expect(source).toContain('setView');
     expect(source).toContain('ORIGIN_HOLD_MS');
     expect(source).toContain('DISTRICT_FLY_MS');
-    expect(source).toContain('DISTRICT_ZOOM');
-    expect(source).toContain('BUILDING_ZOOM');
     expect(source).toContain('stop.zoom');
     expect(source).not.toContain('animate: false');
     expect(source).toContain('useState(-1)');

@@ -28,8 +28,12 @@ import {
   prevTourIndex,
   type TourStop,
 } from '../../application/global-tour';
+import { EqualEarthCoordTransform } from 'maplibre-gl-equal-earth';
+import {
+  EQUAL_EARTH_STYLE_URL,
+  EQUAL_EARTH_SWITCH_ZOOM,
+} from '../../application/equal-earth';
 import { countryLabel, formatLocaleDate } from '../../application/locale';
-import { styleForLayer } from '../../application/map-layers';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
@@ -40,11 +44,6 @@ import { ContinentSummaryCards } from './ContinentSummaryCards';
 type Props = {
   stories: Story[];
   onClose: () => void;
-};
-
-const applyFlatMap = (map: Map) => {
-  const flatMap = map as Map & { setProjection?: (projection: { type: string }) => void };
-  flatMap.setProjection?.({ type: 'mercator' });
 };
 
 const Icon = ({ children }: { children: ReactNode }) => (
@@ -351,7 +350,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     });
   };
 
-  const flyToStop = (token: number, from: LngLat, stop: TourStop) => {
+  const flyToStop = (token: number, _from: LngLat, stop: TourStop) => {
     const map = mapRef.current;
     if (!map || !stop.storyId) {
       return;
@@ -484,7 +483,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     const map = new Map({
       container: host.current,
-      style: styleForLayer('osm'),
+      style: EQUAL_EARTH_STYLE_URL,
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: GLOBE_VIEW.pitch,
@@ -499,9 +498,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.setPadding(STAGE_PADDING);
     map.addControl(new NavigationControl({ visualizePitch: false, showCompass: false }), 'top-right');
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
+    new EqualEarthCoordTransform(map, EQUAL_EARTH_SWITCH_ZOOM);
     mapRef.current = map;
     const onLoad = () => {
-      applyFlatMap(map);
       if (!map.getSource('measure-line')) {
         map.addSource('measure-line', { type: 'geojson', data: emptyLine });
         map.addLayer({

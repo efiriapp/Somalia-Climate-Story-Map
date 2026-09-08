@@ -1,9 +1,10 @@
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { displayLocation, groupedPins } from '../../application/display-location';
 import type { MapView } from '../../application/resolve-map-view';
 import type { Story } from '../../domain/story';
+import { EqualEarthBasemap } from './EqualEarthBasemap';
 
 const pinIcon = L.divIcon({
   className: 'ice-pin',
@@ -30,11 +31,9 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
         center={[view.center.lat, view.center.lng]}
         zoom={view.zoom}
         scrollWheelZoom
+        minZoom={1}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <EqualEarthBasemap />
         {[...groups.values()].flatMap((group) =>
           group.map((story) => {
             const point = displayLocation(story, group);

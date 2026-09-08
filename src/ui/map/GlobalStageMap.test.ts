@@ -9,8 +9,11 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('uses a free OpenStreetMap style instead of Carto', () => {
-    expect(source).toContain("styleForLayer('osm')");
+  it('uses the Equal Earth hybrid style instead of Carto or keyed tiles', () => {
+    expect(source).toContain('EQUAL_EARTH_STYLE_URL');
+    expect(source).toContain('EqualEarthCoordTransform');
+    expect(source).toContain('EQUAL_EARTH_SWITCH_ZOOM');
+    expect(source).not.toContain("styleForLayer('osm')");
     expect(source).not.toContain('carto-voyager');
     expect(source).not.toContain('basemaps.cartocdn.com');
   });
@@ -38,14 +41,15 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('setPlaying(true)');
   });
 
-  it('keeps the world map flat 2D globally, with no globe or camera tilt', () => {
+  it('keeps the world map flat 2D with Equal Earth, with no globe or camera tilt', () => {
     expect(source).not.toContain("type: 'globe'");
-    expect(source).toContain("type: 'mercator'");
+    expect(source).toContain('EqualEarthCoordTransform');
     expect(source).toContain('maxPitch: 0');
     expect(source).not.toContain('pitch: 24');
     expect(source).not.toContain('pitch: 42');
     expect(source).not.toContain('CRUISE_ZOOM, 28');
     expect(source).toContain('visualizePitch: false');
+    expect(source).not.toContain("setProjection?.({ type: 'mercator' })");
   });
 
   it('shows a Total visit count inside the continent cards', () => {

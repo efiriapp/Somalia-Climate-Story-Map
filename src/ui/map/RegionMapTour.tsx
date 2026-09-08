@@ -8,9 +8,7 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
 import { leafletBasemaps } from '../../application/leaflet-basemaps';
 import {
-  BUILDING_ZOOM,
   DISTRICT_FLY_MS,
-  DISTRICT_ZOOM,
   ORIGIN_HOLD_MS,
   buildRegionMapTour,
   tourFlightPlan,
@@ -22,6 +20,7 @@ import { storyMediaCredit } from '../../application/media-source-credit';
 import type { Story } from '../../domain/story';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
+import { EqualEarthBasemap } from './EqualEarthBasemap';
 
 type Props = {
   story: Story;
@@ -180,18 +179,10 @@ export function RegionMapTour({ story }: Props) {
           keyboard={false}
           whenReady={() => scrollPageToTop()}
         >
+          <EqualEarthBasemap />
           <LayersControl position="topleft">
-            <LayersControl.BaseLayer name="Streets" checked>
-              <TileLayer attribution={leafletBasemaps[0].attribution} url={leafletBasemaps[0].url} />
-            </LayersControl.BaseLayer>
             <LayersControl.BaseLayer name="Satellite">
               <TileLayer attribution={leafletBasemaps[1].attribution} url={leafletBasemaps[1].url} />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer name="Esri">
-              <TileLayer
-                attribution="Tiles &copy; Esri"
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-              />
             </LayersControl.BaseLayer>
             {leafletBasemaps
               .filter((layer) => layer.id === 'terrain')
