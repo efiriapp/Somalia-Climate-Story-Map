@@ -9,8 +9,8 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('uses the Equal Earth hybrid style instead of Carto or keyed tiles', () => {
-    expect(source).toContain('EQUAL_EARTH_STYLE_URL');
+  it('uses the Equal Earth hybrid terrain style instead of Carto or keyed tiles', () => {
+    expect(source).toContain('equalEarthStyle');
     expect(source).toContain('EqualEarthCoordTransform');
     expect(source).toContain('EQUAL_EARTH_SWITCH_ZOOM');
     expect(source).not.toContain("styleForLayer('osm')");
@@ -93,7 +93,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('flyHomeToSomalia');
     expect(source).toContain('COUNTRY_ZOOM');
     expect(source).toMatch(/touringRef\.current = true[\s\S]{0,180}setTourCard\(null\)/);
-    expect(source).toMatch(/storyJumpFromSomalia\(map, end[\s\S]{0,220}setTourCard\(stop\)/);
+    expect(source).toMatch(/storyJumpFromSomalia\(map, \{ lng: stop\.lng, lat: stop\.lat \}[\s\S]{0,220}setTourCard\(stop\)/);
     expect(source).toMatch(/PIN_HOLD_MS[\s\S]{0,220}flyHomeToSomalia/);
   });
 
@@ -117,8 +117,9 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('duration: JUMP_MS');
     expect(source).toContain('duration: LAND_MS');
     expect(source).toMatch(/easeTo\(\{[\s\S]{0,180}zoom:\s*CITY_ZOOM/);
-    expect(source).toContain('greatCircle({ lng: SOMALIA_HOME.lng, lat: SOMALIA_HOME.lat }');
-    expect(source).toContain("'line-width': 5");
+    expect(source).not.toContain('tour-path');
+    expect(source).not.toContain('startTourPath');
+    expect(source).not.toContain('greatCircle');
     expect(source).not.toContain('jumpToView');
     expect(source).not.toContain('TILE_SETTLE_MS');
     expect(source).not.toContain('cruiseThenArrive');

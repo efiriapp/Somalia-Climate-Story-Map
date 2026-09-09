@@ -11,7 +11,6 @@ import {
 } from '../../application/continent-visits';
 import {
   distanceKm,
-  greatCircle,
   pathCoordinates,
   type LngLat,
 } from '../../application/flight-path';
@@ -30,8 +29,8 @@ import {
 } from '../../application/global-tour';
 import { EqualEarthCoordTransform } from 'maplibre-gl-equal-earth';
 import {
-  EQUAL_EARTH_STYLE_URL,
   EQUAL_EARTH_SWITCH_ZOOM,
+  equalEarthStyle,
 } from '../../application/equal-earth';
 import { countryLabel, formatLocaleDate } from '../../application/locale';
 import { storyMediaCredit } from '../../application/media-source-credit';
@@ -102,17 +101,6 @@ const lineData = (path: LngLat[]): GeoJSON.Feature => ({
   properties: {},
   geometry: { type: 'LineString', coordinates: pathCoordinates(path) },
 });
-
-const startTourPath = (map: Map, path: LngLat[]): LngLat | null => {
-  const end = path.at(-1);
-  if (!end) {
-    return null;
-  }
-  const source = map.getSource('tour-path') as GeoJSONSource | undefined;
-  source?.setData(lineData(path));
-  map.stop();
-  return end;
-};
 
 const afterEase = (duration: number, onDone: () => void) => {
   window.clearTimeout(flyTimer);
@@ -186,11 +174,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const searchHits = useMemo(() => searchTourStops(events, searchQuery), [events, searchQuery]);
   const activeStop = events.find((stop) => stop.storyId === activeId);
   const activeContinent = activeStop ? continentOfCountry(activeStop.country) : undefined;
-
-  const clearTourPath = (map: Map | null) => {
-    const source = map?.getSource('tour-path') as GeoJSONSource | undefined;
-    source?.setData(emptyLine);
-  };
 
   const stopMotion = () => {
     window.clearTimeout(holdRef.current);
@@ -303,18 +286,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   const iceOffice = { lng: MOGADISHU_HOME.lng, lat: MOGADISHU_HOME.lat };
 
-  const flyHomeToSomalia = (token: number, from: LngLat, onArrive: () => void) => {
+  const flyHomeToSomalia = (token: number, _from: LngLat, onArrive: () => void) => {
     const map = mapRef.current;
     if (!map) {
       return;
     }
     showAllPins(map, 'home');
     setTourCard(null);
-    const end = startTourPath(map, greatCircle(from, iceOffice));
-    if (!end) {
-      onArrive();
-      return;
-    }
+    map.stop();
     map.flyTo({
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: OVERVIEW_ZOOM,
@@ -359,14 +338,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setActiveId(stop.storyId);
     setTourCard(null);
     showAllPins(map, stop.storyId);
-    const end = startTourPath(
-      map,
-      greatCircle({ lng: SOMALIA_HOME.lng, lat: SOMALIA_HOME.lat }, { lng: stop.lng, lat: stop.lat }),
-    );
-    if (!end) {
-      return;
-    }
-    storyJumpFromSomalia(map, end, () => {
+    map.stop();
+    storyJumpFromSomalia(map, { lng: stop.lng, lat: stop.lat }, () => {
       if (token !== tourToken.current) {
         return;
       }
@@ -388,7 +361,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           const next = nextIndex === index ? null : list[nextIndex];
           if (!next) {
             touringRef.current = false;
-            clearTourPath(mapRef.current);
             if (mapRef.current) {
               showAllPins(mapRef.current);
             }
@@ -439,7 +411,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     setMeasureKm(null);
     const measure = map?.getSource('measure-line') as GeoJSONSource | undefined;
     measure?.setData(emptyLine);
-    clearTourPath(map);
     if (map) {
       showAllPins(map);
     }
@@ -483,7 +454,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     const map = new Map({
       container: host.current,
-      style: EQUAL_EARTH_STYLE_URL,
+      style: equalEarthStyle(),
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: GLOBE_VIEW.pitch,
@@ -508,15 +479,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           type: 'line',
           source: 'measure-line',
           paint: { 'line-color': '#4CAF7D', 'line-width': 3 },
-        });
-      }
-      if (!map.getSource('tour-path')) {
-        map.addSource('tour-path', { type: 'geojson', data: emptyLine });
-        map.addLayer({
-          id: 'tour-path',
-          type: 'line',
-          source: 'tour-path',
-          paint: { 'line-color': '#4CAF7D', 'line-width': 5, 'line-opacity': 0.9 },
         });
       }
       map.resize();

@@ -1,16 +1,22 @@
 import { describe, expect, it } from 'vitest';
 import {
   EQUAL_EARTH_ATTRIBUTION,
-  EQUAL_EARTH_STYLE_URL,
+  EQUAL_EARTH_COUNTRIES_TILEJSON,
   EQUAL_EARTH_SWITCH_ZOOM,
+  equalEarthStyle,
 } from './equal-earth';
 
 describe('equal-earth', () => {
-  it('points every map at the free Equal Earth hybrid style', () => {
-    expect(EQUAL_EARTH_STYLE_URL).toContain('equal.bbox.earth');
-    expect(EQUAL_EARTH_STYLE_URL).toContain('eq2merc');
+  it('builds an Equal Earth + terrain hybrid style without keyed tile APIs', () => {
+    const style = equalEarthStyle();
+    const json = JSON.stringify(style);
+    expect(EQUAL_EARTH_COUNTRIES_TILEJSON).toContain('assets.bbox.earth');
     expect(EQUAL_EARTH_SWITCH_ZOOM).toBe(3);
     expect(EQUAL_EARTH_ATTRIBUTION).toMatch(/Equal Earth/i);
-    expect(EQUAL_EARTH_STYLE_URL).not.toMatch(/cartocdn|mapbox|stadiamaps|maptiler/i);
+    expect(json).toContain('opentopomap.org');
+    expect(json).toContain('ne_extracts_8857_3857');
+    expect(json).toContain('"minzoom":3');
+    expect(json).not.toMatch(/#ffffff|"#fff"/i);
+    expect(json).not.toMatch(/cartocdn|mapbox|stadiamaps|maptiler/i);
   });
 });
