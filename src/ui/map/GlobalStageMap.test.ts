@@ -28,6 +28,16 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('layersOpen');
   });
 
+  it('uses a restart icon in the map toolbar and removes search and compass icons', () => {
+    expect(source).toContain('RestartIcon');
+    expect(source).toContain('aria-label={copy.tourRestart}');
+    expect(source).toContain('onClick={goHome}');
+    expect(source).not.toContain('SearchIcon');
+    expect(source).not.toContain('CompassIcon');
+    expect(source).not.toContain('copy.searchTour');
+    expect(source).not.toContain('copy.resetCompass');
+  });
+
   it('tours date-sorted places with classic pins, city zoom on the stop, and a center-right card', () => {
     expect(source).toContain('a.date.localeCompare');
     expect(source).toMatch(/center: \[stop\.lng, stop\.lat\][\s\S]{0,80}CITY_ZOOM/);
@@ -107,12 +117,12 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('setTourCard(null)');
   });
 
-  it('adds Restart after Next to reset the map tour to the default Somalia view', () => {
+  it('adds a Restart icon in the map toolbar to reset the map tour to the default Somalia view', () => {
     expect(source).toContain('copy.tourRestart');
-    expect(source).toMatch(
-      /copy\.tourNext[\s\S]{0,280}copy\.tourRestart[\s\S]{0,120}onClick=\{goHome\}/,
-    );
-    expect(source).toMatch(/tourRestart[\s\S]{0,80}goHome/);
+    expect(source).toContain('RestartIcon');
+    expect(source).toContain('aria-label={copy.tourRestart}');
+    expect(source).toMatch(/RestartIcon[\s\S]{0,160}goHome|goHome[\s\S]{0,160}RestartIcon/);
+    expect(source).not.toMatch(/tour-event-nav[\s\S]{0,220}tourRestart/);
   });
 
   it('hides the right-side card until the tour lands on a pin, holds 5s, then returns home to Somalia', () => {

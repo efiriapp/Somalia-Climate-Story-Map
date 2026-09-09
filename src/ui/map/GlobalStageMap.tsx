@@ -6,7 +6,6 @@ import {
   continentSummaries,
   defaultTourFilter,
   firstEventIndexByContinent,
-  searchTourStops,
   summaryTotal,
 } from '../../application/continent-visits';
 import {
@@ -53,30 +52,17 @@ const Icon = ({ children }: { children: ReactNode }) => (
   </svg>
 );
 
-const SearchIcon = () => (
+const RestartIcon = () => (
   <Icon>
-    <circle cx="11" cy="11" r="7" />
-    <path d="m16 16 5 5" />
+    <path d="M20 11a8 8 0 1 1-2.35-5.65" />
+    <path d="M20 4v7h-7" />
   </Icon>
-);
-
-const HomeIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path fill="currentColor" d="M4 11.5 12 4l8 7.5V20H15v-6H9v6H4z" />
-  </svg>
 );
 
 const MeasureIcon = () => (
   <Icon>
     <path d="M4 8h16v8H4z" />
     <path d="M7 8v4M10 8v3M13 8v4M16 8v3" />
-  </Icon>
-);
-
-const CompassIcon = () => (
-  <Icon>
-    <circle cx="12" cy="12" r="9" />
-    <path d="m12 4 2.2 6.4L12 20l-2.2-6.4z" />
   </Icon>
 );
 
@@ -170,8 +156,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const tourToken = useRef(0);
   const holdRef = useRef(0);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [layersOpen, setLayersOpen] = useState(false);
   const [basemap, setBasemap] = useState<MapLayerId>(DEFAULT_MAP_LAYER);
   const [measuring, setMeasuring] = useState(false);
@@ -189,7 +173,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   eventsRef.current = events;
   const directionRef = useRef(1);
   const openStopRef = useRef<(stop: TourStop) => void>(() => undefined);
-  const searchHits = useMemo(() => searchTourStops(events, searchQuery), [events, searchQuery]);
   const activeStop = events.find((stop) => stop.storyId === activeId);
   const activeContinent = activeStop ? continentOfCountry(activeStop.country) : undefined;
 
@@ -439,7 +422,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     stopMotion();
     setTourCard(null);
     setActiveId(null);
-    setSearchOpen(false);
     setMeasuring(false);
     measurePointsRef.current = [];
     setMeasureKm(null);
@@ -458,18 +440,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     });
   };
 
-  const resetCompass = () => {
-    mapRef.current?.easeTo({
-      bearing: 0,
-      pitch: 0,
-      duration: 700,
-    });
-  };
-
   const toggleMeasure = () => {
     const next = !measuring;
     setMeasuring(next);
-    setSearchOpen(false);
     setLayersOpen(false);
     if (!next) {
       measurePointsRef.current = [];
@@ -571,58 +544,15 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             open={layersOpen}
             onOpenChange={(open) => {
               setLayersOpen(open);
-              if (open) {
-                setSearchOpen(false);
-                setMeasuring(false);
-              }
+              if (open) setMeasuring(false);
             }}
             onChange={setBasemap}
           />
-          <div className="tour-layer-wrap">
-            <button
-              type="button"
-              aria-label={copy.searchTour}
-              aria-pressed={searchOpen}
-              onClick={() => {
-                setSearchOpen((open) => !open);
-                setLayersOpen(false);
-                setMeasuring(false);
-              }}
-            >
-              <SearchIcon />
-            </button>
-            {searchOpen ? (
-              <div className="tour-search-panel">
-                <input
-                  className="tour-search-input"
-                  value={searchQuery}
-                  placeholder={copy.searchCountryOrEvent}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                />
-                {searchHits.map((hit) => (
-                  <button
-                    key={hit.storyId}
-                    type="button"
-                    onClick={() => {
-                      setSearchOpen(false);
-                      runPlaceTour(hit);
-                    }}
-                  >
-                    {countryLabel(hit.country, locale)}: {hit.title}
-                  </button>
-                ))}
-                {searchHits.length === 0 ? <p>{copy.noMatches}</p> : null}
-              </div>
-            ) : null}
-          </div>
-          <button type="button" aria-label={copy.goHome} onClick={goHome}>
-            <HomeIcon />
+          <button type="button" aria-label={copy.tourRestart} onClick={goHome}>
+            <RestartIcon />
           </button>
           <button type="button" aria-label={copy.measureDistance} aria-pressed={measuring} onClick={toggleMeasure}>
             <MeasureIcon />
-          </button>
-          <button type="button" aria-label={copy.resetCompass} onClick={resetCompass}>
-            <CompassIcon />
           </button>
         </div>
         <div className="tour-event-nav">
@@ -631,9 +561,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           </button>
           <button type="button" aria-label={copy.tourNext} onClick={() => stepEvent(1)}>
             {copy.tourNext}
-          </button>
-          <button type="button" aria-label={copy.tourRestart} onClick={goHome}>
-            {copy.tourRestart}
           </button>
         </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}
