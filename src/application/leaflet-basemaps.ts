@@ -5,6 +5,7 @@ export type LeafletBasemap = {
   attribution: string;
 };
 
+/** Leaflet raster fallbacks; Streets is listed first as the default choice. */
 export const leafletBasemaps: LeafletBasemap[] = [
   {
     id: 'streets',

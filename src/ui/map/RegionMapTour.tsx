@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type WheelEvent } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, useMap, LayersControl } from 'react-leaflet';
+import { MapContainer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
-import { leafletBasemaps } from '../../application/leaflet-basemaps';
+import { DEFAULT_MAP_LAYER, type MapLayerId } from '../../application/map-layers';
 import {
   DISTRICT_FLY_MS,
   ORIGIN_HOLD_MS,
@@ -21,6 +21,7 @@ import type { Story } from '../../domain/story';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 import { EqualEarthBasemap } from './EqualEarthBasemap';
+import { MapBasemapControl } from './MapBasemapControl';
 
 type Props = {
   story: Story;
@@ -89,6 +90,8 @@ export function RegionMapTour({ story }: Props) {
   const stops = useMemo(() => buildRegionMapTour(story), [story]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [sliderOpen, setSliderOpen] = useState(false);
+  const [basemap, setBasemap] = useState<MapLayerId>(DEFAULT_MAP_LAYER);
+  const [layersOpen, setLayersOpen] = useState(false);
   const indexRef = useRef(-1);
   const lockedRef = useRef(false);
   const hideRef = useRef(0);
@@ -179,19 +182,7 @@ export function RegionMapTour({ story }: Props) {
           keyboard={false}
           whenReady={() => scrollPageToTop()}
         >
-          <EqualEarthBasemap />
-          <LayersControl position="topleft">
-            <LayersControl.BaseLayer name="Satellite">
-              <TileLayer attribution={leafletBasemaps[1].attribution} url={leafletBasemaps[1].url} />
-            </LayersControl.BaseLayer>
-            {leafletBasemaps
-              .filter((layer) => layer.id === 'terrain')
-              .map((layer) => (
-                <LayersControl.BaseLayer key={layer.id} name={layer.name}>
-                  <TileLayer attribution={layer.attribution} url={layer.url} />
-                </LayersControl.BaseLayer>
-              ))}
-          </LayersControl>
+          <EqualEarthBasemap basemap={basemap} />
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
           {stops.map((stop) => (
             <Marker
@@ -216,6 +207,13 @@ export function RegionMapTour({ story }: Props) {
             </Marker>
           ))}
         </MapContainer>
+        <MapBasemapControl
+          className="map-basemap-control-leaflet"
+          value={basemap}
+          open={layersOpen}
+          onOpenChange={setLayersOpen}
+          onChange={setBasemap}
+        />
         <div className="tour-event-nav">
           <button type="button" aria-label={copy.tourBack} onClick={() => stepDistrict(-1)}>
             {copy.tourBack}

@@ -6,17 +6,19 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'RegionMapTour.tsx'), 'utf8');
 
 describe('RegionMapTour', () => {
-  it('uses Equal Earth as the default basemap, region pins, and a slider of image then title then description', () => {
+  it('defaults to Streets Equal Earth with a layers icon toggle for Satellite and Terrain', () => {
     expect(source).toContain('EqualEarthBasemap');
-    expect(source).toContain('LayersControl');
+    expect(source).toContain('MapBasemapControl');
+    expect(source).toContain('DEFAULT_MAP_LAYER');
+    expect(source).toContain("useState<MapLayerId>(DEFAULT_MAP_LAYER)");
+    expect(source).toContain('basemap={basemap}');
     expect(source).toContain('Icon.Default');
+    expect(source).not.toContain('LayersControl');
     expect(source).not.toContain('basemaps.cartocdn.com');
     expect(source).not.toContain('arcgisonline');
     expect(source).not.toContain('World_Imagery');
-    expect(source).toMatch(/name="Equal Earth"[\s\S]{0,120}checked|EqualEarthBasemap/);
-    expect(source).not.toMatch(/name="Streets"[\s\S]{0,80}checked/);
     expect(source).not.toMatch(/name="Satellite"[\s\S]{0,40}checked/);
-    expect(source).not.toMatch(/name="Esri"[\s\S]{0,40}checked/);
+    expect(source).not.toMatch(/name="Terrain"[\s\S]{0,80}checked/);
     expect(source).toContain('buildRegionMapTour');
     expect(source).toContain('stop.district');
     expect(source).toContain('<Popup');

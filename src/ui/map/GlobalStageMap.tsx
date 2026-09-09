@@ -33,12 +33,14 @@ import {
   equalEarthStyle,
 } from '../../application/equal-earth';
 import { countryLabel, formatLocaleDate } from '../../application/locale';
+import { DEFAULT_MAP_LAYER, type MapLayerId } from '../../application/map-layers';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 import { useLocale } from '../chrome/LocaleContext';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
+import { MapBasemapControl } from './MapBasemapControl';
 
 type Props = {
   stories: Story[];
@@ -94,6 +96,19 @@ const emptyLine: GeoJSON.Feature = {
   type: 'Feature',
   properties: {},
   geometry: { type: 'LineString', coordinates: [] },
+};
+
+const ensureMeasureLine = (map: Map) => {
+  if (map.getSource('measure-line')) {
+    return;
+  }
+  map.addSource('measure-line', { type: 'geojson', data: emptyLine });
+  map.addLayer({
+    id: 'measure-line',
+    type: 'line',
+    source: 'measure-line',
+    paint: { 'line-color': '#4CAF7D', 'line-width': 3 },
+  });
 };
 
 const lineData = (path: LngLat[]): GeoJSON.Feature => ({
@@ -157,9 +172,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [layersOpen, setLayersOpen] = useState(false);
+  const [basemap, setBasemap] = useState<MapLayerId>(DEFAULT_MAP_LAYER);
   const [measuring, setMeasuring] = useState(false);
   const [measureKm, setMeasureKm] = useState<number | null>(null);
   const [tourCard, setTourCard] = useState<TourStop | null>(null);
+  const basemapReady = useRef(false);
   const tour = useMemo(() => buildGlobalTour(stories), [stories]);
   const events = useMemo(
     () => tour.filter((stop) => stop.kind === 'event').sort((a, b) => a.date.localeCompare(b.date)),
@@ -436,6 +454,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const next = !measuring;
     setMeasuring(next);
     setSearchOpen(false);
+    setLayersOpen(false);
     if (!next) {
       measurePointsRef.current = [];
       setMeasureKm(null);
@@ -454,7 +473,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     const map = new Map({
       container: host.current,
-      style: equalEarthStyle(),
+      style: equalEarthStyle(DEFAULT_MAP_LAYER),
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: GLOBE_VIEW.pitch,
@@ -471,16 +490,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
     new EqualEarthCoordTransform(map, EQUAL_EARTH_SWITCH_ZOOM);
     mapRef.current = map;
+    basemapReady.current = false;
     const onLoad = () => {
-      if (!map.getSource('measure-line')) {
-        map.addSource('measure-line', { type: 'geojson', data: emptyLine });
-        map.addLayer({
-          id: 'measure-line',
-          type: 'line',
-          source: 'measure-line',
-          paint: { 'line-color': '#4CAF7D', 'line-width': 3 },
-        });
-      }
+      ensureMeasureLine(map);
+      basemapReady.current = true;
       map.resize();
       showAllPins(map);
     };
@@ -513,6 +526,21 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     };
   }, []);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !basemapReady.current) {
+      return;
+    }
+    const activeIdSnapshot = activeId;
+    map.setStyle(equalEarthStyle(basemap));
+    map.once('style.load', () => {
+      ensureMeasureLine(map);
+      const source = map.getSource('measure-line') as GeoJSONSource | undefined;
+      source?.setData(lineData(measurePointsRef.current));
+      showAllPins(map, activeIdSnapshot);
+    });
+  }, [basemap]);
+
   return (
     <section className="global-stage" aria-label={copy.globalStageTitle}>
       <div className="global-stage-scene">
@@ -522,6 +550,18 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           {copy.backToMain}
         </button>
         <div className="tour-icon-bar simple">
+          <MapBasemapControl
+            value={basemap}
+            open={layersOpen}
+            onOpenChange={(open) => {
+              setLayersOpen(open);
+              if (open) {
+                setSearchOpen(false);
+                setMeasuring(false);
+              }
+            }}
+            onChange={setBasemap}
+          />
           <div className="tour-layer-wrap">
             <button
               type="button"
@@ -529,6 +569,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               aria-pressed={searchOpen}
               onClick={() => {
                 setSearchOpen((open) => !open);
+                setLayersOpen(false);
                 setMeasuring(false);
               }}
             >

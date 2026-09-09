@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { MapContainer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { displayLocation, groupedPins } from '../../application/display-location';
+import { DEFAULT_MAP_LAYER, type MapLayerId } from '../../application/map-layers';
 import type { MapView } from '../../application/resolve-map-view';
 import type { Story } from '../../domain/story';
 import { EqualEarthBasemap } from './EqualEarthBasemap';
+import { MapBasemapControl } from './MapBasemapControl';
 
 const pinIcon = L.divIcon({
   className: 'ice-pin',
@@ -23,6 +26,8 @@ type Props = {
 export function MapPane({ stories, view, selectedId, onSelect }: Props) {
   const groups = groupedPins(stories);
   const viewKey = `${view.center.lat}-${view.center.lng}-${view.zoom}`;
+  const [basemap, setBasemap] = useState<MapLayerId>(DEFAULT_MAP_LAYER);
+  const [layersOpen, setLayersOpen] = useState(false);
 
   return (
     <div className="map-pane">
@@ -33,7 +38,7 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
         scrollWheelZoom
         minZoom={1}
       >
-        <EqualEarthBasemap />
+        <EqualEarthBasemap basemap={basemap} />
         {[...groups.values()].flatMap((group) =>
           group.map((story) => {
             const point = displayLocation(story, group);
@@ -53,6 +58,13 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
           }),
         )}
       </MapContainer>
+      <MapBasemapControl
+        className="map-basemap-control-leaflet"
+        value={basemap}
+        open={layersOpen}
+        onOpenChange={setLayersOpen}
+        onChange={setBasemap}
+      />
     </div>
   );
 }

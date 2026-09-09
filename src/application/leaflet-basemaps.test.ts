@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { leafletBasemaps } from './leaflet-basemaps';
 
 describe('leafletBasemaps', () => {
-  it('offers free streets, satellite, and terrain tiles', () => {
+  it('lists Streets first, then Satellite and Terrain, without paid tile APIs', () => {
     expect(leafletBasemaps.map((layer) => layer.id)).toEqual(['streets', 'satellite', 'terrain']);
     expect(leafletBasemaps[0]?.url).toContain('tile.openstreetmap.org');
     expect(leafletBasemaps[1]?.url).toContain('s2cloudless');

@@ -9,13 +9,23 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('uses the Equal Earth hybrid terrain style instead of Carto or keyed tiles', () => {
+  it('uses the Equal Earth hybrid streets style instead of Carto or keyed tiles', () => {
     expect(source).toContain('equalEarthStyle');
     expect(source).toContain('EqualEarthCoordTransform');
     expect(source).toContain('EQUAL_EARTH_SWITCH_ZOOM');
+    expect(source).toContain('DEFAULT_MAP_LAYER');
+    expect(source).toContain('equalEarthStyle(DEFAULT_MAP_LAYER)');
     expect(source).not.toContain("styleForLayer('osm')");
     expect(source).not.toContain('carto-voyager');
     expect(source).not.toContain('basemaps.cartocdn.com');
+  });
+
+  it('offers a layers icon toggle with Streets as the active default basemap', () => {
+    expect(source).toContain('MapBasemapControl');
+    expect(source).toContain("useState<MapLayerId>(DEFAULT_MAP_LAYER)");
+    expect(source).toContain('setBasemap');
+    expect(source).toContain('equalEarthStyle(basemap)');
+    expect(source).toContain('layersOpen');
   });
 
   it('tours date-sorted places with classic pins, city zoom on the stop, and a center-right card', () => {

@@ -1,16 +1,19 @@
 import type { StyleSpecification } from 'maplibre-gl';
 
-export type MapLayerId = 'osm' | 'terrain' | 'satellite';
+export type MapLayerId = 'terrain' | 'satellite' | 'streets';
 
 export type MapLayer = {
   id: MapLayerId;
   label: string;
 };
 
+/** Default basemap on every map surface. */
+export const DEFAULT_MAP_LAYER: MapLayerId = 'streets';
+
 export const MAP_LAYERS: MapLayer[] = [
-  { id: 'osm', label: 'OpenStreetMap' },
-  { id: 'terrain', label: 'Terrain' },
+  { id: 'streets', label: 'Streets' },
   { id: 'satellite', label: 'Satellite' },
+  { id: 'terrain', label: 'Terrain' },
 ];
 
 const OSM_ATTR = '© OpenStreetMap contributors';
@@ -33,6 +36,7 @@ const rasterStyle = (tiles: string[], attribution: string): StyleSpecification =
   ],
 });
 
+/** Pure Mercator raster styles (no Equal Earth hybrid). Prefer equalEarthStyle for map surfaces. */
 export const styleForLayer = (id: MapLayerId): StyleSpecification => {
   switch (id) {
     case 'terrain':
@@ -45,7 +49,7 @@ export const styleForLayer = (id: MapLayerId): StyleSpecification => {
         ['https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg'],
         SATELLITE_ATTR,
       );
-    case 'osm':
+    case 'streets':
     default:
       return rasterStyle(
         ['a', 'b', 'c'].map((s) => `https://${s}.tile.openstreetmap.org/{z}/{x}/{y}.png`),
