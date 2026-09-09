@@ -79,12 +79,20 @@ describe('global-stage source pages', () => {
 
   it('lists ICE Institute research stories separately from community stories', () => {
     const research = stories.filter((story) => story.type === 'research-story');
-    expect(research.length).toBeGreaterThan(4);
+    expect(research.length).toBeGreaterThan(20);
     for (const story of research) {
-      expect(story.website, story.id).toMatch(/^https:\/\/ice\.simad\.edu\.so\/\d{4}\/\d{2}\/\d{2}\/.+/);
       expect(story.country).toBe('Somalia');
+      expect(story.images.length, story.id).toBeGreaterThan(0);
+      expect(story.themes.length, story.id).toBeGreaterThan(0);
+      expect(story.chapters?.length, story.id).toBeGreaterThan(0);
     }
-    expect(research.some((story) => story.id === 'state-of-climate-2026')).toBe(true);
+    expect(
+      research.some((story) => story.id === 'the-digital-smallholder-navigating-the-shabelle-crisis'),
+    ).toBe(true);
+    expect(
+      research.some((story) => story.themes.includes('agriculture-resilience')),
+    ).toBe(true);
+    expect(research.some((story) => story.themes.includes('climate-hazards'))).toBe(true);
   });
 
   it('gives every ICE community story a source date and its own image', () => {

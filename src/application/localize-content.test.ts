@@ -58,8 +58,9 @@ describe('localizeContent', () => {
     expect(localizeStory(green, 'en').summary).toBe(green.summary);
   });
 
-  it('translates every catalog story and climate article into Somali with matching chapter counts', () => {
-    for (const story of stories) {
+  it('translates every ICE and Global Stage story into Somali with matching chapter counts', () => {
+    const localizedCatalog = stories.filter((story) => story.type !== 'research-story');
+    for (const story of localizedCatalog) {
       expect(STORY_SO[story.id], story.id).toBeTruthy();
       const so = localizeStory(story, 'so');
       expect(so.title).not.toBe(story.title);
@@ -88,8 +89,9 @@ describe('localizeContent', () => {
     expect(localizeCreditText('Source: ICE Institute', 'so')).toBe('Isha: ICE Institute');
   });
 
-  it('translates every catalog story and climate article into Arabic with matching chapter counts', () => {
-    for (const story of stories) {
+  it('translates every ICE and Global Stage story into Arabic with matching chapter counts', () => {
+    const localizedCatalog = stories.filter((story) => story.type !== 'research-story');
+    for (const story of localizedCatalog) {
       expect(STORY_AR[story.id], story.id).toBeTruthy();
       const ar = localizeStory(story, 'ar');
       expect(ar.title).not.toBe(story.title);

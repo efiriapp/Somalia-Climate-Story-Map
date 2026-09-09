@@ -240,6 +240,11 @@ export const THEME_LABELS: Record<Locale, Record<string, string>> = {
     'policy-diplomacy': 'Policy and diplomacy',
     'climate-mobility': 'Climate mobility',
     partnerships: 'Partnerships',
+    'agriculture-resilience': 'Agriculture and resilience',
+    'human-tide': 'Conflict and displacement',
+    'green-frontier': 'Renewables and digitalization',
+    'governance-finance': 'Governance and finance',
+    'climate-hazards': 'Floods, droughts and heatwaves',
   },
   so: {
     youth: 'Dhallinyaro',
@@ -252,6 +257,11 @@ export const THEME_LABELS: Record<Locale, Record<string, string>> = {
     'policy-diplomacy': 'Siyaasadda iyo diblomaasiyadda',
     'climate-mobility': 'Dhaqdhaqaaqa cimilada',
     partnerships: 'Is-kaashiga',
+    'agriculture-resilience': 'Beeraha iyo adkeysiga',
+    'human-tide': 'Colaadda iyo barakaca',
+    'green-frontier': 'Tamarta cusub iyo dijitalaynta',
+    'governance-finance': 'Maamulka iyo maaliyadda',
+    'climate-hazards': 'Daadadka, abaaraha iyo kulaylka',
   },
   ar: {
     youth: 'الشباب',
@@ -264,6 +274,11 @@ export const THEME_LABELS: Record<Locale, Record<string, string>> = {
     'policy-diplomacy': 'السياسة والدبلوماسية',
     'climate-mobility': 'التنقل المناخي',
     partnerships: 'الشراكات',
+    'agriculture-resilience': 'الزراعة والمرونة',
+    'human-tide': 'النزاع والنزوح',
+    'green-frontier': 'الطاقة المتجددة والرقمنة',
+    'governance-finance': 'الحوكمة والتمويل',
+    'climate-hazards': 'الفيضانات والجفاف وموجات الحر',
   },
 };
 

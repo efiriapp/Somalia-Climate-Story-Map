@@ -22,6 +22,9 @@ type ClimateMediaFields = {
 
 export const formatMediaSourceCredit = (label: string): string => {
   const trimmed = label.trim();
+  if (/^Photo:\s*/i.test(trimmed)) {
+    return `Source: ${trimmed.replace(/^Photo:\s*/i, '')}`;
+  }
   if (/^ICE Institute\b/i.test(trimmed)) {
     return `Source: ${trimmed}`;
   }

@@ -24,6 +24,9 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
   const { copy, locale } = useLocale();
   const region = (draft.region === 'all' ? 'all' : draft.region) as RegionSlug | 'all';
   const districts = districtsForRegion(region);
+  const themesInCatalog = THEMES.filter((theme) =>
+    stories.some((story) => story.themes.includes(theme.slug)),
+  );
 
   return (
     <div>
@@ -67,7 +70,7 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
             }
           >
             <option value="">{copy.themes}</option>
-            {THEMES.map((theme) => (
+            {themesInCatalog.map((theme) => (
               <option key={theme.slug} value={theme.slug}>
                 {themeLabel(theme.slug, locale)}
               </option>

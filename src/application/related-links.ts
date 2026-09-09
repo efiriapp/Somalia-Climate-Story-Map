@@ -22,7 +22,7 @@ const HAZARD_RELATED: Record<ClimateHazardId, RelatedTarget[]> = {
   ],
   'heat-waves': [
     { kind: 'story', id: 'casuuro-plants' },
-    { kind: 'story', id: 'somalia-ccdr-2026' },
+    { kind: 'story', id: 'the-thirsting-land-hydrological-exhaustion-and-the-heatwave-crisis' },
   ],
 };
 
@@ -37,13 +37,18 @@ const STORY_RELATED: Record<string, RelatedTarget[]> = {
   'geed-soor': [{ kind: 'story', id: 'casuuro-plants' }],
   ecosom: [{ kind: 'hazard', id: 'droughts' }],
   '4c-art': [{ kind: 'hub' }],
-  'somalia-ccdr-2026': [{ kind: 'hub' }, { kind: 'hazard', id: 'heat-waves' }],
-  'state-of-climate-2026': [{ kind: 'hub' }],
+  'the-thirsting-land-hydrological-exhaustion-and-the-heatwave-crisis': [
+    { kind: 'hub' },
+    { kind: 'hazard', id: 'heat-waves' },
+  ],
+  'the-climate-seesaw-survival-between-the-drowning-surge-and-the-baking-he': [
+    { kind: 'hub' },
+  ],
 };
 
 const HUB_RELATED: RelatedTarget[] = [
-  { kind: 'story', id: 'state-of-climate-2026' },
-  { kind: 'story', id: 'somalia-ccdr-2026' },
+  { kind: 'story', id: 'the-climate-seesaw-survival-between-the-drowning-surge-and-the-baking-he' },
+  { kind: 'story', id: 'the-thirsting-land-hydrological-exhaustion-and-the-heatwave-crisis' },
 ];
 
 export const relatedTargetsForHazard = (id: ClimateHazardId): RelatedTarget[] =>

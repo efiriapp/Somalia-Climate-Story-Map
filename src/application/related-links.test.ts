@@ -31,11 +31,14 @@ describe('relatedTargetsForHazard', () => {
     );
   });
 
-  it('links Heat waves to urban greening and CCDR research', () => {
+  it('links Heat waves to urban greening and heatwave research', () => {
     expect(relatedTargetsForHazard('heat-waves')).toEqual(
       expect.arrayContaining([
         { kind: 'story', id: 'casuuro-plants' },
-        { kind: 'story', id: 'somalia-ccdr-2026' },
+        {
+          kind: 'story',
+          id: 'the-thirsting-land-hydrological-exhaustion-and-the-heatwave-crisis',
+        },
       ]),
     );
   });
@@ -71,15 +74,21 @@ describe('relatedTargetsForStory', () => {
     expect(relatedTargetsForStory('4c-art')).toContainEqual({ kind: 'hub' });
   });
 
-  it('links SIMAD drought to Droughts, and research reports to Climate Impact', () => {
+  it('links SIMAD drought to Droughts, and climate research stories to Climate Impact', () => {
     expect(relatedTargetsForStory('simad-drought')).toContainEqual({
       kind: 'hazard',
       id: 'droughts',
     });
-    expect(relatedTargetsForStory('somalia-ccdr-2026')).toEqual(
-      expect.arrayContaining([{ kind: 'hub' }, { kind: 'hazard', id: 'heat-waves' }]),
-    );
-    expect(relatedTargetsForStory('state-of-climate-2026')).toContainEqual({ kind: 'hub' });
+    expect(
+      relatedTargetsForStory(
+        'the-thirsting-land-hydrological-exhaustion-and-the-heatwave-crisis',
+      ),
+    ).toEqual(expect.arrayContaining([{ kind: 'hub' }, { kind: 'hazard', id: 'heat-waves' }]));
+    expect(
+      relatedTargetsForStory(
+        'the-climate-seesaw-survival-between-the-drowning-surge-and-the-baking-he',
+      ),
+    ).toContainEqual({ kind: 'hub' });
   });
 });
 

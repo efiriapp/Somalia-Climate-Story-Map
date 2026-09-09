@@ -40,10 +40,18 @@ describe('storyMediaCredit', () => {
   });
 
   it('returns no credit when a page has no pictures or video', () => {
-    const research = stories.find((item) => item.id === 'why-governance-matters-2023');
-    expect(storyMediaCredit(research!)).toBeNull();
     const emptyEvent = stories.find((item) => item.id === 'cop28-dubai');
     expect(storyMediaCredit(emptyEvent!)).toBeNull();
+  });
+
+  it('credits Unsplash photos for research stories without the ICE Institute prefix', () => {
+    const research = stories.find(
+      (item) => item.id === 'the-digital-smallholder-navigating-the-shabelle-crisis',
+    );
+    expect(storyMediaCredit(research!)).toEqual({
+      text: 'Source: Unsplash',
+      url: 'https://ice.simad.edu.so/',
+    });
   });
 });
 

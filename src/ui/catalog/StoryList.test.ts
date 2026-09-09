@@ -13,9 +13,17 @@ describe('ICE stories grid', () => {
     expect(source).toContain('story-grid');
     expect(source).toContain('story.images[0]');
     expect(source).toContain('formatLocaleDate');
-    expect(app).toMatch(/screen === 'stories'[\s\S]{0,200}StoryList/);
+    expect(app).toContain('StoryList');
     expect(app).toContain('filterCatalog(scoped, applied)');
+    expect(app).toContain('layout="grid"');
+    expect(app).toContain("typeLabel={screen === 'research' ? copy.researchLabel : copy.story}");
     expect(css).toContain('.story-grid');
     expect(css).toMatch(/\.story-card:hover[\s\S]{0,180}transform:/);
+  });
+
+  it('uses the same StoryList grid for Research Stories as for ICE Stories', () => {
+    expect(app).not.toContain('MapPane');
+    expect(app).toContain('layout="grid"');
+    expect(app).toContain('catalogTypeFor(screen)');
   });
 });

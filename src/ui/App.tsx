@@ -9,7 +9,6 @@ import {
   relatedTargetsForStory,
   type RelatedTarget,
 } from '../application/related-links';
-import { resolveMapView } from '../application/resolve-map-view';
 import { scrollPageToTop } from '../application/scroll-page-top';
 import { stories as catalog } from '../content/stories';
 import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '../domain/story';
@@ -21,7 +20,6 @@ import { StoryList } from './catalog/StoryList';
 import { ClimateImpactPage } from './catalog/ClimateImpactPage';
 import { MediaSourceCredit } from './catalog/MediaSourceCredit';
 import { RelatedLinks } from './catalog/RelatedLinks';
-import { MapPane } from './map/MapPane';
 import { GlobalStageMap } from './map/GlobalStageMap';
 import type { ClimateHazardId } from '../content/climate-impact';
 
@@ -53,7 +51,6 @@ export default function App() {
     [localizedCatalog, screen],
   );
   const matches = useMemo(() => filterCatalog(scoped, applied), [scoped, applied]);
-  const view = useMemo(() => resolveMapView(applied, matches), [applied, matches]);
   const detail = selectedId ? localizedCatalog.find((story) => story.id === selectedId) : undefined;
 
   useLayoutEffect(() => {
@@ -309,27 +306,13 @@ export default function App() {
               {screen === 'research' ? copy.research : copy.latestStories}
             </h2>
           </div>
-          {screen === 'stories' ? (
-            <StoryList
-              stories={matches}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-              typeLabel={copy.story}
-              layout="grid"
-            />
-          ) : (
-            <div className="catalog">
-              <MapPane stories={matches} view={view} selectedId={selectedId} onSelect={setSelectedId} />
-              <div className="list-pane">
-                <StoryList
-                  stories={matches}
-                  selectedId={selectedId}
-                  onSelect={setSelectedId}
-                  typeLabel={copy.researchLabel}
-                />
-              </div>
-            </div>
-          )}
+          <StoryList
+            stories={matches}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            typeLabel={screen === 'research' ? copy.researchLabel : copy.story}
+            layout="grid"
+          />
         </>
       )}
       {screen === 'global-stage' ? null : <SiteFooter />}

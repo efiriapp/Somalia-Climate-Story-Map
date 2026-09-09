@@ -9,6 +9,11 @@ export const THEMES = [
   { slug: 'policy-diplomacy', label: 'Policy and diplomacy' },
   { slug: 'climate-mobility', label: 'Climate mobility' },
   { slug: 'partnerships', label: 'Partnerships' },
+  { slug: 'agriculture-resilience', label: 'Agriculture and resilience' },
+  { slug: 'human-tide', label: 'Conflict and displacement' },
+  { slug: 'green-frontier', label: 'Renewables and digitalization' },
+  { slug: 'governance-finance', label: 'Governance and finance' },
+  { slug: 'climate-hazards', label: 'Floods, droughts and heatwaves' },
 ] as const;
 
 export type ThemeSlug = (typeof THEMES)[number]['slug'];
