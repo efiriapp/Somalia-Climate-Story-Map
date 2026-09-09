@@ -95,6 +95,22 @@ describe('global-stage source pages', () => {
     expect(research.some((story) => story.themes.includes('climate-hazards'))).toBe(true);
   });
 
+  it('gives every research story a distinct card image file', async () => {
+    const { createHash } = await import('node:crypto');
+    const { readFileSync: read } = await import('node:fs');
+    const research = stories.filter((story) => story.type === 'research-story');
+    const paths = research.map((story) => story.images[0]);
+    expect(new Set(paths).size).toBe(paths.length);
+    const hashes = new Set<string>();
+    for (const imagePath of paths) {
+      const absolute = join(publicDir, imagePath.replace(/^\//, ''));
+      expect(existsSync(absolute), imagePath).toBe(true);
+      const digest = createHash('sha256').update(read(absolute)).digest('hex');
+      expect(hashes.has(digest), `duplicate bytes for ${imagePath}`).toBe(false);
+      hashes.add(digest);
+    }
+  });
+
   it('gives every ICE community story a source date and its own image', () => {
     const ice = stories.filter((story) => story.type === 'ice-story');
     expect(ice).toHaveLength(7);

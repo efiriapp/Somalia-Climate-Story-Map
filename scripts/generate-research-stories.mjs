@@ -123,7 +123,7 @@ const SDG_BY_THEME = {
 const u = (photoId) =>
   `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=1200&q=80`;
 
-/** Verified free Unsplash photos (illustrative). */
+/** Verified free Unsplash photos (illustrative). Every photo id must be unique across themes. */
 const IMAGE_BY_THEME = {
   'agriculture-resilience': [
     { id: 'agriculture-1', url: u('photo-1500382017468-9049fed747ef'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
@@ -137,9 +137,9 @@ const IMAGE_BY_THEME = {
   'human-tide': [
     { id: 'human-1', url: u('photo-1488521787991-ed7bbaae773c'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
     { id: 'human-2', url: u('photo-1448375240586-882707db888b'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
-    { id: 'human-3', url: u('photo-1449824913935-59a10b8d2000'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'human-3', url: u('photo-1480714378408-67cf0d13bc1b'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
     { id: 'human-4', url: u('photo-1509099836639-18ba1795216d'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
-    { id: 'human-5', url: u('photo-1625246333195-78d9c38ad449'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'human-5', url: u('photo-1529156069898-49953e39b3ac'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
     { id: 'human-6', url: u('photo-1469571486292-0ba58a3f068b'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
     { id: 'human-7', url: u('photo-1454165804606-c3d57bc86b40'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
   ],
@@ -148,18 +148,18 @@ const IMAGE_BY_THEME = {
     { id: 'green-2', url: u('photo-1473341304170-971dccb5ac1e'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
     { id: 'green-3', url: u('photo-1516321318423-f06f85e504b3'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
     { id: 'green-4', url: u('photo-1497435334941-8c899ee9e8e9'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
-    { id: 'green-5', url: u('photo-1521791136064-7986c2920216'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
-    { id: 'green-6', url: u('photo-1449824913935-59a10b8d2000'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
-    { id: 'green-7', url: u('photo-1559827260-dc66d52bef19'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'green-5', url: u('photo-1466611653911-95081537e5b7'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'green-6', url: u('photo-1532601224476-15c79f2f7a51'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'green-7', url: u('photo-1497436072909-60f360e1d4b1'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
   ],
   'governance-finance': [
-    { id: 'gov-1', url: u('photo-1554224155-6726b3ff858f'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/', localFallback: '/images/research/human-7.jpg' },
-    { id: 'gov-2', url: u('photo-1529107386315-e1a2ed48a620'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/', localFallback: '/images/research/human-7.jpg' },
-    { id: 'gov-3', url: u('photo-1559526324-4b87b5e36e44'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/', localFallback: '/images/research/green-5.jpg' },
-    { id: 'gov-4', url: u('photo-1521791136064-7986c2920216'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/', localFallback: '/images/research/green-5.jpg' },
-    { id: 'gov-5', url: u('photo-1559827260-dc66d52bef19'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/', localFallback: '/images/research/green-7.jpg' },
-    { id: 'gov-6', url: u('photo-1563986768609-322da13575f3'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/', localFallback: '/images/research/human-7.jpg' },
-    { id: 'gov-7', url: u('photo-1454165804606-c3d57bc86b40'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/', localFallback: '/images/research/human-7.jpg' },
+    { id: 'gov-1', url: u('photo-1450101499163-c8848c66ca85'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'gov-2', url: u('photo-1434030216411-0b793f4b4173'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'gov-3', url: u('photo-1521791136064-7986c2920216'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'gov-4', url: u('photo-1507679799987-c73779587ccf'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'gov-5', url: u('photo-1579621970563-ebec7560ff3e'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'gov-6', url: u('photo-1560472354-b33ff0c44a43'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
+    { id: 'gov-7', url: u('photo-1556761175-b413da4baf72'), credit: 'Unsplash', creditUrl: 'https://unsplash.com/' },
   ],
   'climate-hazards': [
     { id: 'hazard-1', url: '', credit: 'ICE Institute — Climate Impact imagery', creditUrl: 'https://ice.simad.edu.so/', localPath: '/images/climate-impact/flood-1.jpg' },
@@ -348,20 +348,14 @@ ${chapters}
 
 const FALLBACK_URL = u('photo-1500382017468-9049fed747ef');
 const skipDownload = process.env.SKIP_DOWNLOAD === '1';
+const forceDownload = process.env.FORCE_DOWNLOAD === '1';
 
 const downloadImage = async (image) => {
   if (image.localPath) return image.localPath;
   mkdirSync(imgDir, { recursive: true });
   const dest = join(imgDir, `${image.id}.jpg`);
-  if (existsSync(dest) && readFileSync(dest).length > 1000) return dest;
+  if (!forceDownload && existsSync(dest) && readFileSync(dest).length > 1000) return dest;
   if (skipDownload) {
-    if (image.localFallback) {
-      const from = join(root, 'public', image.localFallback.replace(/^\//, ''));
-      if (existsSync(from)) {
-        writeFileSync(dest, readFileSync(from));
-        return dest;
-      }
-    }
     process.stdout.write(`Skip missing ${image.id}\n`);
     return dest;
   }
@@ -383,6 +377,11 @@ const downloadImage = async (image) => {
 const stories = collectStories();
 const uniqueImages = new Map();
 for (const story of stories) uniqueImages.set(story.image.id, story.image);
+
+const photoIds = [...uniqueImages.values()].map((image) => image.url).filter(Boolean);
+if (new Set(photoIds).size !== photoIds.length) {
+  throw new Error('Research card images must use unique Unsplash photo URLs');
+}
 
 for (const image of uniqueImages.values()) {
   process.stdout.write(`Preparing ${image.id}...\n`);

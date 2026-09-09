@@ -9,6 +9,8 @@ export type RelatedTarget =
   | { kind: 'hub' }
   | { kind: 'story'; id: string };
 
+const RELATED_LIMIT = 4;
+
 const HAZARD_RELATED: Record<ClimateHazardId, RelatedTarget[]> = {
   floods: [{ kind: 'hazard', id: 'el-nino' }],
   'el-nino': [{ kind: 'hazard', id: 'floods' }],
@@ -26,6 +28,7 @@ const HAZARD_RELATED: Record<ClimateHazardId, RelatedTarget[]> = {
   ],
 };
 
+/** Curated related targets; auto-fill supplements these from the whole platform. */
 const STORY_RELATED: Record<string, RelatedTarget[]> = {
   'simad-drought': [{ kind: 'hazard', id: 'droughts' }],
   'liido-beach-cleanup': [{ kind: 'story', id: 'green-champions' }],
@@ -51,10 +54,105 @@ const HUB_RELATED: RelatedTarget[] = [
   { kind: 'story', id: 'the-thirsting-land-hydrological-exhaustion-and-the-heatwave-crisis' },
 ];
 
+/** Soft bridges so Research ↔ ICE ↔ Climate Impact can cross-link thematically. */
+const THEME_BRIDGES: Record<string, string[]> = {
+  'agriculture-resilience': ['drought-water', 'green-enterprise', 'oceans'],
+  'human-tide': ['climate-mobility', 'youth', 'education'],
+  'green-frontier': ['green-enterprise', 'waste-energy', 'art-communication'],
+  'governance-finance': ['policy-diplomacy', 'partnerships', 'education'],
+  'climate-hazards': ['drought-water', 'climate-mobility', 'oceans'],
+  'drought-water': ['agriculture-resilience', 'climate-hazards', 'green-enterprise'],
+  'green-enterprise': ['agriculture-resilience', 'green-frontier', 'waste-energy'],
+  'waste-energy': ['green-frontier', 'green-enterprise'],
+  oceans: ['agriculture-resilience', 'climate-hazards', 'youth'],
+  youth: ['human-tide', 'oceans', 'education'],
+  education: ['human-tide', 'governance-finance', 'policy-diplomacy'],
+  'climate-mobility': ['human-tide', 'climate-hazards'],
+  'policy-diplomacy': ['governance-finance', 'partnerships'],
+  partnerships: ['governance-finance', 'policy-diplomacy', 'education'],
+  'art-communication': ['green-frontier', 'youth'],
+};
+
+const THEME_HAZARDS: Record<string, ClimateHazardId[]> = {
+  'climate-hazards': ['floods', 'droughts', 'heat-waves'],
+  'drought-water': ['droughts', 'la-nina'],
+  'agriculture-resilience': ['droughts'],
+  oceans: ['floods', 'el-nino'],
+  'green-enterprise': ['heat-waves'],
+  'climate-mobility': ['droughts', 'floods'],
+};
+
+const targetKey = (target: RelatedTarget): string => {
+  if (target.kind === 'hub') return 'hub';
+  return `${target.kind}:${target.id}`;
+};
+
+const scoreRelatedStory = (from: Story, other: Story): number => {
+  let score = 0;
+  const fromThemes = new Set(from.themes);
+  const bridges = new Set(from.themes.flatMap((theme) => THEME_BRIDGES[theme] ?? []));
+  for (const theme of other.themes) {
+    if (fromThemes.has(theme)) score += 10;
+    else if (bridges.has(theme)) score += 6;
+  }
+  const sharedSdgs = other.sdgs.filter((sdg) => from.sdgs.includes(sdg)).length;
+  score += Math.min(sharedSdgs, 3) * 2;
+  if (other.type !== from.type) score += 3;
+  if (other.region && other.region === from.region) score += 1;
+  return score;
+};
+
+const fillRelatedFromPlatform = (story: Story, seed: RelatedTarget[]): RelatedTarget[] => {
+  const selected: RelatedTarget[] = [];
+  const seen = new Set<string>();
+
+  const push = (target: RelatedTarget) => {
+    if (selected.length >= RELATED_LIMIT) return;
+    const key = targetKey(target);
+    if (seen.has(key)) return;
+    if (target.kind === 'story' && target.id === story.id) return;
+    seen.add(key);
+    selected.push(target);
+  };
+
+  for (const target of seed) push(target);
+
+  for (const theme of story.themes) {
+    for (const hazardId of THEME_HAZARDS[theme] ?? []) {
+      push({ kind: 'hazard', id: hazardId });
+    }
+  }
+
+  const ranked = stories
+    .filter((other) => other.id !== story.id)
+    .map((other) => ({ other, score: scoreRelatedStory(story, other) }))
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || a.other.title.localeCompare(b.other.title));
+
+  // Prefer at least one cross-catalog story when possible.
+  const otherType = ranked.find((entry) => entry.other.type !== story.type);
+  if (otherType) push({ kind: 'story', id: otherType.other.id });
+
+  for (const entry of ranked) {
+    push({ kind: 'story', id: entry.other.id });
+  }
+
+  if (selected.length === 0 && story.type === 'research-story') {
+    push({ kind: 'hub' });
+  }
+
+  return selected.slice(0, RELATED_LIMIT);
+};
+
 export const relatedTargetsForHazard = (id: ClimateHazardId): RelatedTarget[] =>
   HAZARD_RELATED[id] ?? [];
 
-export const relatedTargetsForStory = (id: string): RelatedTarget[] => STORY_RELATED[id] ?? [];
+export const relatedTargetsForStory = (id: string): RelatedTarget[] => {
+  const curated = STORY_RELATED[id] ?? [];
+  const story = stories.find((item) => item.id === id);
+  if (!story) return curated;
+  return fillRelatedFromPlatform(story, curated);
+};
 
 export const relatedTargetsForClimateHub = (): RelatedTarget[] => HUB_RELATED;
 

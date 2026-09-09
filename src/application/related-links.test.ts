@@ -90,6 +90,42 @@ describe('relatedTargetsForStory', () => {
       ),
     ).toContainEqual({ kind: 'hub' });
   });
+
+  it('fills every story with related image-card targets from across the platform', () => {
+    for (const story of stories) {
+      const related = relatedTargetsForStory(story.id);
+      expect(related.length, story.id).toBeGreaterThan(0);
+      expect(related.length, story.id).toBeLessThanOrEqual(4);
+      expect(related.some((target) => target.kind === 'story' && target.id === story.id)).toBe(
+        false,
+      );
+      for (const target of related) {
+        expect(imageForRelatedTarget(target), `${story.id} -> ${JSON.stringify(target)}`).toBeTruthy();
+      }
+    }
+  });
+
+  it('cross-links research stories to ICE or climate targets (and ICE back to research)', () => {
+    const research = relatedTargetsForStory(
+      'the-digital-smallholder-navigating-the-shabelle-crisis',
+    );
+    expect(research.some((target) => target.kind === 'hazard' || target.kind === 'hub')).toBe(true);
+    expect(
+      research.some((target) => {
+        if (target.kind !== 'story') return false;
+        const linked = stories.find((item) => item.id === target.id);
+        return linked?.type === 'ice-story' || linked?.type === 'global-stage';
+      }),
+    ).toBe(true);
+
+    const ice = relatedTargetsForStory('simad-drought');
+    expect(ice).toEqual(
+      expect.arrayContaining([
+        { kind: 'hazard', id: 'droughts' },
+        expect.objectContaining({ kind: 'story' }),
+      ]),
+    );
+  });
 });
 
 describe('labelForRelatedTarget', () => {
