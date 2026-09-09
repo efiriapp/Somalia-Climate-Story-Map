@@ -632,6 +632,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
           <button type="button" aria-label={copy.tourNext} onClick={() => stepEvent(1)}>
             {copy.tourNext}
           </button>
+          <button type="button" aria-label={copy.tourRestart} onClick={goHome}>
+            {copy.tourRestart}
+          </button>
         </div>
         {measureKm !== null ? <p className="tour-measure-badge">{Math.round(measureKm)} km</p> : null}
         <div className="tour-left-stack">

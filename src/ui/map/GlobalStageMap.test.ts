@@ -107,6 +107,14 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('setTourCard(null)');
   });
 
+  it('adds Restart after Next to reset the map tour to the default Somalia view', () => {
+    expect(source).toContain('copy.tourRestart');
+    expect(source).toMatch(
+      /copy\.tourNext[\s\S]{0,280}copy\.tourRestart[\s\S]{0,120}onClick=\{goHome\}/,
+    );
+    expect(source).toMatch(/tourRestart[\s\S]{0,80}goHome/);
+  });
+
   it('hides the right-side card until the tour lands on a pin, holds 5s, then returns home to Somalia', () => {
     expect(source).toContain('PIN_HOLD_MS = 5000');
     expect(source).toContain('flyHomeToSomalia');
