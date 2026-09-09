@@ -82,6 +82,15 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('new Popup');
   });
 
+  it('shows only the destination pin while the tour is working and restores all pins on reset', () => {
+    expect(source).toContain('resetPinsOn');
+    expect(source).toMatch(/tourWorking[\s\S]{0,220}focusEvent|Tour working: show only the destination/);
+    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,220}hidePins\(\)/);
+    expect(source).toMatch(/if \(!next\)[\s\S]{0,220}resetPinsOn/);
+    expect(source).toMatch(/goHome[\s\S]{0,400}resetPinsOn/);
+    expect(source).toMatch(/event-card-close[\s\S]{0,480}resetPinsOn/);
+  });
+
   it('ends an event card that has photos with a visible source credit', () => {
     expect(source).toContain('MediaSourceCredit');
     expect(source).toContain('storyMediaCredit(tourCard)');
@@ -150,7 +159,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('pin-date-text');
     expect(source).toContain('flagIconUrl(stop.country)');
     expect(source).toContain('formatLocaleDate(stop.date, localeRef.current)');
-    expect(source).toMatch(/touringRef\.current[\s\S]{0,120}stop\.storyId === activeId[\s\S]{0,280}pin-date-label/);
+    expect(source).toMatch(/tourWorking[\s\S]{0,120}stop\.storyId === activeId[\s\S]{0,280}pin-date-label/);
     expect(source).toMatch(/pin-flag-icon[\s\S]{0,200}pin-date-text|appendChild\(flag\)[\s\S]{0,120}pin-date-text/);
     expect(source).toMatch(/flag\.width\s*=\s*48/);
     expect(source).toMatch(/flag\.height\s*=\s*36/);
@@ -162,7 +171,7 @@ describe('GlobalStageMap', () => {
   it('turns the destination pin red while the tour flies to that place', () => {
     expect(source).toContain("ACTIVE_PIN = '#C62828'");
     expect(source).toContain('showAllPins(map, stop.storyId)');
-    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,220}showAllPins\(map,\s*'home'\)/);
+    expect(source).toMatch(/flyHomeToSomalia[\s\S]{0,220}hidePins\(\)/);
     expect(source).toMatch(/showAllPins = \(map: Map, activeId[\s\S]{0,80}null/);
   });
 

@@ -206,10 +206,19 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     homeMarkerRef.current = null;
   };
 
+  /** Pins on/off: all locations when idle; only the tour destination while touring. */
   const showAllPins = (map: Map, activeId: string | null = null) => {
     hidePins();
+    const tourWorking = touringRef.current;
     const focusEvent = Boolean(activeId && activeId !== 'home');
     const focusHome = activeId === 'home';
+    // During an active tour, never show the full pin set — destination only (or none on home hop).
+    if (tourWorking && focusHome) {
+      return;
+    }
+    if (tourWorking && !focusEvent) {
+      return;
+    }
 
     if (!focusEvent) {
       homeMarkerRef.current = new Marker({ color: focusHome ? ACTIVE_PIN : HOME_PIN })
@@ -246,7 +255,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
         .addTo(map);
       const pin = marker.getElement();
       pin.style.cursor = 'pointer';
-      if (touringRef.current && stop.storyId === activeId) {
+      if (tourWorking && stop.storyId === activeId) {
         const label = document.createElement('span');
         label.className = 'pin-date-label';
         const flagUrl = flagIconUrl(stop.country);
@@ -275,6 +284,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       pins.push(marker);
     }
     markersRef.current = pins;
+  };
+
+  const resetPinsOn = (map: Map) => {
+    touringRef.current = false;
+    showAllPins(map);
   };
 
   const openStop = (stop: TourStop) => {
@@ -309,7 +323,8 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!map) {
       return;
     }
-    showAllPins(map, 'home');
+    // Tour in progress: hide location pins while returning to Somalia.
+    hidePins();
     setTourCard(null);
     map.stop();
     map.flyTo({
@@ -355,12 +370,14 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     touringRef.current = true;
     setActiveId(stop.storyId);
     setTourCard(null);
+    // Tour working: show only the destination pin (hide every other location).
     showAllPins(map, stop.storyId);
     map.stop();
     storyJumpFromSomalia(map, { lng: stop.lng, lat: stop.lat }, () => {
       if (token !== tourToken.current) {
         return;
       }
+      showAllPins(map, stop.storyId);
       setTourCard(stop);
       holdRef.current = window.setTimeout(() => {
         if (token !== tourToken.current) {
@@ -378,9 +395,9 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             : prevTourIndex(Math.max(index, 0));
           const next = nextIndex === index ? null : list[nextIndex];
           if (!next) {
-            touringRef.current = false;
+            // Tour reset: turn all location pins back on.
             if (mapRef.current) {
-              showAllPins(mapRef.current);
+              resetPinsOn(mapRef.current);
             }
             return;
           }
@@ -420,7 +437,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const map = mapRef.current;
     tourToken.current += 1;
     stopMotion();
-    touringRef.current = false;
     setTourCard(null);
     setActiveId(null);
     setSearchOpen(false);
@@ -430,7 +446,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     const measure = map?.getSource('measure-line') as GeoJSONSource | undefined;
     measure?.setData(emptyLine);
     if (map) {
-      showAllPins(map);
+      resetPinsOn(map);
     }
     map?.easeTo({
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
@@ -644,10 +660,10 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 onClick={() => {
                   tourToken.current += 1;
                   stopMotion();
-                  touringRef.current = false;
                   setTourCard(null);
+                  setActiveId(null);
                   if (mapRef.current) {
-                    showAllPins(mapRef.current);
+                    resetPinsOn(mapRef.current);
                   }
                 }}
               >
