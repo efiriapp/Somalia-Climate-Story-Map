@@ -34,7 +34,7 @@ const MAP = {
   'green-3.jpg': 'Liido beach Mogadishu Somalia.jpg',
   'green-4.jpg': 'Mogadishu Liido beach.JPG',
   'green-5.jpg': 'Liido Beach Muqdisho 2020A.jpg',
-  'green-6.jpg': 'A busy street in Mogadishu.jpg',
+  'green-6.jpg': 'Night Mogadishu Somalia.jpg',
   'green-7.jpg': 'Mogadishu Sea Port.jpg',
   // Governance & finance — civilian city/life only (no AU/AMISOM/UNOSOM/forces)
   'gov-1.jpg': 'A busy street in Mogadishu 1.jpg',
