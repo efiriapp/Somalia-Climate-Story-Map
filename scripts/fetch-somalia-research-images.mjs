@@ -33,17 +33,17 @@ const MAP = {
   'green-2.jpg': 'Liido Beach Muqdisho 2020 (2).jpg',
   'green-3.jpg': 'Liido beach Mogadishu Somalia.jpg',
   'green-4.jpg': 'Mogadishu Liido beach.JPG',
-  'green-5.jpg': 'Hormuud Telecom Somalia.jpg',
-  'green-6.jpg': 'Mogadishu Beach.jpg',
+  'green-5.jpg': 'Liido Beach Muqdisho 2020A.jpg',
+  'green-6.jpg': 'A busy street in Mogadishu.jpg',
   'green-7.jpg': 'Mogadishu Sea Port.jpg',
-  // Governance & finance
-  'gov-1.jpg': 'A busy street in Mogadishu.jpg',
-  'gov-2.jpg': 'A busy street in Mogadishu 1.jpg',
-  'gov-3.jpg': 'A busy street in Mogadishu 2.jpg',
-  'gov-4.jpg': 'Somali vendors outside UNOSOM II base in Mogadishu.jpg',
-  'gov-5.jpg': 'Mogadishu, Somalia.JPG',
+  // Governance & finance — civilian city/life only (no AU/AMISOM/UNOSOM/forces)
+  'gov-1.jpg': 'A busy street in Mogadishu 1.jpg',
+  'gov-2.jpg': 'A busy street in Mogadishu 2.jpg',
+  'gov-3.jpg': 'Night Mogadishu Somalia.jpg',
+  'gov-4.jpg': 'Mogadishu, Somalia.JPG',
+  'gov-5.jpg': 'Liido Beach Muqdisho 2020.jpg',
   'gov-6.jpg': 'Aden Abudllahi Airport.jpg',
-  'gov-7.jpg': 'Night Mogadishu Somalia.jpg',
+  'gov-7.jpg': 'Mogadishu Beach.jpg',
 };
 
 const UA = 'ICE-Climate-Story-Map/1.0 (research card imagery; educational nonprofit)';
