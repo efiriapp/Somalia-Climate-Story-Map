@@ -36,13 +36,13 @@ const MAP = {
   'green-5.jpg': 'Liido Beach Muqdisho 2020A.jpg',
   'green-6.jpg': 'Night Mogadishu Somalia.jpg',
   'green-7.jpg': 'Mogadishu Sea Port.jpg',
-  // Governance & finance — civilian city/life only (no AU/AMISOM/UNOSOM/forces)
-  'gov-1.jpg': 'A busy street in Mogadishu 1.jpg',
-  'gov-2.jpg': 'A busy street in Mogadishu 2.jpg',
-  'gov-3.jpg': 'Night Mogadishu Somalia.jpg',
+  // Governance & finance — civilian city/life only (no AU/AMISOM/UNOSOM/forces/Hormuud)
+  'gov-1.jpg': 'Street scene in Mogadishu, Somalia, 1966 B.jpg',
+  'gov-2.jpg': 'Street scene in Mogadishu, Somalia, 1966.jpg',
+  'gov-3.jpg': 'Mogadishu street scene.jpg',
   'gov-4.jpg': 'Mogadishu, Somalia.JPG',
-  'gov-5.jpg': 'Liido Beach Muqdisho 2020.jpg',
-  'gov-6.jpg': 'Aden Abudllahi Airport.jpg',
+  'gov-5.jpg': 'Makka al-Mukarama hotel Mogadishu 03.jpg',
+  'gov-6.jpg': 'Mogadishu, Hamar Weyne District, Banaadir (cropped).jpg',
   'gov-7.jpg': 'Mogadishu Beach.jpg',
 };
 
