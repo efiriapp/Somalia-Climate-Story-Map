@@ -29,27 +29,35 @@ describe('buildRegionMapTour', () => {
       flyLng: regionCenter('ceelgula').lng,
       zoom: DISTRICT_ZOOM,
       district: 'Ceelgula',
-      images: ['/images/ice-stories/mudug.jpg'],
+      images: ['/images/ice-stories/mudug.jpg', '/images/ice-stories/mudug-2.jpg'],
     });
     expect(tour[1]).toMatchObject({
       ...regionCenter('baydhaba'),
       district: 'Baydhaba',
-      images: ['/images/ice-stories/baay.jpg'],
+      images: [
+        '/images/ice-stories/baay.jpg',
+        '/images/ice-stories/baay-food-1.jpg',
+        '/images/ice-stories/baay-food-2.jpg',
+      ],
     });
     expect(tour[2]).toMatchObject({
       ...regionCenter('xuduley'),
       district: 'Xuduley',
-      images: ['/images/ice-stories/hiiraan.jpg'],
+      images: ['/images/ice-stories/hiiraan.jpg', '/images/ice-stories/hiiraan-2.jpg'],
     });
     expect(tour[3]).toMatchObject({
       ...regionCenter('far-libaax'),
       district: 'Far-libaax',
-      images: ['/images/ice-stories/hiiraan.jpg'],
+      images: ['/images/ice-stories/hiiraan-3.jpg', '/images/ice-stories/hiiraan-4.jpg'],
     });
     expect(tour.at(-1)).toMatchObject({
       ...regionCenter('lower-juba'),
       district: 'Lower Juba',
-      images: ['/images/ice-stories/lower-juba.jpg'],
+      images: [
+        '/images/ice-stories/lower-juba.jpg',
+        '/images/ice-stories/lower-juba-2.jpg',
+        '/images/ice-stories/lower-juba-3.jpg',
+      ],
     });
     for (const stop of tour) {
       const sentences = stop.description.split(/(?<=[.!?])\s+/).filter(Boolean);

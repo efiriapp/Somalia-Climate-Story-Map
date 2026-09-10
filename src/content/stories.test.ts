@@ -283,7 +283,21 @@ describe('global-stage source pages', () => {
     expect(story?.tourStops?.some((stop) => /Ceelgula/i.test(stop.description))).toBe(true);
     expect(story?.tourStops?.some((stop) => /Far-libaax/i.test(stop.description))).toBe(true);
     expect(story?.chapters?.some((chapter) => chapter.heading.startsWith('Mudug'))).toBe(false);
-    expect(story?.images).toEqual(['/logos/simad.webp']);
+    expect(story?.images).toEqual([
+      '/images/ice-stories/simad-drought-hero.jpg',
+      '/images/ice-stories/mudug.jpg',
+      '/images/ice-stories/mudug-2.jpg',
+      '/images/ice-stories/baay.jpg',
+      '/images/ice-stories/baay-food-1.jpg',
+      '/images/ice-stories/baay-food-2.jpg',
+      '/images/ice-stories/hiiraan.jpg',
+      '/images/ice-stories/hiiraan-2.jpg',
+      '/images/ice-stories/hiiraan-3.jpg',
+      '/images/ice-stories/hiiraan-4.jpg',
+      '/images/ice-stories/lower-juba.jpg',
+      '/images/ice-stories/lower-juba-2.jpg',
+      '/images/ice-stories/lower-juba-3.jpg',
+    ]);
     expect(story?.tourStops?.map((stop) => stop.place)).toEqual([
       'ceelgula',
       'baydhaba',
@@ -291,12 +305,20 @@ describe('global-stage source pages', () => {
       'far-libaax',
       'lower-juba',
     ]);
-    expect(story?.tourStops?.map((stop) => stop.images[0])).toEqual([
-      '/images/ice-stories/mudug.jpg',
-      '/images/ice-stories/baay.jpg',
-      '/images/ice-stories/hiiraan.jpg',
-      '/images/ice-stories/hiiraan.jpg',
-      '/images/ice-stories/lower-juba.jpg',
+    expect(story?.tourStops?.map((stop) => stop.images)).toEqual([
+      ['/images/ice-stories/mudug.jpg', '/images/ice-stories/mudug-2.jpg'],
+      [
+        '/images/ice-stories/baay.jpg',
+        '/images/ice-stories/baay-food-1.jpg',
+        '/images/ice-stories/baay-food-2.jpg',
+      ],
+      ['/images/ice-stories/hiiraan.jpg', '/images/ice-stories/hiiraan-2.jpg'],
+      ['/images/ice-stories/hiiraan-3.jpg', '/images/ice-stories/hiiraan-4.jpg'],
+      [
+        '/images/ice-stories/lower-juba.jpg',
+        '/images/ice-stories/lower-juba-2.jpg',
+        '/images/ice-stories/lower-juba-3.jpg',
+      ],
     ]);
   });
 });
