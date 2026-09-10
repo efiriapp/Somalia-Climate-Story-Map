@@ -10,6 +10,7 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
     placeLabel: '4C Art Studio / Muqdisho',
     locationName: 'Muqdisho, Soomaaliya',
     country: 'Soomaaliya',
+    videoTitle: 'Farshaxanka iyo Tallaabada Cimilada | Machadka ICE',
     sourceCard: {
       place: '4C Art Studio / Muqdisho',
       city: 'Muqdisho',
@@ -25,6 +26,12 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
       ],
       featuredPerson: 'Cabdinaasir Cabdikaadir Maxamed (4C)',
       primarySource: '4C Art Studio — Taariikh-nololeed iyo Portfolio',
+      extras: [
+        {
+          label: 'Caddaynta farshaxanka-cimilada',
+          value: '4C Art Studio — Rinjiyeynta derbiga UNSOS',
+        },
+      ],
     },
     stats: [
       { label: 'Qofka la soo bandhigay' },
@@ -89,6 +96,7 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
     placeLabel: 'Muqdisho, Banaadir',
     locationName: 'Muqdisho, Soomaaliya',
     country: 'Soomaaliya',
+    videoTitle: 'Dhirta Casuuro | Machadka ICE',
     sourceCard: {
       place: 'Muqdisho, Banaadir',
       city: 'Muqdisho',
@@ -146,6 +154,7 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
     placeLabel: 'Muqdisho (xarunta)',
     locationName: 'Muqdisho, Soomaaliya',
     country: 'Soomaaliya',
+    videoTitle: 'Dhuxul Nadiif ah oo La Awoodi Karo | Machadka ICE',
     sourceCard: {
       place: 'Muqdisho (xarunta)',
       city: 'Muqdisho',
@@ -270,6 +279,7 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
     mapTitle: 'Xeebta Liido',
     locationName: 'Xeebta Liido, Muqdisho',
     country: 'Soomaaliya',
+    videoTitle: 'Ololaha nadaafada Xeebta Liido ee Muqdishu | Beach Cleaning Campaign in Mogadishu',
     sourceCard: {
       place: 'Xeebta Liido, Degmada Cabdicasiis, Muqdisho',
       city: 'Muqdisho',
@@ -415,6 +425,7 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
     mapTitle: 'Tallaabooyinka Horyaallada Cagaaran',
     locationName: 'Muqdisho, Soomaaliya',
     country: 'Soomaaliya',
+    videoTitle: 'Nadaafadda Xeebta Liido | Horyaallada Cagaaran',
     sourceCard: {
       place: 'Jaamacadda SIMAD, Muqdisho',
       city: 'Muqdisho',

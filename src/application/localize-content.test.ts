@@ -86,6 +86,10 @@ describe('localizeContent', () => {
     expect(localizeFooter('so').comment).toMatch(/sheekaynta cimilada/i);
     expect(themeLabel('youth', 'so')).toBe('Dhallinyaro');
     expect(localizeCreditText('Source: ICE Institute', 'so')).toBe('Isha: ICE Institute');
+    expect(localizeCreditText('Source: Photo: Wikimedia', 'so')).toMatch(/^Isha: Sawir:/);
+    const artSo = localizeStory(stories.find((item) => item.id === '4c-art')!, 'so');
+    expect(artSo.videoTitle).toMatch(/Farshaxanka|Machadka ICE/);
+    expect(artSo.sourceCard?.extras?.[0]?.label).toMatch(/Caddaynta|farshaxanka/i);
   });
 
   it('translates every story (including research) into Arabic with matching chapter counts', () => {
@@ -116,5 +120,13 @@ describe('localizeContent', () => {
     expect(localizeFooter('ar').comment).toMatch(/سرد|قصص|مناخ/);
     expect(themeLabel('youth', 'ar')).toMatch(/شباب/);
     expect(localizeCreditText('Source: ICE Institute', 'ar')).toMatch(/^مصدر: ICE Institute$/);
+    const artAr = localizeStory(stories.find((item) => item.id === '4c-art')!, 'ar');
+    expect(artAr.videoTitle).toMatch(/الفنون|معهد ICE/);
+    expect(artAr.sourceCard?.extras?.[0]?.label).toMatch(/دليل|فن/);
+    const researchAr = localizeStory(
+      stories.find((item) => item.id === 'the-digital-smallholder-navigating-the-shabelle-crisis')!,
+      'ar',
+    );
+    expect(researchAr.sourceCard?.extras?.[0]?.label).toMatch(/صفحة الصورة|Photo page/);
   });
 });

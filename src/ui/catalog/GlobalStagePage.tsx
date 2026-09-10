@@ -27,7 +27,7 @@ export function GlobalStagePage({ stories }: Props) {
           <h2>{story.title}</h2>
           <p className="story-meta">
             {formatLocaleDate(story.date, locale)} · {story.location.name} · {countryLabel(story.country, locale)}
-            {story.sdgs.length ? ` · SDG ${story.sdgs.join(', ')}` : ''}
+            {story.sdgs.length ? ` · ${copy.sdgPrefix} ${story.sdgs.join(', ')}` : ''}
           </p>
           {story.images.length > 0 ? (
             <div className="global-stage-gallery">

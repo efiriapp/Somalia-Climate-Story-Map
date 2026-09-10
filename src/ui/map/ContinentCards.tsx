@@ -1,4 +1,5 @@
 import type { ContinentCard } from '../../application/continent-visits';
+import { useLocale } from '../chrome/LocaleContext';
 
 type Props = {
   cards: ContinentCard[];
@@ -7,11 +8,12 @@ type Props = {
 };
 
 export function ContinentCards({ cards, onCountry, onReset }: Props) {
+  const { copy } = useLocale();
   return (
-    <div className="continent-board" aria-label="Countries visited by continent">
+    <div className="continent-board" aria-label={copy.countriesVisited}>
       <div className="continent-table-bar">
         <p>Visited continents</p>
-        <button type="button" aria-label="Reset map" onClick={onReset}>
+        <button type="button" aria-label={copy.resetMap} onClick={onReset}>
           Reset
         </button>
       </div>

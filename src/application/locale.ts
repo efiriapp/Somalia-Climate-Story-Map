@@ -76,6 +76,16 @@ export const CHROME = {
     sourceWord: 'Source',
     relatedPrefix: 'Related: ',
     exploreClimateImpact: 'Explore Climate Impact',
+    mapLayers: 'Map layers',
+    basemapStreets: 'Streets',
+    basemapSatellite: 'Satellite',
+    basemapTerrain: 'Terrain',
+    resetMap: 'Reset map',
+    previousStop: 'Previous stop',
+    nextStop: 'Next stop',
+    tourFilters: 'Tour filters',
+    countriesVisited: 'Countries visited by continent',
+    sdgPrefix: 'SDG',
   },
   so: {
     platform: 'Barnaamijka Sheekaynta Xogta Cimilada Soomaaliyeed',
@@ -152,6 +162,16 @@ export const CHROME = {
     sourceWord: 'Isha',
     relatedPrefix: 'La xiriira: ',
     exploreClimateImpact: 'Sahami Saamaynta Cimilada',
+    mapLayers: 'Lakabyada khariidadda',
+    basemapStreets: 'Waddooyinka',
+    basemapSatellite: 'Dayax-gacmeed',
+    basemapTerrain: 'Dhulka',
+    resetMap: 'Dib u deji khariidadda',
+    previousStop: 'Joogsiga hore',
+    nextStop: 'Joogsiga xiga',
+    tourFilters: 'Shaandhaynta socdaalka',
+    countriesVisited: 'Waddamada la booqday qaarad ahaan',
+    sdgPrefix: 'SDG',
   },
   ar: {
     platform: 'منصة سرد بيانات المناخ الصومالية',
@@ -228,8 +248,31 @@ export const CHROME = {
     sourceWord: 'مصدر',
     relatedPrefix: 'ذات صلة: ',
     exploreClimateImpact: 'استكشف أثر المناخ',
+    mapLayers: 'طبقات الخريطة',
+    basemapStreets: 'الشوارع',
+    basemapSatellite: 'الأقمار الصناعية',
+    basemapTerrain: 'التضاريس',
+    resetMap: 'إعادة ضبط الخريطة',
+    previousStop: 'المحطة السابقة',
+    nextStop: 'المحطة التالية',
+    tourFilters: 'مرشحات الجولة',
+    countriesVisited: 'البلدان التي تمت زيارتها حسب القارة',
+    sdgPrefix: 'هدف',
   },
 } as const;
+
+/** Common sourceCard.extras labels remapped when packs omit a row. */
+export const EXTRA_LABELS: Record<Locale, Record<string, string>> = {
+  en: {},
+  so: {
+    'Photo page': 'Bogga sawirka',
+    'Climate-art evidence': 'Caddaynta farshaxanka-cimilada',
+  },
+  ar: {
+    'Photo page': 'صفحة الصورة',
+    'Climate-art evidence': 'دليل الفن المناخي',
+  },
+};
 
 export const THEME_LABELS: Record<Locale, Record<string, string>> = {
   en: {
@@ -378,10 +421,25 @@ export const formatLocaleDate = (iso: string, locale: Locale): string => {
   return `${date.getUTCDate()} ${MONTHS_SO[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 };
 
+export const mapLayerLabel = (
+  id: 'streets' | 'satellite' | 'terrain',
+  locale: Locale,
+): string => {
+  const copy = chromeCopy(locale);
+  if (id === 'streets') return copy.basemapStreets;
+  if (id === 'satellite') return copy.basemapSatellite;
+  return copy.basemapTerrain;
+};
+
 export const localizeCreditText = (text: string, locale: Locale): string => {
-  if (locale === 'so') return text.replace(/^Source:/, CHROME.so.sourceWord + ':');
-  if (locale === 'ar') return text.replace(/^Source:/, CHROME.ar.sourceWord + ':');
-  return text;
+  if (locale === 'en') return text;
+  let next = text.replace(/^Source:/, `${CHROME[locale].sourceWord}:`);
+  if (locale === 'so') {
+    next = next.replace(/\bPhoto:\s*/gi, 'Sawir: ').replace(/\bPhoto page\b/gi, 'Bogga sawirka');
+  } else if (locale === 'ar') {
+    next = next.replace(/\bPhoto:\s*/gi, 'صورة: ').replace(/\bPhoto page\b/gi, 'صفحة الصورة');
+  }
+  return next;
 };
 
 export const hazardTitle = (

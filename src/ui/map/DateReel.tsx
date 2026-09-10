@@ -1,5 +1,6 @@
 import { playCalendarTick } from '../../application/tour-sound';
 import { tourDateParts } from '../../application/global-tour';
+import { useLocale } from '../chrome/LocaleContext';
 
 const YEARS = ['2023', '2024', '2025', '2026'];
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -63,6 +64,7 @@ type Props = {
 };
 
 export function DateReel({ isoDate, onDateChange, onPrev, onNext }: Props) {
+  const { copy } = useLocale();
   const parts = tourDateParts(isoDate);
   const change = (next: { year?: string; month?: string; day?: string }) => {
     playCalendarTick();
@@ -82,7 +84,7 @@ export function DateReel({ isoDate, onDateChange, onPrev, onNext }: Props) {
         <div className="date-reel-nav">
           <button
             type="button"
-            aria-label="Previous stop"
+            aria-label={copy.previousStop}
             onClick={() => {
               playCalendarTick();
               onPrev();
@@ -94,7 +96,7 @@ export function DateReel({ isoDate, onDateChange, onPrev, onNext }: Props) {
           </button>
           <button
             type="button"
-            aria-label="Next stop"
+            aria-label={copy.nextStop}
             onClick={() => {
               playCalendarTick();
               onNext();

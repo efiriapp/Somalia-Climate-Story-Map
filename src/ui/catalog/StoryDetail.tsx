@@ -67,7 +67,8 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
       <h1>{story.title}</h1>
       {story.featuredPerson ? <p className="story-person">{story.featuredPerson}</p> : null}
       <p className="story-meta">
-        {formatLocaleDate(story.date, locale)} · {story.placeLabel ?? story.location.name} · SDG {story.sdgs.join(', ')}
+        {formatLocaleDate(story.date, locale)} · {story.placeLabel ?? story.location.name} ·{' '}
+        {copy.sdgPrefix} {story.sdgs.join(', ')}
       </p>
       <p className="story-lede">{story.summary}</p>
       {first.length > 0 ? (

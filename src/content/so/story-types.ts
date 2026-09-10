@@ -7,6 +7,7 @@ export type StorySo = {
   mapTitle?: string;
   locationName?: string;
   country?: string;
+  videoTitle?: string;
   chapters?: { heading: string; paragraphs: string[] }[];
   tourStops?: { title: string; description: string }[];
   stats?: { label: string; value?: string }[];
@@ -19,5 +20,6 @@ export type StorySo = {
     impactAreas?: string[];
     featuredPerson?: string;
     primarySource?: string;
+    extras?: { label: string; value: string }[];
   };
 };

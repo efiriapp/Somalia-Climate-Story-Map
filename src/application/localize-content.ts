@@ -1,4 +1,5 @@
 import type { Locale } from './locale';
+import { EXTRA_LABELS } from './locale';
 import { aboutIce } from '../content/about-ice';
 import {
   climateImpactHub,
@@ -13,7 +14,26 @@ import { STORY_SO, type StorySo } from '../content/so/stories';
 
 type StoryLocale = StorySo | StoryAr;
 
-const applyStoryPack = (story: Story, pack: StoryLocale | undefined): Story => {
+const localizeExtras = (
+  extras: NonNullable<Story['sourceCard']>['extras'],
+  packExtras: NonNullable<StoryLocale['sourceCard']>['extras'] | undefined,
+  locale: Locale,
+): NonNullable<Story['sourceCard']>['extras'] => {
+  if (packExtras) {
+    return packExtras.map((row, index) => ({
+      label: row.label,
+      value: row.value ?? extras?.[index]?.value ?? '',
+    }));
+  }
+  if (!extras) return extras;
+  const labels = EXTRA_LABELS[locale];
+  return extras.map((row) => ({
+    label: labels[row.label] ?? row.label,
+    value: row.value,
+  }));
+};
+
+const applyStoryPack = (story: Story, pack: StoryLocale | undefined, locale: Locale): Story => {
   if (!pack) return story;
   return {
     ...story,
@@ -23,6 +43,7 @@ const applyStoryPack = (story: Story, pack: StoryLocale | undefined): Story => {
     featuredPerson: pack.featuredPerson ?? story.featuredPerson,
     placeLabel: pack.placeLabel ?? story.placeLabel,
     mapTitle: pack.mapTitle ?? story.mapTitle,
+    videoTitle: pack.videoTitle ?? story.videoTitle,
     location: {
       ...story.location,
       name: pack.locationName ?? story.location.name,
@@ -53,6 +74,7 @@ const applyStoryPack = (story: Story, pack: StoryLocale | undefined): Story => {
           impactAreas: pack.sourceCard?.impactAreas ?? story.sourceCard.impactAreas,
           featuredPerson: pack.sourceCard?.featuredPerson ?? story.sourceCard.featuredPerson,
           primarySource: pack.sourceCard?.primarySource ?? story.sourceCard.primarySource,
+          extras: localizeExtras(story.sourceCard.extras, pack.sourceCard?.extras, locale),
         }
       : story.sourceCard,
   };
@@ -100,8 +122,8 @@ export const localizeClimatePage = (page: ClimateImpactPage, locale: Locale): Cl
 };
 
 export const localizeStory = (story: Story, locale: Locale): Story => {
-  if (locale === 'so') return applyStoryPack(story, STORY_SO[story.id] as StorySo | undefined);
-  if (locale === 'ar') return applyStoryPack(story, STORY_AR[story.id] as StoryAr | undefined);
+  if (locale === 'so') return applyStoryPack(story, STORY_SO[story.id] as StorySo | undefined, 'so');
+  if (locale === 'ar') return applyStoryPack(story, STORY_AR[story.id] as StoryAr | undefined, 'ar');
   return story;
 };
 

@@ -1,4 +1,6 @@
 import { MAP_LAYERS, type MapLayerId } from '../../application/map-layers';
+import { mapLayerLabel } from '../../application/locale';
+import { useLocale } from '../chrome/LocaleContext';
 
 type Props = {
   value: MapLayerId;
@@ -22,11 +24,12 @@ export function MapBasemapControl({
   onChange,
   className = '',
 }: Props) {
+  const { copy, locale } = useLocale();
   return (
     <div className={`map-basemap-control tour-layer-wrap ${className}`.trim()}>
       <button
         type="button"
-        aria-label="Map layers"
+        aria-label={copy.mapLayers}
         aria-expanded={open}
         aria-pressed={open}
         onClick={() => onOpenChange(!open)}
@@ -47,7 +50,7 @@ export function MapBasemapControl({
                 onOpenChange(false);
               }}
             >
-              {item.label}
+              {mapLayerLabel(item.id, locale)}
             </button>
           ))}
         </div>

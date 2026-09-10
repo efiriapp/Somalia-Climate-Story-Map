@@ -20,12 +20,14 @@ type ClimateMediaFields = {
   sourceUrl: string;
 };
 
+const PHOTO_CREDIT_PREFIX = /^(Photo|Sawir|صورة):\s*/i;
+
 export const formatMediaSourceCredit = (label: string): string => {
   const trimmed = label.trim();
-  if (/^Photo:\s*/i.test(trimmed)) {
-    return `Source: ${trimmed.replace(/^Photo:\s*/i, '')}`;
+  if (PHOTO_CREDIT_PREFIX.test(trimmed)) {
+    return `Source: ${trimmed.replace(PHOTO_CREDIT_PREFIX, '')}`;
   }
-  if (/^ICE Institute\b/i.test(trimmed)) {
+  if (/^ICE Institute\b/i.test(trimmed) || /^Machadka ICE\b/i.test(trimmed) || /^معهد ICE\b/i.test(trimmed)) {
     return `Source: ${trimmed}`;
   }
   return `Source: ICE Institute — ${trimmed}`;

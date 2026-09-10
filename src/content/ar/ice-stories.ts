@@ -10,6 +10,7 @@ export const ICE_STORY_AR: Record<string, StoryAr> = {
     placeLabel: '4C Art Studio / مقديشو',
     locationName: 'مقديشو، الصومال',
     country: 'الصومال',
+    videoTitle: 'الفنون والعمل المناخي | معهد ICE',
     sourceCard: {
       place: '4C Art Studio / مقديشو',
       city: 'مقديشو',
@@ -25,6 +26,12 @@ export const ICE_STORY_AR: Record<string, StoryAr> = {
       ],
       featuredPerson: 'Abdinasir Abdikadir Mohamed (4C)',
       primarySource: '4C Art Studio — السيرة والمعرض',
+      extras: [
+        {
+          label: 'دليل الفن المناخي',
+          value: '4C Art Studio — جدارية لـ UNSOS',
+        },
+      ],
     },
     stats: [
       { label: 'الشخصية البارزة', value: 'Abdinasir Abdikadir Mohamed (4C)' },
@@ -89,6 +96,7 @@ export const ICE_STORY_AR: Record<string, StoryAr> = {
     placeLabel: 'مقديشو، بنادر',
     locationName: 'مقديشو، الصومال',
     country: 'الصومال',
+    videoTitle: 'نباتات كاسورو | معهد ICE',
     sourceCard: {
       place: 'مقديشو، بنادر',
       city: 'مقديشو',
@@ -146,6 +154,7 @@ export const ICE_STORY_AR: Record<string, StoryAr> = {
     placeLabel: 'مقديشو (المقر)',
     locationName: 'مقديشو، الصومال',
     country: 'الصومال',
+    videoTitle: 'فحم نظيف وبأسعار معقولة | معهد ICE',
     sourceCard: {
       place: 'مقديشو (المقر)',
       city: 'مقديشو',
@@ -270,6 +279,7 @@ export const ICE_STORY_AR: Record<string, StoryAr> = {
     mapTitle: 'شاطئ Liido',
     locationName: 'شاطئ Liido، مقديشو',
     country: 'الصومال',
+    videoTitle: 'حملة تنظيف الشاطئ في مقديشو | Ololaha nadaafada Xeebta Liido ee Muqdishu',
     sourceCard: {
       place: 'شاطئ Liido، منطقة عبدالعزيز، مقديشو',
       city: 'مقديشو',
@@ -415,6 +425,7 @@ export const ICE_STORY_AR: Record<string, StoryAr> = {
     mapTitle: 'أعمال Green Champions',
     locationName: 'مقديشو، الصومال',
     country: 'الصومال',
+    videoTitle: 'تنظيف شاطئ ليدو | الأبطال الخضر',
     sourceCard: {
       place: 'جامعة SIMAD، مقديشو',
       city: 'مقديشو',

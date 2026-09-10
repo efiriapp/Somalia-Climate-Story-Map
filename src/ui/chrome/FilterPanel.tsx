@@ -91,7 +91,7 @@ export function FilterPanel({ stories, draft, onDraftChange, onApply }: Props) {
             <option value="">{copy.sdgs}</option>
             {sdgsIn(stories).map((sdg) => (
               <option key={sdg} value={sdg}>
-                SDG {sdg}
+                {copy.sdgPrefix} {sdg}
               </option>
             ))}
           </select>

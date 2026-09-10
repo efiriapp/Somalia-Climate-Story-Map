@@ -44,12 +44,12 @@ describe('storyMediaCredit', () => {
     expect(storyMediaCredit(emptyEvent!)).toBeNull();
   });
 
-  it('credits Unsplash photos for research stories without the ICE Institute prefix', () => {
+  it('credits Wikimedia Commons photos for research stories without the ICE Institute prefix', () => {
     const research = stories.find(
       (item) => item.id === 'the-digital-smallholder-navigating-the-shabelle-crisis',
     );
     expect(storyMediaCredit(research!)).toEqual({
-      text: 'Source: Unsplash',
+      text: 'Source: Wikimedia Commons / Somalia imagery',
       url: 'https://ice.simad.edu.so/',
     });
   });

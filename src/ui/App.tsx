@@ -252,7 +252,8 @@ export default function App() {
           <h1>{detail.title}</h1>
           {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
           <p className="story-meta">
-            {formatLocaleDate(detail.date, locale)} · {detail.location.name} · SDG {detail.sdgs.join(', ')}
+            {formatLocaleDate(detail.date, locale)} · {detail.location.name} · {copy.sdgPrefix}{' '}
+            {detail.sdgs.join(', ')}
           </p>
           <p>{detail.body}</p>
           {detail.website ? (

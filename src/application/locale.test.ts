@@ -43,5 +43,8 @@ describe('chromeCopy', () => {
     expect(chromeCopy('so').exploreClimateImpact).toMatch(/Saamaynta Cimilada/);
     expect(chromeCopy('so').tourRestart).toMatch(/Dib u bilow|Restart/);
     expect(chromeCopy('ar').tourRestart).toMatch(/إعادة|تشغيل|Restart/);
+    expect(chromeCopy('en').mapLayers).toBe('Map layers');
+    expect(chromeCopy('so').basemapStreets).toMatch(/Waddooyinka|Streets/);
+    expect(chromeCopy('ar').sdgPrefix).toMatch(/هدف|SDG/);
   });
 });

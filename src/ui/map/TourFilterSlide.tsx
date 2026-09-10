@@ -1,4 +1,5 @@
 import type { ContinentId, TourFilter } from '../../application/continent-visits';
+import { useLocale } from '../chrome/LocaleContext';
 
 type Props = {
   open: boolean;
@@ -21,8 +22,13 @@ export function TourFilterSlide({
   onContinent,
   onCountry,
 }: Props) {
+  const { copy } = useLocale();
   return (
-    <aside className={open ? 'tour-filter-slide open' : 'tour-filter-slide'} aria-hidden={!open} aria-label="Tour filters">
+    <aside
+      className={open ? 'tour-filter-slide open' : 'tour-filter-slide'}
+      aria-hidden={!open}
+      aria-label={copy.tourFilters}
+    >
       <p>Filter</p>
       <label>
         Year
@@ -42,7 +48,9 @@ export function TourFilterSlide({
         Continent
         <select
           value={filter.continent}
-          onChange={(event) => onContinent(event.target.value === 'all' ? 'all' : (event.target.value as ContinentId))}
+          onChange={(event) =>
+            onContinent(event.target.value === 'all' ? 'all' : (event.target.value as ContinentId))
+          }
         >
           <option value="all">All continents</option>
           {continents.map((continent) => (
