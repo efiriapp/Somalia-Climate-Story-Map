@@ -21,7 +21,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الزراعة والمرونة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -54,7 +54,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الزراعة والمرونة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -87,7 +87,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الزراعة والمرونة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -120,7 +120,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الزراعة والمرونة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -151,7 +151,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الزراعة والمرونة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -188,7 +188,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الزراعة والمرونة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -219,7 +219,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الزراعة والمرونة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -250,7 +250,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'النزاع والنزوح والتوسع الحضري',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -281,7 +281,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'النزاع والنزوح والتوسع الحضري',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -312,7 +312,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'النزاع والنزوح والتوسع الحضري',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -343,7 +343,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'النزاع والنزوح والتوسع الحضري',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -374,7 +374,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'النزاع والنزوح والتوسع الحضري',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -405,7 +405,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'النزاع والنزوح والتوسع الحضري',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -436,7 +436,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'النزاع والنزوح والتوسع الحضري',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -467,7 +467,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الطاقة المتجددة والرقمنة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -498,7 +498,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الطاقة المتجددة والرقمنة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -529,7 +529,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الطاقة المتجددة والرقمنة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -561,7 +561,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الطاقة المتجددة والرقمنة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -592,7 +592,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الطاقة المتجددة والرقمنة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -623,7 +623,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الطاقة المتجددة والرقمنة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -654,7 +654,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الطاقة المتجددة والرقمنة',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -685,7 +685,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الحوكمة والتمويل',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -716,7 +716,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الحوكمة والتمويل',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -747,7 +747,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الحوكمة والتمويل',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -778,7 +778,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الحوكمة والتمويل',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -809,7 +809,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الحوكمة والتمويل',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -840,7 +840,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الحوكمة والتمويل',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {
@@ -871,7 +871,7 @@ export const RESEARCH_STORY_AR: Record<string, StoryAr> = {
         'الحوكمة والتمويل',
       ],
       featuredPerson: 'سلسلة أبحاث معهد ICE',
-      primarySource: 'صورة: Unsplash',
+      primarySource: 'صورة: ويكيميديا كومنز / صور الصومال',
     },
     chapters: [
       {

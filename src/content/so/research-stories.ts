@@ -21,7 +21,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Beeraha iyo adkeysiga',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -54,7 +54,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Beeraha iyo adkeysiga',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -87,7 +87,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Beeraha iyo adkeysiga',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -120,7 +120,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Beeraha iyo adkeysiga',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -151,7 +151,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Beeraha iyo adkeysiga',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -188,7 +188,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Beeraha iyo adkeysiga',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -219,7 +219,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Beeraha iyo adkeysiga',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -250,7 +250,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Colaadda, barakaca iyo ballaarinta magaalooyinka',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -281,7 +281,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Colaadda, barakaca iyo ballaarinta magaalooyinka',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -312,7 +312,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Colaadda, barakaca iyo ballaarinta magaalooyinka',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -343,7 +343,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Colaadda, barakaca iyo ballaarinta magaalooyinka',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -374,7 +374,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Colaadda, barakaca iyo ballaarinta magaalooyinka',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -405,7 +405,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Colaadda, barakaca iyo ballaarinta magaalooyinka',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -436,7 +436,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Colaadda, barakaca iyo ballaarinta magaalooyinka',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -467,7 +467,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Tamarta cusub iyo dijitalaynta',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -498,7 +498,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Tamarta cusub iyo dijitalaynta',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -529,7 +529,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Tamarta cusub iyo dijitalaynta',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -561,7 +561,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Tamarta cusub iyo dijitalaynta',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -592,7 +592,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Tamarta cusub iyo dijitalaynta',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -623,7 +623,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Tamarta cusub iyo dijitalaynta',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -654,7 +654,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Tamarta cusub iyo dijitalaynta',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -685,7 +685,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Maamulka iyo maaliyadda',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -716,7 +716,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Maamulka iyo maaliyadda',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -747,7 +747,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Maamulka iyo maaliyadda',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -778,7 +778,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Maamulka iyo maaliyadda',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -809,7 +809,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Maamulka iyo maaliyadda',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -840,7 +840,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Maamulka iyo maaliyadda',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
@@ -871,7 +871,7 @@ export const RESEARCH_STORY_SO: Record<string, StorySo> = {
         'Maamulka iyo maaliyadda',
       ],
       featuredPerson: 'Taxanaha cilmi-baarista Machadka ICE',
-      primarySource: 'Sawir: Unsplash',
+      primarySource: 'Sawir: Wikimedia Commons / Sawirada Soomaaliya',
     },
     chapters: [
       {
