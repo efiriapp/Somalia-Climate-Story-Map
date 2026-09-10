@@ -419,8 +419,8 @@ export const stories: Story[] = [
     location: mogadishu,
     country: 'Somalia',
     website: 'https://ice.simad.edu.so/',
-    summary: 'When rains failed, SIMAD University moved from campus into drought-hit communities with emergency water trucking. Alumni, students, and staff reached households and livestock in Mudug, Baay, Hiiraan, and Jubbada Hoose after consecutive poor rainy seasons. In Ceelgula, Mudug, more than 35 pastoralist families received water when wells and pasture failed. The response treats drought as a daily struggle over distance, animals, and survival, not a classroom statistic.',
-    body: 'SIMAD University works with communities facing drought, linking campus knowledge to water, food, and climate resilience on the ground.',
+    summary: 'When rains failed, SIMAD University redirected its annual iftar budget into drought support and moved from campus into drought-hit communities with emergency water trucking. Alumni, students, and staff reached households and livestock in Mudug, Baay, Hiiraan, and Jubbada Hoose after consecutive poor rainy seasons. In Ceelgula, Mudug, more than 35 pastoralist families received water when wells and pasture failed. The response treats drought as a daily struggle over distance, animals, and survival, not a classroom statistic.',
+    body: 'SIMAD University works with communities facing drought, linking campus knowledge to water, food, and climate resilience on the ground. An official university statement explained the decision to shift the annual iftar budget into support for drought-affected people.',
     featuredPerson: 'SIMAD University',
     placeLabel: 'SIMAD University, Mogadishu',
     mapTitle: 'Districts SIMAD supported in the drought',
@@ -443,6 +443,8 @@ export const stories: Story[] = [
       { label: 'Lower Juba', value: '340+ pastoralist and farming households' },
     ],
     images: [
+      '/images/ice-stories/simad-drought-statement-1.jpg',
+      '/images/ice-stories/simad-drought-statement-2.jpg',
       '/images/ice-stories/simad-drought-hero.jpg',
       '/images/ice-stories/mudug.jpg',
       '/images/ice-stories/mudug-2.jpg',
@@ -458,6 +460,17 @@ export const stories: Story[] = [
       '/images/ice-stories/lower-juba-3.jpg',
     ],
     tourStops: [
+      {
+        region: 'banaadir',
+        place: 'wadajir',
+        title: 'SIMAD University: shifting the iftar budget into drought support',
+        description:
+          'The drought response began at SIMAD University in Mogadishu as an official institutional decision, not only as trucks on the road. The university released a public statement explaining how campus solidarity would move into drought-hit communities. Leadership redirected the annual iftar budget toward emergency support for families facing water scarcity and livestock loss. That choice treated Ramadan hospitality and climate duty as one shared responsibility. Alumni, students, and staff then carried the commitment from Warshadaha Street into the regions. The statement pages shown here are the university’s own account of that pivot from ceremony to survival.',
+        images: [
+          '/images/ice-stories/simad-drought-statement-1.jpg',
+          '/images/ice-stories/simad-drought-statement-2.jpg',
+        ],
+      },
       {
         region: 'mudug',
         place: 'ceelgula',
@@ -518,7 +531,7 @@ export const stories: Story[] = [
       {
         heading: 'The university becomes a platform for action',
         paragraphs: [
-          'SIMAD publicly recognized alumni, student government, staff, students, and the wider university community in delivering drought assistance. When drought hits, knowledge must leave the classroom. Students become volunteers. Alumni become mobilizers. Staff become coordinators. Education becomes service.',
+          'SIMAD’s official statement made the campus decision public: the annual iftar budget would be redirected to support drought-affected people. That framing mattered because it showed solidarity as a budget choice, not only a slogan. Alumni, student government, staff, students, and the wider university community then delivered the assistance. When drought hits, knowledge must leave the classroom. Students become volunteers. Alumni become mobilizers. Staff become coordinators. Education becomes service.',
           'The humanitarian truck is a bridge, not the road. An entrepreneurial university can also map drought hotspots, identify vulnerable water points, design solar-powered water systems, develop drought-resilient farming methods, and strengthen early-warning systems. The question is not only how people survive this drought, but how Somalia becomes less vulnerable to the next one.',
         ],
       },

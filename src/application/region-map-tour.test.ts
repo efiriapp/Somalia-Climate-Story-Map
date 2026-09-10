@@ -12,11 +12,12 @@ import {
 } from './region-map-tour';
 
 describe('buildRegionMapTour', () => {
-  it('tours SIMAD drought places from Ceelgula to Lower Juba', () => {
+  it('tours SIMAD drought places from campus to Lower Juba', () => {
     const story = stories.find((item) => item.id === 'simad-drought');
     const tour = buildRegionMapTour(story!);
 
     expect(tour.map((stop) => stop.district)).toEqual([
+      'SIMAD University',
       'Ceelgula',
       'Baydhaba',
       'Xuduley',
@@ -24,6 +25,17 @@ describe('buildRegionMapTour', () => {
       'Lower Juba',
     ]);
     expect(tour[0]).toMatchObject({
+      ...regionCenter('wadajir'),
+      flyLat: regionCenter('wadajir').lat,
+      flyLng: regionCenter('wadajir').lng,
+      zoom: DISTRICT_ZOOM,
+      district: 'SIMAD University',
+      images: [
+        '/images/ice-stories/simad-drought-statement-1.jpg',
+        '/images/ice-stories/simad-drought-statement-2.jpg',
+      ],
+    });
+    expect(tour[1]).toMatchObject({
       ...regionCenter('ceelgula'),
       flyLat: regionCenter('ceelgula').lat,
       flyLng: regionCenter('ceelgula').lng,
@@ -31,7 +43,7 @@ describe('buildRegionMapTour', () => {
       district: 'Ceelgula',
       images: ['/images/ice-stories/mudug.jpg', '/images/ice-stories/mudug-2.jpg'],
     });
-    expect(tour[1]).toMatchObject({
+    expect(tour[2]).toMatchObject({
       ...regionCenter('baydhaba'),
       district: 'Baydhaba',
       images: [
@@ -40,12 +52,12 @@ describe('buildRegionMapTour', () => {
         '/images/ice-stories/baay-food-2.jpg',
       ],
     });
-    expect(tour[2]).toMatchObject({
+    expect(tour[3]).toMatchObject({
       ...regionCenter('xuduley'),
       district: 'Xuduley',
       images: ['/images/ice-stories/hiiraan.jpg', '/images/ice-stories/hiiraan-2.jpg'],
     });
-    expect(tour[3]).toMatchObject({
+    expect(tour[4]).toMatchObject({
       ...regionCenter('far-libaax'),
       district: 'Far-libaax',
       images: ['/images/ice-stories/hiiraan-3.jpg', '/images/ice-stories/hiiraan-4.jpg'],

@@ -284,6 +284,8 @@ describe('global-stage source pages', () => {
     expect(story?.tourStops?.some((stop) => /Far-libaax/i.test(stop.description))).toBe(true);
     expect(story?.chapters?.some((chapter) => chapter.heading.startsWith('Mudug'))).toBe(false);
     expect(story?.images).toEqual([
+      '/images/ice-stories/simad-drought-statement-1.jpg',
+      '/images/ice-stories/simad-drought-statement-2.jpg',
       '/images/ice-stories/simad-drought-hero.jpg',
       '/images/ice-stories/mudug.jpg',
       '/images/ice-stories/mudug-2.jpg',
@@ -299,6 +301,7 @@ describe('global-stage source pages', () => {
       '/images/ice-stories/lower-juba-3.jpg',
     ]);
     expect(story?.tourStops?.map((stop) => stop.place)).toEqual([
+      'wadajir',
       'ceelgula',
       'baydhaba',
       'xuduley',
@@ -306,6 +309,10 @@ describe('global-stage source pages', () => {
       'lower-juba',
     ]);
     expect(story?.tourStops?.map((stop) => stop.images)).toEqual([
+      [
+        '/images/ice-stories/simad-drought-statement-1.jpg',
+        '/images/ice-stories/simad-drought-statement-2.jpg',
+      ],
       ['/images/ice-stories/mudug.jpg', '/images/ice-stories/mudug-2.jpg'],
       [
         '/images/ice-stories/baay.jpg',

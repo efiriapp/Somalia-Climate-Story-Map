@@ -346,8 +346,8 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
   'simad-drought': {
     title: 'Jaamacadda SIMAD: Jaamacad ka jawaabaysa Abaarta, Hal Beel Mar',
     summary:
-      'Markii roobabku fashilmeen, Jaamacadda SIMAD waxay ka dhaqaaqday xerada una gudubtay bulshooyinka abaartu saameysay iyadoo qaadaysa biyo degdeg ah. Ardaydii hore, ardayda, iyo shaqaaluhu waxay gaadheen qoysas iyo xoolo ku yaal Mudug, Baay, Hiiraan, iyo Jubbada Hoose ka dib xilliyo roobaad oo isdaba-joog ah oo liita. Ceelgula, Mudug, in ka badan 35 qoys oo xoola-dhaqato ah ayaa helay biyo markii ceelasha iyo daaqii fashilmeen. Jawaabtu waxay u aragtaa abaarta halgan maalinle ah oo ku saabsan masaafada, xoolaha, iyo badbaadada, ee ma aha tiro fasal.',
-    body: 'Jaamacadda SIMAD waxay la shaqeysaa bulshooyinka wajahaya abaarta, iyadoo aqoonta xerada ku xidha biyo, cunto, iyo adkeysiga cimilada ee dhulka.',
+      'Markii roobabku fashilmeen, Jaamacadda SIMAD waxay u wareejisay miisaaniyadda afurta sanadlaha ah taageerada abaarta, waxayna ka dhaqaaqday xerada una gudubtay bulshooyinka abaartu saameysay iyadoo qaadaysa biyo degdeg ah. Ardaydii hore, ardayda, iyo shaqaaluhu waxay gaadheen qoysas iyo xoolo ku yaal Mudug, Baay, Hiiraan, iyo Jubbada Hoose ka dib xilliyo roobaad oo isdaba-joog ah oo liita. Ceelgula, Mudug, in ka badan 35 qoys oo xoola-dhaqato ah ayaa helay biyo markii ceelasha iyo daaqii fashilmeen. Jawaabtu waxay u aragtaa abaarta halgan maalinle ah oo ku saabsan masaafada, xoolaha, iyo badbaadada, ee ma aha tiro fasal.',
+    body: 'Jaamacadda SIMAD waxay la shaqeysaa bulshooyinka wajahaya abaarta, iyadoo aqoonta xerada ku xidha biyo, cunto, iyo adkeysiga cimilada ee dhulka. War-saxaafadeed rasmi ah ayaa sharraxay go’aanka in miisaaniyadda afurta sanadlaha ah loo wareejiyo taageerada dadka abaartu saameysay.',
     featuredPerson: 'Jaamacadda SIMAD',
     placeLabel: 'Jaamacadda SIMAD, Muqdisho',
     mapTitle: 'Degmooyinka SIMAD ka caawisay abaarta',
@@ -372,6 +372,11 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
       { label: 'Jubbada Hoose', value: '340+ qoys xoola-dhaqato iyo beeraley' },
     ],
     tourStops: [
+      {
+        title: 'Jaamacadda SIMAD: miisaaniyadda afurta oo loo wareejiyay taageerada abaarta',
+        description:
+          'Jawaabta abaarta waxay ka billowday Jaamacadda SIMAD ee Muqdisho sidii go’aan hay’adeed oo rasmi ah, ee ma ahayn kaliya gaadiid waddooyinka. Jaamacaddu waxay soo saartay war-saxaafadeed dadweyne oo sharraxaya sida midnimada xerada ugu gudbi doonto bulshooyinka abaartu saameysay. Hoggaanku wuxuu u wareejiyay miisaaniyadda afurta sanadlaha ah taageero degdeg ah oo loogu talo galay qoysaska wajahaya yaraanta biyaha iyo khasaaraha xoolaha. Doorashadaas waxay u aragtay martigelinta Ramadaanka iyo waajibaadka cimilada inay yihiin hal masuuliyad wadaag ah. Ardaydii hore, ardayda, iyo shaqaaluhu waxay ka qaadeen ballanka Warshadaha Street una geeyeen gobollada. Bogagga war-saxaafadeedka halkan lagu muujiyay waa xisaabta jaamacadda ee u wareejinta xafladda una gudubtay badbaadada.',
+      },
       {
         title: 'Ceelgula, Mudug: biyo qoysas iyo xoolo',
         description:
@@ -409,7 +414,7 @@ export const ICE_STORY_SO: Record<string, StorySo> = {
       {
         heading: 'Jaamacaddu waxay noqotaa goob tallaabo',
         paragraphs: [
-          'SIMAD si cad ayay u aqoonsatay ardaydii hore, dowladda ardayda, shaqaalaha, ardayda, iyo bulshada jaamacadda ee bixinta gargaarka abaarta. Marka abaartu timaado, aqoonta waa inay ka baxdaa fasalka. Ardaydu waxay noqdaan tabaruceyaal. Ardaydii hore waxay noqdaan abaabulayaal. Shaqaaluhu waxay noqdaan isku-duwayaal. Waxbarashadu waxay noqotaa adeeg.',
+          'War-saxaafadeedka rasmiga ah ee SIMAD wuxuu dadweynaha u soo bandhigay go’aanka xerada: miisaaniyadda afurta sanadlaha ah waa in loo wareejiyo taageerada dadka abaartu saameysay. Qaabayntaas waxay muhiim ahayd sababtoo ah waxay muujisay midnimada sidii doorasho miisaaniyadeed, ee ma ahayn kaliya halkudheg. Ardaydii hore, dowladda ardayda, shaqaalaha, ardayda, iyo bulshada jaamacadda ayaa markaas bixiyay gargaarka. Marka abaartu timaado, aqoonta waa inay ka baxdaa fasalka. Ardaydu waxay noqdaan tabaruceyaal. Ardaydii hore waxay noqdaan abaabulayaal. Shaqaaluhu waxay noqdaan isku-duwayaal. Waxbarashadu waxay noqotaa adeeg.',
           'Gaariga bini-aadamnimadu waa buundada, ee ma aha waddada. Jaamacad ganacsi-abuur leh waxay kaloo khariidayn kartaa meelaha abaarta ugu kulul, aqoonsan kartaa ilaha biyaha nugul, nashqadayn kartaa nidaamyada biyaha qorraxda ku shaqeeya, horumarin kartaa habab beer oo abaarta u adkaysta, xoojin kartaa nidaamyada digniinta hore. Su’aashu ma aha kaliya sida dadku ugu noolaadaan abaartan, ee waa sida Soomaaliya uga yaraan ugula nuglaato tan xigta.',
         ],
       },
