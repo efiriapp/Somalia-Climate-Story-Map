@@ -48,7 +48,10 @@ describe('chromeCopy', () => {
     expect(chromeCopy('ar').sdgPrefix).toMatch(/هدف|SDG/);
     expect(chromeCopy('en').autoplayPlay).toBe('Play');
     expect(chromeCopy('en').autoplaySpeed).toBe('Reading speed');
+    expect(chromeCopy('en').autoplayExpand).toMatch(/Show autoplay/);
+    expect(chromeCopy('en').autoplayHide).toBe('Hide autoplay');
     expect(chromeCopy('so').autoplayPause).toMatch(/Hakad|Pause/);
     expect(chromeCopy('ar').autoplayPlay).toMatch(/تشغيل|Play/);
+    expect(chromeCopy('ar').autoplayShow).toMatch(/إظهار|Show/);
   });
 });

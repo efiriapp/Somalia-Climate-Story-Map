@@ -91,6 +91,10 @@ export const CHROME = {
     autoplayPause: 'Pause',
     autoplayReset: 'Restart',
     autoplaySpeed: 'Reading speed',
+    autoplayExpand: 'Show autoplay controls',
+    autoplayCollapse: 'Collapse autoplay controls',
+    autoplayHide: 'Hide autoplay',
+    autoplayShow: 'Show autoplay',
   },
   so: {
     platform: 'Barnaamijka Sheekaynta Xogta Cimilada Soomaaliyeed',
@@ -182,6 +186,10 @@ export const CHROME = {
     autoplayPause: 'Hakad',
     autoplayReset: 'Dib u bilow',
     autoplaySpeed: 'Xawaaraha akhriska',
+    autoplayExpand: 'Muuji kontoroolada isku-duubista',
+    autoplayCollapse: 'Yaree kontoroolada isku-duubista',
+    autoplayHide: 'Qari isku-duubista',
+    autoplayShow: 'Muuji isku-duubista',
   },
   ar: {
     platform: 'منصة سرد بيانات المناخ الصومالية',
@@ -273,6 +281,10 @@ export const CHROME = {
     autoplayPause: 'إيقاف مؤقت',
     autoplayReset: 'إعادة',
     autoplaySpeed: 'سرعة القراءة',
+    autoplayExpand: 'إظهار عناصر التحكم بالتشغيل التلقائي',
+    autoplayCollapse: 'طي عناصر التحكم بالتشغيل التلقائي',
+    autoplayHide: 'إخفاء التشغيل التلقائي',
+    autoplayShow: 'إظهار التشغيل التلقائي',
   },
 } as const;
 

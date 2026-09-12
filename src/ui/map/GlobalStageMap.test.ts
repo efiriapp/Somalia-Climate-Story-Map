@@ -9,7 +9,7 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
-  it('drives the place tour from the top autoplay bar and pauses on manual map controls', () => {
+  it('drives the place tour from the floating autoplay control and pauses on manual map controls', () => {
     expect(source).toContain('AutoplayScroll');
     expect(source).toContain('useOptionalAutoplay');
     expect(source).toContain('setMapDriving');

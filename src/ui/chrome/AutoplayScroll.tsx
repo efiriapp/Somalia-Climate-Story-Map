@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   AUTOPLAY_SPEEDS,
   isScrollComplete,
@@ -21,6 +21,33 @@ const USER_SCROLL_KEYS = new Set([
   'Spacebar',
 ]);
 
+function PlayGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M8 5.5v13l11-6.5z" />
+    </svg>
+  );
+}
+
+function PauseGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M7 5h3.5v14H7zm6.5 0H17v14h-3.5z" />
+    </svg>
+  );
+}
+
+function ChevronGlyph({ open }: { open: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        fill="currentColor"
+        d={open ? 'M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z' : 'M8.6 7.4 10 6l6 6-6 6-1.4-1.4L13.2 12z'}
+      />
+    </svg>
+  );
+}
+
 export function AutoplayScroll() {
   const { copy } = useLocale();
   const {
@@ -36,6 +63,9 @@ export function AutoplayScroll() {
     endProgrammaticScroll,
     isProgrammaticScroll,
   } = useAutoplay();
+
+  const [expanded, setExpanded] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   const playingRef = useRef(playing);
   const speedRef = useRef(speed);
@@ -160,43 +190,99 @@ export function AutoplayScroll() {
     scrollPageToTop();
   };
 
-  return (
-    <div className="autoplay-scroll" role="region" aria-label={copy.autoplayLabel}>
-      <div className="autoplay-scroll-inner">
+  if (hidden) {
+    return (
+      <div className="autoplay-scroll is-hidden" role="region" aria-label={copy.autoplayLabel}>
         <button
           type="button"
-          className="autoplay-scroll-play"
-          aria-pressed={playing}
-          aria-label={playing ? copy.autoplayPause : copy.autoplayPlay}
-          disabled={reducedMotion}
-          onClick={togglePlay}
+          className="autoplay-scroll-show"
+          aria-label={copy.autoplayShow}
+          onClick={() => {
+            setHidden(false);
+            setExpanded(false);
+          }}
         >
-          {playing ? copy.autoplayPause : copy.autoplayPlay}
+          <ChevronGlyph open={false} />
         </button>
-        <button
-          type="button"
-          className="autoplay-scroll-reset"
-          aria-label={copy.autoplayReset}
-          onClick={resetToTop}
-        >
-          {copy.autoplayReset}
-        </button>
-        <label className="autoplay-scroll-speed">
-          <span className="visually-hidden">{copy.autoplaySpeed}</span>
-          <select
-            value={String(speed)}
-            aria-label={copy.autoplaySpeed}
-            disabled={reducedMotion}
-            onChange={(event) => setSpeed(Number(event.target.value))}
-          >
-            {AUTOPLAY_SPEEDS.map((value) => (
-              <option key={value} value={String(value)}>
-                {value}x
-              </option>
-            ))}
-          </select>
-        </label>
       </div>
+    );
+  }
+
+  return (
+    <div
+      className={`autoplay-scroll${expanded ? ' is-expanded' : ''}`}
+      role="region"
+      aria-label={copy.autoplayLabel}
+    >
+      {!expanded ? (
+        <button
+          type="button"
+          className="autoplay-scroll-fab"
+          aria-expanded={false}
+          aria-label={copy.autoplayExpand}
+          aria-pressed={playing}
+          onClick={() => setExpanded(true)}
+        >
+          {playing ? <PauseGlyph /> : <PlayGlyph />}
+        </button>
+      ) : (
+        <div className="autoplay-scroll-inner">
+          <button
+            type="button"
+            className="autoplay-scroll-play"
+            aria-pressed={playing}
+            aria-label={playing ? copy.autoplayPause : copy.autoplayPlay}
+            disabled={reducedMotion}
+            onClick={togglePlay}
+          >
+            {playing ? <PauseGlyph /> : <PlayGlyph />}
+            <span>{playing ? copy.autoplayPause : copy.autoplayPlay}</span>
+          </button>
+          <button
+            type="button"
+            className="autoplay-scroll-reset"
+            aria-label={copy.autoplayReset}
+            onClick={resetToTop}
+          >
+            {copy.autoplayReset}
+          </button>
+          <label className="autoplay-scroll-speed">
+            <span className="visually-hidden">{copy.autoplaySpeed}</span>
+            <select
+              value={String(speed)}
+              aria-label={copy.autoplaySpeed}
+              disabled={reducedMotion}
+              onChange={(event) => setSpeed(Number(event.target.value))}
+            >
+              {AUTOPLAY_SPEEDS.map((value) => (
+                <option key={value} value={String(value)}>
+                  {value}x
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="autoplay-scroll-collapse"
+            aria-expanded={true}
+            aria-label={copy.autoplayCollapse}
+            onClick={() => setExpanded(false)}
+          >
+            <ChevronGlyph open />
+          </button>
+          <button
+            type="button"
+            className="autoplay-scroll-hide"
+            aria-label={copy.autoplayHide}
+            onClick={() => {
+              setHidden(true);
+              setExpanded(false);
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
     </div>
   );
 }
