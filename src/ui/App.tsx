@@ -275,7 +275,11 @@ export default function App() {
               className="search-input"
               value={draft.query}
               placeholder={copy.searchPlaceholder}
-              onChange={(event) => setDraft({ ...draft, query: event.target.value })}
+              onChange={(event) => {
+                const next = { ...draft, query: event.target.value };
+                setDraft(next);
+                setApplied(next);
+              }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
                   setApplied(draft);

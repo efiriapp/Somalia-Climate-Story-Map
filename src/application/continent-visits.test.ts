@@ -182,4 +182,12 @@ describe('tour country search', () => {
     expect(matches.every((stop) => stop.kind === 'event')).toBe(true);
     expect(matches.some((stop) => stop.country === 'Qatar')).toBe(true);
   });
+
+  it('matches multiple typed words across country and place fields', () => {
+    const tour = buildGlobalTour(stories);
+    const matches = searchTourStops(tour, 'Qatar  doha');
+    expect(matches.length).toBeGreaterThan(0);
+    expect(matches.every((stop) => stop.kind === 'event')).toBe(true);
+    expect(matches.every((stop) => stop.country === 'Qatar')).toBe(true);
+  });
 });

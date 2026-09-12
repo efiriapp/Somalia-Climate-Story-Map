@@ -217,14 +217,15 @@ export const firstEventIndexForDate = (tour: TourStop[], iso: string): number =>
 };
 
 export const searchTourStops = (tour: TourStop[], query: string): TourStop[] => {
-  const needle = query.trim().toLowerCase();
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return tour.filter((stop) => {
     if (stop.kind !== 'event') {
       return false;
     }
-    if (!needle) {
+    if (words.length === 0) {
       return true;
     }
-    return [stop.title, stop.country, stop.place].some((value) => value.toLowerCase().includes(needle));
+    const text = [stop.title, stop.country, stop.place].join(' ').toLowerCase();
+    return words.every((word) => text.includes(word));
   });
 };

@@ -64,6 +64,50 @@ describe('filterCatalog', () => {
     expect(result.map((item) => item.id)).toEqual(['cop30']);
   });
 
+  it('matches user-typed words case-insensitively even when they are not contiguous', () => {
+    const result = filterCatalog(catalog, {
+      ...defaultFilterCriteria(),
+      query: 'Young  COAST',
+    });
+    expect(result.map((item) => item.id)).toEqual(['beach']);
+  });
+
+  it('matches place names, featured people, and theme labels', () => {
+    const withPeople = [
+      ...catalog,
+      story({
+        id: '4c',
+        title: 'Art for Climate',
+        summary: 'Creative climate work.',
+        body: 'Gallery exhibition.',
+        featuredPerson: 'Abdinasir Abdikadir Mohamed',
+        placeLabel: 'Wadajir District',
+        location: { name: 'Wadajir', lat: 2, lng: 45 },
+        themes: ['art-communication'],
+      }),
+    ];
+    expect(
+      filterCatalog(withPeople, { ...defaultFilterCriteria(), query: 'abdinasir' }).map((item) => item.id),
+    ).toEqual(['4c']);
+    expect(
+      filterCatalog(withPeople, { ...defaultFilterCriteria(), query: 'wadajir' }).map((item) => item.id),
+    ).toEqual(['4c', 'ecosom']);
+    expect(
+      filterCatalog(withPeople, {
+        ...defaultFilterCriteria(),
+        query: 'art communication',
+      }).map((item) => item.id),
+    ).toEqual(['4c']);
+  });
+
+  it('requires every typed word to match', () => {
+    const result = filterCatalog(catalog, {
+      ...defaultFilterCriteria(),
+      query: 'beach brazil',
+    });
+    expect(result).toEqual([]);
+  });
+
   it('filters by Somalia region', () => {
     const result = filterCatalog(catalog, {
       ...defaultFilterCriteria(),

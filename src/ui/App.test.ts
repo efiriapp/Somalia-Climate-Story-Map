@@ -92,4 +92,11 @@ describe('platform topbar', () => {
     expect(source).toContain('RelatedLinks');
     expect(source).toContain('relatedTargetsForStory');
   });
+
+  it('applies keyword search as the user types', () => {
+    expect(source).toContain('setApplied(next)');
+    expect(source).toMatch(
+      /onChange=\{\(event\) => \{\s*const next = \{ \.\.\.draft, query: event\.target\.value \};\s*setDraft\(next\);\s*setApplied\(next\);/,
+    );
+  });
 });
