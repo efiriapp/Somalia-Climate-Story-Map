@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { regionCenter } from '../application/region-coordinates';
+import { splitStoryImages } from './climate-impact';
 import { stories } from './stories';
 
 const publicDir = join(dirname(fileURLToPath(import.meta.url)), '../../public');
@@ -285,7 +286,6 @@ describe('global-stage source pages', () => {
     expect(story?.chapters?.some((chapter) => chapter.heading.startsWith('Mudug'))).toBe(false);
     expect(story?.images).toEqual([
       '/images/ice-stories/simad-drought-statement-1.jpg',
-      '/images/ice-stories/simad-drought-statement-2.jpg',
       '/images/ice-stories/simad-drought-hero.jpg',
       '/images/ice-stories/mudug.jpg',
       '/images/ice-stories/mudug-2.jpg',
@@ -299,7 +299,27 @@ describe('global-stage source pages', () => {
       '/images/ice-stories/lower-juba.jpg',
       '/images/ice-stories/lower-juba-2.jpg',
       '/images/ice-stories/lower-juba-3.jpg',
+      '/images/ice-stories/simad-drought-statement-2.jpg',
     ]);
+    expect(splitStoryImages(story?.images ?? [])).toEqual({
+      first: ['/images/ice-stories/simad-drought-statement-1.jpg'],
+      middle: [
+        '/images/ice-stories/simad-drought-hero.jpg',
+        '/images/ice-stories/mudug.jpg',
+        '/images/ice-stories/mudug-2.jpg',
+        '/images/ice-stories/baay.jpg',
+        '/images/ice-stories/baay-food-1.jpg',
+        '/images/ice-stories/baay-food-2.jpg',
+        '/images/ice-stories/hiiraan.jpg',
+        '/images/ice-stories/hiiraan-2.jpg',
+        '/images/ice-stories/hiiraan-3.jpg',
+        '/images/ice-stories/hiiraan-4.jpg',
+        '/images/ice-stories/lower-juba.jpg',
+        '/images/ice-stories/lower-juba-2.jpg',
+        '/images/ice-stories/lower-juba-3.jpg',
+      ],
+      last: ['/images/ice-stories/simad-drought-statement-2.jpg'],
+    });
     expect(story?.tourStops?.map((stop) => stop.place)).toEqual([
       'wadajir',
       'ceelgula',

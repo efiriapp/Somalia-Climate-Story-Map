@@ -24,6 +24,9 @@ describe('StoryDetail', () => {
     expect(source).toContain('story-stats');
     expect(source).toContain('splitStoryImages');
     expect(source).toContain('story-spread');
+    expect(source).toContain('story-document');
+    expect(source).toContain('story-spread-document');
+    expect(source).toContain('isStatementDocument');
     expect(source).not.toContain('story-gallery');
     expect(source).toContain('story-video');
     expect(source).toContain('videoEmbedSrc');

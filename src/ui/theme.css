@@ -686,6 +686,18 @@ select {
   height: 260px;
 }
 
+.story-spread-document {
+  grid-template-columns: 1fr;
+}
+
+.story-spread img.story-document,
+.story-spread-document img {
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  background: var(--white);
+}
+
 .story-gallery {
   display: grid;
   grid-template-columns: 1fr 1fr;

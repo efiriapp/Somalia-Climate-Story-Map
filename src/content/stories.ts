@@ -444,7 +444,6 @@ export const stories: Story[] = [
     ],
     images: [
       '/images/ice-stories/simad-drought-statement-1.jpg',
-      '/images/ice-stories/simad-drought-statement-2.jpg',
       '/images/ice-stories/simad-drought-hero.jpg',
       '/images/ice-stories/mudug.jpg',
       '/images/ice-stories/mudug-2.jpg',
@@ -458,6 +457,7 @@ export const stories: Story[] = [
       '/images/ice-stories/lower-juba.jpg',
       '/images/ice-stories/lower-juba-2.jpg',
       '/images/ice-stories/lower-juba-3.jpg',
+      '/images/ice-stories/simad-drought-statement-2.jpg',
     ],
     tourStops: [
       {

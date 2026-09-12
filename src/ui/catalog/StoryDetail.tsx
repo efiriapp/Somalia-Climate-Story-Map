@@ -25,6 +25,10 @@ type Props = {
 
 const CITY_ZOOM = 12;
 
+function isStatementDocument(src: string) {
+  return src.includes('-statement-');
+}
+
 export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }: Props) {
   const { copy, locale } = useLocale();
   const relatedLinks = useMemo(() => {
@@ -72,9 +76,18 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
       </p>
       <p className="story-lede">{story.summary}</p>
       {first.length > 0 ? (
-        <div className={`story-spread story-spread-first${first.length === 1 ? ' story-spread-single' : ''}`}>
+        <div
+          className={`story-spread story-spread-first${first.length === 1 ? ' story-spread-single' : ''}${
+            first.some(isStatementDocument) ? ' story-spread-document' : ''
+          }`}
+        >
           {first.map((src) => (
-            <img key={src} src={src} alt="" />
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={isStatementDocument(src) ? 'story-document' : undefined}
+            />
           ))}
         </div>
       ) : null}
@@ -97,15 +110,29 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
             <Fragment key={paragraph.slice(0, 48)}>
               <p>{paragraph}</p>
               {(chapter.imagesAfter?.[paragraphIndex] ?? []).map((src) => (
-                <div className="story-spread story-spread-single" key={src}>
-                  <img src={src} alt="" />
+                <div
+                  className={`story-spread story-spread-single${isStatementDocument(src) ? ' story-spread-document' : ''}`}
+                  key={src}
+                >
+                  <img
+                    src={src}
+                    alt=""
+                    className={isStatementDocument(src) ? 'story-document' : undefined}
+                  />
                 </div>
               ))}
             </Fragment>
           ))}
           {(chapter.images ?? []).map((src) => (
-            <div className="story-spread story-spread-single" key={src}>
-              <img src={src} alt="" />
+            <div
+              className={`story-spread story-spread-single${isStatementDocument(src) ? ' story-spread-document' : ''}`}
+              key={src}
+            >
+              <img
+                src={src}
+                alt=""
+                className={isStatementDocument(src) ? 'story-document' : undefined}
+              />
             </div>
           ))}
           {index === 0 && story.tourStops?.length ? (
@@ -124,9 +151,16 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
         </section>
       ))}
       {last.length > 0 ? (
-        <div className="story-spread story-spread-end">
+        <div
+          className={`story-spread story-spread-end${last.some(isStatementDocument) ? ' story-spread-document' : ''}`}
+        >
           {last.map((src) => (
-            <img key={src} src={src} alt="" />
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={isStatementDocument(src) ? 'story-document' : undefined}
+            />
           ))}
         </div>
       ) : null}

@@ -185,6 +185,9 @@ describe('ICE green brand', () => {
     expect(css).toMatch(/\.story-spread-first[\s\S]{0,220}grid-template-columns:\s*1fr/);
     expect(css).toMatch(/\.story-spread-single[\s\S]{0,180}grid-template-columns:\s*1fr/);
     expect(css).toMatch(/\.story-spread img[\s\S]{0,120}object-fit:\s*cover/);
+    expect(css).toContain('.story-spread-document');
+    expect(css).toMatch(/\.story-document[\s\S]{0,120}object-fit:\s*contain/);
+    expect(css).toMatch(/\.story-spread-document[\s\S]{0,180}grid-template-columns:\s*1fr/);
   });
 
   it('places a date label above the Global Stage pin without replacing the marker', () => {
