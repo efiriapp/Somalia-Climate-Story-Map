@@ -46,5 +46,9 @@ describe('chromeCopy', () => {
     expect(chromeCopy('en').mapLayers).toBe('Map layers');
     expect(chromeCopy('so').basemapStreets).toMatch(/Waddooyinka|Streets/);
     expect(chromeCopy('ar').sdgPrefix).toMatch(/هدف|SDG/);
+    expect(chromeCopy('en').autoplayPlay).toBe('Play');
+    expect(chromeCopy('en').autoplaySpeed).toBe('Reading speed');
+    expect(chromeCopy('so').autoplayPause).toMatch(/Hakad|Pause/);
+    expect(chromeCopy('ar').autoplayPlay).toMatch(/تشغيل|Play/);
   });
 });

@@ -46,8 +46,10 @@ describe('StoryDetail', () => {
     expect(source).toContain('story.chapters');
     expect(source).toContain('useLayoutEffect');
     expect(source).toContain('scrollPageToTop');
+    expect(source).toContain('AutoplayScroll');
     expect(app).toContain('StoryDetail');
     expect(app).toContain('scrollPageToTop');
+    expect(app).toContain('AutoplayScroll');
   });
 
   it('ends the page with a visible source credit for pictures and video', () => {

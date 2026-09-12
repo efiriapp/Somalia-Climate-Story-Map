@@ -15,6 +15,7 @@ describe('ClimateImpactPage', () => {
     expect(source).toContain('climateImpactPages');
     expect(source).toContain('hazardTitle(item.id, copy)');
     expect(source).toContain('copy.backClimate');
+    expect(source).toContain('AutoplayScroll');
     expect(app).toContain('ClimateImpactPage');
     expect(app).toContain("openScreen('climate-impact')");
   });

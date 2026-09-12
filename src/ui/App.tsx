@@ -13,6 +13,7 @@ import { scrollPageToTop } from '../application/scroll-page-top';
 import { stories as catalog } from '../content/stories';
 import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '../domain/story';
 import { FilterPanel } from './chrome/FilterPanel';
+import { AutoplayScroll } from './chrome/AutoplayScroll';
 import { LocaleProvider } from './chrome/LocaleContext';
 import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
@@ -215,6 +216,7 @@ export default function App() {
 
       {screen === 'about' ? (
         <article className="detail about-ice" aria-label={copy.about}>
+          <AutoplayScroll />
           <h1>{copy.about}</h1>
           {about.paragraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 24)}>{paragraph}</p>
@@ -245,6 +247,7 @@ export default function App() {
         />
       ) : detail ? (
         <article className="detail">
+          <AutoplayScroll />
           <button className="back" type="button" onClick={() => setSelectedId(null)}>
             {copy.backCatalog}
           </button>

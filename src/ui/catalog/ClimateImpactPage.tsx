@@ -16,6 +16,7 @@ import {
   type RelatedTarget,
 } from '../../application/related-links';
 import { videoEmbedSrc } from '../../application/youtube-embed';
+import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
 import { RelatedLinks } from './RelatedLinks';
@@ -84,6 +85,7 @@ export function ClimateImpactPage({
     const midChapterIndex = Math.floor((page.chapters.length - 1) / 2);
     return (
       <article className="detail climate-impact" aria-label={hazardTitle(page.id, copy)}>
+        <AutoplayScroll />
         <button className="back" type="button" onClick={onBack}>
           {copy.backClimate}
         </button>

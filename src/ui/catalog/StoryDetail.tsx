@@ -12,6 +12,7 @@ import { splitStoryImages } from '../../content/climate-impact';
 import type { Story } from '../../domain/story';
 import { MapPane } from '../map/MapPane';
 import { RegionMapTour } from '../map/RegionMapTour';
+import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
 import { RelatedLinks } from './RelatedLinks';
@@ -64,6 +65,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
 
   return (
     <article className="detail story-detail">
+      <AutoplayScroll />
       <button className="back" type="button" onClick={onBack}>
         {copy.backCatalog}
       </button>

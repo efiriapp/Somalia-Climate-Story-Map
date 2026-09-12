@@ -86,6 +86,11 @@ export const CHROME = {
     tourFilters: 'Tour filters',
     countriesVisited: 'Countries visited by continent',
     sdgPrefix: 'SDG',
+    autoplayLabel: 'Auto-scroll reading',
+    autoplayPlay: 'Play',
+    autoplayPause: 'Pause',
+    autoplayReset: 'Restart',
+    autoplaySpeed: 'Reading speed',
   },
   so: {
     platform: 'Barnaamijka Sheekaynta Xogta Cimilada Soomaaliyeed',
@@ -172,6 +177,11 @@ export const CHROME = {
     tourFilters: 'Shaandhaynta socdaalka',
     countriesVisited: 'Waddamada la booqday qaarad ahaan',
     sdgPrefix: 'SDG',
+    autoplayLabel: 'Akhris iskeed u duubaya',
+    autoplayPlay: 'Ciyaar',
+    autoplayPause: 'Hakad',
+    autoplayReset: 'Dib u bilow',
+    autoplaySpeed: 'Xawaaraha akhriska',
   },
   ar: {
     platform: 'منصة سرد بيانات المناخ الصومالية',
@@ -258,6 +268,11 @@ export const CHROME = {
     tourFilters: 'مرشحات الجولة',
     countriesVisited: 'البلدان التي تمت زيارتها حسب القارة',
     sdgPrefix: 'هدف',
+    autoplayLabel: 'قراءة بالتمرير التلقائي',
+    autoplayPlay: 'تشغيل',
+    autoplayPause: 'إيقاف مؤقت',
+    autoplayReset: 'إعادة',
+    autoplaySpeed: 'سرعة القراءة',
   },
 } as const;
 

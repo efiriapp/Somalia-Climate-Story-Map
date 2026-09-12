@@ -1,6 +1,7 @@
 import { countryLabel, formatLocaleDate } from '../../application/locale';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import type { Story } from '../../domain/story';
+import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
 
@@ -17,6 +18,7 @@ export function GlobalStagePage({ stories }: Props) {
 
   return (
     <div className="global-stage-page">
+      <AutoplayScroll />
       <header className="global-stage-page-intro">
         <p className="story-type">{copy.globalStage}</p>
         <h1>{copy.globalStageAroundWorld}</h1>

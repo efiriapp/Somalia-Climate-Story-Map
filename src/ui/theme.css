@@ -560,6 +560,88 @@ select {
   padding: 2rem 1.5rem 4rem;
 }
 
+.autoplay-scroll {
+  position: fixed;
+  z-index: 1200;
+  right: 1rem;
+  bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.45rem;
+  background: var(--forest);
+  color: var(--white);
+  border: 1px solid var(--leaf);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(6, 61, 57, 0.28);
+}
+
+html[dir='rtl'] .autoplay-scroll {
+  right: auto;
+  left: 1rem;
+}
+
+.autoplay-scroll button,
+.autoplay-scroll select {
+  appearance: none;
+  border: 0;
+  border-radius: 7px;
+  background: var(--leaf);
+  color: var(--white);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+}
+
+.autoplay-scroll button:hover,
+.autoplay-scroll select:hover {
+  background: var(--mint);
+  color: var(--forest);
+}
+
+.autoplay-scroll button:disabled,
+.autoplay-scroll select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.autoplay-scroll-play[aria-pressed='true'] {
+  background: var(--mint);
+  color: var(--forest);
+}
+
+.autoplay-scroll-speed {
+  display: inline-flex;
+  margin: 0;
+}
+
+.autoplay-scroll select {
+  padding-inline-end: 1.4rem;
+  background-image: linear-gradient(45deg, transparent 50%, var(--white) 50%),
+    linear-gradient(135deg, var(--white) 50%, transparent 50%);
+  background-position:
+    calc(100% - 12px) 55%,
+    calc(100% - 8px) 55%;
+  background-size:
+    4px 4px,
+    4px 4px;
+  background-repeat: no-repeat;
+}
+
+html[dir='rtl'] .autoplay-scroll select {
+  background-position:
+    8px 55%,
+    12px 55%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .autoplay-scroll-play:disabled {
+    opacity: 0.45;
+  }
+}
+
 .detail img {
   width: 100%;
   max-height: 360px;
