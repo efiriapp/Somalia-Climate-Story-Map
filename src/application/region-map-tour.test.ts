@@ -30,10 +30,7 @@ describe('buildRegionMapTour', () => {
       flyLng: regionCenter('wadajir').lng,
       zoom: DISTRICT_ZOOM,
       district: 'SIMAD University',
-      images: [
-        '/images/ice-stories/simad-drought-statement-1.jpg',
-        '/images/ice-stories/simad-drought-statement-2.jpg',
-      ],
+      images: ['/images/ice-stories/simad-drought-hero.jpg'],
     });
     expect(tour[1]).toMatchObject({
       ...regionCenter('ceelgula'),

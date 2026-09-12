@@ -443,7 +443,6 @@ export const stories: Story[] = [
       { label: 'Lower Juba', value: '340+ pastoralist and farming households' },
     ],
     images: [
-      '/images/ice-stories/simad-drought-statement-1.jpg',
       '/images/ice-stories/simad-drought-hero.jpg',
       '/images/ice-stories/mudug.jpg',
       '/images/ice-stories/mudug-2.jpg',
@@ -457,7 +456,6 @@ export const stories: Story[] = [
       '/images/ice-stories/lower-juba.jpg',
       '/images/ice-stories/lower-juba-2.jpg',
       '/images/ice-stories/lower-juba-3.jpg',
-      '/images/ice-stories/simad-drought-statement-2.jpg',
     ],
     tourStops: [
       {
@@ -465,11 +463,8 @@ export const stories: Story[] = [
         place: 'wadajir',
         title: 'SIMAD University: shifting the iftar budget into drought support',
         description:
-          'The drought response began at SIMAD University in Mogadishu as an official institutional decision, not only as trucks on the road. The university released a public statement explaining how campus solidarity would move into drought-hit communities. Leadership redirected the annual iftar budget toward emergency support for families facing water scarcity and livestock loss. That choice treated Ramadan hospitality and climate duty as one shared responsibility. Alumni, students, and staff then carried the commitment from Warshadaha Street into the regions. The statement pages shown here are the university’s own account of that pivot from ceremony to survival.',
-        images: [
-          '/images/ice-stories/simad-drought-statement-1.jpg',
-          '/images/ice-stories/simad-drought-statement-2.jpg',
-        ],
+          'The drought response began at SIMAD University in Mogadishu as an official institutional decision, not only as trucks on the road. The university released a public statement explaining how campus solidarity would move into drought-hit communities. Leadership redirected the annual iftar budget toward emergency support for families facing water scarcity and livestock loss. That choice treated Ramadan hospitality and climate duty as one shared responsibility. Alumni, students, and staff then carried the commitment from Warshadaha Street into the regions. From campus, the response moved into drought-hit communities across Mudug, Baay, Hiiraan, and Jubbada Hoose.',
+        images: ['/images/ice-stories/simad-drought-hero.jpg'],
       },
       {
         region: 'mudug',

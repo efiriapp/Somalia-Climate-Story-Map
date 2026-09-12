@@ -285,7 +285,6 @@ describe('global-stage source pages', () => {
     expect(story?.tourStops?.some((stop) => /Far-libaax/i.test(stop.description))).toBe(true);
     expect(story?.chapters?.some((chapter) => chapter.heading.startsWith('Mudug'))).toBe(false);
     expect(story?.images).toEqual([
-      '/images/ice-stories/simad-drought-statement-1.jpg',
       '/images/ice-stories/simad-drought-hero.jpg',
       '/images/ice-stories/mudug.jpg',
       '/images/ice-stories/mudug-2.jpg',
@@ -299,12 +298,11 @@ describe('global-stage source pages', () => {
       '/images/ice-stories/lower-juba.jpg',
       '/images/ice-stories/lower-juba-2.jpg',
       '/images/ice-stories/lower-juba-3.jpg',
-      '/images/ice-stories/simad-drought-statement-2.jpg',
     ]);
+    expect(story?.images.some((src) => src.includes('statement'))).toBe(false);
     expect(splitStoryImages(story?.images ?? [])).toEqual({
-      first: ['/images/ice-stories/simad-drought-statement-1.jpg'],
+      first: ['/images/ice-stories/simad-drought-hero.jpg'],
       middle: [
-        '/images/ice-stories/simad-drought-hero.jpg',
         '/images/ice-stories/mudug.jpg',
         '/images/ice-stories/mudug-2.jpg',
         '/images/ice-stories/baay.jpg',
@@ -316,9 +314,8 @@ describe('global-stage source pages', () => {
         '/images/ice-stories/hiiraan-4.jpg',
         '/images/ice-stories/lower-juba.jpg',
         '/images/ice-stories/lower-juba-2.jpg',
-        '/images/ice-stories/lower-juba-3.jpg',
       ],
-      last: ['/images/ice-stories/simad-drought-statement-2.jpg'],
+      last: ['/images/ice-stories/lower-juba-3.jpg'],
     });
     expect(story?.tourStops?.map((stop) => stop.place)).toEqual([
       'wadajir',
@@ -329,10 +326,7 @@ describe('global-stage source pages', () => {
       'lower-juba',
     ]);
     expect(story?.tourStops?.map((stop) => stop.images)).toEqual([
-      [
-        '/images/ice-stories/simad-drought-statement-1.jpg',
-        '/images/ice-stories/simad-drought-statement-2.jpg',
-      ],
+      ['/images/ice-stories/simad-drought-hero.jpg'],
       ['/images/ice-stories/mudug.jpg', '/images/ice-stories/mudug-2.jpg'],
       [
         '/images/ice-stories/baay.jpg',
