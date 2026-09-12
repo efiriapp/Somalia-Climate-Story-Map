@@ -15,6 +15,7 @@ import { defaultFilterCriteria, type ContentType, type FilterCriteria } from '..
 import { FilterPanel } from './chrome/FilterPanel';
 import { AutoplayScroll } from './chrome/AutoplayScroll';
 import { LocaleProvider } from './chrome/LocaleContext';
+import { AutoplayProvider } from './chrome/AutoplayContext';
 import { SiteFooter } from './chrome/SiteFooter';
 import { StoryDetail } from './catalog/StoryDetail';
 import { StoryList } from './catalog/StoryList';
@@ -106,6 +107,7 @@ export default function App() {
 
   return (
     <LocaleProvider locale={locale} setLocale={setLocale}>
+    <AutoplayProvider>
     <div>
       <header className="topbar">
         <img className="topbar-logo" src="/logos/simad.webp" alt="SIMAD University" />
@@ -325,6 +327,7 @@ export default function App() {
       )}
       {screen === 'global-stage' ? null : <SiteFooter />}
     </div>
+    </AutoplayProvider>
     </LocaleProvider>
   );
 }

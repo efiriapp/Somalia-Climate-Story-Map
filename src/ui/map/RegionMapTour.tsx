@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { autoplayTourDwellMs, nextAutoplayTourIndex } from '../../application/autoplay-map-sync';
 import { SOMALIA_VIEW } from '../../application/resolve-map-view';
 import { DEFAULT_MAP_LAYER, type MapLayerId } from '../../application/map-layers';
 import {
@@ -18,6 +19,7 @@ import { scrollPageToTop } from '../../application/scroll-page-top';
 import { scrollTourIndex } from '../../application/scroll-tour';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import type { Story } from '../../domain/story';
+import { useOptionalAutoplay } from '../chrome/AutoplayContext';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 import { EqualEarthBasemap } from './EqualEarthBasemap';
@@ -87,6 +89,7 @@ function JumpOnStop({
 
 export function RegionMapTour({ story }: Props) {
   const { copy } = useLocale();
+  const autoplay = useOptionalAutoplay();
   const stops = useMemo(() => buildRegionMapTour(story), [story]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [sliderOpen, setSliderOpen] = useState(false);
@@ -96,8 +99,13 @@ export function RegionMapTour({ story }: Props) {
   const lockedRef = useRef(false);
   const hideRef = useRef(0);
   const hostRef = useRef<HTMLDivElement>(null);
+  const autoplayDriveRef = useRef(false);
   const activeStop = activeIndex >= 0 ? stops[activeIndex] : undefined;
   indexRef.current = activeIndex;
+
+  const pauseAutoplay = useCallback(() => {
+    autoplay?.pause();
+  }, [autoplay]);
 
   const showSlider = useCallback(() => {
     setSliderOpen(true);
@@ -114,20 +122,31 @@ export function RegionMapTour({ story }: Props) {
     showSlider();
   }, [showSlider]);
 
+  const goToStop = useCallback(
+    (next: number) => {
+      if (lockedRef.current || next === indexRef.current) {
+        return;
+      }
+      lockedRef.current = true;
+      setActiveIndex(next);
+      window.setTimeout(() => {
+        lockedRef.current = false;
+      }, ORIGIN_HOLD_MS + DISTRICT_FLY_MS);
+    },
+    [],
+  );
+
   const stepDistrict = (delta: number) => {
     if (lockedRef.current || stops.length === 0) {
       return;
     }
+    pauseAutoplay();
     const from = activeIndex < 0 ? (delta > 0 ? -1 : 0) : activeIndex;
     const next = delta > 0 ? Math.min(from + 1, stops.length - 1) : Math.max(from - 1, -1);
     if (next === activeIndex) {
       return;
     }
-    lockedRef.current = true;
-    setActiveIndex(next);
-    window.setTimeout(() => {
-      lockedRef.current = false;
-    }, ORIGIN_HOLD_MS + DISTRICT_FLY_MS);
+    goToStop(next);
   };
 
   const onWheel = (event: WheelEvent<HTMLDivElement>) => {
@@ -158,18 +177,81 @@ export function RegionMapTour({ story }: Props) {
         return;
       }
       event.preventDefault();
-      lockedRef.current = true;
-      setActiveIndex(next);
-      window.setTimeout(() => {
-        lockedRef.current = false;
-      }, ORIGIN_HOLD_MS + DISTRICT_FLY_MS);
+      pauseAutoplay();
+      goToStop(next);
     };
     node.addEventListener('wheel', handle, { passive: false, capture: true });
     return () => {
       node.removeEventListener('wheel', handle, true);
       window.clearTimeout(hideRef.current);
     };
-  }, [showSlider, stops.length]);
+  }, [showSlider, stops.length, pauseAutoplay, goToStop]);
+
+  useEffect(() => {
+    if (!autoplay || !autoplay.playing || autoplay.reducedMotion || stops.length === 0) {
+      autoplayDriveRef.current = false;
+      autoplay?.setHoldScroll(false);
+      return;
+    }
+
+    const node = hostRef.current;
+    if (!node) return;
+
+    let stepTimer = 0;
+    let driving = false;
+
+    const stopDrive = () => {
+      driving = false;
+      autoplayDriveRef.current = false;
+      window.clearTimeout(stepTimer);
+      autoplay.setHoldScroll(false);
+    };
+
+    const scheduleNext = () => {
+      window.clearTimeout(stepTimer);
+      stepTimer = window.setTimeout(() => {
+        if (!driving || !autoplay.playing) return;
+        const next = nextAutoplayTourIndex(indexRef.current, stops.length);
+        if (next === null) {
+          stopDrive();
+          return;
+        }
+        goToStop(next);
+        scheduleNext();
+      }, autoplayTourDwellMs(autoplay.speed));
+    };
+
+    const startDrive = () => {
+      if (driving) return;
+      driving = true;
+      autoplayDriveRef.current = true;
+      autoplay.setHoldScroll(true);
+      const next = nextAutoplayTourIndex(indexRef.current, stops.length);
+      if (next === null) {
+        stopDrive();
+        return;
+      }
+      goToStop(next);
+      scheduleNext();
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.45) {
+          startDrive();
+        } else if (autoplayDriveRef.current) {
+          stopDrive();
+        }
+      },
+      { threshold: [0, 0.45, 0.7, 1] },
+    );
+    io.observe(node);
+
+    return () => {
+      io.disconnect();
+      stopDrive();
+    };
+  }, [autoplay?.playing, autoplay?.reducedMotion, autoplay?.speed, stops.length, goToStop]);
 
   return (
     <div className="region-map-tour region-map-tour-screen" ref={hostRef} onWheel={onWheel}>
@@ -190,12 +272,9 @@ export function RegionMapTour({ story }: Props) {
               position={[stop.lat, stop.lng]}
               eventHandlers={{
                 click: () => {
+                  pauseAutoplay();
                   if (!lockedRef.current) {
-                    lockedRef.current = true;
-                    setActiveIndex(stops.indexOf(stop));
-                    window.setTimeout(() => {
-                      lockedRef.current = false;
-                    }, ORIGIN_HOLD_MS + DISTRICT_FLY_MS);
+                    goToStop(stops.indexOf(stop));
                   }
                 },
               }}

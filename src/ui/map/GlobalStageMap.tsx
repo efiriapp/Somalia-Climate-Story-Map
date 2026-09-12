@@ -37,6 +37,8 @@ import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
+import { AutoplayScroll } from '../chrome/AutoplayScroll';
+import { useOptionalAutoplay } from '../chrome/AutoplayContext';
 import { useLocale } from '../chrome/LocaleContext';
 import { ContinentSummaryCards } from './ContinentSummaryCards';
 import { MapBasemapControl } from './MapBasemapControl';
@@ -75,7 +77,7 @@ const HOME_HOLD_MS = 4000;
 const HOME_PIN = '#063D39';
 const EVENT_PIN = '#2E7D57';
 const ACTIVE_PIN = '#C62828';
-const STAGE_PADDING = { top: 72, bottom: 80, left: 148, right: 332 };
+const STAGE_PADDING = { top: 120, bottom: 80, left: 148, right: 332 };
 let flyTimer = 0;
 
 const emptyLine: GeoJSON.Feature = {
@@ -142,6 +144,7 @@ const storyJumpFromSomalia = (map: Map, to: LngLat, onDone: () => void) => {
 
 export function GlobalStageMap({ stories, onClose }: Props) {
   const { copy, locale } = useLocale();
+  const autoplay = useOptionalAutoplay();
   const localeRef = useRef(locale);
   const copyRef = useRef(copy);
   localeRef.current = locale;
@@ -155,6 +158,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const touringRef = useRef(false);
   const tourToken = useRef(0);
   const holdRef = useRef(0);
+  const autoplayDriveRef = useRef(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [layersOpen, setLayersOpen] = useState(false);
   const [basemap, setBasemap] = useState<MapLayerId>(DEFAULT_MAP_LAYER);
@@ -175,6 +179,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   const openStopRef = useRef<(stop: TourStop) => void>(() => undefined);
   const activeStop = events.find((stop) => stop.storyId === activeId);
   const activeContinent = activeStop ? continentOfCountry(activeStop.country) : undefined;
+
+  const pauseAutoplay = () => {
+    autoplayDriveRef.current = false;
+    autoplay?.setMapDriving(false);
+    autoplay?.pause();
+  };
 
   const stopMotion = () => {
     window.clearTimeout(holdRef.current);
@@ -278,6 +288,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (!stop.storyId) {
       return;
     }
+    pauseAutoplay();
     const map = mapRef.current;
     tourToken.current += 1;
     stopMotion();
@@ -382,6 +393,11 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             if (mapRef.current) {
               resetPinsOn(mapRef.current);
             }
+            if (autoplayDriveRef.current) {
+              autoplayDriveRef.current = false;
+              autoplay?.setMapDriving(false);
+              autoplay?.pause();
+            }
             return;
           }
           flyToStop(token, iceOffice, next);
@@ -407,6 +423,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     if (events.length === 0) {
       return;
     }
+    pauseAutoplay();
     const index = events.findIndex((stop) => stop.storyId === activeId);
     const fromIndex = index < 0 ? (delta > 0 ? -1 : 0) : index;
     const nextIndex = delta > 0 ? nextTourIndex(fromIndex, events.length) : prevTourIndex(Math.max(fromIndex, 0));
@@ -417,6 +434,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   };
 
   const goHome = () => {
+    pauseAutoplay();
     const map = mapRef.current;
     tourToken.current += 1;
     stopMotion();
@@ -455,6 +473,28 @@ export function GlobalStageMap({ stories, onClose }: Props) {
   useEffect(() => {
     measuringRef.current = measuring;
   }, [measuring]);
+
+  useEffect(() => {
+    if (!autoplay) return;
+    if (!autoplay.playing || autoplay.reducedMotion) {
+      if (autoplayDriveRef.current) {
+        autoplayDriveRef.current = false;
+        autoplay.setMapDriving(false);
+        tourToken.current += 1;
+        stopMotion();
+      }
+      return;
+    }
+    if (events.length === 0) return;
+    autoplayDriveRef.current = true;
+    autoplay.setMapDriving(true);
+    const current = events.find((stop) => stop.storyId === activeId) ?? events[0];
+    if (current) {
+      runPlaceTour(current, 1);
+    }
+    // Intentionally start once when play begins; tour chain advances itself.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay?.playing, autoplay?.reducedMotion]);
 
   useEffect(() => {
     if (!host.current) {
@@ -532,6 +572,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
 
   return (
     <section className="global-stage" aria-label={copy.globalStageTitle}>
+      <AutoplayScroll />
       <div className="global-stage-scene">
         <div className="global-stage-map" ref={host} />
         <h1 className="tour-title">{copy.globalStageTitle}</h1>
@@ -571,6 +612,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
             activeContinent={activeContinent}
             activeTotal={!activeContinent}
             onContinent={(continent) => {
+              pauseAutoplay();
               const stop = tour[firstEventIndexByContinent(tour, continent)];
               if (stop?.kind === 'event') {
                 runPlaceTour(stop);
@@ -588,6 +630,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 className="event-card-close"
                 aria-label={copy.closeEvent}
                 onClick={() => {
+                  pauseAutoplay();
                   tourToken.current += 1;
                   stopMotion();
                   setTourCard(null);

@@ -9,6 +9,15 @@ const source = readFileSync(
 );
 
 describe('GlobalStageMap', () => {
+  it('drives the place tour from the top autoplay bar and pauses on manual map controls', () => {
+    expect(source).toContain('AutoplayScroll');
+    expect(source).toContain('useOptionalAutoplay');
+    expect(source).toContain('setMapDriving');
+    expect(source).toContain('pauseAutoplay');
+    expect(source).toContain('autoplayDriveRef');
+    expect(source).toContain('runPlaceTour');
+  });
+
   it('uses the Equal Earth hybrid streets style instead of Carto or keyed tiles', () => {
     expect(source).toContain('equalEarthStyle');
     expect(source).toContain('EqualEarthCoordTransform');

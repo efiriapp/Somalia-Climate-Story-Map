@@ -6,6 +6,7 @@ import { displayLocation, groupedPins } from '../../application/display-location
 import { DEFAULT_MAP_LAYER, type MapLayerId } from '../../application/map-layers';
 import type { MapView } from '../../application/resolve-map-view';
 import type { Story } from '../../domain/story';
+import { useOptionalAutoplay } from '../chrome/AutoplayContext';
 import { EqualEarthBasemap } from './EqualEarthBasemap';
 import { MapBasemapControl } from './MapBasemapControl';
 
@@ -28,9 +29,12 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
   const viewKey = `${view.center.lat}-${view.center.lng}-${view.zoom}`;
   const [basemap, setBasemap] = useState<MapLayerId>(DEFAULT_MAP_LAYER);
   const [layersOpen, setLayersOpen] = useState(false);
+  const autoplay = useOptionalAutoplay();
+
+  const pauseAutoplay = () => autoplay?.pause();
 
   return (
-    <div className="map-pane">
+    <div className="map-pane" onWheel={pauseAutoplay} onPointerDown={pauseAutoplay}>
       <MapContainer
         key={viewKey}
         center={[view.center.lat, view.center.lng]}
@@ -47,7 +51,12 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
                 key={story.id}
                 position={[point.lat, point.lng]}
                 icon={pinIcon}
-                eventHandlers={{ click: () => onSelect(story.id) }}
+                eventHandlers={{
+                  click: () => {
+                    pauseAutoplay();
+                    onSelect(story.id);
+                  },
+                }}
               >
                 <Popup>
                   <strong>{story.title}</strong>

@@ -29,6 +29,7 @@ describe('platform topbar', () => {
     expect(source).toContain("openScreen('climate-impact')");
     expect(source).toContain('ClimateImpactPage');
     expect(source).toContain('GlobalStageMap');
+    expect(source).toContain('AutoplayProvider');
     expect(source).not.toContain('GlobalStagePage');
     expect(source).toContain("openScreen('about')");
     expect(source).toContain("openScreen('research')");

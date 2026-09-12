@@ -13,4 +13,10 @@ describe('MapPane', () => {
     expect(source).toContain("useState<MapLayerId>(DEFAULT_MAP_LAYER)");
     expect(source).toContain('basemap={basemap}');
   });
+
+  it('pauses reading autoplay when the reader interacts with the map', () => {
+    expect(source).toContain('useOptionalAutoplay');
+    expect(source).toContain('pauseAutoplay');
+    expect(source).toContain('onWheel={pauseAutoplay}');
+  });
 });

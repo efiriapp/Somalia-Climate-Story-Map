@@ -48,6 +48,12 @@ describe('RegionMapTour', () => {
     expect(source).toContain('copy.tourBack');
     expect(source).toContain('copy.tourNext');
     expect(source).toContain('stepDistrict');
+    expect(source).toContain('useOptionalAutoplay');
+    expect(source).toContain('autoplayTourDwellMs');
+    expect(source).toContain('nextAutoplayTourIndex');
+    expect(source).toContain('IntersectionObserver');
+    expect(source).toContain('setHoldScroll');
+    expect(source).toContain('pauseAutoplay');
     expect(source).not.toContain('tour-right-stack');
     expect(source).not.toContain('event-slider');
     expect(source).toMatch(
