@@ -9,21 +9,13 @@ export const STAGE_RESEARCH_SO: Record<string, StorySo> = {
       'War-bixinta ICE waxay kala saartaa COP27 ee Sharm El Sheikh, halkaasoo in ka badan 35,000 kaqeybgalayaal ay ku kulmeen 6 ilaa 18 Noofambar 2022 iyadoo naxdinnada cimiladu ku dhacayeen waddamada ugu horumarsan ee LDC, laga bilaabo abaarta Geeska ilaa daadadka Bakistaan. Agaasimaha Maxamed Okaash wuxuu sharxayaa Heshiiska Paris, la-qabsiga, khasaaraha iyo dhaawaca, kala-guurka cadaaladda, iyo wax-ku-oolnimada qaran ee Soomaaliya. Maqaalku wuxuu ku doodayaa in COP27 ay ahayd fursad laga gudbo digniinaha cadaabka cimilada una gudbo hirgelin, maaliyad, iyo midnimo. Markii hore waxaa loo daabacay ardayda Soomaaliyeed, siyaasad-dejiyeyaasha, iyo asxaabta u baahan in shirweynaha loogu tarjumo erayo ficil ah.',
     body: 'In ka badan 35,000 kaqeybgalayaal ayaa ku soo ururay COP27 ee Sharm El Sheikh, Masar, 6–18 Noofambar 2022. War-bixinta ICE waxay sharraxaysaa waxa shirweynuhu ugu jeeday waddamada ugu horumarsan, oo ay ku jiraan ajandaha la-qabsiga Soomaaliya, khasaaraha iyo dhaawaca, iyo NDC.',
   },
-  'un-ldcs-2023': {
-    title: 'Machadka ICE wuxuu ka qayb galay Shirweynaha LDC ee Qaramada Midoobay',
-    locationName: 'Dooxa, Qatar',
-    country: 'Qatar',
-    summary:
-      'Agaasimaha Maxamed Okaash wuxuu matalay Machadka ICE ee Jaamacadda SIMAD Shirweynaha LDC5 ee Qaramada Midoobay ee Dooxa. Wuxuu ku biiray guddiga Madasha Dhallinyarada ee LDC5 oo ka hadlaya sidii dhallinyarada waddamada ugu horumarsan loogu diyaarin lahaa inay horumaraan. Okaash wuxuu kala hadlay hay’adaha QM, bulshada rayidka, iyo qaybta gaarka ah saamaynta cimilada ee Soomaaliya, laga bilaabo abaaraha iyo daadadka ilaa baahida maaliyadda la-qabsiga. ICE waxay shirweynaha ugu isticmaashay inay ku doodo in tacliinta iyo hoggaamiyeyaasha dhallinyaradu ay mudan yihiin inay dhexda u galaan Soomaaliya cagaaran.',
-    body: 'Machadka ICE ee Jaamacadda SIMAD, oo hoggaamiyo Maxamed Okaash, ayaa ka qayb galay Shirweynaha LDC5 ee Qaramada Midoobay ee Dooxa. Okaash wuxuu ka hadlay Madasha Dhallinyarada ee LDC5 sidii loo abuuri lahaa deegaan u oggolaanaya dhallinyarada waddamada ugu horumarsan.',
-  },
   'ldc5-doha': {
-    title: 'Machadka ICE wuxuu ku soo gabagabeeyay Toddobaad Guul leh LDC5 ee Dooxa',
+    title: 'Machadka ICE ee LDC5 ee Dooxa',
     locationName: 'Dooxa, Qatar',
     country: 'Qatar',
     summary:
-      'Ka dib LDC5 ee Dooxa 4 ilaa 9 Maarso 2023, ICE waxay soo gabagabeysay toddobaad ka-qaybgal heer sare ah oo ku saabsan dhallinyarada iyo cimilada. Maxamed Okaash wuxuu la kulmay Wasiir Khadija Maxamed Al-Makhzoumi wuxuuna ka hadlay in dhallinyarada horay loo dhigo lana taageero tallaabada cimilada ee dhallinyaradu hoggaamiso ee LDC-yada. Wuxuu ku baaqay in la maalgeliyo waxbarashada cimilada, xirfadaha, iyo ganacsi-abuurka si dhallinyarada Geeska Afrika ay u horseedaan isbeddel. Shirweynaha waxaa lagu soo gabagabeeyay bayaan dhallinyaro iyo Barnaamijka Tallaabada ee Dooxa.',
-    body: 'LDC5 waxay ka dhacday Dooxa 4–9 Maarso 2023. Maxamed Okaash wuxuu la kulmay Wasiir Khadija Maxamed Al-Makhzoumi wuxuuna ka hadlay xoojinta dhallinyarada iyo tallaabada cimilada ee dhallinyaradu hoggaamiso ee LDC-yada.',
+      'Agaasimaha Maxamed Okaash wuxuu matalay Machadka ICE ee Jaamacadda SIMAD Shirweynaha LDC5 ee Qaramada Midoobay ee Dooxa 4 ilaa 9 Maarso 2023. Wuxuu ku biiray Madasha Dhallinyarada ee LDC5 oo ku saabsan sidii dhallinyarada waddamada ugu horumarsan loogu diyaarin lahaa inay horumaraan, wuxuuna kala hadlay hay’adaha QM, bulshada rayidka, iyo qaybta gaarka ah abaaraha, daadadka, iyo maaliyadda la-qabsiga Soomaaliya. Toddobaadka gudihiisa wuxuu la kulmay Wasiir Khadija Maxamed Al-Makhzoumi wuxuuna ku baaqay in la maalgeliyo waxbarashada cimilada, xirfadaha, iyo ganacsi-abuurka si dhallinyarada Geeska Afrika ay u horseedaan isbeddel. Shirweynaha waxaa lagu soo gabagabeeyay bayaan dhallinyaro iyo Barnaamijka Tallaabada ee Dooxa, oo xaqiijinaya in tacliinta iyo hoggaamiyeyaasha dhallinyaradu ay dhexda u galaan Soomaaliya cagaaran.',
+    body: 'ICE waxay ka qayb gashay Shirweynaha LDC5 ee Dooxa 4–9 Maarso 2023. Maxamed Okaash wuxuu ka hadlay Madasha Dhallinyarada ee LDC5, wuxuu la kulmay Wasiir Khadija Maxamed Al-Makhzoumi, wuxuuna horumariyay tallaabada cimilada ee dhallinyaradu hoggaamiso iyo maaliyadda la-qabsiga ee waddamada ugu horumarsan.',
   },
   'changemakerxchange-2023': {
     title: 'Ka fiirsashada Shirweynaha ChangemakerXchange 2023 ee Ruwaanda',
@@ -32,14 +24,6 @@ export const STAGE_RESEARCH_SO: Record<string, StorySo> = {
     summary:
       '18 ilaa 22 Sebtembar 2023, Maxamed Okaash wuxuu ku biiray hal-abuureyaal bulsho oo dhallinyaro ah Shirweynaha ChangemakerXchange ee Rwamagana, Ruwaanda. Kulanku wuxuu diiradda saaray shabakadaha, isweydaarsiga aqoonta, iyo wada-shaqeynta si mashaariicda cimilada ee Afrika-hoose ay u ballaarato. Okaash wuxuu martigeliyay kalfadhiyo furan oo ku saabsan isbeddelka cimilada ee Afrika iyo sida qaaraddu ugu istaagi karto marxaladda caalamiga. Shirweynaha wuxuu kaloo xoogga saaray sii-jiritaanka shakhsiyeed si isbeddel-sameeyayaashu ay u sii shaqeeyaan iyagoon daalin.',
     body: '18–22 Sebtembar 2023, ICE waxay ka qayb gashay Shirweynaha ChangemakerXchange ee Rwamagana. Kulanku wuxuu isku xidhay hal-abuureyaal bulsho oo dhallinyaro ah oo ka kala yimid Afrika-hoose si ay uga shaqeeyaan isbeddelka cimilada iyo wada-shaqeynta.',
-  },
-  'cop28-dubai': {
-    title: 'Machadka ICE ee COP28 ee Dubai',
-    locationName: 'Dubai, Imaaraadka Carabta ee Midoobay',
-    country: 'Imaaraadka Carabta ee Midoobay',
-    summary:
-      'Sannadkii 2023 ICE waxay caddaynta cimilada Soomaaliyeed geeysay COP28 ee Dubai iyadoo ay ku dhex jiraan dawladaha, cilmi-baarayaasha, iyo asxaabta. Machadku wuxuu xoojiyay mudnaanta waddamada ugu horumarsan ee la-qabsiga, khasaaraha iyo dhaawaca, iyo maaliyadda cimilada. Ka-qaybgalku wuxuu xaqiiqada cimilada ee Soomaaliya geliyay shirweyne inta badan ay hoggaamiyaan soo-saarayaasha waaweyn. ICE waxay u aragtaa COP28 qayb ka mid ah dadaal dheer oo ah in codadka waddamada jilicsan ay ku sii jiraan wada-hadallada cimilada ee caalamiga.',
-    body: 'Sannadkii 2023 ICE waxay ka qayb gashay COP28 ee Dubai, iyadoo xoojinaysa codka Soomaaliya dhexdooda dawladaha, cilmi-baarayaasha, iyo asxaabta ka shaqeeya la-qabsiga, khasaaraha iyo dhaawaca, iyo maaliyadda cimilada ee waddamada ugu horumarsan.',
   },
   'cop29-baku': {
     title: 'Machadka ICE wuxuu iftiimiyay COP29: Xoojinta Codadka Soomaaliyeed ee Marxaladda Caalamiga',

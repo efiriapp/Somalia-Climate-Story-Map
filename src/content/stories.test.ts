@@ -23,16 +23,23 @@ describe('global-stage source pages', () => {
     expect(story?.district).toBe('');
   });
 
-  it('includes COP28 in Dubai in 2023', () => {
-    const story = stories.find((item) => item.id === 'cop28-dubai');
+  it('merges LDC5 Doha into one March 2023 Qatar event with photos', () => {
+    const story = stories.find((item) => item.id === 'ldc5-doha');
     expect(story).toMatchObject({
-      title: 'ICE Institute at COP28 in Dubai',
+      title: 'ICE Institute at LDC5 in Doha',
       type: 'global-stage',
-      date: '2023-12-13',
-      country: 'United Arab Emirates',
-      location: { name: 'Dubai, United Arab Emirates' },
-      website: 'https://ice.simad.edu.so/2024/01/10/ice-annual-report-2023/',
+      date: '2023-03-20',
+      country: 'Qatar',
+      location: { name: 'Doha, Qatar' },
+      website: 'https://ice.simad.edu.so/2023/03/20/ice-institute-concludes-successful-week-at-ldc5-in-doha/',
     });
+    expect(story?.summary).toMatch(/LDC5/);
+    expect(story?.images).toEqual([
+      '/images/global-stage/ldc5-doha.png',
+      '/images/global-stage/un-ldcs-2023.jpg',
+    ]);
+    expect(stories.some((item) => item.id === 'un-ldcs-2023')).toBe(false);
+    expect(stories.some((item) => item.id === 'cop28-dubai')).toBe(false);
   });
 
   it('includes the 2026 UNEP meeting at the UN Office in Nairobi', () => {

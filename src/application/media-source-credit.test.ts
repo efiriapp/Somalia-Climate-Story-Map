@@ -40,8 +40,12 @@ describe('storyMediaCredit', () => {
   });
 
   it('returns no credit when a page has no pictures or video', () => {
-    const emptyEvent = stories.find((item) => item.id === 'cop28-dubai');
-    expect(storyMediaCredit(emptyEvent!)).toBeNull();
+    expect(
+      storyMediaCredit({
+        images: [],
+        website: 'https://ice.simad.edu.so/example/',
+      }),
+    ).toBeNull();
   });
 
   it('credits Wikimedia Commons photos for research stories without the ICE Institute prefix', () => {

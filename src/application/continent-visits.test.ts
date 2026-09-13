@@ -73,7 +73,7 @@ describe('continentVisits', () => {
 
     const asia = cards.find((card) => card.continent === 'Asia');
     expect(asia?.connected).toBe(3);
-    expect(asia?.visited).toBe(5);
+    expect(asia?.visited).toBe(3);
     expect(asia?.countries.map((item) => item.country)).toEqual([
       'Azerbaijan',
       'Qatar',
@@ -94,7 +94,7 @@ describe('connected tour filters', () => {
   it('lists years, then continents and countries that exist in the selected year', () => {
     expect(filterYears(stories)).toEqual([2023, 2024, 2025, 2026]);
     expect(filterContinents(stories, 2023)).toEqual(['Africa', 'Asia']);
-    expect(filterCountries(stories, 2023, 'Asia')).toEqual(['Qatar', 'United Arab Emirates']);
+    expect(filterCountries(stories, 2023, 'Asia')).toEqual(['Qatar']);
   });
 
   it('clears child dropdowns when a parent filter no longer matches', () => {
@@ -111,7 +111,7 @@ describe('continent summaries', () => {
   it('shows catalog event counts by continent without visit tracking', () => {
     expect(continentSummaries(stories, defaultTourFilter())).toEqual([
       { continent: 'Africa', count: 10 },
-      { continent: 'Asia', count: 5 },
+      { continent: 'Asia', count: 3 },
       { continent: 'Europe', count: 2 },
       { continent: 'Americas', count: 1 },
     ]);
@@ -128,18 +128,18 @@ describe('continent summaries', () => {
   it('narrows a continent total when a country filter is selected', () => {
     expect(
       continentSummaries(stories, { year: 2023, continent: 'all', country: 'Qatar' }),
-    ).toEqual([{ continent: 'Asia', count: 2 }]);
+    ).toEqual([{ continent: 'Asia', count: 1 }]);
   });
 
   it('adds a dashboard total that follows the default catalog and the active filter', () => {
-    expect(summaryTotal(stories, defaultTourFilter())).toBe(18);
+    expect(summaryTotal(stories, defaultTourFilter())).toBe(16);
     expect(summaryTotal(stories, { year: 2023, continent: 'all', country: 'all' })).toBe(
       continentSummaries(stories, { year: 2023, continent: 'all', country: 'all' }).reduce(
         (sum, card) => sum + card.count,
         0,
       ),
     );
-    expect(summaryTotal(stories, { year: 2023, continent: 'all', country: 'Qatar' })).toBe(2);
+    expect(summaryTotal(stories, { year: 2023, continent: 'all', country: 'Qatar' })).toBe(1);
   });
 });
 
