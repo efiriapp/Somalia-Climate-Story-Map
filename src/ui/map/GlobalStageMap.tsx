@@ -26,13 +26,8 @@ import {
   prevTourIndex,
   type TourStop,
 } from '../../application/global-tour';
-import { EqualEarthCoordTransform } from 'maplibre-gl-equal-earth';
-import {
-  EQUAL_EARTH_SWITCH_ZOOM,
-  equalEarthStyle,
-} from '../../application/equal-earth';
 import { countryLabel, formatLocaleDate } from '../../application/locale';
-import { DEFAULT_MAP_LAYER, type MapLayerId } from '../../application/map-layers';
+import { DEFAULT_MAP_LAYER, styleForLayer, type MapLayerId } from '../../application/map-layers';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
@@ -502,7 +497,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     const map = new Map({
       container: host.current,
-      style: equalEarthStyle(DEFAULT_MAP_LAYER),
+      style: styleForLayer(DEFAULT_MAP_LAYER),
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: GLOBE_VIEW.pitch,
@@ -517,7 +512,6 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     map.setPadding(STAGE_PADDING);
     map.addControl(new NavigationControl({ visualizePitch: false, showCompass: false }), 'top-right');
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
-    new EqualEarthCoordTransform(map, EQUAL_EARTH_SWITCH_ZOOM);
     mapRef.current = map;
     basemapReady.current = false;
     const onLoad = () => {
@@ -561,7 +555,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     const activeIdSnapshot = activeId;
-    map.setStyle(equalEarthStyle(basemap));
+    map.setStyle(styleForLayer(basemap));
     map.once('style.load', () => {
       ensureMeasureLine(map);
       const source = map.getSource('measure-line') as GeoJSONSource | undefined;

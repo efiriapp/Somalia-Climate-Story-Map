@@ -18,12 +18,14 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('runPlaceTour');
   });
 
-  it('uses the Equal Earth hybrid streets style instead of Carto or keyed tiles', () => {
-    expect(source).toContain('equalEarthStyle');
-    expect(source).toContain('EqualEarthCoordTransform');
-    expect(source).toContain('EQUAL_EARTH_SWITCH_ZOOM');
+  it('uses free OSM Mercator streets style instead of Equal Earth or keyed tiles', () => {
+    expect(source).toContain('styleForLayer');
     expect(source).toContain('DEFAULT_MAP_LAYER');
-    expect(source).toContain('equalEarthStyle(DEFAULT_MAP_LAYER)');
+    expect(source).toContain('styleForLayer(DEFAULT_MAP_LAYER)');
+    expect(source).not.toContain('equalEarthStyle');
+    expect(source).not.toContain('EqualEarthCoordTransform');
+    expect(source).not.toContain('EQUAL_EARTH_SWITCH_ZOOM');
+    expect(source).not.toContain('maplibre-gl-equal-earth');
     expect(source).not.toContain("styleForLayer('osm')");
     expect(source).not.toContain('carto-voyager');
     expect(source).not.toContain('basemaps.cartocdn.com');
@@ -33,7 +35,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('MapBasemapControl');
     expect(source).toContain("useState<MapLayerId>(DEFAULT_MAP_LAYER)");
     expect(source).toContain('setBasemap');
-    expect(source).toContain('equalEarthStyle(basemap)');
+    expect(source).toContain('styleForLayer(basemap)');
     expect(source).toContain('layersOpen');
   });
 
@@ -70,15 +72,14 @@ describe('GlobalStageMap', () => {
     expect(source).not.toContain('setPlaying(true)');
   });
 
-  it('keeps the world map flat 2D with Equal Earth, with no globe or camera tilt', () => {
+  it('keeps the world map flat 2D Mercator, with no globe or camera tilt', () => {
     expect(source).not.toContain("type: 'globe'");
-    expect(source).toContain('EqualEarthCoordTransform');
+    expect(source).not.toContain('EqualEarthCoordTransform');
     expect(source).toContain('maxPitch: 0');
     expect(source).not.toContain('pitch: 24');
     expect(source).not.toContain('pitch: 42');
     expect(source).not.toContain('CRUISE_ZOOM, 28');
     expect(source).toContain('visualizePitch: false');
-    expect(source).not.toContain("setProjection?.({ type: 'mercator' })");
   });
 
   it('shows a Total visit count inside the continent cards', () => {

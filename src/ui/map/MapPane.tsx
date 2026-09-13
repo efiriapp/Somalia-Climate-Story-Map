@@ -7,7 +7,7 @@ import { DEFAULT_MAP_LAYER, type MapLayerId } from '../../application/map-layers
 import type { MapView } from '../../application/resolve-map-view';
 import type { Story } from '../../domain/story';
 import { useOptionalAutoplay } from '../chrome/AutoplayContext';
-import { EqualEarthBasemap } from './EqualEarthBasemap';
+import { LeafletRasterBasemap } from './LeafletRasterBasemap';
 import { MapBasemapControl } from './MapBasemapControl';
 
 const pinIcon = L.divIcon({
@@ -42,7 +42,7 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
         scrollWheelZoom
         minZoom={1}
       >
-        <EqualEarthBasemap basemap={basemap} />
+        <LeafletRasterBasemap basemap={basemap} />
         {[...groups.values()].flatMap((group) =>
           group.map((story) => {
             const point = displayLocation(story, group);

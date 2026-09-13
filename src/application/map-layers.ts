@@ -36,7 +36,7 @@ const rasterStyle = (tiles: string[], attribution: string): StyleSpecification =
   ],
 });
 
-/** Pure Mercator raster styles (no Equal Earth hybrid). Prefer equalEarthStyle for map surfaces. */
+/** Pure Mercator raster styles from free open-source tile providers. */
 export const styleForLayer = (id: MapLayerId): StyleSpecification => {
   switch (id) {
     case 'terrain':

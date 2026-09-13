@@ -6,3 +6,4 @@ dist-ssr
 coverage
 .vscode/*
 !.vscode/extensions.json
+public/maplibre/

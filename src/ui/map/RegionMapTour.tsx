@@ -22,7 +22,7 @@ import type { Story } from '../../domain/story';
 import { useOptionalAutoplay } from '../chrome/AutoplayContext';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
-import { EqualEarthBasemap } from './EqualEarthBasemap';
+import { LeafletRasterBasemap } from './LeafletRasterBasemap';
 import { MapBasemapControl } from './MapBasemapControl';
 
 type Props = {
@@ -264,7 +264,7 @@ export function RegionMapTour({ story }: Props) {
           keyboard={false}
           whenReady={() => scrollPageToTop()}
         >
-          <EqualEarthBasemap basemap={basemap} />
+          <LeafletRasterBasemap basemap={basemap} />
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
           {stops.map((stop) => (
             <Marker

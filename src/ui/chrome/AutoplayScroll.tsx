@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   AUTOPLAY_SPEEDS,
+  clampAutoplaySpeed,
   isScrollComplete,
   resolvePageScroll,
   scrollPixelsForFrame,
@@ -252,7 +253,7 @@ export function AutoplayScroll() {
               value={String(speed)}
               aria-label={copy.autoplaySpeed}
               disabled={reducedMotion}
-              onChange={(event) => setSpeed(Number(event.target.value))}
+              onChange={(event) => setSpeed(clampAutoplaySpeed(Number(event.target.value)))}
             >
               {AUTOPLAY_SPEEDS.map((value) => (
                 <option key={value} value={String(value)}>

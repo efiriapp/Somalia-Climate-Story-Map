@@ -6,8 +6,8 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'MapPane.tsx'), 'utf8');
 
 describe('MapPane', () => {
-  it('defaults to Streets Equal Earth and includes the layers icon toggle', () => {
-    expect(source).toContain('EqualEarthBasemap');
+  it('defaults to Streets OSM and includes the layers icon toggle', () => {
+    expect(source).toContain('LeafletRasterBasemap');
     expect(source).toContain('MapBasemapControl');
     expect(source).toContain('DEFAULT_MAP_LAYER');
     expect(source).toContain("useState<MapLayerId>(DEFAULT_MAP_LAYER)");

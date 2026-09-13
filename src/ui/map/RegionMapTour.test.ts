@@ -6,8 +6,8 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'RegionMapTour.tsx'), 'utf8');
 
 describe('RegionMapTour', () => {
-  it('defaults to Streets Equal Earth with a layers icon toggle for Satellite and Terrain', () => {
-    expect(source).toContain('EqualEarthBasemap');
+  it('defaults to Streets OSM with a layers icon toggle for Satellite and Terrain', () => {
+    expect(source).toContain('LeafletRasterBasemap');
     expect(source).toContain('MapBasemapControl');
     expect(source).toContain('DEFAULT_MAP_LAYER');
     expect(source).toContain("useState<MapLayerId>(DEFAULT_MAP_LAYER)");

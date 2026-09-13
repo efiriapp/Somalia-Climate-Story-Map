@@ -4,16 +4,16 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "node ./scripts/copy-maplibre-worker.mjs",
     "dev": "vite",
+    "prebuild": "node ./scripts/copy-maplibre-worker.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run"
   },
   "dependencies": {
-    "@maplibre/maplibre-gl-leaflet": "^0.1.4",
     "leaflet": "^1.9.4",
     "maplibre-gl": "^6.4.0",
-    "maplibre-gl-equal-earth": "^0.2.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-leaflet": "^5.0.0"
