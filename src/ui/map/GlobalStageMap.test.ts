@@ -18,7 +18,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('runPlaceTour');
   });
 
-  it('uses free OSM Mercator streets style instead of Equal Earth or keyed tiles', () => {
+  it('uses free OSM Mercator streets style instead of keyed commercial tiles', () => {
     expect(source).toContain('styleForLayer');
     expect(source).toContain('DEFAULT_MAP_LAYER');
     expect(source).toContain('styleForLayer(DEFAULT_MAP_LAYER)');
