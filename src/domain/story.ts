@@ -1,5 +1,8 @@
 export type ContentType = 'ice-story' | 'global-stage' | 'research-story';
 
+/** Whether the featured entity on a story is a person or an institution/organization. */
+export type FeaturedKind = 'person' | 'institution';
+
 export type SdgNumber =
   | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17;
 
@@ -25,6 +28,7 @@ export type Story = {
   country: string;
   website: string;
   featuredPerson?: string;
+  featuredKind?: FeaturedKind;
   placeLabel?: string;
   mapTitle?: string;
   videoTitle?: string;

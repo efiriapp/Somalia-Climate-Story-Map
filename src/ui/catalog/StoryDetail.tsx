@@ -1,4 +1,5 @@
 import { Fragment, useLayoutEffect, useMemo } from 'react';
+import { featuredEntityLabel } from '../../application/featured-entity-label';
 import { formatLocaleDate } from '../../application/locale';
 import {
   labelForRelatedTarget,
@@ -223,7 +224,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
               <dd>{source.impactAreas.join(' • ')}</dd>
             </div>
             <div>
-              <dt>{copy.featuredPerson}</dt>
+              <dt>{featuredEntityLabel(story, copy)}</dt>
               <dd>{source.featuredPerson}</dd>
             </div>
             <div>

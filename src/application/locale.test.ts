@@ -38,6 +38,10 @@ describe('chromeCopy', () => {
     expect(hazardTitle('el-nino', chromeCopy('en'))).toBe('El Niño');
     expect(chromeCopy('en').relatedPrefix).toBe('Related: ');
     expect(chromeCopy('en').exploreClimateImpact).toBe('Explore Climate Impact');
+    expect(chromeCopy('en').featuredPerson).toBe('Featured person');
+    expect(chromeCopy('en').featuredInstitution).toBe('Featured institution/organization');
+    expect(chromeCopy('so').featuredInstitution).toMatch(/Hay|ururka/);
+    expect(chromeCopy('ar').featuredInstitution).toMatch(/المؤسسة|المنظمة/);
     expect(chromeCopy('en').tourRestart).toBe('Restart');
     expect(chromeCopy('so').relatedPrefix).toBe('La xiriira: ');
     expect(chromeCopy('so').exploreClimateImpact).toMatch(/Saamaynta Cimilada/);

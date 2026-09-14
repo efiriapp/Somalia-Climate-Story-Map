@@ -33,6 +33,8 @@ describe('StoryDetail', () => {
     expect(source).toContain('story.videos');
     expect(source).toContain('story-source');
     expect(source).toContain('copy.storyMapLocation');
+    expect(source).toContain('featuredEntityLabel');
+    expect(domain).toContain('featuredKind?:');
     expect(source.indexOf('chapters.map')).toBeLessThan(source.indexOf('story-video'));
     expect(source.indexOf('story-video')).toBeLessThan(source.indexOf('story-source'));
     expect(source).toContain('MapPane');
