@@ -162,6 +162,16 @@ describe('Climate Impact pages', () => {
     ]);
     expect(pageById('el-nino')?.videos).toEqual([
       {
+        title: 'El Niño impacts in Somalia',
+        url: 'https://www.facebook.com/share/v/1PpWwLxGGf/',
+        outlet: 'Facebook',
+      },
+      {
+        title: 'El Niño climate impacts',
+        url: 'https://www.facebook.com/share/r/1PXwb4Yd2U/',
+        outlet: 'Facebook',
+      },
+      {
         title: "Flash floods hit Somalia's capital",
         url: 'https://youtu.be/RhG4kaaX2j0',
         outlet: 'Reuters',
@@ -178,6 +188,11 @@ describe('Climate Impact pages', () => {
       },
     ]);
     expect(pageById('la-nina')?.videos).toEqual([
+      {
+        title: 'La Niña explained',
+        url: 'https://youtu.be/_vxiN3n1Ckk?si=je-l4KCcFWDSTGA9',
+        outlet: 'YouTube',
+      },
       {
         title: 'East Africa drought set to get worse: U.N., agencies',
         url: 'https://youtu.be/qvf5zL8trjA',

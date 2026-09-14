@@ -9,7 +9,7 @@ const facebookVideoHref = (url: string): string | null => {
     if (!/(^|\.)facebook\.com$/i.test(parsed.hostname)) {
       return null;
     }
-    if (!/\/(?:share\/v\/|watch\/?|reel\/|[^/]+\/videos\/)/i.test(`${parsed.pathname}${parsed.search}`)) {
+    if (!/\/(?:share\/(?:v|r)\/|watch\/?|reel\/|[^/]+\/videos\/)/i.test(`${parsed.pathname}${parsed.search}`)) {
       return null;
     }
     return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false`;

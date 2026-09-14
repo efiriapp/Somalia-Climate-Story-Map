@@ -20,12 +20,21 @@ describe('youtubeEmbedSrc', () => {
 });
 
 describe('videoEmbedSrc', () => {
-  it('turns Facebook reel links into plugin embed URLs', () => {
+  it('turns Facebook reel and share links into plugin embed URLs', () => {
     expect(videoEmbedSrc('https://www.facebook.com/reel/1412656927441281/')).toBe(
       'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1412656927441281%2F&show_text=false',
     );
     expect(videoEmbedSrc('https://www.facebook.com/ICESomalia/videos/1459612665336518/')).toBe(
       'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FICESomalia%2Fvideos%2F1459612665336518%2F&show_text=false',
+    );
+    expect(videoEmbedSrc('https://www.facebook.com/share/v/1PpWwLxGGf/')).toBe(
+      'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1PpWwLxGGf%2F&show_text=false',
+    );
+    expect(videoEmbedSrc('https://www.facebook.com/share/r/1PXwb4Yd2U/')).toBe(
+      'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fr%2F1PXwb4Yd2U%2F&show_text=false',
+    );
+    expect(videoEmbedSrc('https://youtu.be/_vxiN3n1Ckk?si=je-l4KCcFWDSTGA9')).toBe(
+      'https://www.youtube.com/embed/_vxiN3n1Ckk',
     );
     expect(videoEmbedSrc('https://ice.simad.edu.so/')).toBeNull();
   });
