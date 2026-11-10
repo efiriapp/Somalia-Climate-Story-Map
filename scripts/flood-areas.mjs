@@ -64,9 +64,11 @@ const shp = (level) => {
 // Boundaries: one unit id and name per feature; outlines for the map.
 const units = {};
 for (const [level, def] of Object.entries(LEVELS)) {
-  const fields = `uid=String(${def.id}), uname=String(${def.name})${def.parent ? `, parent=String(${def.parent})` : ''}`;
+  const fields = `uid=String(${def.id}), uname=String(${def.name})${def.parent ? `, parent=String(${def.parent})` : ''}` +
+    // A point inside each shape for its name label on the map.
+    ', lx=Math.round(this.innerX * 1e4) / 1e4, ly=Math.round(this.innerY * 1e4) / 1e4';
   const out = await mapshaper.applyCommands(
-    `-i "${shp(level)}" encoding=utf8 -proj wgs84 -each "${fields}" -filter-fields uid,uname${def.parent ? ',parent' : ''} ` +
+    `-i "${shp(level)}" encoding=utf8 -proj wgs84 -each "${fields}" -filter-fields uid,uname,lx,ly${def.parent ? ',parent' : ''} ` +
       `-o format=json rows.json ` +
       `-simplify interval=${level === 'district' ? 300 : 500} keep-shapes -o format=geojson precision=0.0001 map.geojson`,
   );
@@ -77,7 +79,7 @@ for (const [level, def] of Object.entries(LEVELS)) {
     rows = rows.map(tidy);
     map.features = map.features.map((f) => ({ ...f, properties: tidy(f.properties) }));
   }
-  for (const f of map.features) f.properties = { id: f.properties.uid, name: f.properties.uname };
+  for (const f of map.features) f.properties = { id: f.properties.uid, name: f.properties.uname, lx: f.properties.lx, ly: f.properties.ly };
   writeFileSync(join(OUT, `admin-${level}s.geojson`), JSON.stringify(map));
   units[level] = rows.map((r) => ({ id: r.uid, name: r.uname, ...(r.parent ? { parent: r.parent } : {}) }));
   console.log(`${level}: ${rows.length} units`);

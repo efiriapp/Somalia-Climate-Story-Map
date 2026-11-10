@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
-import { CircleMarker, GeoJSON, MapContainer, Pane, ScaleControl, Tooltip, useMap } from 'react-leaflet';
+import { CircleMarker, GeoJSON, MapContainer, Marker, Pane, ScaleControl, Tooltip, useMap, useMapEvents } from 'react-leaflet';
 import type { Feature, FeatureCollection } from 'geojson';
 import L, { type PathOptions } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -101,6 +101,32 @@ function SwipeClip({ ratio }: { ratio: number }) {
   return null;
 }
 
+/**
+ * Names of the states, regions or districts on show. District names appear
+ * for every district from zoom 8; further out only for districts in the
+ * flooded-area list, so the map does not fill with text.
+ */
+function AdminLabels({ data, level, listed }: { data: Collection; level: AdminLevel; listed: Set<string> }) {
+  const map = useMap();
+  const [zoom, setZoom] = useState(map.getZoom());
+  useMapEvents({ zoomend: () => setZoom(map.getZoom()) });
+  const all = level !== 'district' || zoom >= 8;
+  return (
+    <>
+      {data.features.map((feature) => {
+        const { id, name, lx, ly } = (feature.properties ?? {}) as { id: string; name: string; lx?: number; ly?: number };
+        if (lx === undefined || ly === undefined || (!all && !listed.has(id))) return null;
+        const icon = L.divIcon({
+          className: `admin-label admin-label-${level}`,
+          html: `<span>${name.replace(/[&<>"]/g, '')}</span>`,
+          iconSize: [0, 0],
+        });
+        return <Marker key={`${level}-${id}`} position={[ly, lx]} icon={icon} interactive={false} keyboard={false} />;
+      })}
+    </>
+  );
+}
+
 function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' | 'states' }) {
   const paths: Record<typeof name, ReactNode> = {
     calendar: (
@@ -170,9 +196,6 @@ export function FloodHistoryMap() {
   const [ratio, setRatio] = useState(0.5);
   const [panel, setPanel] = useState<Panel>(null);
   const [show, setShow] = useState({
-    state: true,
-    region: false,
-    district: false,
     rivers: true,
     gauges: true,
     plain: false,
@@ -180,10 +203,15 @@ export function FloodHistoryMap() {
   const [areasOpen, setAreasOpen] = useState(true);
   const [level, setLevel] = useState<AdminLevel>('state');
   const { data: byAdmin } = useWatchFile<FloodByAdmin>('flood-by-admin.json');
-  // Choosing a level in the panel also shows its outlines on the map.
+  // One boundary level on the map at a time; it follows the panel's tab.
+  const [boundary, setBoundary] = useState<AdminLevel | null>('state');
   const pickLevel = (next: AdminLevel) => {
     setLevel(next);
-    setShow((s) => ({ ...s, [next]: true }));
+    setBoundary(next);
+  };
+  const pickBoundary = (next: AdminLevel | null) => {
+    setBoundary(next);
+    if (next) setLevel(next);
   };
   const [basemap, setBasemap] = useState<MapLayerId>('streets');
   const wrap = useRef<HTMLDivElement>(null);
@@ -216,7 +244,7 @@ export function FloodHistoryMap() {
 
   const files = [
     ...(show.plain ? ['flood-plain-2013-2023.geojson'] : []),
-    ...(['state', 'region', 'district'] as const).filter((l) => show[l]).map((l) => ADMIN_FILE[l]),
+    ...(boundary ? [ADMIN_FILE[boundary]] : []),
     ...shown.map((event) => event.file),
     ...(show.rivers ? ['rivers.geojson'] : []),
     ...(show.gauges ? ['river-gauging-stations.geojson'] : []),
@@ -247,6 +275,13 @@ export function FloodHistoryMap() {
   const typed = singleArea?.farmland !== null && singleArea?.farmland !== undefined;
   const areaA = areaOf(a);
   const areaB = areaOf(b);
+
+  const areaRows = !byAdmin
+    ? []
+    : comparing && a && b
+      ? areaByUnit(byAdmin, level, [a.id], b.id)
+      : areaByUnit(byAdmin, level, filtered.map((event) => event.id));
+  const listed = new Set(areaRows.map((row) => row.id));
 
   const periods = floodPeriods(events);
   const newestFirst = [...events].reverse();
@@ -308,16 +343,22 @@ export function FloodHistoryMap() {
             />
           ) : null}
 
-          {(['district', 'region', 'state'] as const).map((l) =>
-            show[l] && ready[ADMIN_FILE[l]] ? (
+          {boundary && ready[ADMIN_FILE[boundary]] ? (
+            <>
               <GeoJSON
-                key={l}
-                data={ready[ADMIN_FILE[l]]!}
-                style={ADMIN_STYLE[l]}
+                key={boundary}
+                data={ready[ADMIN_FILE[boundary]]!}
+                style={ADMIN_STYLE[boundary]}
                 onEachFeature={(feature, layer) => layer.bindTooltip(String(feature.properties?.name ?? ''), { sticky: true })}
               />
-            ) : null,
-          )}
+              <AdminLabels
+                key={`labels-${boundary}`}
+                data={ready[ADMIN_FILE[boundary]]!}
+                level={boundary}
+                listed={boundary === level ? listed : new Set()}
+              />
+            </>
+          ) : null}
 
           {comparing ? (
             <>
@@ -499,11 +540,7 @@ export function FloodHistoryMap() {
           <FloodStatePanel
             level={level}
             onLevel={pickLevel}
-            rows={
-              comparing && a && b
-                ? areaByUnit(byAdmin, level, [a.id], b.id)
-                : areaByUnit(byAdmin, level, filtered.map((event) => event.id))
-            }
+            rows={areaRows}
             subtitle={
               comparing && a && b
                 ? copy.floodCompare
@@ -589,11 +626,24 @@ export function FloodHistoryMap() {
                     </label>
                   ))}
                 </fieldset>
+                <fieldset>
+                  <legend>{copy.layerBoundaries}</legend>
+                  {(
+                    [
+                      [null, copy.boundaryNone],
+                      ['state', copy.layerStates],
+                      ['region', copy.layerRegions],
+                      ['district', copy.layerDistricts],
+                    ] as const
+                  ).map(([key, title]) => (
+                    <label key={key ?? 'none'}>
+                      <input type="radio" name="flood-boundary" checked={boundary === key} onChange={() => pickBoundary(key)} />
+                      {title}
+                    </label>
+                  ))}
+                </fieldset>
                 {(
                   [
-                    ['state', copy.layerStates],
-                    ['region', copy.layerRegions],
-                    ['district', copy.layerDistricts],
                     ['rivers', copy.layerRivers],
                     ['gauges', copy.layerGauges],
                     ['plain', copy.layerFloodPlain],

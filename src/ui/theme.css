@@ -3956,3 +3956,39 @@ body.has-fullscreen-map .autoplay-scroll {
     inset-inline-end: 58px;
   }
 }
+
+/* Names of states, regions and districts on the past floods map */
+.admin-label {
+  width: 0;
+  height: 0;
+  overflow: visible;
+}
+
+.admin-label span {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-weight: 700;
+  color: #1f1f1d;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 3px #fff,
+    0 0 2px #fff;
+  pointer-events: none;
+}
+
+.admin-label-state span {
+  font-size: 0.95rem;
+  color: var(--forest);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-label-region span {
+  font-size: 0.8rem;
+}
+
+.admin-label-district span {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
