@@ -139,3 +139,35 @@ export const monthName = (month: number, locale: Locale): string =>
   new Intl.DateTimeFormat(locale === 'so' ? 'so' : locale === 'ar' ? 'ar' : 'en', { month: 'long', timeZone: 'UTC' }).format(
     new Date(Date.UTC(2024, month - 1, 1)),
   );
+
+/** Key for the period a flood map covers: its exact date, or year + season. */
+export const periodKey = (event: Pick<FloodEvent, 'year' | 'season' | 'date'>): string =>
+  event.date ?? `${event.year}-${event.season}`;
+
+const monthShort = (month: number, locale: Locale): string =>
+  new Intl.DateTimeFormat(locale === 'so' ? 'so' : locale === 'ar' ? 'ar' : 'en', { month: 'short', timeZone: 'UTC' }).format(
+    new Date(Date.UTC(2024, month - 1, 1)),
+  );
+
+/** Date-only label: "10 Nov 2019" for dated maps, "Apr–Jun 2024" for seasonal ones. */
+export const periodLabel = (event: Pick<FloodEvent, 'year' | 'season' | 'date'>, locale: Locale): string => {
+  if (event.date) {
+    const [y, m, d] = event.date.split('-').map(Number) as [number, number, number];
+    return `${d} ${monthShort(m, locale)} ${y}`;
+  }
+  const months = SEASON_MONTHS[event.season];
+  return `${monthShort(months[0]!, locale)}–${monthShort(months.at(-1)!, locale)} ${event.year}`;
+};
+
+/** Distinct periods with flood maps, newest first, for the date dropdown. */
+export const floodPeriods = (events: FloodEvent[]): FloodEvent[] => {
+  const seen = new Set<string>();
+  return [...events]
+    .reverse()
+    .filter((event) => {
+      const key = periodKey(event);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+};

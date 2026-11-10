@@ -12,7 +12,7 @@ import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { somaliaToday, useOpenMeteo } from '../useOpenMeteo';
 import { FlowChart } from './FlowChart';
-import { StatusBadge, StatusIcon, StatusLegend, type StatusTone } from './StatusBadge';
+import { StatusBadge, StatusLegend, type StatusTone } from './StatusBadge';
 import { WatchMap } from './WatchMap';
 import { FloodHistoryMap } from './FloodHistoryMap';
 import { WatchDisclaimer, WatchSources, WatchStatusMessage, type WatchSource } from './WatchSources';
@@ -151,34 +151,27 @@ export function FloodWatchPage() {
           />
           {/* One chart: choose the river, then the town. */}
           <section className="watch-group station-picker">
-            <div className="picker-row" role="group" aria-label={copy.riverChoose}>
-              {rivers.map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  aria-pressed={river === id}
-                  className={river === id ? 'active' : ''}
-                  onClick={() => pickRiver(id)}
-                >
-                  <StatusIcon tone={TONE[worstIn(id)]} />
-                  {riverLabel[id]}
-                </button>
-              ))}
-            </div>
-            <div className="picker-row picker-towns" role="group" aria-label={copy.flowStation}>
-              {riverReadings.map((reading) => (
-                <button
-                  key={reading.station.id}
-                  type="button"
-                  aria-pressed={chosen?.station.id === reading.station.id}
-                  className={chosen?.station.id === reading.station.id ? 'active' : ''}
-                  title={statusLabel[reading.status]}
-                  onClick={() => setStationId(reading.station.id)}
-                >
-                  <StatusIcon tone={TONE[reading.status]} />
-                  {name(reading)}
-                </button>
-              ))}
+            <div className="station-selects">
+              <label>
+                <span>{copy.riverChoose}</span>
+                <select value={river} onChange={(event) => pickRiver(event.target.value as RiverId)}>
+                  {rivers.map((id) => (
+                    <option key={id} value={id}>
+                      {riverLabel[id]} · {statusLabel[worstIn(id)]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>{copy.flowStation}</span>
+                <select value={chosen?.station.id ?? ''} onChange={(event) => setStationId(event.target.value)}>
+                  {riverReadings.map((reading) => (
+                    <option key={reading.station.id} value={reading.station.id}>
+                      {name(reading)} · {statusLabel[reading.status]}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
             {chosen ? card(chosen) : null}
           </section>

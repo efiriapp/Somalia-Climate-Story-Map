@@ -3402,42 +3402,39 @@ html[dir='rtl'] .autoplay-scroll select {
   }
 }
 
-/* Flood Watch: choose a river, then a town; one chart for the chosen town */
+/* Flood Watch: River and Town dropdowns; one chart for the chosen town */
 .station-picker {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
-.picker-row {
+.station-selects {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
 }
 
-.picker-row button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.station-selects label {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 200px;
+  max-width: 320px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #52514e;
+}
+
+.station-selects select {
+  width: 100%;
+  padding: 9px 10px;
   border: 1px solid #c9d3cf;
-  border-radius: 999px;
+  border-radius: 6px;
   background: #fff;
   color: var(--forest);
-  padding: 7px 14px;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-}
-
-.picker-row button.active {
-  background: var(--forest);
-  border-color: var(--forest);
-  color: #fff;
-}
-
-.picker-towns button {
-  font-size: 0.85rem;
-  padding: 6px 12px;
 }
 
 /* Phones: panels sit under the map so the map and the swipe stay visible. */
@@ -3452,14 +3449,29 @@ html[dir='rtl'] .autoplay-scroll select {
   }
 }
 
-/* Date filter: Year and Month side by side */
-.flood-date-filter select + select {
-  border-inline-start: 1px solid #dfe5e2;
-  padding-inline-start: 8px;
+/* Layers panel: one eye icon shows or hides every flood */
+.flood-layer-list legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.flood-date-filter select {
-  max-width: 140px;
+.flood-layer-toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #c9d3cf;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--forest);
+  cursor: pointer;
+}
+
+.flood-layer-toggle:hover {
+  background: var(--forest);
+  color: #fff;
 }
 
 /* Layers panel: every flood as a tick box, grouped by year */
@@ -3468,42 +3480,7 @@ html[dir='rtl'] .autoplay-scroll select {
   gap: 4px;
 }
 
-.flood-layer-actions {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.flood-layer-actions button {
-  border: 1px solid #c9d3cf;
-  border-radius: 999px;
-  background: #fff;
-  color: var(--forest);
-  padding: 4px 11px;
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.flood-layer-actions button:hover {
-  background: var(--forest);
-  color: #fff;
-}
-
-.flood-layer-year {
-  display: grid;
-  gap: 3px;
-  padding: 5px 0;
-  border-top: 1px solid #ecece8;
-}
-
-.flood-layer-year > span {
-  font-weight: 800;
-  color: #0b0b0b;
-}
-
-.flood-layer-year label {
+.flood-layer-list label {
   display: flex;
   align-items: center;
   gap: 7px;
@@ -3516,8 +3493,4 @@ html[dir='rtl'] .autoplay-scroll select {
   max-width: 220px;
 }
 
-@media (max-width: 640px) {
-  .flood-date-filter select {
-    max-width: 105px;
-  }
-}
+

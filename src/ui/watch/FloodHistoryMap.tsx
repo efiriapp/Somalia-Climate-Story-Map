@@ -10,12 +10,10 @@ import {
   floodArea,
   floodEventLabel,
   floodEvents,
-  floodMonths,
-  floodYears,
-  matchesDate,
-  monthName,
+  floodPeriods,
+  periodKey,
+  periodLabel,
   yearColor,
-  type DateFilter,
   type FloodEvent,
 } from '../../application/flood-history';
 import { formatLocaleDate } from '../../application/locale';
@@ -85,7 +83,7 @@ function SwipeClip({ ratio }: { ratio: number }) {
   return null;
 }
 
-function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' }) {
+function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' }) {
   const paths: Record<typeof name, ReactNode> = {
     calendar: (
       <>
@@ -98,6 +96,18 @@ function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' }) {
       <>
         <path d="m12 3 9 5-9 5-9-5 9-5Z" />
         <path d="m3 13 9 5 9-5" />
+      </>
+    ),
+    eye: (
+      <>
+        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ),
+    eyeOff: (
+      <>
+        <path d="M2 12s3.6-7 10-7c2 0 3.7.7 5.1 1.6M22 12s-3.6 7-10 7c-2 0-3.7-.7-5.1-1.6" />
+        <path d="m3 3 18 18" />
       </>
     ),
     compare: (
@@ -129,7 +139,7 @@ export function FloodHistoryMap() {
   const label = (event: FloodEvent) => floodEventLabel(event, locale, date);
 
   // Floods shown = ticked in the layers list AND inside the date filter.
-  const [dateFilter, setDateFilter] = useState<DateFilter>({ year: 'all', month: 'all' });
+  const [period, setPeriod] = useState<string>('all');
   const [hidden, setHidden] = useState<Set<string>>(() => new Set());
   const [comparing, setComparing] = useState(false);
   const [pairA, setPairA] = useState<string | null>(null);
@@ -150,7 +160,9 @@ export function FloodHistoryMap() {
   const byId = (id: string | null) => events.find((event) => event.id === id);
   const a = byId(pairA);
   const b = byId(pairB);
-  const filtered = events.filter((event) => !hidden.has(event.id) && matchesDate(event, dateFilter));
+  const filtered = events.filter(
+    (event) => !hidden.has(event.id) && (period === 'all' || periodKey(event) === period),
+  );
   const shown: FloodEvent[] = comparing ? [a, b].filter((e): e is FloodEvent => !!e) : filtered;
   const single = !comparing && filtered.length === 1 ? filtered[0] : undefined;
   const many = !comparing && filtered.length > 1;
@@ -195,8 +207,9 @@ export function FloodHistoryMap() {
   const areaA = areaOf(a);
   const areaB = areaOf(b);
 
-  const years = floodYears(events);
-  const months = floodMonths(events, dateFilter.year);
+  const periods = floodPeriods(events);
+  const newestFirst = [...events].reverse();
+  const allOn = hidden.size === 0;
 
   // Divider dragging (pointer) and nudging (keyboard).
   const moveTo = (clientX: number) => {
@@ -296,48 +309,23 @@ export function FloodHistoryMap() {
           <ScaleControl position="bottomleft" imperial={false} />
         </MapContainer>
 
-        {/* Date filter: calendar icon with Year and Month, listing only dates that have flood maps. */}
-        <div className={comparing ? 'flood-date-filter is-disabled' : 'flood-date-filter'} role="group" aria-label={copy.floodFilter}>
+        {/* Date filter: calendar icon with one list of the dates that have flood maps. */}
+        <label className={comparing ? 'flood-date-filter is-disabled' : 'flood-date-filter'} title={copy.floodFilter}>
           <Icon name="calendar" />
           <select
-            aria-label={copy.floodYear}
-            value={String(dateFilter.year)}
+            aria-label={copy.floodFilter}
+            value={period}
             disabled={comparing}
-            onChange={(event) => {
-              const year = event.target.value === 'all' ? 'all' : Number(event.target.value);
-              setDateFilter((current) => ({
-                year,
-                month:
-                  current.month !== 'all' && floodMonths(events, year).includes(current.month) ? current.month : 'all',
-              }));
-            }}
+            onChange={(event) => setPeriod(event.target.value)}
           >
-            <option value="all">{copy.floodAllYears}</option>
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
+            <option value="all">{copy.floodAllDates}</option>
+            {periods.map((event) => (
+              <option key={periodKey(event)} value={periodKey(event)}>
+                {periodLabel(event, locale)}
               </option>
             ))}
           </select>
-          <select
-            aria-label={copy.floodMonth}
-            value={String(dateFilter.month)}
-            disabled={comparing}
-            onChange={(event) =>
-              setDateFilter((current) => ({
-                ...current,
-                month: event.target.value === 'all' ? 'all' : Number(event.target.value),
-              }))
-            }
-          >
-            <option value="all">{copy.floodAllMonths}</option>
-            {months.map((month) => (
-              <option key={month} value={month}>
-                {monthName(month, locale)}
-              </option>
-            ))}
-          </select>
-        </div>
+        </label>
 
         <div className="flood-map-tools" role="toolbar" aria-label={copy.floodHistory}>
           <button
@@ -487,32 +475,24 @@ export function FloodHistoryMap() {
             {panel === 'layers' ? (
               <div className="flood-layers">
                 <fieldset className="flood-layer-list">
-                  <legend>{copy.floodLayers}</legend>
-                  <div className="flood-layer-actions">
-                    <button type="button" onClick={() => setHidden(new Set())}>
-                      {copy.floodShowAll}
+                  <legend>
+                    {copy.floodLayers}
+                    <button
+                      type="button"
+                      className="flood-layer-toggle"
+                      aria-label={allOn ? copy.floodHideAll : copy.floodShowAll}
+                      title={allOn ? copy.floodHideAll : copy.floodShowAll}
+                      onClick={() => setHidden(allOn ? new Set(events.map((event) => event.id)) : new Set())}
+                    >
+                      <Icon name={allOn ? 'eye' : 'eyeOff'} />
                     </button>
-                    <button type="button" onClick={() => setHidden(new Set(events.map((event) => event.id)))}>
-                      {copy.floodHideAll}
-                    </button>
-                  </div>
-                  {years.map((year) => (
-                    <div key={year} className="flood-layer-year">
-                      <span>{year}</span>
-                      {events
-                        .filter((event) => event.year === year)
-                        .map((event) => (
-                          <label key={event.id}>
-                            <input type="checkbox" checked={!hidden.has(event.id)} onChange={() => toggleFlood(event.id)} />
-                            <span
-                              className="swatch"
-                              style={{ background: yearColor(event.year, first, last) }}
-                              aria-hidden="true"
-                            />
-                            {label(event)}
-                          </label>
-                        ))}
-                    </div>
+                  </legend>
+                  {newestFirst.map((event) => (
+                    <label key={event.id}>
+                      <input type="checkbox" checked={!hidden.has(event.id)} onChange={() => toggleFlood(event.id)} />
+                      <span className="swatch" style={{ background: yearColor(event.year, first, last) }} aria-hidden="true" />
+                      {label(event)}
+                    </label>
                   ))}
                 </fieldset>
                 {(

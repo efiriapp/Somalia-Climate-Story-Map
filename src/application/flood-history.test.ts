@@ -15,6 +15,9 @@ import {
   floodYears,
   floodMonths,
   monthName,
+  periodKey,
+  periodLabel,
+  floodPeriods,
   type WatchManifest,
 } from './flood-history';
 
@@ -124,5 +127,24 @@ describe('flood dates', () => {
   it('names months in each language', () => {
     expect(monthName(11, 'en')).toBe('November');
     expect(monthName(11, 'ar')).toBe('نوفمبر');
+  });
+});
+
+describe('date dropdown', () => {
+  const events = floodEvents(manifest);
+  const byId = (id: string) => events.find((event) => event.id === id)!;
+
+  it('labels periods with dates only', () => {
+    expect(periodLabel(byId('flood-gu-2024'), 'en')).toBe('Apr–Jun 2024');
+    expect(periodLabel(byId('flood-deyr-2023'), 'en')).toBe('Oct–Dec 2023');
+    expect(periodLabel(byId('flood-juba-2019-11-10'), 'en')).toBe('10 Nov 2019');
+  });
+
+  it('lists each available period once, newest first', () => {
+    const periods = floodPeriods(events).map(periodKey);
+    expect(periods[0]).toBe('2025-gu');
+    expect(periods.at(-1)).toBe('2013-deyr');
+    expect(new Set(periods).size).toBe(periods.length);
+    expect(periods).toHaveLength(16);
   });
 });
