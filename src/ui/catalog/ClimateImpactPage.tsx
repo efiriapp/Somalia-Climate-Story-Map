@@ -5,7 +5,6 @@ import { scrollPageToTop } from '../../application/scroll-page-top';
 import {
   climateMediaCredit,
   formatMediaSourceCredit,
-  videoEmbedCredit,
 } from '../../application/media-source-credit';
 import { hazardTitle } from '../../application/locale';
 import { localizeClimateHub, localizeClimatePage } from '../../application/localize-content';
@@ -16,9 +15,11 @@ import {
   type RelatedTarget,
 } from '../../application/related-links';
 import { videoEmbedSrc } from '../../application/youtube-embed';
+import { citeVideo, mediaSourceList } from '../../application/citations';
 import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
+import { MediaSources, VideoCitation } from './MediaSources';
 import { RelatedLinks } from './RelatedLinks';
 
 type Props = {
@@ -123,11 +124,12 @@ export function ClimateImpactPage({
               <div className="story-video">
                 <iframe title={video.title} src={embedSrc} allowFullScreen />
               </div>
-              <MediaSourceCredit credit={videoEmbedCredit(video.title, video.outlet)} />
+              <VideoCitation citation={citeVideo(video.url, video.title)} />
             </div>
           ) : null;
         })}
         {onOpenRelated ? <RelatedLinks links={pageLinks} onOpen={onOpenRelated} /> : null}
+        <MediaSources entries={mediaSourceList(page.images, page.videos)} />
         <MediaSourceCredit credit={climateMediaCredit(page)} />
       </article>
     );
@@ -154,6 +156,12 @@ export function ClimateImpactPage({
         ))}
       </div>
       {onOpenRelated ? <RelatedLinks links={hubLinks} onOpen={onOpenRelated} /> : null}
+      <MediaSources
+        entries={mediaSourceList(
+          pages.flatMap((item) => (item.images[0] ? [item.images[0]] : [])),
+          [],
+        )}
+      />
       <MediaSourceCredit credit={{ text: formatMediaSourceCredit('ICE Institute') }} />
     </article>
   );

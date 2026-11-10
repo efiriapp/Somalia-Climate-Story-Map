@@ -7,7 +7,9 @@
  *
  * Photos are capped at 1920 px on the long edge and re-encoded (JPEG q80
  * mozjpeg, WebP q80, AVIF q55, PNG palette-compressed). A file is only
- * rewritten when the result is at least 10% smaller.
+ * rewritten when the result is at least 10% smaller. Embedded metadata
+ * (EXIF, IPTC, XMP: photographer, copyright, captions) is kept, because it
+ * records who owns each photo.
  */
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, relative } from 'node:path';
@@ -60,7 +62,7 @@ for (const file of files) {
   const input = await readFile(file);
   const encode = encoders[extname(file).toLowerCase()];
   const output = await encode(
-    sharp(input).rotate().resize({
+    sharp(input).rotate().keepMetadata().resize({
       width: MAX_EDGE,
       height: MAX_EDGE,
       fit: 'inside',

@@ -51,9 +51,10 @@ describe('ClimateImpactPage', () => {
     expect(source.lastIndexOf('MediaSourceCredit')).toBeGreaterThan(source.lastIndexOf('page.videos.map'));
   });
 
-  it('captions each climate video embed with the outlet and film title, not an ICE Institute credit', () => {
-    expect(source).toContain('videoEmbedCredit(video.title, video.outlet)');
-    expect(source.indexOf('iframe')).toBeLessThan(source.indexOf('videoEmbedCredit(video.title, video.outlet)'));
+  it('cites each climate video under its embed, then lists all media sources', () => {
+    expect(source).toContain('<VideoCitation citation={citeVideo(video.url, video.title)} />');
+    expect(source.indexOf('iframe')).toBeLessThan(source.indexOf('VideoCitation citation'));
+    expect(source).toContain('<MediaSources entries={mediaSourceList(page.images, page.videos)} />');
   });
 
   it('credits Climate Impact hub photos with the ICE source line', () => {

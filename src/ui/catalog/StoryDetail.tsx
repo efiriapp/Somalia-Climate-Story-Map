@@ -8,6 +8,7 @@ import {
 } from '../../application/related-links';
 import { scrollPageToTop } from '../../application/scroll-page-top';
 import { storyMediaCredit } from '../../application/media-source-credit';
+import { citeVideo, mediaSourceList, storyImages } from '../../application/citations';
 import { videoEmbedSrc } from '../../application/youtube-embed';
 import { splitStoryImages } from '../../content/climate-impact';
 import type { Story } from '../../domain/story';
@@ -16,6 +17,7 @@ import { RegionMapTour } from '../map/RegionMapTour';
 import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
+import { MediaSources, VideoCitation } from './MediaSources';
 import { RelatedLinks } from './RelatedLinks';
 
 type Props = {
@@ -184,14 +186,17 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
       {videos.map((video) => {
         const embedSrc = videoEmbedSrc(video.url);
         return embedSrc ? (
-          <div className="story-video" key={video.url}>
-            <iframe
-              title={video.title}
-              src={embedSrc}
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
+          <Fragment key={video.url}>
+            <div className="story-video">
+              <iframe
+                title={video.title}
+                src={embedSrc}
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+            <VideoCitation citation={citeVideo(video.url, video.title)} />
+          </Fragment>
         ) : null;
       })}
 
@@ -264,6 +269,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
         </p>
       ) : null}
       {onOpenRelated ? <RelatedLinks links={relatedLinks} onOpen={onOpenRelated} /> : null}
+      <MediaSources entries={mediaSourceList(storyImages(story), videos, story)} />
       <MediaSourceCredit credit={storyMediaCredit(story)} />
     </article>
   );

@@ -21,6 +21,8 @@ import { ErrorBoundary } from './chrome/ErrorBoundary';
 import { StoryList } from './catalog/StoryList';
 import { ClimateImpactPage } from './catalog/ClimateImpactPage';
 import { MediaSourceCredit } from './catalog/MediaSourceCredit';
+import { MediaSources } from './catalog/MediaSources';
+import { mediaSourceList, storyImages } from '../application/citations';
 import { RelatedLinks } from './catalog/RelatedLinks';
 import type { ClimateHazardId } from '../content/climate-impact';
 
@@ -292,6 +294,7 @@ export default function App() {
             </p>
           ) : null}
           <RelatedLinks links={researchRelatedLinks} onOpen={openRelated} />
+          <MediaSources entries={mediaSourceList(storyImages(detail), [], detail)} />
           <MediaSourceCredit credit={storyMediaCredit(detail)} />
         </article>
       ) : (

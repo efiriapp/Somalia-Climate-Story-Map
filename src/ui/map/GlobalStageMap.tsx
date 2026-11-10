@@ -32,6 +32,7 @@ import { countryLabel, formatLocaleDate } from '../../application/locale';
 import { DEFAULT_MAP_LAYER, basemapFor, type MapLayerId } from '../../application/map-layers';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
+import { citeImage } from '../../application/citations';
 import type { Story } from '../../domain/story';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 import { AutoplayScroll } from '../chrome/AutoplayScroll';
@@ -644,6 +645,16 @@ export function GlobalStageMap({ stories, onClose }: Props) {
                 ×
               </button>
               {tourCard.images[0] ? <img loading="lazy" decoding="async" src={tourCard.images[0]} alt="" /> : null}
+              {tourCard.images[0] ? (
+                <p className="event-card-credit">
+                  {
+                    citeImage(
+                      tourCard.images[0],
+                      stories.find((story) => story.id === tourCard.storyId),
+                    ).text
+                  }
+                </p>
+              ) : null}
               <p className="event-card-date">{formatLocaleDate(tourCard.date, locale)}</p>
               <h3>{tourCard.kind === 'home' ? copy.mogadishuHome : tourCard.title}</h3>
               <p className="event-card-place">

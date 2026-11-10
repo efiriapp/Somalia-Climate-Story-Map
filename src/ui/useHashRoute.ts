@@ -18,10 +18,14 @@ export function useHashRoute(): [Route, (next: Route) => void] {
   const [route, setRoute] = useState<Route>(currentRoute);
 
   useEffect(() => {
-    const canonical = formatRoute(route);
+    // Read the address now, not the route captured at first render, in case
+    // it changed in between.
+    const latest = currentRoute();
+    const canonical = formatRoute(latest);
     if (window.location.hash !== canonical) {
       window.history.replaceState(null, '', canonical);
     }
+    setRoute(latest);
     const onHashChange = () => setRoute(currentRoute());
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);

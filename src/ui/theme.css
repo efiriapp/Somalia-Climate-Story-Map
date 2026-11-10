@@ -2482,3 +2482,53 @@ html[dir='rtl'] .autoplay-scroll select {
 .page-error {
   text-align: center;
 }
+
+/* Media citations (photos: TASL, videos: APA 7) */
+.media-citation {
+  margin: 6px 0 20px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #4b5b58;
+  overflow-wrap: anywhere;
+}
+
+.media-sources {
+  margin: 32px 0 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(6, 61, 57, 0.15);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #3d4b48;
+}
+
+.media-sources h2 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+
+.media-sources ol {
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+.media-sources li {
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.media-kind {
+  font-weight: 700;
+}
+
+.media-sources-note {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #5d6b68;
+}
+
+.event-card-credit {
+  margin: 4px 0 0;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  opacity: 0.8;
+}
