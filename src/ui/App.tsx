@@ -94,6 +94,24 @@ export default function App() {
     document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
   }, [locale]);
 
+  // Full-width maps size themselves to the page minus its scrollbar (--sbw).
+  useLayoutEffect(() => {
+    const scroller = document.getElementById('root');
+    if (!scroller) return;
+    const measure = () =>
+      document.documentElement.style.setProperty('--sbw', `${scroller.offsetWidth - scroller.clientWidth}px`);
+    measure();
+    // The scrollbar appears once content grows (data loading), so re-measure on size changes.
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    observer?.observe(scroller);
+    if (scroller.firstElementChild) observer?.observe(scroller.firstElementChild);
+    window.addEventListener('resize', measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [screen]);
+
   // On phones the pill menu scrolls sideways: keep the current page's pill in view.
   useLayoutEffect(() => {
     const menu = document.querySelector<HTMLElement>('.nav');

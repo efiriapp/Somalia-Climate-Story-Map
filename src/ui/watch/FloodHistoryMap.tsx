@@ -19,6 +19,7 @@ import {
 import { formatLocaleDate } from '../../application/locale';
 import type { MapLayerId } from '../../application/map-layers';
 import { useLocale } from '../chrome/LocaleContext';
+import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
 import { useWatchFiles, useWatchManifest } from '../useWatchData';
 
@@ -149,6 +150,8 @@ export function FloodHistoryMap() {
   const [show, setShow] = useState({ rivers: true, gauges: true, plain: false });
   const [basemap, setBasemap] = useState<MapLayerId>('streets');
   const wrap = useRef<HTMLDivElement>(null);
+  const outer = useRef<HTMLDivElement>(null);
+  const fullscreen = useFullscreen(outer);
 
   // Compare defaults: Deyr 2019 against El Niño Deyr 2023.
   useEffect(() => {
@@ -253,10 +256,11 @@ export function FloodHistoryMap() {
       <h2>{copy.floodHistory}</h2>
       <p className="watch-how">{copy.floodHistoryIntro}</p>
 
-      <div className="flood-map-wrap">
+      <div className="flood-map-wrap map-bleed" ref={outer}>
         <div className="flood-map-stage" ref={wrap}>
         <MapContainer bounds={FLOOD_BOUNDS} minZoom={5} maxZoom={13} scrollWheelZoom={false} preferCanvas>
           <LeafletRasterBasemap basemap={basemap} />
+          <MapAutoResize />
           {show.plain && ready['flood-plain-2013-2023.geojson'] ? (
             <GeoJSON
               key="plain"
@@ -328,6 +332,11 @@ export function FloodHistoryMap() {
         </label>
 
         <div className="flood-map-tools" role="toolbar" aria-label={copy.floodHistory}>
+          <FullscreenButton
+            on={fullscreen.on}
+            onToggle={fullscreen.toggle}
+            labels={{ enter: copy.mapFullscreen, exit: copy.mapFullscreenExit }}
+          />
           <button
             type="button"
             aria-pressed={comparing}

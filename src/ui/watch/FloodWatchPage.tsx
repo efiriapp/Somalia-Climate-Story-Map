@@ -148,10 +148,15 @@ export function FloodWatchPage() {
                 reading.peak ? formatFlow(reading.peak.value) : '–'
               } ${copy.flowUnit}`,
             }))}
-          />
-          {/* One chart: choose the river, then the town. */}
-          <section className="watch-group station-picker">
-            <div className="station-selects">
+            selectedId={chosen?.station.id ?? null}
+            onSelect={(id) => {
+              const station = readings.find((reading) => reading.station.id === id)?.station;
+              if (!station) return;
+              setRiver(station.river);
+              setStationId(station.id);
+            }}
+            controls={
+            <div className="station-selects station-selects-overlay">
               <label>
                 <span>{copy.riverChoose}</span>
                 <select value={river} onChange={(event) => pickRiver(event.target.value as RiverId)}>
@@ -173,6 +178,10 @@ export function FloodWatchPage() {
                 </select>
               </label>
             </div>
+            }
+          />
+          {/* One chart: choose the river, then the town. */}
+          <section className="watch-group station-picker">
             {chosen ? card(chosen) : null}
           </section>
           <details className="watch-table">

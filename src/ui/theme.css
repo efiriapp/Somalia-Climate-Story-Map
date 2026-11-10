@@ -3494,3 +3494,134 @@ html[dir='rtl'] .autoplay-scroll select {
 }
 
 
+
+/* Full-width maps (edge to edge on the page, minus the page scrollbar) */
+.map-bleed {
+  position: relative;
+  width: calc(100vw - var(--sbw, 0px));
+  max-width: none;
+  margin-inline: calc(50% - (100vw - var(--sbw, 0px)) / 2);
+}
+
+.map-bleed .leaflet-container {
+  border-radius: 0;
+}
+
+/* On-map controls (top-left, beside the zoom buttons) */
+.map-overlay-controls {
+  position: absolute;
+  top: 10px;
+  left: 54px;
+  z-index: 1000;
+  max-width: calc(100% - 120px);
+}
+
+.station-selects-overlay {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  gap: 8px;
+}
+
+.station-selects-overlay label {
+  flex: 1 1 150px;
+  max-width: 220px;
+  font-size: 0.72rem;
+}
+
+.station-selects-overlay select {
+  padding: 6px 8px;
+  font-size: 0.86rem;
+}
+
+/* Top-right map buttons (full screen, and the flood map tools) */
+.map-corner-tools {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  z-index: 1000;
+}
+
+.map-fullscreen-button,
+.map-corner-tools button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(6, 61, 57, 0.2);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--forest);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.map-fullscreen-button:hover,
+.map-fullscreen-button[aria-pressed='true'] {
+  background: var(--forest);
+  color: #fff;
+}
+
+/* Full screen: the map fills the screen (native Fullscreen API or fallback) */
+.map-bleed:fullscreen,
+.map-bleed.is-fullscreen {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-bleed.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  width: 100vw;
+  height: 100dvh;
+}
+
+.watch-map:fullscreen .leaflet-container,
+.watch-map.is-fullscreen .leaflet-container {
+  height: 100%;
+  flex: 1;
+}
+
+.flood-map-wrap:fullscreen .flood-map-stage,
+.flood-map-wrap.is-fullscreen .flood-map-stage {
+  flex: 1;
+}
+
+.flood-map-wrap:fullscreen .leaflet-container,
+.flood-map-wrap.is-fullscreen .leaflet-container {
+  height: 100%;
+}
+
+.flood-map-wrap:fullscreen .flood-map-panel,
+.flood-map-wrap.is-fullscreen .flood-map-panel {
+  position: absolute;
+  margin: 0;
+  width: min(320px, calc(100% - 76px));
+  max-height: calc(100% - 20px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+
+body.has-fullscreen-map #root {
+  overflow: hidden;
+}
+
+body.has-fullscreen-map .autoplay-scroll {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .map-overlay-controls {
+    left: 50px;
+    max-width: calc(100% - 104px);
+  }
+
+  .station-selects-overlay label {
+    flex-basis: 100%;
+  }
+}
