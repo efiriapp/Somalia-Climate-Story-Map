@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useLayoutEffect, useMemo, useState, type CSSProperties } from 'react';
+import { Suspense, lazy, useLayoutEffect, useMemo, useState, type CSSProperties } from 'react';
 import { flagIconUrl } from '../application/country-flag';
 import { filterCatalog } from '../application/filter-catalog';
 import { chromeCopy, formatLocaleDate, type Locale } from '../application/locale';
@@ -95,24 +95,6 @@ export default function App() {
     document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
   }, [locale]);
 
-  // Fixed header: slim it down and switch to the plain glass look once the page scrolls.
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = (event: Event) => {
-      const target = event.target;
-      if (target instanceof HTMLElement && target.closest('.nav, .leaflet-container, .watch-table')) return;
-      const top =
-        target instanceof HTMLElement
-          ? target.scrollTop
-          : Math.max(window.scrollY, document.scrollingElement?.scrollTop ?? 0);
-      // Two thresholds, so the header's own height change cannot flip it back.
-      setScrolled((was) => (was ? top > 8 : top > 120));
-    };
-    document.addEventListener('scroll', onScroll, { capture: true, passive: true });
-    return () => document.removeEventListener('scroll', onScroll, { capture: true });
-  }, []);
-  useEffect(() => setScrolled(false), [screen, selectedId]);
-
   // On phones the pill menu scrolls sideways: keep the current page's pill in view.
   useLayoutEffect(() => {
     const menu = document.querySelector<HTMLElement>('.nav');
@@ -178,7 +160,7 @@ export default function App() {
     <LocaleProvider locale={locale} setLocale={setLocale}>
     <AutoplayProvider>
     <div>
-      <header className={scrolled ? 'site-header is-scrolled' : 'site-header'}>
+      <header className="site-header">
         <div className="topbar">
           <img
             className="topbar-logo topbar-brand"

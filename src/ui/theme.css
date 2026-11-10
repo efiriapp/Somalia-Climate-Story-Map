@@ -28,9 +28,6 @@ body,
   height: 100%;
   min-height: 100%;
   overflow-x: hidden;
-  /* The fixed header changes height on scroll; without this the browser
-     re-anchors the scroll position and the header flickers between states. */
-  overflow-anchor: none;
 }
 
 body {
@@ -47,10 +44,10 @@ select {
   font: inherit;
 }
 
-/* Site header: fixed to the top, dark ICE green with a frosted-glass
-   ("mirror") finish. At the top of the page a tinted ICE photo (Lower Juba)
-   shows through; once the page scrolls, the photo fades and the content
-   passing underneath shows blurred through the glass. */
+/* Site header: fixed to the top and always the same size (it does not react
+   to scrolling). Dark ICE green with a frosted-glass ("mirror") finish and a
+   faint tinted ICE photo (Lower Juba); content passing underneath shows
+   blurred through the glass. */
 .site-header {
   position: sticky;
   top: 0;
@@ -61,7 +58,7 @@ select {
   backdrop-filter: blur(16px) saturate(160%);
   color: var(--white);
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  transition: box-shadow 0.25s ease, background-color 0.25s ease;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
 }
 
 .site-header::before {
@@ -71,7 +68,6 @@ select {
   z-index: -1;
   background: url('/images/header-bg.webp') center 60% / cover no-repeat;
   opacity: 0.22;
-  transition: opacity 0.3s ease;
   pointer-events: none;
 }
 
@@ -85,19 +81,9 @@ select {
   pointer-events: none;
 }
 
-.site-header.is-scrolled {
-  background-color: rgba(6, 61, 57, 0.86);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
-}
-
-.site-header.is-scrolled::before {
-  opacity: 0;
-}
-
 /* Browsers without backdrop blur get a solid bar so text stays readable. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .site-header,
-  .site-header.is-scrolled {
+  .site-header {
     background-color: rgba(6, 61, 57, 0.97);
   }
 }
@@ -155,7 +141,6 @@ select {
   align-items: flex-start;
   text-align: start;
   font-size: clamp(1.05rem, calc(100cqi / (var(--title-chars) * 0.72)), 2.35rem);
-  transition: font-size 0.25s ease;
 }
 
 .topbar-title-line {
@@ -213,28 +198,6 @@ select {
   outline-offset: 2px;
 }
 
-/* Scrolled: the fixed header slims down so it does not cover the page. */
-.topbar,
-.topbar-logo {
-  transition: padding 0.25s ease, height 0.25s ease;
-}
-
-.site-header.is-scrolled .topbar {
-  padding-block: 0.4rem 0.15rem;
-}
-
-.site-header.is-scrolled .topbar-logo {
-  height: 52px;
-}
-
-.site-header.is-scrolled .topbar-title-text {
-  font-size: clamp(0.95rem, calc(100cqi / (var(--title-chars) * 1.1)), 1.5rem);
-}
-
-.site-header.is-scrolled .nav {
-  padding-block: 0.3rem 0.55rem;
-}
-
 /* Phones and tablets: logo and language toggle on top, title below, and a
    swipeable single row of pills. */
 @media (max-width: 900px) {
@@ -267,19 +230,6 @@ select {
     scrollbar-width: thin;
   }
 
-  /* Scrolled on a phone: keep logo, language and menu; hide the title row. */
-  .site-header.is-scrolled .topbar-title {
-    display: none;
-  }
-
-  .site-header.is-scrolled .topbar-logo {
-    height: 36px;
-  }
-
-  .site-header.is-scrolled .topbar .nav-language-option,
-  .site-header.is-scrolled .topbar .nav-language-track {
-    min-height: 2.6rem;
-  }
 }
 
 .nav-language {
