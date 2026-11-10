@@ -83,7 +83,9 @@ describe('ICE green brand', () => {
 
   it('makes the platform logos large and the title bold white on forest green', () => {
     const css = readFileSync(themePath, 'utf8');
-    expect(css).toMatch(/\.topbar[\s\S]{0,220}background:\s*(#063D39|var\(--forest\))/);
+    expect(css).toMatch(/\.site-header[\s\S]{0,120}background-color:\s*(#063D39|var\(--forest\))/);
+    expect(css).toContain("url('/images/header-bg.webp')");
+    expect(css).toMatch(/\.nav > button\.active[\s\S]{0,80}background:\s*var\(--accent\)/);
     expect(css).toMatch(/\.topbar-logo[\s\S]{0,80}height:\s*(8[0-9]|9[0-9]|1[0-4][0-9])px/);
     expect(css).toMatch(/\.topbar-title[\s\S]{0,160}color:\s*(#fff|#ffffff|var\(--white\))/i);
     expect(css).toMatch(/\.topbar-title[\s\S]{0,180}font-weight:\s*900/);

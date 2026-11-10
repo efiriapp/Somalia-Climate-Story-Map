@@ -95,6 +95,14 @@ export default function App() {
     document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
   }, [locale]);
 
+  // On phones the pill menu scrolls sideways: keep the current page's pill in view.
+  useLayoutEffect(() => {
+    const menu = document.querySelector<HTMLElement>('.nav');
+    const active = menu?.querySelector<HTMLElement>('button.active');
+    if (!menu || !active || menu.scrollWidth <= menu.clientWidth) return;
+    menu.scrollLeft = active.offsetLeft - (menu.clientWidth - active.offsetWidth) / 2;
+  }, [screen]);
+
   const openScreen = (next: Screen) => {
     go({ screen: next, storyId: null, hazard: null });
   };
@@ -152,152 +160,154 @@ export default function App() {
     <LocaleProvider locale={locale} setLocale={setLocale}>
     <AutoplayProvider>
     <div>
-      <header className="topbar">
-        <img
-          className="topbar-logo topbar-brand"
-          src="/logos/simad-ice-web.webp"
-          alt="SIMAD University · Institute of Climate and Environment"
-          width={760}
-          height={225}
-        />
-        <div className="topbar-title" role="heading" aria-level={1} aria-label={copy.platform}>
-          <span
-            className="topbar-title-text"
-            aria-hidden="true"
-            style={
-              {
-                '--title-chars': Math.max(...copy.platformLines.map((line) => line.length)),
-              } as CSSProperties
-            }
+      <header className="site-header">
+        <div className="topbar">
+          <img
+            className="topbar-logo topbar-brand"
+            src="/logos/simad-ice-web.webp"
+            alt="SIMAD University · Institute of Climate and Environment"
+            width={760}
+            height={225}
+          />
+          <div className="topbar-title" role="heading" aria-level={1} aria-label={copy.platform}>
+            <span
+              className="topbar-title-text"
+              aria-hidden="true"
+              style={
+                {
+                  '--title-chars': Math.max(...copy.platformLines.map((line) => line.length)),
+                } as CSSProperties
+              }
+            >
+              {copy.platformLines.map((line, index) => (
+                <span className={index === 0 ? 'topbar-title-line' : 'topbar-title-line accent'} key={line}>
+                  {line}
+                </span>
+              ))}
+            </span>
+          </div>
+          <div
+            className={`nav-language is-${locale}`}
+            role="group"
+            aria-label={copy.languageToggleLabel}
           >
-            {copy.platformLines.map((line) => (
-              <span className="topbar-title-line" key={line}>
-                {line}
-              </span>
-            ))}
-          </span>
+            <span className="nav-language-track" aria-hidden="true">
+              <span className="nav-language-thumb" />
+            </span>
+            <button
+              type="button"
+              className="nav-language-option nav-language-en"
+              aria-pressed={locale === 'en'}
+              aria-label={copy.languageEnglish}
+              onClick={() => setLocale('en')}
+            >
+              <span className="nav-language-label" aria-hidden="true">EN</span>
+              {ukFlagSrc ? (
+                <img
+                  className="nav-language-flag nav-language-flag-en"
+                  src={ukFlagSrc}
+                  alt=""
+                  width={32}
+                  height={22}
+                />
+              ) : null}
+            </button>
+            <button
+              type="button"
+              className="nav-language-option nav-language-so"
+              aria-pressed={locale === 'so'}
+              aria-label={copy.languageSomali}
+              onClick={() => setLocale('so')}
+            >
+              <span className="nav-language-label" aria-hidden="true">SO</span>
+              {soFlagSrc ? (
+                <img
+                  className="nav-language-flag nav-language-flag-so"
+                  src={soFlagSrc}
+                  alt=""
+                  width={32}
+                  height={22}
+                />
+              ) : null}
+            </button>
+            <button
+              type="button"
+              className="nav-language-option nav-language-ar"
+              aria-pressed={locale === 'ar'}
+              aria-label={copy.languageArabic}
+              onClick={() => setLocale('ar')}
+            >
+              <span className="nav-language-label" aria-hidden="true">AR</span>
+              {saFlagSrc ? (
+                <img
+                  className="nav-language-flag nav-language-flag-ar"
+                  src={saFlagSrc}
+                  alt=""
+                  width={32}
+                  height={22}
+                />
+              ) : null}
+            </button>
+            <span className="visually-hidden">{copy.languageToggle}</span>
+          </div>
         </div>
-        <div
-          className={`nav-language is-${locale}`}
-          role="group"
-          aria-label={copy.languageToggleLabel}
-        >
-          <span className="nav-language-track" aria-hidden="true">
-            <span className="nav-language-thumb" />
-          </span>
+        <nav className="nav" aria-label="Primary">
           <button
             type="button"
-            className="nav-language-option nav-language-en"
-            aria-pressed={locale === 'en'}
-            aria-label={copy.languageEnglish}
-            onClick={() => setLocale('en')}
+            className={screen === 'about' ? 'active' : ''}
+            aria-current={screen === 'about' ? 'page' : undefined}
+            onClick={() => openScreen('about')}
           >
-            <span className="nav-language-label" aria-hidden="true">EN</span>
-            {ukFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-en"
-                src={ukFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
+            <NavIcon screen="about" />
+            {copy.about}
           </button>
           <button
             type="button"
-            className="nav-language-option nav-language-so"
-            aria-pressed={locale === 'so'}
-            aria-label={copy.languageSomali}
-            onClick={() => setLocale('so')}
+            className={screen === 'research' ? 'active' : ''}
+            aria-current={screen === 'research' ? 'page' : undefined}
+            onClick={() => openScreen('research')}
           >
-            <span className="nav-language-label" aria-hidden="true">SO</span>
-            {soFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-so"
-                src={soFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
+            <NavIcon screen="research" />
+            {copy.research}
           </button>
           <button
             type="button"
-            className="nav-language-option nav-language-ar"
-            aria-pressed={locale === 'ar'}
-            aria-label={copy.languageArabic}
-            onClick={() => setLocale('ar')}
+            className={screen === 'stories' ? 'active' : ''}
+            aria-current={screen === 'stories' ? 'page' : undefined}
+            onClick={() => openScreen('stories')}
           >
-            <span className="nav-language-label" aria-hidden="true">AR</span>
-            {saFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-ar"
-                src={saFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
+            <NavIcon screen="stories" />
+            {copy.stories}
           </button>
-          <span className="visually-hidden">{copy.languageToggle}</span>
-        </div>
+          <button
+            type="button"
+            className={screen === 'climate-impact' ? 'active' : ''}
+            aria-current={screen === 'climate-impact' ? 'page' : undefined}
+            onClick={() => openScreen('climate-impact')}
+          >
+            <NavIcon screen="climate-impact" />
+            {copy.climateImpact}
+          </button>
+          <button
+            type="button"
+            className={screen === 'flood-watch' ? 'active' : ''}
+            aria-current={screen === 'flood-watch' ? 'page' : undefined}
+            onClick={() => openScreen('flood-watch')}
+          >
+            <NavIcon screen="flood-watch" />
+            {copy.floodWatch}
+          </button>
+          <button
+            type="button"
+            className={screen === 'drought-watch' ? 'active' : ''}
+            aria-current={screen === 'drought-watch' ? 'page' : undefined}
+            onClick={() => openScreen('drought-watch')}
+          >
+            <NavIcon screen="drought-watch" />
+            {copy.droughtWatch}
+          </button>
+        </nav>
       </header>
-      <nav className="nav" aria-label="Primary">
-        <button
-          type="button"
-          className={screen === 'about' ? 'active' : ''}
-          aria-current={screen === 'about' ? 'page' : undefined}
-          onClick={() => openScreen('about')}
-        >
-          <NavIcon screen="about" />
-          {copy.about}
-        </button>
-        <button
-          type="button"
-          className={screen === 'research' ? 'active' : ''}
-          aria-current={screen === 'research' ? 'page' : undefined}
-          onClick={() => openScreen('research')}
-        >
-          <NavIcon screen="research" />
-          {copy.research}
-        </button>
-        <button
-          type="button"
-          className={screen === 'stories' ? 'active' : ''}
-          aria-current={screen === 'stories' ? 'page' : undefined}
-          onClick={() => openScreen('stories')}
-        >
-          <NavIcon screen="stories" />
-          {copy.stories}
-        </button>
-        <button
-          type="button"
-          className={screen === 'climate-impact' ? 'active' : ''}
-          aria-current={screen === 'climate-impact' ? 'page' : undefined}
-          onClick={() => openScreen('climate-impact')}
-        >
-          <NavIcon screen="climate-impact" />
-          {copy.climateImpact}
-        </button>
-        <button
-          type="button"
-          className={screen === 'flood-watch' ? 'active' : ''}
-          aria-current={screen === 'flood-watch' ? 'page' : undefined}
-          onClick={() => openScreen('flood-watch')}
-        >
-          <NavIcon screen="flood-watch" />
-          {copy.floodWatch}
-        </button>
-        <button
-          type="button"
-          className={screen === 'drought-watch' ? 'active' : ''}
-          aria-current={screen === 'drought-watch' ? 'page' : undefined}
-          onClick={() => openScreen('drought-watch')}
-        >
-          <NavIcon screen="drought-watch" />
-          {copy.droughtWatch}
-        </button>
-      </nav>
 
       <ErrorBoundary
         resetKey={`${screen}/${selectedId ?? ''}/${impactHazard ?? ''}`}

@@ -8,6 +8,8 @@
   --line: #d9e2de;
   --white: #ffffff;
   --chip: #e8f5ee;
+  /* Header accent: highlighted title words and the current menu pill. */
+  --accent: #f5b82e;
   --control: #ececec;
   font-family: Inter, 'Noto Sans Arabic', system-ui, 'Segoe UI', sans-serif;
   color: var(--ink);
@@ -41,19 +43,31 @@ select {
   font: inherit;
 }
 
+/* Site header: one green bar over a tinted ICE photo (Lower Juba), holding
+   the logo, the bracketed title and the language toggle, then the pill menu. */
+.site-header {
+  background-color: var(--forest);
+  background-image:
+    linear-gradient(180deg, rgba(6, 61, 57, 0.84) 0%, rgba(6, 61, 57, 0.94) 100%),
+    url('/images/header-bg.webp');
+  background-size: cover;
+  background-position: center 60%;
+  color: var(--white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .topbar {
   container-type: inline-size;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.1rem;
-  padding: 0.7rem 1.2rem;
-  background: var(--forest);
-  border-bottom: 1px solid var(--leaf);
+  gap: 1.4rem;
+  padding: 0.9rem clamp(16px, 3vw, 2.5rem) 0.35rem;
+  background: transparent;
 }
 
 .topbar-logo {
-  height: 88px;
+  height: 80px;
   width: auto;
   object-fit: contain;
   object-position: left center;
@@ -63,10 +77,9 @@ select {
 /* Combined SIMAD + ICE web logo: transparent, white wordmark, made for the
    green header, so it sits directly on the bar with no white box. */
 .topbar-brand {
-  max-width: min(36vw, 320px);
+  max-width: min(32vw, 290px);
 }
 
-/* The language switcher sits at the right end of the header. */
 .topbar .nav-language {
   flex: none;
 }
@@ -76,42 +89,101 @@ select {
   min-width: 0;
   color: #fff;
   font-weight: 900;
-  font-size: clamp(1.45rem, 5.6cqi, 3.55rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  /* Center the title as one block... */
+  font-size: clamp(1.15rem, 3.4cqi, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  /* Center the framed title as one block, sized from its own space. */
   display: flex;
   justify-content: center;
-  /* ...and size it from the space between the logos, not the whole bar. */
   container-type: inline-size;
 }
 
-/* ...while both lines share one starting edge, so their first letters line
-   up (left in English and Somali, right in Arabic). Same font and size. */
+/* Corner-bracket frame. Both lines share one starting edge (left in
+   English and Somali, right in Arabic) and one font size, scaled so the
+   language's longest line fits (--title-chars is set from the text). */
 .topbar-title-text {
+  --title-chars: 21;
+  --bracket: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: start;
-  /* Both lines share one size, scaled so the language's longest line fits the
-     title area (--title-chars is set from the text). */
-  --title-chars: 21;
-  font-size: clamp(1.15rem, calc(100cqi / (var(--title-chars) * 0.56)), 3.55rem);
+  padding: 0.38em 0.85em;
+  font-size: clamp(1.05rem, calc(100cqi / (var(--title-chars) * 0.78)), 2.25rem);
+  background:
+    linear-gradient(var(--bracket), var(--bracket)) top left / 0.85em 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) top left / 2px 0.85em no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) top right / 0.85em 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) top right / 2px 0.85em no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom left / 0.85em 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom left / 2px 0.85em no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom right / 0.85em 2px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) bottom right / 2px 0.85em no-repeat;
 }
 
 .topbar-title-line {
-  /* Wrap only when a line does not fit (long Somali title, narrow screens);
-     wrapped rows still start at the same edge. */
+  /* Wrap only when a line does not fit; wrapped rows keep the same edge. */
   text-wrap: balance;
 }
 
-/* Phones and tablets: logos side by side on top, the title on its own
-   full-width row. */
+.topbar-title-line.accent {
+  color: var(--accent);
+}
+
+/* Pill menu inside the header: current page filled yellow, others outlined. */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 0.45rem clamp(16px, 3vw, 2.5rem) 0.95rem;
+  background: transparent;
+  direction: ltr;
+}
+
+.nav > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+  padding: 0.5rem 1.05rem;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.nav > button:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav > button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #10231f;
+}
+
+.nav > button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Phones and tablets: logo and language toggle on top, title below, and a
+   swipeable single row of pills. */
 @media (max-width: 900px) {
   .topbar {
     flex-wrap: wrap;
     gap: 0.6rem;
-    padding: 0.6rem 16px;
+    padding: 0.6rem 16px 0.3rem;
   }
 
   .topbar-logo {
@@ -128,35 +200,14 @@ select {
     order: 3;
     flex: 1 1 100%;
   }
-}
 
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: var(--forest);
-  padding: 0 1.5rem;
-  min-height: 48px;
-  overflow-x: auto;
-  direction: ltr;
-}
-
-.nav button {
-  background: transparent;
-  border: 0;
-  color: var(--white);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 0.85rem 0.9rem;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.nav button.active,
-.nav button:hover {
-  background: var(--leaf);
+  .nav {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0.4rem 16px 0.8rem;
+    scrollbar-width: thin;
+  }
 }
 
 .nav-language {
@@ -2589,24 +2640,6 @@ html[dir='rtl'] .autoplay-scroll select {
 }
 
 /* Menu icons (Fluent Emoji, MIT) */
-.nav > button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding-inline: 0.75rem;
-  letter-spacing: 0.06em;
-}
-
-/* Computers: wrap the menu onto a second row rather than hiding pages
-   behind a scrollbar. Phones keep the swipeable single row. */
-@media (min-width: 901px) {
-  .nav {
-    flex-wrap: wrap;
-    overflow-x: visible;
-    padding-block: 2px;
-  }
-}
-
 .nav-icon {
   width: 22px;
   height: 22px;
