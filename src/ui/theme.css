@@ -3037,6 +3037,11 @@ html[dir='rtl'] .autoplay-scroll select {
   margin: 14px 0 10px;
 }
 
+/* The map and its on-map controls; panels may sit outside it on phones. */
+.flood-map-stage {
+  position: relative;
+}
+
 .flood-map-wrap .leaflet-container {
   height: 520px;
   border-radius: 12px;
@@ -3102,8 +3107,6 @@ html[dir='rtl'] .autoplay-scroll select {
   color: #52514e;
 }
 
-.flood-filter > button,
-.flood-filter-year button,
 .flood-compare-form > button {
   border: 1px solid #c9d3cf;
   border-radius: 999px;
@@ -3116,31 +3119,10 @@ html[dir='rtl'] .autoplay-scroll select {
   cursor: pointer;
 }
 
-.flood-filter > button {
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.flood-filter button.active,
 .flood-compare-form > button.active {
   background: var(--forest);
   border-color: var(--forest);
   color: #fff;
-}
-
-.flood-filter-year {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 0;
-  border-top: 1px solid #ecece8;
-}
-
-.flood-filter-year > span {
-  min-width: 3.2em;
-  font-weight: 800;
-  color: #0b0b0b;
 }
 
 .flood-compare-form,
@@ -3293,5 +3275,179 @@ html[dir='rtl'] .autoplay-scroll select {
   .flood-map-legend {
     bottom: 26px;
     font-size: 0.72rem;
+  }
+}
+
+/* Past floods map: date filter (calendar icon + compact dropdown) */
+.flood-date-filter {
+  position: absolute;
+  top: 10px;
+  left: 54px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 120px);
+  padding: 4px 6px 4px 10px;
+  border: 1px solid rgba(6, 61, 57, 0.2);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--forest);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.flood-date-filter select {
+  min-width: 0;
+  max-width: 230px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--forest);
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
+.flood-date-filter.is-disabled {
+  opacity: 0.55;
+}
+
+/* Swipe compare (Esri-style): draggable divider over the map */
+.swipe-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
+  width: 0;
+  border-left: 3px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.swipe-handle {
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  width: 37px;
+  height: 37px;
+  margin-top: -18px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--forest);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: ew-resize;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.swipe-handle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.swipe-labels {
+  position: absolute;
+  top: 58px;
+  left: 10px;
+  right: 10px;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+  direction: ltr;
+}
+
+.swipe-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 48%;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0b0b0b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The map keeps left-to-right geometry in every language, so A stays left. */
+.flood-map-wrap {
+  direction: ltr;
+}
+
+.flood-map-wrap .flood-map-panel,
+.flood-map-wrap .flood-map-legend {
+  direction: inherit;
+}
+
+[dir='rtl'] .flood-map-wrap .flood-map-panel,
+[dir='rtl'] .flood-map-wrap .flood-map-legend,
+[dir='rtl'] .flood-map-wrap .flood-date-filter select {
+  direction: rtl;
+}
+
+@media (max-width: 640px) {
+  .flood-date-filter select {
+    max-width: 150px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Flood Watch: choose a river, then a town; one chart for the chosen town */
+.station-picker {
+  display: grid;
+  gap: 10px;
+}
+
+.picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.picker-row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #c9d3cf;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--forest);
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.picker-row button.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: #fff;
+}
+
+.picker-towns button {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+}
+
+/* Phones: panels sit under the map so the map and the swipe stay visible. */
+@media (max-width: 700px) {
+  .flood-map-panel {
+    position: static;
+    width: 100%;
+    max-height: none;
+    margin-top: 10px;
+    box-shadow: none;
+    border: 1px solid #e4e4e0;
   }
 }

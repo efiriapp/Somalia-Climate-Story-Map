@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   floodForecastUrl,
   readStations,
@@ -12,7 +12,7 @@ import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { somaliaToday, useOpenMeteo } from '../useOpenMeteo';
 import { FlowChart } from './FlowChart';
-import { StatusBadge, StatusLegend, type StatusTone } from './StatusBadge';
+import { StatusBadge, StatusIcon, StatusLegend, type StatusTone } from './StatusBadge';
 import { WatchMap } from './WatchMap';
 import { FloodHistoryMap } from './FloodHistoryMap';
 import { WatchDisclaimer, WatchSources, WatchStatusMessage, type WatchSource } from './WatchSources';
@@ -60,6 +60,14 @@ export function FloodWatchPage() {
     high: copy.flowHighHint,
   };
   const riverLabel: Record<RiverId, string> = { shabelle: copy.riverShabelle, juba: copy.riverJuba };
+  const [river, setRiver] = useState<RiverId>('shabelle');
+  const [stationId, setStationId] = useState<string | null>(null);
+  const riverReadings = readings.filter((reading) => reading.station.river === river);
+  const chosen = riverReadings.find((reading) => reading.station.id === stationId) ?? riverReadings[0];
+  const pickRiver = (next: RiverId) => {
+    setRiver(next);
+    setStationId(null);
+  };
   const date = (iso: string) => formatLocaleDate(iso, locale);
   const name = (reading: StationReading) => placeName(reading.station.id, reading.station.name, locale);
 
@@ -104,6 +112,11 @@ export function FloodWatchPage() {
   );
 
   const rivers: RiverId[] = ['shabelle', 'juba'];
+  const ORDER: Record<FlowStatus, number> = { high: 0, elevated: 1, normal: 2 };
+  const worstIn = (id: RiverId): FlowStatus =>
+    readings
+      .filter((reading) => reading.station.river === id)
+      .reduce<FlowStatus>((worst, reading) => (ORDER[reading.status] < ORDER[worst] ? reading.status : worst), 'normal');
 
   return (
     <article className="detail watch-page" aria-label={copy.floodWatch}>
@@ -136,14 +149,39 @@ export function FloodWatchPage() {
               } ${copy.flowUnit}`,
             }))}
           />
-          {rivers.map((river) => (
-            <section key={river} className="watch-group">
-              <h2>{riverLabel[river]}</h2>
-              <div className="watch-grid">
-                {readings.filter((reading) => reading.station.river === river).map(card)}
-              </div>
-            </section>
-          ))}
+          {/* One chart: choose the river, then the town. */}
+          <section className="watch-group station-picker">
+            <div className="picker-row" role="group" aria-label={copy.riverChoose}>
+              {rivers.map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={river === id}
+                  className={river === id ? 'active' : ''}
+                  onClick={() => pickRiver(id)}
+                >
+                  <StatusIcon tone={TONE[worstIn(id)]} />
+                  {riverLabel[id]}
+                </button>
+              ))}
+            </div>
+            <div className="picker-row picker-towns" role="group" aria-label={copy.flowStation}>
+              {riverReadings.map((reading) => (
+                <button
+                  key={reading.station.id}
+                  type="button"
+                  aria-pressed={chosen?.station.id === reading.station.id}
+                  className={chosen?.station.id === reading.station.id ? 'active' : ''}
+                  title={statusLabel[reading.status]}
+                  onClick={() => setStationId(reading.station.id)}
+                >
+                  <StatusIcon tone={TONE[reading.status]} />
+                  {name(reading)}
+                </button>
+              ))}
+            </div>
+            {chosen ? card(chosen) : null}
+          </section>
           <details className="watch-table">
             <summary>{copy.watchDataTable}</summary>
             <table>
