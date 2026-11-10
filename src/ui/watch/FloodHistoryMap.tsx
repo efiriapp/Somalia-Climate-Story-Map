@@ -294,7 +294,7 @@ export function FloodHistoryMap() {
       <h2>{copy.floodHistory}</h2>
       <p className="watch-how">{copy.floodHistoryIntro}</p>
 
-      <div className="flood-map-wrap map-bleed" ref={outer}>
+      <div className={areasOpen && byAdmin ? 'flood-map-wrap map-bleed has-areas' : 'flood-map-wrap map-bleed'} ref={outer}>
         <div className="flood-map-stage" ref={wrap}>
         <MapContainer bounds={FLOOD_BOUNDS} minZoom={5} maxZoom={13} scrollWheelZoom={false} preferCanvas>
           <LeafletRasterBasemap basemap={basemap} />
@@ -516,7 +516,6 @@ export function FloodHistoryMap() {
                 ? { a: `${copy.floodCompareA}: ${label(a)}`, b: `${copy.floodCompareB}: ${label(b)}` }
                 : undefined
             }
-            boundaryCredit={byAdmin.credit}
             onClose={() => setAreasOpen(false)}
           />
         ) : null}

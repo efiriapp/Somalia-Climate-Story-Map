@@ -5,16 +5,13 @@ import hirshabelle from '../../assets/state-flags/hirshabelle.svg';
 import jubaland from '../../assets/state-flags/jubaland.svg';
 import southWest from '../../assets/state-flags/south-west.svg';
 
-/** State flags from Wikimedia Commons (credits shown under the list). */
+/** State flags from Wikimedia Commons (credited in the page sources). */
 export const STATE_FLAGS: Record<string, string> = {
   galmudug,
   hirshabelle,
   jubaland,
   'south-west': southWest,
 };
-
-const FLAG_CREDIT =
-  'Wikimedia Commons: Jubaland (Derkommander0916, CC BY-SA 4.0); Galmudug (Przemyslaw D. Gacia, CC BY-SA 3.0); South West (Himasaram) and Hirshabelle (Zabezt), public domain.';
 
 type Props = {
   level: AdminLevel;
@@ -24,12 +21,11 @@ type Props = {
   subtitle: string;
   /** In compare mode: labels for the two floods (A in blue, B in orange). */
   compare?: { a: string; b: string };
-  boundaryCredit: string;
   onClose: () => void;
 };
 
 /** Side panel: flooded hectares by state, region or district, with flags and bars. */
-export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, boundaryCredit, onClose }: Props) {
+export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, onClose }: Props) {
   const { copy } = useLocale();
   const max = Math.max(1, ...rows.map((row) => Math.max(row.ha, row.b ?? 0)));
   const ha = (value: number) => `${Math.round(value).toLocaleString('en')} ${copy.hectares}`;
@@ -108,10 +104,6 @@ export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, bound
       ) : (
         <p className="flood-state-sub">{copy.floodNone}</p>
       )}
-      <p className="flood-state-note">{copy.stateAreaNote}</p>
-      <p className="flood-state-credit">
-        {copy.stateBoundaries}: {boundaryCredit}. {copy.stateFlags}: {FLAG_CREDIT}
-      </p>
     </aside>
   );
 }

@@ -21,6 +21,22 @@ const TONE: Record<FlowStatus, StatusTone> = { normal: 'good', elevated: 'warnin
 
 const SOURCES: WatchSource[] = [
   {
+    text: 'Administrative boundaries (states, regions, districts): UNOCHA Somalia, via FAO SWALIM. Flooded areas measured on the full-detail SWALIM flood maps in an equal-area projection; a little of some floods lies outside Somalia.',
+    url: 'https://spatial.faoswalim.org/',
+  },
+  {
+    text: 'Flag of Jubaland, by Derkommander0916, Wikimedia Commons, CC BY-SA 4.0.',
+    url: 'https://commons.wikimedia.org/wiki/File:Flag_of_Jubaland_(Somalia).svg',
+  },
+  {
+    text: 'Flag of Galmudug, by Przemyslaw D. Gacia, Wikimedia Commons, CC BY-SA 3.0.',
+    url: 'https://commons.wikimedia.org/wiki/File:Flag_of_Galmudug_State_of_Somalia_(2015).svg',
+  },
+  {
+    text: 'Flags of South West State (Himasaram) and Hirshabelle (Zabezt), Wikimedia Commons, public domain.',
+    url: 'https://commons.wikimedia.org/wiki/File:Flag_of_South_West_State_of_Somalia.svg',
+  },
+  {
     text: `River discharge: Global Flood Awareness System (GloFAS) v4, Copernicus Emergency Management Service. Contains modified Copernicus Emergency Management Service information ${new Date().getFullYear()}. Thresholds from the GloFAS reanalysis, ${BASELINE_PERIOD}.`,
     url: 'https://global-flood.emergency.copernicus.eu/',
   },
