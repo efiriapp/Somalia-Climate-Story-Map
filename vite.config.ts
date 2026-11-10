@@ -13,7 +13,7 @@ const hostingPlugin = (siteUrl: string | undefined): Plugin => ({
     if (!siteUrl) return html;
     const base = siteUrl.replace(/\/+$/, '');
     return html
-      .replace('content="/logos/ice-mark.png"', `content="${base}/logos/ice-mark.png"`)
+      .replace('content="/logos/og-image.png"', `content="${base}/logos/og-image.png"`)
       .replace(
         '</head>',
         `    <link rel="canonical" href="${base}/" />\n    <meta property="og:url" content="${base}/" />\n  </head>`,

@@ -144,7 +144,13 @@ export default function App() {
     <AutoplayProvider>
     <div>
       <header className="topbar">
-        <img className="topbar-logo" src="/logos/simad.webp" alt="SIMAD University" />
+        <img
+          className="topbar-logo topbar-brand"
+          src="/logos/simad-ice-web.webp"
+          alt="SIMAD University · Institute of Climate and Environment"
+          width={760}
+          height={225}
+        />
         <div className="topbar-title" role="heading" aria-level={1} aria-label={copy.platform}>
           <span
             className="topbar-title-text"
@@ -162,7 +168,70 @@ export default function App() {
             ))}
           </span>
         </div>
-        <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
+        <div
+          className={`nav-language is-${locale}`}
+          role="group"
+          aria-label={copy.languageToggleLabel}
+        >
+          <span className="nav-language-track" aria-hidden="true">
+            <span className="nav-language-thumb" />
+          </span>
+          <button
+            type="button"
+            className="nav-language-option nav-language-en"
+            aria-pressed={locale === 'en'}
+            aria-label={copy.languageEnglish}
+            onClick={() => setLocale('en')}
+          >
+            <span className="nav-language-label" aria-hidden="true">EN</span>
+            {ukFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-en"
+                src={ukFlagSrc}
+                alt=""
+                width={32}
+                height={22}
+              />
+            ) : null}
+          </button>
+          <button
+            type="button"
+            className="nav-language-option nav-language-so"
+            aria-pressed={locale === 'so'}
+            aria-label={copy.languageSomali}
+            onClick={() => setLocale('so')}
+          >
+            <span className="nav-language-label" aria-hidden="true">SO</span>
+            {soFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-so"
+                src={soFlagSrc}
+                alt=""
+                width={32}
+                height={22}
+              />
+            ) : null}
+          </button>
+          <button
+            type="button"
+            className="nav-language-option nav-language-ar"
+            aria-pressed={locale === 'ar'}
+            aria-label={copy.languageArabic}
+            onClick={() => setLocale('ar')}
+          >
+            <span className="nav-language-label" aria-hidden="true">AR</span>
+            {saFlagSrc ? (
+              <img
+                className="nav-language-flag nav-language-flag-ar"
+                src={saFlagSrc}
+                alt=""
+                width={32}
+                height={22}
+              />
+            ) : null}
+          </button>
+          <span className="visually-hidden">{copy.languageToggle}</span>
+        </div>
       </header>
       <nav className="nav" aria-label="Primary">
         <button
@@ -228,70 +297,6 @@ export default function App() {
           <NavIcon screen="global-stage" />
           {copy.globalStage}
         </button>
-        <div
-          className={`nav-language is-${locale}`}
-          role="group"
-          aria-label={copy.languageToggleLabel}
-        >
-          <span className="nav-language-track" aria-hidden="true">
-            <span className="nav-language-thumb" />
-          </span>
-          <button
-            type="button"
-            className="nav-language-option nav-language-en"
-            aria-pressed={locale === 'en'}
-            aria-label={copy.languageEnglish}
-            onClick={() => setLocale('en')}
-          >
-            <span className="nav-language-label" aria-hidden="true">EN</span>
-            {ukFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-en"
-                src={ukFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
-          </button>
-          <button
-            type="button"
-            className="nav-language-option nav-language-so"
-            aria-pressed={locale === 'so'}
-            aria-label={copy.languageSomali}
-            onClick={() => setLocale('so')}
-          >
-            <span className="nav-language-label" aria-hidden="true">SO</span>
-            {soFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-so"
-                src={soFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
-          </button>
-          <button
-            type="button"
-            className="nav-language-option nav-language-ar"
-            aria-pressed={locale === 'ar'}
-            aria-label={copy.languageArabic}
-            onClick={() => setLocale('ar')}
-          >
-            <span className="nav-language-label" aria-hidden="true">AR</span>
-            {saFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-ar"
-                src={saFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
-          </button>
-          <span className="visually-hidden">{copy.languageToggle}</span>
-        </div>
       </nav>
 
       <ErrorBoundary

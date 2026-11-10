@@ -6,13 +6,14 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'App.tsx'), 'utf8');
 
 describe('platform topbar', () => {
-  it('places the platform title between the SIMAD and ICE logos', () => {
-    expect(source).toContain('src="/logos/simad.webp"');
-    expect(source).toContain('src="/logos/ice-mark.png"');
+  it('shows the combined SIMAD + ICE logo, then the title, then the language switcher', () => {
+    expect(source).toContain('src="/logos/simad-ice-web.webp"');
+    expect(source).not.toContain('src="/logos/simad.webp"');
+    expect(source).not.toContain('src="/logos/ice-mark.png"');
     expect(source).toContain('copy.platform');
     expect(source).not.toContain('Climate Story Map | Somalia');
     expect(source).toMatch(
-      /topbar-logo[\s\S]+topbar-title[\s\S]+copy.platform[\s\S]+topbar-logo ice/,
+      /topbar-brand[\s\S]+topbar-title[\s\S]+copy.platform[\s\S]+nav-language is-[\s\S]+<\/header>/,
     );
   });
 
@@ -37,7 +38,8 @@ describe('platform topbar', () => {
     expect(source).toContain("'research-story'");
     expect(source).toContain('nav-language');
     expect(source).toContain('chromeCopy');
-    expect(source.indexOf("openScreen('global-stage')")).toBeLessThan(source.indexOf('nav-language'));
+    // The language switcher lives in the header, before the page menu.
+    expect(source.indexOf('nav-language')).toBeLessThan(source.indexOf('<nav className="nav"'));
     expect(source).toContain('flagIconUrl');
     expect(source).toContain("flagIconUrl('Somalia')");
     expect(source).toContain("flagIconUrl('United Kingdom')");

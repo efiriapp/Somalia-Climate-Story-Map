@@ -53,19 +53,22 @@ select {
 }
 
 .topbar-logo {
-  height: 96px;
+  height: 88px;
   width: auto;
-  max-width: 280px;
   object-fit: contain;
   object-position: left center;
-  background: #fff;
-  border-radius: 10px;
-  padding: 0.2rem 0.45rem;
+  flex: none;
 }
 
-.topbar-logo.ice {
-  max-width: 340px;
-  object-position: right center;
+/* Combined SIMAD + ICE web logo: transparent, white wordmark, made for the
+   green header, so it sits directly on the bar with no white box. */
+.topbar-brand {
+  max-width: min(36vw, 320px);
+}
+
+/* The language switcher sits at the right end of the header. */
+.topbar .nav-language {
+  flex: none;
 }
 
 .topbar-title {
@@ -112,9 +115,13 @@ select {
   }
 
   .topbar-logo {
-    height: 52px;
-    max-width: 46%;
+    height: 44px;
+    max-width: 52%;
     min-width: 0;
+  }
+
+  .topbar .nav-language-track {
+    width: 9.6rem;
   }
 
   .topbar-title {
@@ -2492,9 +2499,14 @@ html[dir='rtl'] .autoplay-scroll select {
   margin-bottom: 0.9rem;
 }
 
-.site-footer-brand img {
-  height: 42px;
+.site-footer-brand {
+  flex-wrap: wrap;
+}
+
+.site-footer-logo {
+  height: 64px;
   width: auto;
+  max-width: 100%;
 }
 
 .site-footer-brand p {
