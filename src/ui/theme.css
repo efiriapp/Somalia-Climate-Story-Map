@@ -8,8 +8,9 @@
   --line: #d9e2de;
   --white: #ffffff;
   --chip: #e8f5ee;
-  /* Header accent: highlighted title words and the current menu pill. */
-  --accent: #f5b82e;
+  /* ICE brand leaf green (from the ICE logo): highlighted title line and the
+     current menu pill, on the dark ICE green header. */
+  --accent: #38c080;
   --control: #ececec;
   font-family: Inter, 'Noto Sans Arabic', system-ui, 'Segoe UI', sans-serif;
   color: var(--ink);
@@ -27,6 +28,9 @@ body,
   height: 100%;
   min-height: 100%;
   overflow-x: hidden;
+  /* The fixed header changes height on scroll; without this the browser
+     re-anchors the scroll position and the header flickers between states. */
+  overflow-anchor: none;
 }
 
 body {
@@ -43,17 +47,59 @@ select {
   font: inherit;
 }
 
-/* Site header: one green bar over a tinted ICE photo (Lower Juba), holding
-   the logo, the bracketed title and the language toggle, then the pill menu. */
+/* Site header: fixed to the top, dark ICE green with a frosted-glass
+   ("mirror") finish. At the top of the page a tinted ICE photo (Lower Juba)
+   shows through; once the page scrolls, the photo fades and the content
+   passing underneath shows blurred through the glass. */
 .site-header {
-  background-color: var(--forest);
-  background-image:
-    linear-gradient(180deg, rgba(6, 61, 57, 0.84) 0%, rgba(6, 61, 57, 0.94) 100%),
-    url('/images/header-bg.webp');
-  background-size: cover;
-  background-position: center 60%;
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  isolation: isolate;
+  background-color: rgba(6, 61, 57, 0.94);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
   color: var(--white);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  transition: box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('/images/header-bg.webp') center 60% / cover no-repeat;
+  opacity: 0.22;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* A soft highlight along the top edge gives the glass its sheen. */
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  pointer-events: none;
+}
+
+.site-header.is-scrolled {
+  background-color: rgba(6, 61, 57, 0.86);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+
+.site-header.is-scrolled::before {
+  opacity: 0;
+}
+
+/* Browsers without backdrop blur get a solid bar so text stays readable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header,
+  .site-header.is-scrolled {
+    background-color: rgba(6, 61, 57, 0.97);
+  }
 }
 
 .topbar {
@@ -99,27 +145,17 @@ select {
   container-type: inline-size;
 }
 
-/* Corner-bracket frame. Both lines share one starting edge (left in
-   English and Somali, right in Arabic) and one font size, scaled so the
-   language's longest line fits (--title-chars is set from the text). */
+/* Both lines share one starting edge (left in English and Somali, right in
+   Arabic) and one font size, scaled so the language's longest line fits
+   (--title-chars is set from the text). */
 .topbar-title-text {
   --title-chars: 21;
-  --bracket: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: start;
-  padding: 0.38em 0.85em;
-  font-size: clamp(1.05rem, calc(100cqi / (var(--title-chars) * 0.78)), 2.25rem);
-  background:
-    linear-gradient(var(--bracket), var(--bracket)) top left / 0.85em 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) top left / 2px 0.85em no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) top right / 0.85em 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) top right / 2px 0.85em no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) bottom left / 0.85em 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) bottom left / 2px 0.85em no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) bottom right / 0.85em 2px no-repeat,
-    linear-gradient(var(--bracket), var(--bracket)) bottom right / 2px 0.85em no-repeat;
+  font-size: clamp(1.05rem, calc(100cqi / (var(--title-chars) * 0.72)), 2.35rem);
+  transition: font-size 0.25s ease;
 }
 
 .topbar-title-line {
@@ -169,12 +205,34 @@ select {
 .nav > button.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: #10231f;
+  color: var(--forest);
 }
 
 .nav > button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Scrolled: the fixed header slims down so it does not cover the page. */
+.topbar,
+.topbar-logo {
+  transition: padding 0.25s ease, height 0.25s ease;
+}
+
+.site-header.is-scrolled .topbar {
+  padding-block: 0.4rem 0.15rem;
+}
+
+.site-header.is-scrolled .topbar-logo {
+  height: 52px;
+}
+
+.site-header.is-scrolled .topbar-title-text {
+  font-size: clamp(0.95rem, calc(100cqi / (var(--title-chars) * 1.1)), 1.5rem);
+}
+
+.site-header.is-scrolled .nav {
+  padding-block: 0.3rem 0.55rem;
 }
 
 /* Phones and tablets: logo and language toggle on top, title below, and a
@@ -207,6 +265,20 @@ select {
     overflow-x: auto;
     padding: 0.4rem 16px 0.8rem;
     scrollbar-width: thin;
+  }
+
+  /* Scrolled on a phone: keep logo, language and menu; hide the title row. */
+  .site-header.is-scrolled .topbar-title {
+    display: none;
+  }
+
+  .site-header.is-scrolled .topbar-logo {
+    height: 36px;
+  }
+
+  .site-header.is-scrolled .topbar .nav-language-option,
+  .site-header.is-scrolled .topbar .nav-language-track {
+    min-height: 2.6rem;
   }
 }
 
