@@ -31,10 +31,10 @@ import { FloodStatePanel } from './FloodStatePanel';
 type Panel = 'layers' | 'compare' | null;
 type Collection = FeatureCollection & { features: Feature[] };
 
-/** Juba and Shabelle valleys, with room for the wide Deyr 2023 floods. */
+/** Opening view: the whole of Somalia, with its states and the river valleys. */
 const FLOOD_BOUNDS: [[number, number], [number, number]] = [
   [-1.8, 40.9],
-  [6.0, 47.0],
+  [12.1, 51.5],
 ];
 
 const FARMLAND = '#1baf7a';
@@ -55,10 +55,22 @@ const ADMIN_FILE: Record<AdminLevel, string> = {
   district: 'admin-districts.geojson',
 };
 
-/** Zooms to the floods on show whenever the selection changes. */
-function FitToFloods({ data, selectionKey }: { data: Collection[]; selectionKey: string }) {
+/**
+ * Zooms to the floods on show whenever the selection changes. With every
+ * flood on (the default), the map keeps the whole-Somalia view instead.
+ */
+function FitToFloods({ data, selectionKey, home }: { data: Collection[]; selectionKey: string; home: boolean }) {
   const map = useMap();
+  const lastKey = useRef<string | null>(null);
   useEffect(() => {
+    const changed = lastKey.current !== null && lastKey.current !== selectionKey;
+    lastKey.current = selectionKey;
+    if (home) {
+      // The map opens at this view already; come back to it when the
+      // selection returns to all floods (not while files are loading).
+      if (changed) map.fitBounds(FLOOD_BOUNDS, { animate: true });
+      return;
+    }
     if (!data.length) return;
     const bounds = L.latLngBounds([]);
     for (const collection of data) {
@@ -67,7 +79,7 @@ function FitToFloods({ data, selectionKey }: { data: Collection[]; selectionKey:
     }
     if (bounds.isValid()) map.fitBounds(bounds, { padding: [24, 24], maxZoom: 11 });
     // Refit only when the selection changes or its files finish loading.
-  }, [map, selectionKey, data.length]);
+  }, [map, selectionKey, data.length, home]);
   return null;
 }
 
@@ -400,6 +412,7 @@ export function FloodHistoryMap() {
           <FitToFloods
             data={shown.map((event) => ready[event.file]).filter((c): c is Collection => !!c)}
             selectionKey={`${comparing}:${shown.map((event) => event.id).join(',')}`}
+            home={!comparing && period === 'all' && hidden.size === 0}
           />
           <ScaleControl position="bottomleft" imperial={false} />
         </MapContainer>
