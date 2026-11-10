@@ -3,6 +3,8 @@ export type Locale = 'en' | 'so' | 'ar';
 export const CHROME = {
   en: {
     platform: 'Somali Climate Data & Storytelling Platform',
+    /** Header title split into two lines that share one starting edge. */
+    platformLines: ['Somali Climate Data &', 'Storytelling Platform'],
     about: 'About ICE Institute',
     research: 'ICE Institute Research Stories',
     stories: 'Stories',
@@ -109,6 +111,7 @@ export const CHROME = {
   },
   so: {
     platform: 'Barnaamijka Xogta Cimilada iyo Sheekaynta Soomaaliyeed',
+    platformLines: ['Barnaamijka Xogta Cimilada', 'iyo Sheekaynta Soomaaliyeed'],
     about: 'Ku saabsan Machadka ICE',
     research: 'Sheekooyinka Cilmi-baarista Machadka ICE',
     stories: 'Sheekooyin',
@@ -215,6 +218,7 @@ export const CHROME = {
   },
   ar: {
     platform: 'منصة بيانات المناخ والسرد القصصي الصومالية',
+    platformLines: ['منصة بيانات المناخ', 'والسرد القصصي الصومالية'],
     about: 'عن معهد ICE',
     research: 'قصص أبحاث معهد ICE',
     stories: 'القصص',

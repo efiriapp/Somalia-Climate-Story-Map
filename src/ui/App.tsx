@@ -1,4 +1,4 @@
-import { Suspense, lazy, useLayoutEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useLayoutEffect, useMemo, useState, type CSSProperties } from 'react';
 import { flagIconUrl } from '../application/country-flag';
 import { filterCatalog } from '../application/filter-catalog';
 import { chromeCopy, formatLocaleDate, type Locale } from '../application/locale';
@@ -128,7 +128,23 @@ export default function App() {
     <div>
       <header className="topbar">
         <img className="topbar-logo" src="/logos/simad.webp" alt="SIMAD University" />
-        <div className="topbar-title">{copy.platform}</div>
+        <div className="topbar-title" role="heading" aria-level={1} aria-label={copy.platform}>
+          <span
+            className="topbar-title-text"
+            aria-hidden="true"
+            style={
+              {
+                '--title-chars': Math.max(...copy.platformLines.map((line) => line.length)),
+              } as CSSProperties
+            }
+          >
+            {copy.platformLines.map((line) => (
+              <span className="topbar-title-line" key={line}>
+                {line}
+              </span>
+            ))}
+          </span>
+        </div>
         <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
       </header>
       <nav className="nav" aria-label="Primary">

@@ -101,3 +101,13 @@ describe('platform topbar', () => {
     );
   });
 });
+
+describe('platform title lines', () => {
+  it('splits the title into two lines that read as the full name in every language', async () => {
+    const { CHROME } = await import('../application/locale');
+    for (const locale of ['en', 'so', 'ar'] as const) {
+      expect(CHROME[locale].platformLines).toHaveLength(2);
+      expect(CHROME[locale].platformLines.join(' ')).toBe(CHROME[locale].platform);
+    }
+  });
+});

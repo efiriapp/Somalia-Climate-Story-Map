@@ -71,13 +71,56 @@ select {
 .topbar-title {
   flex: 1;
   min-width: 0;
-  text-align: center;
   color: #fff;
   font-weight: 900;
   font-size: clamp(1.45rem, 5.6cqi, 3.55rem);
   line-height: 1.05;
   letter-spacing: -0.02em;
+  /* Center the title as one block... */
+  display: flex;
+  justify-content: center;
+  /* ...and size it from the space between the logos, not the whole bar. */
+  container-type: inline-size;
+}
+
+/* ...while both lines share one starting edge, so their first letters line
+   up (left in English and Somali, right in Arabic). Same font and size. */
+.topbar-title-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  /* Both lines share one size, scaled so the language's longest line fits the
+     title area (--title-chars is set from the text). */
+  --title-chars: 21;
+  font-size: clamp(1.15rem, calc(100cqi / (var(--title-chars) * 0.56)), 3.55rem);
+}
+
+.topbar-title-line {
+  /* Wrap only when a line does not fit (long Somali title, narrow screens);
+     wrapped rows still start at the same edge. */
   text-wrap: balance;
+}
+
+/* Phones and tablets: logos side by side on top, the title on its own
+   full-width row. */
+@media (max-width: 900px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.6rem 16px;
+  }
+
+  .topbar-logo {
+    height: 52px;
+    max-width: 46%;
+    min-width: 0;
+  }
+
+  .topbar-title {
+    order: 3;
+    flex: 1 1 100%;
+  }
 }
 
 .nav {
