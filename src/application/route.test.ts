@@ -21,7 +21,11 @@ describe('parseRoute', () => {
   });
 
   it('accepts a route without a locale prefix', () => {
-    expect(parseRoute('#/about', 'so')).toMatchObject({ locale: 'so', screen: 'about' });
+    expect(parseRoute('#/research', 'so')).toMatchObject({ locale: 'so', screen: 'research' });
+  });
+
+  it('sends old About links to Stories, since that page was removed', () => {
+    expect(parseRoute('#/en/about')).toMatchObject({ locale: 'en', screen: 'stories' });
   });
 
   it('treats unknown screens as the default screen', () => {
@@ -49,6 +53,6 @@ describe('formatRoute', () => {
   });
 
   it('drops details that do not belong to the screen', () => {
-    expect(formatRoute({ locale: 'en', screen: 'about', storyId: 'x', hazard: 'floods' })).toBe('#/en/about');
+    expect(formatRoute({ locale: 'en', screen: 'flood-watch', storyId: 'x', hazard: 'floods' })).toBe('#/en/flood-watch');
   });
 });

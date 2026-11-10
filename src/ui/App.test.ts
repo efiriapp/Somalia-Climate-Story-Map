@@ -17,14 +17,14 @@ describe('platform topbar', () => {
     );
   });
 
-  it('places About, Research, Stories, Climate Impact, then ICE at Global Stage as a full-screen globe', () => {
-    expect(source).toContain('copy.about');
+  it('menu runs Research, Stories, Climate Impact, Flood Watch, Drought Watch; Global Stage opens from Stories', () => {
+    expect(source).not.toContain("openScreen('about')");
     expect(source).toContain('copy.research');
     expect(source).toContain('copy.stories');
     expect(source).toContain('copy.climateImpact');
     expect(source).toContain('copy.globalStage');
     expect(source).toMatch(
-      /copy.about[\s\S]+copy.research[\s\S]+copy.stories[\s\S]+copy.climateImpact[\s\S]+copy.globalStage/,
+      /copy.research[\s\S]+copy.stories[\s\S]+copy.climateImpact[\s\S]+copy.floodWatch[\s\S]+copy.droughtWatch/,
     );
     expect(source).toContain("openScreen('global-stage')");
     expect(source).toContain("openScreen('climate-impact')");
@@ -32,9 +32,8 @@ describe('platform topbar', () => {
     expect(source).toContain('GlobalStageMap');
     expect(source).toContain('AutoplayProvider');
     expect(source).not.toContain('GlobalStagePage');
-    expect(source).toContain("openScreen('about')");
     expect(source).toContain("openScreen('research')");
-    expect(source).toContain('localizeAbout');
+    expect(source).not.toContain('localizeAbout');
     expect(source).toContain("'research-story'");
     expect(source).toContain('nav-language');
     expect(source).toContain('chromeCopy');

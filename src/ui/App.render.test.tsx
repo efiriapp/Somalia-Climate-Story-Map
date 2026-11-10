@@ -52,11 +52,11 @@ describe('App routing', () => {
   it('puts the chosen page in the address and supports Back', async () => {
     render(<App />);
     await act(async () => {
-      fireEvent.click(navButton(CHROME.en.about));
+      fireEvent.click(navButton(CHROME.en.climateImpact));
       await new Promise((resolve) => setTimeout(resolve, 20));
     });
-    expect(window.location.hash).toBe('#/en/about');
-    expect(screen.getByRole('heading', { level: 1, name: CHROME.en.about })).toBeTruthy();
+    expect(window.location.hash).toBe('#/en/climate-impact');
+    expect(navButton(CHROME.en.climateImpact)!.className).toBe('active');
 
     await goBack();
     expect(window.location.hash).toBe('#/en/stories');
@@ -81,13 +81,13 @@ describe('App routing', () => {
 
 describe('App language', () => {
   it('switches to Arabic right-to-left, keeps the page, and remembers the choice', async () => {
-    setHash('#/en/about');
+    setHash('#/en/climate-impact');
     render(<App />);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: CHROME.en.languageArabic }));
       await new Promise((resolve) => setTimeout(resolve, 20));
     });
-    expect(window.location.hash).toBe('#/ar/about');
+    expect(window.location.hash).toBe('#/ar/climate-impact');
     expect(document.documentElement.dir).toBe('rtl');
     expect(document.documentElement.lang).toBe('ar');
     expect(window.localStorage.getItem('ice-story-map:locale')).toBe('ar');

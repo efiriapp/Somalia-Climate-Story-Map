@@ -1,5 +1,4 @@
 import type { Screen } from '../../application/route';
-import about from '../../assets/nav-icons/about.svg';
 import climateImpact from '../../assets/nav-icons/climate-impact.svg';
 import droughtWatch from '../../assets/nav-icons/drought-watch.svg';
 import floodWatch from '../../assets/nav-icons/flood-watch.svg';
@@ -12,7 +11,6 @@ import stories from '../../assets/nav-icons/stories.svg';
  * look the same on every device. See scripts/extract-nav-icons.mjs.
  */
 export const NAV_ICON_SRC: Record<Screen, string> = {
-  about,
   research,
   stories,
   'climate-impact': climateImpact,

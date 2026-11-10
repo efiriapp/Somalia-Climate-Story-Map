@@ -2,7 +2,6 @@ import type { ClimateHazardId } from '../content/climate-impact';
 import type { Locale } from './locale';
 
 export type Screen =
-  | 'about'
   | 'research'
   | 'stories'
   | 'climate-impact'
@@ -22,7 +21,6 @@ export type Route = {
 
 export const LOCALES: readonly Locale[] = ['en', 'so', 'ar'];
 export const SCREENS: readonly Screen[] = [
-  'about',
   'research',
   'stories',
   'climate-impact',

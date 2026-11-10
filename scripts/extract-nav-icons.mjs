@@ -17,7 +17,6 @@ const outDir = join(root, 'src', 'assets', 'nav-icons');
 
 /** Page -> Fluent Emoji name. */
 export const NAV_ICONS = {
-  about: 'classical-building',
   research: 'microscope',
   stories: 'open-book',
   'climate-impact': 'thermometer',

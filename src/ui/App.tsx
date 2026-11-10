@@ -2,7 +2,7 @@ import { Suspense, lazy, useLayoutEffect, useMemo, useState, type CSSProperties 
 import { flagIconUrl } from '../application/country-flag';
 import { filterCatalog } from '../application/filter-catalog';
 import { chromeCopy, formatLocaleDate, type Locale } from '../application/locale';
-import { localizeAbout, localizeStory } from '../application/localize-content';
+import { localizeStory } from '../application/localize-content';
 import { storyMediaCredit } from '../application/media-source-credit';
 import {
   labelForRelatedTarget,
@@ -64,7 +64,6 @@ export default function App() {
   const setSelectedId = (id: string | null) => go({ storyId: id });
   const setImpactHazard = (id: ClimateHazardId | null) => go({ hazard: id });
   const copy = chromeCopy(locale);
-  const about = localizeAbout(locale);
   const ukFlagSrc = flagIconUrl('United Kingdom');
   const soFlagSrc = flagIconUrl('Somalia');
   const saFlagSrc = flagIconUrl('Saudi Arabia');
@@ -129,7 +128,6 @@ export default function App() {
   };
 
   const screenTitle: Record<Screen, string> = {
-    about: copy.about,
     research: copy.research,
     stories: copy.stories,
     'climate-impact': copy.climateImpact,
@@ -254,15 +252,6 @@ export default function App() {
         <nav className="nav" aria-label="Primary">
           <button
             type="button"
-            className={screen === 'about' ? 'active' : ''}
-            aria-current={screen === 'about' ? 'page' : undefined}
-            onClick={() => openScreen('about')}
-          >
-            <NavIcon screen="about" />
-            {copy.about}
-          </button>
-          <button
-            type="button"
             className={screen === 'research' ? 'active' : ''}
             aria-current={screen === 'research' ? 'page' : undefined}
             onClick={() => openScreen('research')}
@@ -316,21 +305,7 @@ export default function App() {
         retryLabel={copy.pageErrorRetry}
       >
       <Suspense fallback={<p className="page-loading" role="status">{copy.pageLoading}</p>}>
-      {screen === 'about' ? (
-        <article className="detail about-ice" aria-label={copy.about}>
-          <AutoplayScroll />
-          <h1>{copy.about}</h1>
-          {about.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-          ))}
-          <p>
-            <strong>{copy.moreInfo}</strong>{' '}
-            <a href={about.website} target="_blank" rel="noreferrer">
-              {about.website}
-            </a>
-          </p>
-        </article>
-      ) : screen === 'climate-impact' ? (
+      {screen === 'climate-impact' ? (
         <ClimateImpactPage
           selectedId={impactHazard}
           onSelect={setImpactHazard}
