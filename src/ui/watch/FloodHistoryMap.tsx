@@ -10,7 +10,12 @@ import {
   floodArea,
   floodEventLabel,
   floodEvents,
+  floodMonths,
+  floodYears,
+  matchesDate,
+  monthName,
   yearColor,
+  type DateFilter,
   type FloodEvent,
 } from '../../application/flood-history';
 import { formatLocaleDate } from '../../application/locale';
@@ -33,7 +38,6 @@ const FLOOD_BLUE = COMPARE_COLORS.a;
 const PLAIN = '#cfe6f2';
 const RIVER = '#1b4f8a';
 const GAUGE = '#d03b3b';
-const ALL = 'all';
 
 /** Zooms to the floods on show whenever the selection changes. */
 function FitToFloods({ data, selectionKey }: { data: Collection[]; selectionKey: string }) {
@@ -124,7 +128,9 @@ export function FloodHistoryMap() {
   const date = (iso: string) => formatLocaleDate(iso, locale);
   const label = (event: FloodEvent) => floodEventLabel(event, locale, date);
 
-  const [view, setView] = useState<string>(ALL);
+  // Floods shown = ticked in the layers list AND inside the date filter.
+  const [dateFilter, setDateFilter] = useState<DateFilter>({ year: 'all', month: 'all' });
+  const [hidden, setHidden] = useState<Set<string>>(() => new Set());
   const [comparing, setComparing] = useState(false);
   const [pairA, setPairA] = useState<string | null>(null);
   const [pairB, setPairB] = useState<string | null>(null);
@@ -144,12 +150,17 @@ export function FloodHistoryMap() {
   const byId = (id: string | null) => events.find((event) => event.id === id);
   const a = byId(pairA);
   const b = byId(pairB);
-  const single = view === ALL ? undefined : byId(view);
-  const shown: FloodEvent[] = comparing
-    ? [a, b].filter((e): e is FloodEvent => !!e)
-    : view === ALL
-      ? events
-      : [single].filter((e): e is FloodEvent => !!e);
+  const filtered = events.filter((event) => !hidden.has(event.id) && matchesDate(event, dateFilter));
+  const shown: FloodEvent[] = comparing ? [a, b].filter((e): e is FloodEvent => !!e) : filtered;
+  const single = !comparing && filtered.length === 1 ? filtered[0] : undefined;
+  const many = !comparing && filtered.length > 1;
+  const toggleFlood = (id: string) =>
+    setHidden((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
 
   const files = [
     ...(show.plain ? ['flood-plain-2013-2023.geojson'] : []),
@@ -165,14 +176,14 @@ export function FloodHistoryMap() {
   const styleFor = (event: FloodEvent, color?: string) => (feature?: Feature): PathOptions => {
     let fill: string = color ?? FLOOD_BLUE;
     if (!color) {
-      if (view === ALL) fill = yearColor(event.year, first, last);
+      if (many) fill = yearColor(event.year, first, last);
       else if (/farmland/i.test(String(feature?.properties?.type ?? ''))) fill = FARMLAND;
     }
     return {
       color: fill,
-      weight: view === ALL && !color ? 0.4 : 0.8,
+      weight: many && !color ? 0.4 : 0.8,
       fillColor: fill,
-      fillOpacity: color ? 0.7 : view === ALL ? 0.55 : 0.65,
+      fillOpacity: color ? 0.7 : many ? 0.55 : 0.65,
     };
   };
 
@@ -184,7 +195,8 @@ export function FloodHistoryMap() {
   const areaA = areaOf(a);
   const areaB = areaOf(b);
 
-  const years = [...new Set(events.map((event) => event.year))].sort((x, y) => y - x);
+  const years = floodYears(events);
+  const months = floodMonths(events, dateFilter.year);
 
   // Divider dragging (pointer) and nudging (keyboard).
   const moveTo = (clientX: number) => {
@@ -216,7 +228,7 @@ export function FloodHistoryMap() {
   const floodLayer = (event: FloodEvent, color?: string) =>
     ready[event.file] ? (
       <GeoJSON
-        key={`${event.id}-${view}-${comparing}-${color ?? ''}`}
+        key={`${event.id}-${many}-${comparing}-${color ?? ''}`}
         data={ready[event.file]!}
         style={styleFor(event, color)}
         onEachFeature={(_feature, layer) => layer.bindTooltip(label(event), { sticky: true })}
@@ -284,31 +296,48 @@ export function FloodHistoryMap() {
           <ScaleControl position="bottomleft" imperial={false} />
         </MapContainer>
 
-        {/* Date filter: calendar icon with one compact dropdown. */}
-        <label className={comparing ? 'flood-date-filter is-disabled' : 'flood-date-filter'} title={copy.floodFilter}>
+        {/* Date filter: calendar icon with Year and Month, listing only dates that have flood maps. */}
+        <div className={comparing ? 'flood-date-filter is-disabled' : 'flood-date-filter'} role="group" aria-label={copy.floodFilter}>
           <Icon name="calendar" />
           <select
-            aria-label={copy.floodFilter}
-            value={view}
+            aria-label={copy.floodYear}
+            value={String(dateFilter.year)}
             disabled={comparing}
-            onChange={(event) => setView(event.target.value)}
+            onChange={(event) => {
+              const year = event.target.value === 'all' ? 'all' : Number(event.target.value);
+              setDateFilter((current) => ({
+                year,
+                month:
+                  current.month !== 'all' && floodMonths(events, year).includes(current.month) ? current.month : 'all',
+              }));
+            }}
           >
-            <option value={ALL}>
-              {copy.floodAll} ({events.length})
-            </option>
+            <option value="all">{copy.floodAllYears}</option>
             {years.map((year) => (
-              <optgroup key={year} label={String(year)}>
-                {events
-                  .filter((event) => event.year === year)
-                  .map((event) => (
-                    <option key={event.id} value={event.id}>
-                      {label(event)}
-                    </option>
-                  ))}
-              </optgroup>
+              <option key={year} value={year}>
+                {year}
+              </option>
             ))}
           </select>
-        </label>
+          <select
+            aria-label={copy.floodMonth}
+            value={String(dateFilter.month)}
+            disabled={comparing}
+            onChange={(event) =>
+              setDateFilter((current) => ({
+                ...current,
+                month: event.target.value === 'all' ? 'all' : Number(event.target.value),
+              }))
+            }
+          >
+            <option value="all">{copy.floodAllMonths}</option>
+            {months.map((month) => (
+              <option key={month} value={month}>
+                {monthName(month, locale)}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div className="flood-map-tools" role="toolbar" aria-label={copy.floodHistory}>
           <button
@@ -375,7 +404,7 @@ export function FloodHistoryMap() {
               <LegendItem color={COMPARE_COLORS.a} text={a ? `${copy.floodCompareA} (←): ${label(a)}` : copy.floodCompareA} />
               <LegendItem color={COMPARE_COLORS.b} text={b ? `${copy.floodCompareB} (→): ${label(b)}` : copy.floodCompareB} />
             </>
-          ) : view === ALL ? (
+          ) : many ? (
             <>
               <div className="legend-ramp" style={{ background: `linear-gradient(90deg, ${YEAR_RAMP.join(', ')})` }} aria-hidden="true" />
               <div className="legend-ramp-labels">
@@ -392,8 +421,10 @@ export function FloodHistoryMap() {
               <LegendItem color={FARMLAND} text={copy.floodedFarmland} />
               <LegendItem color={FLOOD_BLUE} text={copy.floodedOther} />
             </>
+          ) : single ? (
+            <LegendItem color={FLOOD_BLUE} text={label(single)} />
           ) : (
-            <LegendItem color={FLOOD_BLUE} text={single ? label(single) : copy.floodedArea} />
+            <span className="legend-empty">{copy.floodNone}</span>
           )}
           {show.plain ? <LegendItem color={PLAIN} text={copy.layerFloodPlain} /> : null}
           {show.rivers ? <LegendItem color={RIVER} text={copy.layerRivers} line /> : null}
@@ -455,6 +486,35 @@ export function FloodHistoryMap() {
 
             {panel === 'layers' ? (
               <div className="flood-layers">
+                <fieldset className="flood-layer-list">
+                  <legend>{copy.floodLayers}</legend>
+                  <div className="flood-layer-actions">
+                    <button type="button" onClick={() => setHidden(new Set())}>
+                      {copy.floodShowAll}
+                    </button>
+                    <button type="button" onClick={() => setHidden(new Set(events.map((event) => event.id)))}>
+                      {copy.floodHideAll}
+                    </button>
+                  </div>
+                  {years.map((year) => (
+                    <div key={year} className="flood-layer-year">
+                      <span>{year}</span>
+                      {events
+                        .filter((event) => event.year === year)
+                        .map((event) => (
+                          <label key={event.id}>
+                            <input type="checkbox" checked={!hidden.has(event.id)} onChange={() => toggleFlood(event.id)} />
+                            <span
+                              className="swatch"
+                              style={{ background: yearColor(event.year, first, last) }}
+                              aria-hidden="true"
+                            />
+                            {label(event)}
+                          </label>
+                        ))}
+                    </div>
+                  ))}
+                </fieldset>
                 {(
                   [
                     ['rivers', copy.layerRivers],
@@ -490,11 +550,12 @@ export function FloodHistoryMap() {
       </div>
 
       <div className="flood-summary" aria-live="polite">
-        {!comparing && view === ALL ? (
+        {many ? (
           <p>
-            <strong>{events.length}</strong> {copy.floodsShown} ({first}–{last})
+            <strong>{filtered.length}</strong> {copy.floodsShown}
           </p>
         ) : null}
+        {!comparing && !filtered.length ? <p>{copy.floodNone}</p> : null}
         {!comparing && single ? (
           <dl className="watch-figures">
             <div>

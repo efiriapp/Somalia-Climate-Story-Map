@@ -10,6 +10,11 @@ import {
   floodEventLabel,
   floodEvents,
   yearColor,
+  eventMonths,
+  matchesDate,
+  floodYears,
+  floodMonths,
+  monthName,
   type WatchManifest,
 } from './flood-history';
 
@@ -88,5 +93,36 @@ describe('serving the map data', () => {
     expect(config).toContain('AddType application/geo+json .geojson');
     expect(config).toMatch(/DEFLATE[^\n]*application\/geo\+json/);
     expect(config).toContain('<FilesMatch "\\.geojson$">');
+  });
+});
+
+describe('flood dates', () => {
+  const events = floodEvents(manifest);
+  const byId = (id: string) => events.find((event) => event.id === id)!;
+
+  it('places seasonal floods in their season months and dated ones in their own month', () => {
+    expect(eventMonths(byId('flood-gu-2024'))).toEqual([4, 5, 6]);
+    expect(eventMonths(byId('flood-deyr-2023'))).toEqual([10, 11, 12]);
+    expect(eventMonths(byId('flood-juba-2019-11-10'))).toEqual([11]);
+    expect(eventMonths(byId('flood-hagaa-2020'))).toEqual([9]);
+  });
+
+  it('filters by year and month', () => {
+    const in2019 = events.filter((e) => matchesDate(e, { year: 2019, month: 'all' })).map((e) => e.id);
+    expect(in2019).toEqual(['flood-gu-2019', 'flood-deyr-2019', 'flood-shabelle-2019-10-30', 'flood-juba-2019-11-10']);
+    const nov2019 = events.filter((e) => matchesDate(e, { year: 2019, month: 11 })).map((e) => e.id);
+    expect(nov2019).toEqual(['flood-deyr-2019', 'flood-juba-2019-11-10']);
+  });
+
+  it('lists only years and months that have flood maps', () => {
+    expect(floodYears(events)).toEqual([2025, 2024, 2023, 2021, 2020, 2019, 2018, 2016, 2015, 2013]);
+    expect(floodMonths(events, 2024)).toEqual([4, 5, 6]);
+    expect(floodMonths(events, 2020)).toEqual([4, 5, 6, 9]);
+    expect(floodMonths(events, 'all')).not.toContain(1);
+  });
+
+  it('names months in each language', () => {
+    expect(monthName(11, 'en')).toBe('November');
+    expect(monthName(11, 'ar')).toBe('نوفمبر');
   });
 });

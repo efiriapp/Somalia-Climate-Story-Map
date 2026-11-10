@@ -112,3 +112,30 @@ export const compareAreas = (a: number, b: number): { diff: number; percent: num
   diff: b - a,
   percent: a > 0 ? Math.round(((b - a) / a) * 100) : null,
 });
+
+/** Months each Somali season covers: Gu April–June, Hagaa July–September, Deyr October–December. */
+const SEASON_MONTHS: Record<WatchSeason, number[]> = { gu: [4, 5, 6], hagaa: [7, 8, 9], deyr: [10, 11, 12] };
+
+/** Months (1–12) a flood map belongs to: its exact date's month, else its season's months. */
+export const eventMonths = (event: Pick<FloodEvent, 'season' | 'date'>): number[] =>
+  event.date ? [Number(event.date.slice(5, 7))] : SEASON_MONTHS[event.season];
+
+export type DateFilter = { year: number | 'all'; month: number | 'all' };
+
+export const matchesDate = (event: FloodEvent, filter: DateFilter): boolean =>
+  (filter.year === 'all' || event.year === filter.year) &&
+  (filter.month === 'all' || eventMonths(event).includes(filter.month));
+
+/** Years that have flood maps, newest first. */
+export const floodYears = (events: FloodEvent[]): number[] =>
+  [...new Set(events.map((event) => event.year))].sort((a, b) => b - a);
+
+/** Months that have flood maps, in calendar order, within a year or across all years. */
+export const floodMonths = (events: FloodEvent[], year: number | 'all'): number[] =>
+  [...new Set(events.filter((e) => year === 'all' || e.year === year).flatMap(eventMonths))].sort((a, b) => a - b);
+
+/** Localised month name, e.g. "Nov", "نوفمبر". */
+export const monthName = (month: number, locale: Locale): string =>
+  new Intl.DateTimeFormat(locale === 'so' ? 'so' : locale === 'ar' ? 'ar' : 'en', { month: 'long', timeZone: 'UTC' }).format(
+    new Date(Date.UTC(2024, month - 1, 1)),
+  );
