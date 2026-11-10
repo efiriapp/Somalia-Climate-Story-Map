@@ -19,3 +19,6 @@ public/maplibre/
 
 # Manual upload bundle (npm run package)
 site-upload.zip
+
+# Local caches for data scripts (npm run watch:baselines)
+.cache/

@@ -40,6 +40,8 @@ describe('formatRoute', () => {
       { locale: 'so', screen: 'research', storyId: 'a b/c', hazard: null },
       { locale: 'ar', screen: 'climate-impact', storyId: null, hazard: 'el-nino' },
       { locale: 'en', screen: 'global-stage', storyId: null, hazard: null },
+      { locale: 'so', screen: 'flood-watch', storyId: null, hazard: null },
+      { locale: 'ar', screen: 'drought-watch', storyId: null, hazard: null },
     ];
     for (const route of routes) {
       expect(parseRoute(formatRoute(route))).toEqual(route);

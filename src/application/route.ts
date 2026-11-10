@@ -1,7 +1,14 @@
 import type { ClimateHazardId } from '../content/climate-impact';
 import type { Locale } from './locale';
 
-export type Screen = 'about' | 'research' | 'stories' | 'climate-impact' | 'global-stage';
+export type Screen =
+  | 'about'
+  | 'research'
+  | 'stories'
+  | 'climate-impact'
+  | 'flood-watch'
+  | 'drought-watch'
+  | 'global-stage';
 
 /** Everything needed to rebuild a page from its address. */
 export type Route = {
@@ -19,6 +26,8 @@ export const SCREENS: readonly Screen[] = [
   'research',
   'stories',
   'climate-impact',
+  'flood-watch',
+  'drought-watch',
   'global-stage',
 ];
 const HAZARDS: readonly ClimateHazardId[] = ['floods', 'droughts', 'heat-waves', 'el-nino', 'la-nina'];

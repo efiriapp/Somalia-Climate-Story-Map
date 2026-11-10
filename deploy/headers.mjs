@@ -15,6 +15,13 @@ const MAP_HOSTS = [
   'https://tile.openstreetmap.org',
 ];
 
+/** Live data for Flood Watch and Drought Watch (free, non-commercial, CC BY 4.0). */
+const DATA_HOSTS = [
+  'https://flood-api.open-meteo.com',
+  'https://archive-api.open-meteo.com',
+  'https://api.open-meteo.com',
+];
+
 export const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "script-src 'self'",
@@ -23,7 +30,7 @@ export const CONTENT_SECURITY_POLICY = [
   // React style attributes and map libraries set inline styles.
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${MAP_HOSTS.join(' ')}`,
-  `connect-src 'self' ${MAP_HOSTS.join(' ')}`,
+  `connect-src 'self' ${[...MAP_HOSTS, ...DATA_HOSTS].join(' ')}`,
   "font-src 'self' data:",
   'frame-src https://www.youtube-nocookie.com https://www.facebook.com',
   "media-src 'self'",

@@ -12,6 +12,12 @@ describe('live-site headers', () => {
     }
   });
 
+  it('allows the Open-Meteo data servers used by Flood Watch and Drought Watch', () => {
+    for (const host of ['flood-api.open-meteo.com', 'archive-api.open-meteo.com', 'api.open-meteo.com']) {
+      expect(CONTENT_SECURITY_POLICY).toContain(`https://${host}`);
+    }
+  });
+
   it('allows only the privacy-enhanced YouTube and Facebook video frames', () => {
     expect(CONTENT_SECURITY_POLICY).toContain('frame-src https://www.youtube-nocookie.com https://www.facebook.com');
     expect(CONTENT_SECURITY_POLICY).toContain("object-src 'none'");

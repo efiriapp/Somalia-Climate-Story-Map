@@ -25,6 +25,7 @@ import { MediaSources } from './catalog/MediaSources';
 import { mediaSourceList, storyImages } from '../application/citations';
 import { RelatedLinks } from './catalog/RelatedLinks';
 import type { ClimateHazardId } from '../content/climate-impact';
+import { NavIcon } from './chrome/NavIcon';
 
 // Map pages load on demand so MapLibre and Leaflet stay out of the first download.
 const GlobalStageMap = lazy(() =>
@@ -32,6 +33,12 @@ const GlobalStageMap = lazy(() =>
 );
 const StoryDetail = lazy(() =>
   import('./catalog/StoryDetail').then((module) => ({ default: module.StoryDetail })),
+);
+const FloodWatchPage = lazy(() =>
+  import('./watch/FloodWatchPage').then((module) => ({ default: module.FloodWatchPage })),
+);
+const DroughtWatchPage = lazy(() =>
+  import('./watch/DroughtWatchPage').then((module) => ({ default: module.DroughtWatchPage })),
 );
 import type { Screen } from '../application/route';
 import { useHashRoute } from './useHashRoute';
@@ -104,9 +111,19 @@ export default function App() {
     });
   };
 
+  const screenTitle: Record<Screen, string> = {
+    about: copy.about,
+    research: copy.research,
+    stories: copy.stories,
+    'climate-impact': copy.climateImpact,
+    'flood-watch': copy.floodWatch,
+    'drought-watch': copy.droughtWatch,
+    'global-stage': copy.globalStage,
+  };
+
   usePageMeta({
     platform: copy.platform,
-    title: detail?.title,
+    title: detail?.title ?? (screen === 'stories' ? undefined : screenTitle[screen]),
     description: detail?.summary,
     image: detail?.images[0],
   });
@@ -151,36 +168,64 @@ export default function App() {
         <button
           type="button"
           className={screen === 'about' ? 'active' : ''}
+          aria-current={screen === 'about' ? 'page' : undefined}
           onClick={() => openScreen('about')}
         >
+          <NavIcon screen="about" />
           {copy.about}
         </button>
         <button
           type="button"
           className={screen === 'research' ? 'active' : ''}
+          aria-current={screen === 'research' ? 'page' : undefined}
           onClick={() => openScreen('research')}
         >
+          <NavIcon screen="research" />
           {copy.research}
         </button>
         <button
           type="button"
           className={screen === 'stories' ? 'active' : ''}
+          aria-current={screen === 'stories' ? 'page' : undefined}
           onClick={() => openScreen('stories')}
         >
+          <NavIcon screen="stories" />
           {copy.stories}
         </button>
         <button
           type="button"
           className={screen === 'climate-impact' ? 'active' : ''}
+          aria-current={screen === 'climate-impact' ? 'page' : undefined}
           onClick={() => openScreen('climate-impact')}
         >
+          <NavIcon screen="climate-impact" />
           {copy.climateImpact}
         </button>
         <button
           type="button"
+          className={screen === 'flood-watch' ? 'active' : ''}
+          aria-current={screen === 'flood-watch' ? 'page' : undefined}
+          onClick={() => openScreen('flood-watch')}
+        >
+          <NavIcon screen="flood-watch" />
+          {copy.floodWatch}
+        </button>
+        <button
+          type="button"
+          className={screen === 'drought-watch' ? 'active' : ''}
+          aria-current={screen === 'drought-watch' ? 'page' : undefined}
+          onClick={() => openScreen('drought-watch')}
+        >
+          <NavIcon screen="drought-watch" />
+          {copy.droughtWatch}
+        </button>
+        <button
+          type="button"
           className={screen === 'global-stage' ? 'active' : ''}
+          aria-current={screen === 'global-stage' ? 'page' : undefined}
           onClick={() => openScreen('global-stage')}
         >
+          <NavIcon screen="global-stage" />
           {copy.globalStage}
         </button>
         <div
@@ -278,6 +323,10 @@ export default function App() {
           onOpenRelated={openRelated}
           relatedStoryTitle={relatedStoryTitle}
         />
+      ) : screen === 'flood-watch' ? (
+        <FloodWatchPage />
+      ) : screen === 'drought-watch' ? (
+        <DroughtWatchPage />
       ) : screen === 'global-stage' ? (
         <GlobalStageMap stories={localizedCatalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
