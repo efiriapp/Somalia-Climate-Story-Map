@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import {
   COMPARE_COLORS,
   YEAR_RAMP,
+  areaByUnit,
   compareAreas,
   floodArea,
   floodEventLabel,
@@ -14,6 +15,8 @@ import {
   periodKey,
   periodLabel,
   yearColor,
+  type AdminLevel,
+  type FloodByAdmin,
   type FloodEvent,
 } from '../../application/flood-history';
 import { formatLocaleDate } from '../../application/locale';
@@ -22,7 +25,8 @@ import { useLocale } from '../chrome/LocaleContext';
 import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { MapHomeControl } from '../map/MapHomeControl';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
-import { useWatchFiles, useWatchManifest } from '../useWatchData';
+import { useWatchFile, useWatchFiles, useWatchManifest } from '../useWatchData';
+import { FloodStatePanel } from './FloodStatePanel';
 
 type Panel = 'layers' | 'compare' | null;
 type Collection = FeatureCollection & { features: Feature[] };
@@ -38,6 +42,18 @@ const FLOOD_BLUE = COMPARE_COLORS.a;
 const PLAIN = '#cfe6f2';
 const RIVER = '#1b4f8a';
 const GAUGE = '#d03b3b';
+
+/** Admin boundary outlines: states bold, regions thin, districts finest. */
+const ADMIN_STYLE: Record<AdminLevel, PathOptions> = {
+  state: { color: '#063D39', weight: 2, dashArray: '7 4', opacity: 0.85, fill: false },
+  region: { color: '#3d3d3a', weight: 1.2, opacity: 0.7, fill: false },
+  district: { color: '#6b6a66', weight: 0.7, dashArray: '2 3', opacity: 0.7, fill: false },
+};
+const ADMIN_FILE: Record<AdminLevel, string> = {
+  state: 'admin-states.geojson',
+  region: 'admin-regions.geojson',
+  district: 'admin-districts.geojson',
+};
 
 /** Zooms to the floods on show whenever the selection changes. */
 function FitToFloods({ data, selectionKey }: { data: Collection[]; selectionKey: string }) {
@@ -85,7 +101,7 @@ function SwipeClip({ ratio }: { ratio: number }) {
   return null;
 }
 
-function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' }) {
+function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' | 'states' }) {
   const paths: Record<typeof name, ReactNode> = {
     calendar: (
       <>
@@ -110,6 +126,11 @@ function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eye
       <>
         <path d="M2 12s3.6-7 10-7c2 0 3.7.7 5.1 1.6M22 12s-3.6 7-10 7c-2 0-3.7-.7-5.1-1.6" />
         <path d="m3 3 18 18" />
+      </>
+    ),
+    states: (
+      <>
+        <path d="M4 20V10M10 20V4M16 20v-7M21 20H3" />
       </>
     ),
     compare: (
@@ -148,7 +169,22 @@ export function FloodHistoryMap() {
   const [pairB, setPairB] = useState<string | null>(null);
   const [ratio, setRatio] = useState(0.5);
   const [panel, setPanel] = useState<Panel>(null);
-  const [show, setShow] = useState({ rivers: true, gauges: true, plain: false });
+  const [show, setShow] = useState({
+    state: true,
+    region: false,
+    district: false,
+    rivers: true,
+    gauges: true,
+    plain: false,
+  });
+  const [areasOpen, setAreasOpen] = useState(true);
+  const [level, setLevel] = useState<AdminLevel>('state');
+  const { data: byAdmin } = useWatchFile<FloodByAdmin>('flood-by-admin.json');
+  // Choosing a level in the panel also shows its outlines on the map.
+  const pickLevel = (next: AdminLevel) => {
+    setLevel(next);
+    setShow((s) => ({ ...s, [next]: true }));
+  };
   const [basemap, setBasemap] = useState<MapLayerId>('streets');
   const wrap = useRef<HTMLDivElement>(null);
   const outer = useRef<HTMLDivElement>(null);
@@ -180,6 +216,7 @@ export function FloodHistoryMap() {
 
   const files = [
     ...(show.plain ? ['flood-plain-2013-2023.geojson'] : []),
+    ...(['state', 'region', 'district'] as const).filter((l) => show[l]).map((l) => ADMIN_FILE[l]),
     ...shown.map((event) => event.file),
     ...(show.rivers ? ['rivers.geojson'] : []),
     ...(show.gauges ? ['river-gauging-stations.geojson'] : []),
@@ -271,6 +308,17 @@ export function FloodHistoryMap() {
             />
           ) : null}
 
+          {(['district', 'region', 'state'] as const).map((l) =>
+            show[l] && ready[ADMIN_FILE[l]] ? (
+              <GeoJSON
+                key={l}
+                data={ready[ADMIN_FILE[l]]!}
+                style={ADMIN_STYLE[l]}
+                onEachFeature={(feature, layer) => layer.bindTooltip(String(feature.properties?.name ?? ''), { sticky: true })}
+              />
+            ) : null,
+          )}
+
           {comparing ? (
             <>
               <Pane name="swipe-a" style={{ zIndex: 410 }}>
@@ -339,6 +387,16 @@ export function FloodHistoryMap() {
             onToggle={fullscreen.toggle}
             labels={{ enter: copy.mapFullscreen, exit: copy.mapFullscreenExit }}
           />
+          <button
+            type="button"
+            aria-pressed={areasOpen}
+            aria-label={copy.stateArea}
+            title={copy.stateArea}
+            className={areasOpen ? 'active' : ''}
+            onClick={() => setAreasOpen((open) => !open)}
+          >
+            <Icon name="states" />
+          </button>
           <button
             type="button"
             aria-pressed={comparing}
@@ -437,6 +495,32 @@ export function FloodHistoryMap() {
         ) : null}
         </div>
 
+        {areasOpen && byAdmin ? (
+          <FloodStatePanel
+            level={level}
+            onLevel={pickLevel}
+            rows={
+              comparing && a && b
+                ? areaByUnit(byAdmin, level, [a.id], b.id)
+                : areaByUnit(byAdmin, level, filtered.map((event) => event.id))
+            }
+            subtitle={
+              comparing && a && b
+                ? copy.floodCompare
+                : single
+                  ? label(single)
+                  : `${filtered.length} ${copy.floodsShown}`
+            }
+            compare={
+              comparing && a && b
+                ? { a: `${copy.floodCompareA}: ${label(a)}`, b: `${copy.floodCompareB}: ${label(b)}` }
+                : undefined
+            }
+            boundaryCredit={byAdmin.credit}
+            onClose={() => setAreasOpen(false)}
+          />
+        ) : null}
+
         {panel ? (
           <div className="flood-map-panel" role="dialog" aria-label={panel === 'compare' ? copy.floodCompare : copy.mapLayers}>
             <div className="flood-map-panel-head">
@@ -508,6 +592,9 @@ export function FloodHistoryMap() {
                 </fieldset>
                 {(
                   [
+                    ['state', copy.layerStates],
+                    ['region', copy.layerRegions],
+                    ['district', copy.layerDistricts],
                     ['rivers', copy.layerRivers],
                     ['gauges', copy.layerGauges],
                     ['plain', copy.layerFloodPlain],

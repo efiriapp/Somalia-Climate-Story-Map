@@ -3764,3 +3764,184 @@ body.has-fullscreen-map .autoplay-scroll {
     border: 1px solid #e4e4e0;
   }
 }
+
+/* Past floods map: flooded area by state / region / district (right side) */
+.flood-state-side {
+  position: absolute;
+  top: 60px;
+  inset-inline-end: 10px;
+  bottom: 34px;
+  z-index: 1000;
+  width: min(340px, 38%);
+  overflow-y: auto;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+  font-size: 0.88rem;
+}
+
+.flood-state-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.flood-state-head h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--forest);
+}
+
+.flood-state-head button {
+  border: 0;
+  background: transparent;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #52514e;
+}
+
+.flood-state-levels {
+  display: flex;
+  margin: 10px 0 6px;
+  border: 1px solid #d6d5d0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.flood-state-levels button {
+  flex: 1;
+  padding: 6px 4px;
+  border: 0;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #3d3d3a;
+  cursor: pointer;
+}
+
+.flood-state-levels button + button {
+  border-inline-start: 1px solid #d6d5d0;
+}
+
+.flood-state-levels button[aria-selected='true'] {
+  background: var(--forest);
+  color: #fff;
+}
+
+.flood-state-sub {
+  margin: 4px 0 8px;
+  color: #52514e;
+}
+
+.flood-state-keys {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: #3d3d3a;
+}
+
+.flood-state-keys .swatch,
+.flood-state-side .swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+.flood-state-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.flood-state-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.flood-state-name img,
+.flood-state-noflag {
+  width: 30px;
+  height: 20px;
+  flex: none;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+  background: #e4e4e0;
+}
+
+.flood-state-name strong {
+  flex: 1;
+  color: #0b0b0b;
+}
+
+.flood-state-value {
+  display: block;
+  font-size: 0.8rem;
+  color: #3d3d3a;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.flood-state-name .flood-state-value {
+  display: inline;
+}
+
+.flood-state-bar {
+  height: 10px;
+  border-radius: 0 4px 4px 0;
+  background: #eeede9;
+  overflow: hidden;
+}
+
+.flood-state-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+}
+
+[dir='rtl'] .flood-state-bar,
+[dir='rtl'] .flood-state-bar span {
+  border-radius: 4px 0 0 4px;
+}
+
+.flood-state-note,
+.flood-state-credit {
+  margin: 12px 0 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #6b6a66;
+}
+
+.flood-state-credit {
+  margin-top: 6px;
+}
+
+.flood-map-wrap .flood-map-panel {
+  z-index: 1001;
+}
+
+.flood-map-wrap:fullscreen .flood-state-side,
+.flood-map-wrap.is-fullscreen .flood-state-side {
+  bottom: 40px;
+}
+
+@media (max-width: 760px) {
+  .flood-state-side {
+    position: static;
+    width: auto;
+    margin: 10px 16px 0;
+    box-shadow: none;
+    border: 1px solid #e4e4e0;
+  }
+}

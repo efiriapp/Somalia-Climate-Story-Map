@@ -171,3 +171,48 @@ export const floodPeriods = (events: FloodEvent[]): FloodEvent[] => {
       return true;
     });
 };
+
+/** Admin levels for flooded area: state (Adm1), region (Adm2), district (Adm3). */
+export type AdminLevel = 'state' | 'region' | 'district';
+
+/** Flooded hectares per state, region and district, from scripts/flood-areas.mjs. */
+export type FloodByAdmin = {
+  generated: string;
+  credit: string;
+  method: string;
+  /** Flood event id -> flood type -> hectares (full detail, equal-area). */
+  totals: Record<string, Record<string, number>>;
+  levels: Record<
+    AdminLevel,
+    {
+      units: { id: string; name: string; parent?: string }[];
+      /** Flood event id -> unit id -> hectares. */
+      areas: Record<string, Record<string, number>>;
+    }
+  >;
+};
+
+export type UnitArea = { id: string; name: string; ha: number; b?: number };
+
+/**
+ * Hectares per unit of one admin level, summed over the given floods, largest
+ * first. Units with no flooding are left out. With `compareTo`, each row also
+ * carries the second flood's hectares in `b`; units flooded in either are kept.
+ */
+export function areaByUnit(
+  data: FloodByAdmin,
+  level: AdminLevel,
+  eventIds: string[],
+  compareTo?: string,
+): UnitArea[] {
+  const { units, areas } = data.levels[level];
+  const sum = (ids: string[], unit: string) => ids.reduce((total, id) => total + (areas[id]?.[unit] ?? 0), 0);
+  return units
+    .map((unit) => {
+      const row: UnitArea = { id: unit.id, name: unit.name, ha: sum(eventIds, unit.id) };
+      if (compareTo !== undefined) row.b = sum([compareTo], unit.id);
+      return row;
+    })
+    .filter((row) => row.ha > 0 || (row.b ?? 0) > 0)
+    .sort((x, y) => Math.max(y.ha, y.b ?? 0) - Math.max(x.ha, x.b ?? 0));
+}

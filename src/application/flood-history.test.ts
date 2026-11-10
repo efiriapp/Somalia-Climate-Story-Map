@@ -1,9 +1,10 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { htaccess } from '../../deploy/headers.mjs';
 import {
   COMPARE_COLORS,
+  areaByUnit,
   YEAR_RAMP,
   compareAreas,
   floodArea,
@@ -146,5 +147,63 @@ describe('date dropdown', () => {
     expect(periods.at(-1)).toBe('2013-deyr');
     expect(new Set(periods).size).toBe(periods.length);
     expect(periods).toHaveLength(16);
+  });
+});
+
+describe('areaByUnit', () => {
+  const level = (units: { id: string; name: string }[], areas: Record<string, Record<string, number>>) => ({ units, areas });
+  const states = [
+    { id: 'jubaland', name: 'Jubaland' },
+    { id: 'hirshabelle', name: 'Hirshabelle' },
+    { id: 'galmudug', name: 'Galmudug' },
+  ];
+  const data = {
+    generated: '2026-11-10',
+    credit: 'b',
+    method: 'm',
+    totals: {},
+    levels: {
+      state: level(states, { one: { jubaland: 10, hirshabelle: 30 }, two: { jubaland: 25 } }),
+      region: level([], {}),
+      district: level([], {}),
+    },
+  };
+
+  it('sums the chosen floods per unit, largest first, without empty units', () => {
+    expect(areaByUnit(data, 'state', ['one', 'two'])).toEqual([
+      { id: 'jubaland', name: 'Jubaland', ha: 35 },
+      { id: 'hirshabelle', name: 'Hirshabelle', ha: 30 },
+    ]);
+  });
+
+  it('carries the second flood for compare and keeps units flooded in either', () => {
+    expect(areaByUnit(data, 'state', ['two'], 'one')).toEqual([
+      { id: 'hirshabelle', name: 'Hirshabelle', ha: 0, b: 30 },
+      { id: 'jubaland', name: 'Jubaland', ha: 25, b: 10 },
+    ]);
+  });
+
+  it('matches the prepared files: every flood measured, states add up, flags exist', () => {
+    const read = (f: string) => JSON.parse(readFileSync(join(process.cwd(), 'public/data/watch', f), 'utf8'));
+    const file = read('flood-by-admin.json');
+    const floods = read('index.json')
+      .layers.filter((l: { group: string }) => l.group === 'flood-event')
+      .map((l: { id: string; file: string }) => l);
+    for (const level of ['state', 'region', 'district']) {
+      expect(Object.keys(file.levels[level].areas).sort()).toEqual(floods.map((l: { id: string }) => l.id).sort());
+    }
+    for (const flood of floods) {
+      const total = Object.values(file.totals[flood.id] as Record<string, number>).reduce((s, v) => s + v, 0);
+      const inStates = Object.values(file.levels.state.areas[flood.id] as Record<string, number>).reduce((s, v) => s + v, 0);
+      // A little of some floods lies outside Somalia (upper Juba); never more than 5%.
+      expect(inStates).toBeLessThanOrEqual(total + 1);
+      expect(inStates).toBeGreaterThan(total * 0.95);
+      // The map layer carries the same full-detail total.
+      const layerTotal = read(flood.file).features.reduce((s: number, f: { properties: { area_ha: number } }) => s + f.properties.area_ha, 0);
+      expect(layerTotal).toBe(total);
+    }
+    for (const state of file.levels.state.units) {
+      expect(existsSync(join(process.cwd(), `src/assets/state-flags/${state.id}.svg`))).toBe(true);
+    }
   });
 });
