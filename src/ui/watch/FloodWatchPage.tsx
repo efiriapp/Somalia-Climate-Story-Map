@@ -14,6 +14,7 @@ import { somaliaToday, useOpenMeteo } from '../useOpenMeteo';
 import { FlowChart } from './FlowChart';
 import { StatusBadge, StatusLegend, type StatusTone } from './StatusBadge';
 import { WatchMap } from './WatchMap';
+import { FloodHistoryMap } from './FloodHistoryMap';
 import { WatchDisclaimer, WatchSources, WatchStatusMessage, type WatchSource } from './WatchSources';
 
 const TONE: Record<FlowStatus, StatusTone> = { normal: 'good', elevated: 'warning', high: 'critical' };
@@ -26,6 +27,10 @@ const SOURCES: WatchSource[] = [
   {
     text: 'Accessed through the Open-Meteo Flood API (Open-Meteo.com), CC BY 4.0. Values are modelled, not river gauge readings.',
     url: 'https://open-meteo.com/en/docs/flood-api',
+  },
+  {
+    text: 'Past floods map: flood extents, rivers and gauging stations from FAO SWALIM (Somalia Water and Land Information Management), 2013–2025, prepared by ICE Institute for the web (reprojected and simplified).',
+    url: 'https://spatial.faoswalim.org/',
   },
 ];
 
@@ -173,6 +178,7 @@ export function FloodWatchPage() {
           </details>
         </>
       ) : null}
+      <FloodHistoryMap />
       <WatchSources sources={SOURCES} />
     </article>
   );

@@ -65,9 +65,10 @@ AddType image/webp .webp
 AddType image/svg+xml .svg
 AddType font/woff2 .woff2
 AddType application/json .json
+AddType application/geo+json .geojson
 
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json application/geo+json image/svg+xml
 </IfModule>
 
 <IfModule mod_headers.c>
@@ -88,6 +89,10 @@ ${Object.entries(SECURITY_HEADERS)
     Header set Cache-Control "public, max-age=604800"
   </FilesMatch>
   <FilesMatch "\\.mjs$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+  # Prepared flood and drought map data (public/data/watch): refresh daily.
+  <FilesMatch "\\.geojson$">
     Header set Cache-Control "public, max-age=86400"
   </FilesMatch>
 </IfModule>
