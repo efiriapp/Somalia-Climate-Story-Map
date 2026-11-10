@@ -2878,3 +2878,96 @@ html[dir='rtl'] .autoplay-scroll select {
 .watch-table {
   overflow-x: auto;
 }
+
+/* Stories page: ICE at Global Stage banner (the globe moved here from the menu) */
+.globe-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0 0 22px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--forest);
+  color: #fff;
+}
+
+.globe-banner .nav-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.globe-banner > div {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.globe-banner h2 {
+  margin: 0 0 2px;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.globe-banner p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #d9e2de;
+}
+
+.globe-banner button,
+.globe-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.globe-banner button {
+  background: #fff;
+  color: var(--forest);
+}
+
+.globe-link {
+  background: var(--forest);
+  color: #fff;
+}
+
+/* All / ICE Stories / Global Stage filter */
+.story-kind {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: -6px 0 6px;
+}
+
+.story-kind button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #c9d3cf;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--forest);
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.story-kind button.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: #fff;
+}
+
+.story-kind .nav-icon {
+  width: 18px;
+  height: 18px;
+}

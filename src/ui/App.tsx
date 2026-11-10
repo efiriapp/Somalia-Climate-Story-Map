@@ -44,13 +44,17 @@ import type { Screen } from '../application/route';
 import { useHashRoute } from './useHashRoute';
 import { usePageMeta } from './usePageMeta';
 
-const catalogTypeFor = (screen: Screen): ContentType =>
-  screen === 'research' ? 'research-story' : 'ice-story';
+/** Stories shows ICE stories and ICE at Global Stage events together. */
+const catalogTypesFor = (screen: Screen): ContentType[] =>
+  screen === 'research' ? ['research-story'] : ['ice-story', 'global-stage'];
+
+type StoryKind = 'all' | 'ice-story' | 'global-stage';
 
 export default function App() {
   const [draft, setDraft] = useState<FilterCriteria>(defaultFilterCriteria);
   const [applied, setApplied] = useState<FilterCriteria>(defaultFilterCriteria);
   const [advancedOpen, setAdvancedOpen] = useState(true);
+  const [storyKind, setStoryKind] = useState<StoryKind>('all');
   const [route, navigate] = useHashRoute();
   const { screen, locale } = route;
   const selectedId = route.storyId;
@@ -70,8 +74,13 @@ export default function App() {
     [locale],
   );
   const scoped = useMemo(
-    () => localizedCatalog.filter((story) => story.type === catalogTypeFor(screen)),
-    [localizedCatalog, screen],
+    () =>
+      localizedCatalog.filter(
+        (story) =>
+          catalogTypesFor(screen).includes(story.type) &&
+          (screen !== 'stories' || storyKind === 'all' || story.type === storyKind),
+      ),
+    [localizedCatalog, screen, storyKind],
   );
   const matches = useMemo(() => filterCatalog(scoped, applied), [scoped, applied]);
   const detail = selectedId ? localizedCatalog.find((story) => story.id === selectedId) : undefined;
@@ -288,15 +297,6 @@ export default function App() {
           <NavIcon screen="drought-watch" />
           {copy.droughtWatch}
         </button>
-        <button
-          type="button"
-          className={screen === 'global-stage' ? 'active' : ''}
-          aria-current={screen === 'global-stage' ? 'page' : undefined}
-          onClick={() => openScreen('global-stage')}
-        >
-          <NavIcon screen="global-stage" />
-          {copy.globalStage}
-        </button>
       </nav>
 
       <ErrorBoundary
@@ -347,7 +347,13 @@ export default function App() {
           <button className="back" type="button" onClick={() => setSelectedId(null)}>
             {copy.backCatalog}
           </button>
-          <p className="story-type">{detail.type === 'research-story' ? copy.researchLabel : copy.story}</p>
+          <p className="story-type">
+            {detail.type === 'research-story'
+              ? copy.researchLabel
+              : detail.type === 'global-stage'
+                ? copy.globalStage
+                : copy.story}
+          </p>
           <h1>{detail.title}</h1>
           {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
           <p className="story-meta">
@@ -363,6 +369,14 @@ export default function App() {
               </a>
             </p>
           ) : null}
+          {detail.type === 'global-stage' ? (
+            <p>
+              <button className="globe-link" type="button" onClick={() => openScreen('global-stage')}>
+                <NavIcon screen="global-stage" />
+                {copy.globalStageOpen}
+              </button>
+            </p>
+          ) : null}
           <RelatedLinks links={researchRelatedLinks} onOpen={openRelated} />
           <MediaSources entries={mediaSourceList(storyImages(detail), [], detail)} />
           <MediaSourceCredit credit={storyMediaCredit(detail)} />
@@ -370,6 +384,18 @@ export default function App() {
       ) : (
         <>
           <div className="search-wrap">
+            {screen === 'stories' ? (
+              <section className="globe-banner" aria-label={copy.globalStageTitle}>
+                <NavIcon screen="global-stage" />
+                <div>
+                  <h2>{copy.globalStageTitle}</h2>
+                  <p>{copy.globalStageBanner}</p>
+                </div>
+                <button type="button" onClick={() => openScreen('global-stage')}>
+                  {copy.globalStageOpen} →
+                </button>
+              </section>
+            ) : null}
             <p className="kicker">{copy.search}</p>
             <input
               className="search-input"
@@ -410,12 +436,38 @@ export default function App() {
             <h2 className="section-title">
               {screen === 'research' ? copy.research : copy.latestStories}
             </h2>
+            {screen === 'stories' ? (
+              <div className="story-kind" role="group" aria-label={copy.storiesKindLabel}>
+                {(
+                  [
+                    ['all', copy.storiesAll],
+                    ['ice-story', copy.storiesIce],
+                    ['global-stage', copy.globalStage],
+                  ] as const
+                ).map(([kind, label]) => (
+                  <button
+                    key={kind}
+                    type="button"
+                    aria-pressed={storyKind === kind}
+                    className={storyKind === kind ? 'active' : ''}
+                    onClick={() => setStoryKind(kind)}
+                  >
+                    {kind === 'global-stage' ? <NavIcon screen="global-stage" /> : null}
+                    {label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
           <StoryList
             stories={matches}
             selectedId={selectedId}
             onSelect={setSelectedId}
-            typeLabel={screen === 'research' ? copy.researchLabel : copy.story}
+            typeLabel={
+              screen === 'research'
+                ? copy.researchLabel
+                : (story) => (story.type === 'global-stage' ? copy.globalStage : copy.story)
+            }
             layout="grid"
           />
         </>

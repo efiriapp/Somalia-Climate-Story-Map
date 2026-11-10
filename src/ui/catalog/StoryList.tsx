@@ -6,7 +6,8 @@ type Props = {
   stories: Story[];
   selectedId: string | null;
   onSelect: (id: string) => void;
-  typeLabel?: string;
+  /** Card label: one string for all cards, or chosen per story. */
+  typeLabel?: string | ((story: Story) => string);
   layout?: 'list' | 'grid';
 };
 
@@ -43,7 +44,7 @@ export function StoryList({
             </div>
           )}
           <div>
-            <div className="story-type">{typeLabel}</div>
+            <div className="story-type">{typeof typeLabel === 'function' ? typeLabel(story) : typeLabel}</div>
             <h3>{story.title}</h3>
             <div className="story-meta">
               {formatLocaleDate(story.date, locale)} · {story.location.name}

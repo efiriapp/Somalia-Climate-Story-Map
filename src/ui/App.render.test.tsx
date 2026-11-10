@@ -115,3 +115,37 @@ describe('App catalog search', () => {
     expect(document.querySelector('.empty')).toBeTruthy();
   });
 });
+
+describe('Stories with ICE at Global Stage', () => {
+  it('has no separate Global Stage menu item', () => {
+    render(<App />);
+    expect(navButton(CHROME.en.globalStage)).toBeUndefined();
+    expect(navButton(CHROME.en.stories)).toBeTruthy();
+  });
+
+  it('lists ICE stories and Global Stage events together, with a filter', async () => {
+    render(<App />);
+    const labels = () => [...document.querySelectorAll('.story-card .story-type')].map((el) => el.textContent);
+    expect(labels()).toContain(CHROME.en.story);
+    expect(labels()).toContain(CHROME.en.globalStage);
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: CHROME.en.globalStage }));
+    });
+    expect(new Set(labels())).toEqual(new Set([CHROME.en.globalStage]));
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: CHROME.en.storiesIce }));
+    });
+    expect(new Set(labels())).toEqual(new Set([CHROME.en.story]));
+  });
+
+  it('opens the globe from the Stories banner', async () => {
+    render(<App />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: `${CHROME.en.globalStageOpen} →` }));
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    });
+    expect(window.location.hash).toBe('#/en/global-stage');
+  });
+});
