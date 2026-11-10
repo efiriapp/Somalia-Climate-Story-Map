@@ -1,0 +1,10 @@
+{"type":"FeatureCollection", "features": [
+{"type":"Feature","geometry":{"type":"Point","coordinates":[42.5426,3.7917]},"properties":{"name":"Luuq","river":"Juba","status":"Functioning"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[42.2812,2.3399]},"properties":{"name":"Baardheere","river":"Juba","status":"Functioning"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[45.206,4.736]},"properties":{"name":"Beledweyne","river":"Shabelle","status":"Functioning"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[45.5673,3.857]},"properties":{"name":"Bulo Burto","river":"Shabelle","status":"Functioning"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[45.5049,2.7787]},"properties":{"name":"Jowhar","river":"Shabelle","status":"Functioning"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[42.5732,1.2448]},"properties":{"name":"Bualle","river":"Juba","status":"Functioning"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[45.5304,2.971]},"properties":{"name":"Mahadey Weyne","river":"Shabelle","status":"Functioning"}},
+{"type":"Feature","geometry":{"type":"Point","coordinates":[42.2231,4.1622]},"properties":{"name":"Dollow","river":"Juba","status":"Functioning"}}
+]}

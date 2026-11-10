@@ -22,3 +22,6 @@ site-upload.zip
 
 # Local caches for data scripts (npm run watch:baselines)
 .cache/
+
+# Unzipped source data (large; regenerate from the zips in Sources/Data)
+Sources/Data/extracted/
