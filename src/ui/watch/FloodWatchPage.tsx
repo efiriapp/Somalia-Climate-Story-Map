@@ -12,7 +12,7 @@ import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { somaliaToday, useOpenMeteo } from '../useOpenMeteo';
 import { FlowChart } from './FlowChart';
-import { StatusBadge, StatusLegend, type StatusTone } from './StatusBadge';
+import { StatusBadge, StatusIcon, StatusLegend, type StatusTone } from './StatusBadge';
 import { WatchMap } from './WatchMap';
 import { FloodHistoryMap } from './FloodHistoryMap';
 import { WatchDisclaimer, WatchSources, WatchStatusMessage, type WatchSource } from './WatchSources';
@@ -60,11 +60,13 @@ export function FloodWatchPage() {
     high: copy.flowHighHint,
   };
   const riverLabel: Record<RiverId, string> = { shabelle: copy.riverShabelle, juba: copy.riverJuba };
-  const [river, setRiver] = useState<RiverId>('shabelle');
+  // Map filter: all rivers or one; all towns of it or one town.
+  const [river, setRiver] = useState<RiverId | 'all'>('all');
   const [stationId, setStationId] = useState<string | null>(null);
-  const riverReadings = readings.filter((reading) => reading.station.river === river);
-  const chosen = riverReadings.find((reading) => reading.station.id === stationId) ?? riverReadings[0];
-  const pickRiver = (next: RiverId) => {
+  const riverReadings = readings.filter((reading) => river === 'all' || reading.station.river === river);
+  const chosen = riverReadings.find((reading) => reading.station.id === stationId);
+  const onMap = chosen ? [chosen] : riverReadings;
+  const pickRiver = (next: RiverId | 'all') => {
     setRiver(next);
     setStationId(null);
   };
@@ -138,7 +140,8 @@ export function FloodWatchPage() {
         <>
           <WatchMap
             label={copy.watchMap}
-            points={readings.map((reading) => ({
+            fitToPoints
+            points={onMap.map((reading) => ({
               id: reading.station.id,
               name: name(reading),
               lat: reading.station.lat,
@@ -156,34 +159,63 @@ export function FloodWatchPage() {
               setStationId(station.id);
             }}
             controls={
-            <div className="station-selects station-selects-overlay">
-              <label>
-                <span>{copy.riverChoose}</span>
-                <select value={river} onChange={(event) => pickRiver(event.target.value as RiverId)}>
-                  {rivers.map((id) => (
-                    <option key={id} value={id}>
-                      {riverLabel[id]} · {statusLabel[worstIn(id)]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>{copy.flowStation}</span>
-                <select value={chosen?.station.id ?? ''} onChange={(event) => setStationId(event.target.value)}>
-                  {riverReadings.map((reading) => (
-                    <option key={reading.station.id} value={reading.station.id}>
-                      {name(reading)} · {statusLabel[reading.status]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
+              <div className="station-selects station-selects-overlay">
+                <label>
+                  <span>{copy.riverChoose}</span>
+                  <select value={river} onChange={(event) => pickRiver(event.target.value as RiverId | 'all')}>
+                    <option value="all">{copy.riverAll}</option>
+                    {rivers.map((id) => (
+                      <option key={id} value={id}>
+                        {riverLabel[id]} · {statusLabel[worstIn(id)]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>{copy.flowStation}</span>
+                  <select value={chosen?.station.id ?? 'all'} onChange={(event) => setStationId(event.target.value === 'all' ? null : event.target.value)}>
+                    <option value="all">{copy.townAll}</option>
+                    {riverReadings.map((reading) => (
+                      <option key={reading.station.id} value={reading.station.id}>
+                        {name(reading)} · {statusLabel[reading.status]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            }
+            side={
+              chosen ? (
+                <>
+                  <button type="button" className="side-back" onClick={() => setStationId(null)}>
+                    ← {copy.townAll}
+                  </button>
+                  {card(chosen)}
+                </>
+              ) : (
+                <div className="side-list">
+                  <h3>{river === 'all' ? copy.riverAll : riverLabel[river]}</h3>
+                  <ul>
+                    {riverReadings.map((reading) => (
+                      <li key={reading.station.id}>
+                        <button type="button" onClick={() => {
+                          setRiver(reading.station.river);
+                          setStationId(reading.station.id);
+                        }}>
+                          <StatusIcon tone={TONE[reading.status]} />
+                          <span className="side-list-name">{name(reading)}</span>
+                          <span className="side-list-value">
+                            {reading.today ? formatFlow(reading.today.value) : '–'} {copy.flowUnit}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="watch-how">{copy.townPickHint}</p>
+                </div>
+              )
             }
           />
-          {/* One chart: choose the river, then the town. */}
-          <section className="watch-group station-picker">
-            {chosen ? card(chosen) : null}
-          </section>
           <details className="watch-table">
             <summary>{copy.watchDataTable}</summary>
             <table>

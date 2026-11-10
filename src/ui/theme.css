@@ -3625,3 +3625,142 @@ body.has-fullscreen-map .autoplay-scroll {
     flex-basis: 100%;
   }
 }
+
+/* Taller full-width maps: scale with the screen height */
+.watch-map .leaflet-container,
+.flood-map-wrap .leaflet-container {
+  height: clamp(440px, 74vh, 780px);
+}
+
+.watch-map-stage {
+  position: relative;
+}
+
+/* Side panel on the live river map (right side; under the map on phones) */
+.watch-map-side {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  bottom: 34px;
+  z-index: 1000;
+  width: min(420px, 42%);
+  overflow-y: auto;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+
+.watch-map-side .watch-card {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.side-back {
+  margin-bottom: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--leaf);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.side-list h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.side-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.side-list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e4e4e0;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.side-list button:hover {
+  border-color: var(--forest);
+}
+
+.side-list-name {
+  flex: 1;
+  font-weight: 700;
+  color: #0b0b0b;
+}
+
+.side-list-value {
+  font-size: 0.85rem;
+  color: #52514e;
+  white-space: nowrap;
+}
+
+/* Town name labels on the map */
+.leaflet-tooltip.map-label {
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 0.78rem;
+  color: #0b0b0b;
+}
+
+.leaflet-tooltip.map-label-chosen {
+  font-size: 0.85rem;
+  background: var(--forest);
+  color: #fff;
+}
+
+.leaflet-tooltip.map-label-chosen::before {
+  border-top-color: var(--forest);
+}
+
+/* Home button under the zoom buttons */
+.map-home-control a {
+  display: grid !important;
+  place-items: center;
+  color: var(--forest) !important;
+}
+
+/* Full screen: the stage with the map fills the height */
+.watch-map:fullscreen .watch-map-stage,
+.watch-map.is-fullscreen .watch-map-stage {
+  flex: 1;
+}
+
+.watch-map:fullscreen .watch-map-stage .leaflet-container,
+.watch-map.is-fullscreen .watch-map-stage .leaflet-container {
+  height: 100%;
+}
+
+@media (max-width: 760px) {
+  .watch-map .leaflet-container,
+  .flood-map-wrap .leaflet-container {
+    height: clamp(380px, 64vh, 560px);
+  }
+
+  .watch-map-side {
+    position: static;
+    width: auto;
+    margin: 10px 16px 0;
+    box-shadow: none;
+    border: 1px solid #e4e4e0;
+  }
+}
