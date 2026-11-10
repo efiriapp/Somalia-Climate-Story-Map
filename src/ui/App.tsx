@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useLayoutEffect, useMemo, useState } from 'react';
 import { flagIconUrl } from '../application/country-flag';
 import { filterCatalog } from '../application/filter-catalog';
 import { chromeCopy, formatLocaleDate, type Locale } from '../application/locale';
@@ -17,15 +17,23 @@ import { AutoplayScroll } from './chrome/AutoplayScroll';
 import { LocaleProvider } from './chrome/LocaleContext';
 import { AutoplayProvider } from './chrome/AutoplayContext';
 import { SiteFooter } from './chrome/SiteFooter';
-import { StoryDetail } from './catalog/StoryDetail';
+import { ErrorBoundary } from './chrome/ErrorBoundary';
 import { StoryList } from './catalog/StoryList';
 import { ClimateImpactPage } from './catalog/ClimateImpactPage';
 import { MediaSourceCredit } from './catalog/MediaSourceCredit';
 import { RelatedLinks } from './catalog/RelatedLinks';
-import { GlobalStageMap } from './map/GlobalStageMap';
 import type { ClimateHazardId } from '../content/climate-impact';
 
-type Screen = 'about' | 'research' | 'stories' | 'climate-impact' | 'global-stage';
+// Map pages load on demand so MapLibre and Leaflet stay out of the first download.
+const GlobalStageMap = lazy(() =>
+  import('./map/GlobalStageMap').then((module) => ({ default: module.GlobalStageMap })),
+);
+const StoryDetail = lazy(() =>
+  import('./catalog/StoryDetail').then((module) => ({ default: module.StoryDetail })),
+);
+import type { Screen } from '../application/route';
+import { useHashRoute } from './useHashRoute';
+import { usePageMeta } from './usePageMeta';
 
 const catalogTypeFor = (screen: Screen): ContentType =>
   screen === 'research' ? 'research-story' : 'ice-story';
@@ -34,10 +42,14 @@ export default function App() {
   const [draft, setDraft] = useState<FilterCriteria>(defaultFilterCriteria);
   const [applied, setApplied] = useState<FilterCriteria>(defaultFilterCriteria);
   const [advancedOpen, setAdvancedOpen] = useState(true);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [impactHazard, setImpactHazard] = useState<ClimateHazardId | null>(null);
-  const [screen, setScreen] = useState<Screen>('stories');
-  const [locale, setLocale] = useState<Locale>('en');
+  const [route, navigate] = useHashRoute();
+  const { screen, locale } = route;
+  const selectedId = route.storyId;
+  const impactHazard = route.hazard;
+  const go = (patch: Partial<typeof route>) => navigate({ ...route, ...patch });
+  const setLocale = (next: Locale) => go({ locale: next });
+  const setSelectedId = (id: string | null) => go({ storyId: id });
+  const setImpactHazard = (id: ClimateHazardId | null) => go({ hazard: id });
   const copy = chromeCopy(locale);
   const about = localizeAbout(locale);
   const ukFlagSrc = flagIconUrl('United Kingdom');
@@ -66,9 +78,7 @@ export default function App() {
   }, [locale]);
 
   const openScreen = (next: Screen) => {
-    setScreen(next);
-    setSelectedId(null);
-    setImpactHazard(null);
+    go({ screen: next, storyId: null, hazard: null });
   };
 
   const relatedStoryTitle = (id: string) =>
@@ -76,23 +86,28 @@ export default function App() {
 
   const openRelated = (target: RelatedTarget) => {
     if (target.kind === 'hub') {
-      setSelectedId(null);
-      setScreen('climate-impact');
-      setImpactHazard(null);
+      go({ screen: 'climate-impact', storyId: null, hazard: null });
       return;
     }
     if (target.kind === 'hazard') {
-      setSelectedId(null);
-      setScreen('climate-impact');
-      setImpactHazard(target.id);
+      go({ screen: 'climate-impact', storyId: null, hazard: target.id });
       return;
     }
     const story = localizedCatalog.find((item) => item.id === target.id);
     if (!story) return;
-    setImpactHazard(null);
-    setSelectedId(story.id);
-    setScreen(story.type === 'research-story' ? 'research' : 'stories');
+    go({
+      screen: story.type === 'research-story' ? 'research' : 'stories',
+      storyId: story.id,
+      hazard: null,
+    });
   };
+
+  usePageMeta({
+    platform: copy.platform,
+    title: detail?.title,
+    description: detail?.summary,
+    image: detail?.images[0],
+  });
 
   const researchRelatedLinks = detail
     ? relatedTargetsForStory(detail.id).map((target) => ({
@@ -216,6 +231,13 @@ export default function App() {
         </div>
       </nav>
 
+      <ErrorBoundary
+        resetKey={`${screen}/${selectedId ?? ''}/${impactHazard ?? ''}`}
+        title={copy.pageErrorTitle}
+        message={copy.pageErrorMessage}
+        retryLabel={copy.pageErrorRetry}
+      >
+      <Suspense fallback={<p className="page-loading" role="status">{copy.pageLoading}</p>}>
       {screen === 'about' ? (
         <article className="detail about-ice" aria-label={copy.about}>
           <AutoplayScroll />
@@ -325,6 +347,8 @@ export default function App() {
           />
         </>
       )}
+      </Suspense>
+      </ErrorBoundary>
       {screen === 'global-stage' ? null : <SiteFooter />}
     </div>
     </AutoplayProvider>

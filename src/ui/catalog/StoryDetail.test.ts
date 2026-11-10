@@ -69,7 +69,7 @@ describe('StoryDetail', () => {
     expect(app).toContain('onOpenRelated');
     expect(app).toContain('openRelated');
     expect(app).toMatch(/openRelated[\s\S]{0,400}climate-impact/);
-    expect(app).toMatch(/setImpactHazard\(target\.id\)/);
+    expect(app).toMatch(/hazard: target\.id/);
   });
 
   it('shows related pages as image cards before the final media credit', () => {

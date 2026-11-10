@@ -4,16 +4,16 @@ import { videoEmbedSrc, youtubeEmbedSrc } from './youtube-embed';
 describe('youtubeEmbedSrc', () => {
   it('turns youtu.be links into embed URLs', () => {
     expect(youtubeEmbedSrc('https://youtu.be/osuiqTcIEeM?si=abc')).toBe(
-      'https://www.youtube.com/embed/osuiqTcIEeM',
+      'https://www.youtube-nocookie.com/embed/osuiqTcIEeM',
     );
     expect(youtubeEmbedSrc('https://youtu.be/WcUbn9Oo0A8?si=gdNaN6eA4qSAnDHz')).toBe(
-      'https://www.youtube.com/embed/WcUbn9Oo0A8',
+      'https://www.youtube-nocookie.com/embed/WcUbn9Oo0A8',
     );
     expect(youtubeEmbedSrc('https://youtube.com/shorts/Pk0ZU1EsmWU?si=SYWrS1masvd1aVTX')).toBe(
-      'https://www.youtube.com/embed/Pk0ZU1EsmWU',
+      'https://www.youtube-nocookie.com/embed/Pk0ZU1EsmWU',
     );
     expect(youtubeEmbedSrc('https://www.youtube.com/shorts/Pk0ZU1EsmWU')).toBe(
-      'https://www.youtube.com/embed/Pk0ZU1EsmWU',
+      'https://www.youtube-nocookie.com/embed/Pk0ZU1EsmWU',
     );
     expect(youtubeEmbedSrc('https://ice.simad.edu.so/')).toBeNull();
   });
@@ -34,7 +34,7 @@ describe('videoEmbedSrc', () => {
       'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fr%2F1PXwb4Yd2U%2F&show_text=false',
     );
     expect(videoEmbedSrc('https://youtu.be/_vxiN3n1Ckk?si=je-l4KCcFWDSTGA9')).toBe(
-      'https://www.youtube.com/embed/_vxiN3n1Ckk',
+      'https://www.youtube-nocookie.com/embed/_vxiN3n1Ckk',
     );
     expect(videoEmbedSrc('https://ice.simad.edu.so/')).toBeNull();
   });

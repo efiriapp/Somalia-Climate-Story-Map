@@ -36,7 +36,7 @@ function StorySpread({ images, className }: { images: string[]; className: strin
   return (
     <div className={`story-spread ${className}${images.length === 1 ? ' story-spread-single' : ''}`}>
       {images.map((src) => (
-        <img key={src} src={src} alt="" />
+        <img loading="lazy" decoding="async" key={src} src={src} alt="" />
       ))}
     </div>
   );
@@ -146,7 +146,7 @@ export function ClimateImpactPage({
             className="climate-impact-card"
             onClick={() => onSelect(item.id)}
           >
-            {item.images[0] ? <img src={item.images[0]} alt="" /> : null}
+            {item.images[0] ? <img loading="lazy" decoding="async" src={item.images[0]} alt="" /> : null}
             <p className="story-type">{copy.climateImpact}</p>
             <h2>{hazardTitle(item.id, copy)}</h2>
             <p>{item.lede}</p>

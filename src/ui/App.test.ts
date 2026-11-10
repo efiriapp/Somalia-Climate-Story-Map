@@ -87,9 +87,9 @@ describe('platform topbar', () => {
 
   it('opens related climate hazards and stories through a shared openRelated handler', () => {
     expect(source).toContain('openRelated');
-    expect(source).toContain("setScreen('climate-impact')");
-    expect(source).toContain('setImpactHazard(target.id)');
-    expect(source).toContain("setScreen(story.type === 'research-story' ? 'research' : 'stories')");
+    expect(source).toContain("go({ screen: 'climate-impact', storyId: null, hazard: target.id })");
+    expect(source).toContain("screen: story.type === 'research-story' ? 'research' : 'stories'");
+    expect(source).toContain('useHashRoute');
     expect(source).toContain('RelatedLinks');
     expect(source).toContain('relatedTargetsForStory');
   });

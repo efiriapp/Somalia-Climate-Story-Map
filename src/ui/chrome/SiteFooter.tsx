@@ -7,8 +7,8 @@ export function SiteFooter() {
   return (
     <footer className="site-footer" role="contentinfo">
       <div className="site-footer-brand">
-        <img src="/logos/ice-mark.png" alt="" />
-        <img src="/logos/simad.webp" alt="" />
+        <img loading="lazy" decoding="async" src="/logos/ice-mark.png" alt="" />
+        <img loading="lazy" decoding="async" src="/logos/simad.webp" alt="" />
         <div>
           <strong>{footer.institute}</strong>
           <p>{footer.university}</p>

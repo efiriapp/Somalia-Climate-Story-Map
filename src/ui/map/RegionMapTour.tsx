@@ -303,7 +303,7 @@ export function RegionMapTour({ story }: Props) {
         </div>
         {sliderOpen && activeStop ? (
           <aside className="region-slide-card" aria-label={activeStop.title}>
-            {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
+            {activeStop.images[0] ? <img loading="lazy" decoding="async" src={activeStop.images[0]} alt="" /> : null}
             <h3>{activeStop.title}</h3>
             <p>{activeStop.description}</p>
             <MediaSourceCredit credit={storyMediaCredit(story)} />

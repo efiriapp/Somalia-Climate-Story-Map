@@ -18,15 +18,14 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('runPlaceTour');
   });
 
-  it('uses free OSM Mercator streets style instead of keyed commercial tiles', () => {
-    expect(source).toContain('styleForLayer');
+  it('uses the shared free basemap instead of keyed commercial tiles', () => {
+    expect(source).toContain('basemapFor');
     expect(source).toContain('DEFAULT_MAP_LAYER');
-    expect(source).toContain('styleForLayer(DEFAULT_MAP_LAYER)');
+    expect(source).toContain('basemapFor(DEFAULT_MAP_LAYER).style');
     expect(source).not.toContain('equalEarthStyle');
     expect(source).not.toContain('EqualEarthCoordTransform');
     expect(source).not.toContain('EQUAL_EARTH_SWITCH_ZOOM');
     expect(source).not.toContain('maplibre-gl-equal-earth');
-    expect(source).not.toContain("styleForLayer('osm')");
     expect(source).not.toContain('carto-voyager');
     expect(source).not.toContain('basemaps.cartocdn.com');
   });
@@ -35,7 +34,7 @@ describe('GlobalStageMap', () => {
     expect(source).toContain('MapBasemapControl');
     expect(source).toContain("useState<MapLayerId>(DEFAULT_MAP_LAYER)");
     expect(source).toContain('setBasemap');
-    expect(source).toContain('styleForLayer(basemap)');
+    expect(source).toContain('basemapFor(basemap)');
     expect(source).toContain('layersOpen');
   });
 

@@ -9,7 +9,7 @@
   --white: #ffffff;
   --chip: #e8f5ee;
   --control: #ececec;
-  font-family: Inter, system-ui, 'Segoe UI', sans-serif;
+  font-family: Inter, 'Noto Sans Arabic', system-ui, 'Segoe UI', sans-serif;
   color: var(--ink);
   background: var(--white);
 }
@@ -2470,4 +2470,15 @@ html[dir='rtl'] .autoplay-scroll select {
 
 .site-footer a {
   color: var(--mint);
+}
+
+/* Lazy page loading and per-page error fallback */
+.page-loading {
+  padding: 48px 16px;
+  text-align: center;
+  color: #4b5b58;
+}
+
+.page-error {
+  text-align: center;
 }

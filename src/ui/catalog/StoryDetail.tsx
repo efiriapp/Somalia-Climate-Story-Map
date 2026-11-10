@@ -85,7 +85,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
           }`}
         >
           {first.map((src) => (
-            <img
+            <img decoding="async"
               key={src}
               src={src}
               alt=""
@@ -117,7 +117,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
                   className={`story-spread story-spread-single${isStatementDocument(src) ? ' story-spread-document' : ''}`}
                   key={src}
                 >
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={src}
                     alt=""
                     className={isStatementDocument(src) ? 'story-document' : undefined}
@@ -131,7 +131,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
               className={`story-spread story-spread-single${isStatementDocument(src) ? ' story-spread-document' : ''}`}
               key={src}
             >
-              <img
+              <img loading="lazy" decoding="async"
                 src={src}
                 alt=""
                 className={isStatementDocument(src) ? 'story-document' : undefined}
@@ -147,7 +147,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
           {index === midChapterIndex && middle.length > 0 ? (
             <div className="story-spread story-spread-middle">
               {middle.map((src) => (
-                <img key={src} src={src} alt="" />
+                <img loading="lazy" decoding="async" key={src} src={src} alt="" />
               ))}
             </div>
           ) : null}
@@ -158,7 +158,7 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
           className={`story-spread story-spread-end${last.some(isStatementDocument) ? ' story-spread-document' : ''}`}
         >
           {last.map((src) => (
-            <img
+            <img loading="lazy" decoding="async"
               key={src}
               src={src}
               alt=""
@@ -234,7 +234,15 @@ export function StoryDetail({ story, onBack, onOpenRelated, relatedStoryTitle }:
             {source.extras?.map((row) => (
               <div key={row.label}>
                 <dt>{row.label}</dt>
-                <dd>{row.value}</dd>
+                <dd>
+                  {/^https?:\/\//.test(row.value) ? (
+                    <a href={row.value} target="_blank" rel="noreferrer">
+                      {row.value}
+                    </a>
+                  ) : (
+                    row.value
+                  )}
+                </dd>
               </div>
             ))}
             {story.videoTitle ? (

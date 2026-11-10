@@ -36,7 +36,7 @@ export function StoryList({
           onClick={() => onSelect(story.id)}
         >
           {story.images[0] ? (
-            <img src={story.images[0]} alt="" />
+            <img loading="lazy" decoding="async" src={story.images[0]} alt="" />
           ) : (
             <div className="thumb" aria-hidden>
               {story.title.slice(0, 2).toUpperCase()}

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AttributionControl, Map, Marker, NavigationControl, type GeoJSONSource } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+// Registers the worker URL; kept here so MapLibre only loads with this lazy page.
+import '../../application/maplibre-worker';
 import {
   continentOfCountry,
   continentSummaries,
@@ -27,7 +29,7 @@ import {
   type TourStop,
 } from '../../application/global-tour';
 import { countryLabel, formatLocaleDate } from '../../application/locale';
-import { DEFAULT_MAP_LAYER, styleForLayer, type MapLayerId } from '../../application/map-layers';
+import { DEFAULT_MAP_LAYER, basemapFor, type MapLayerId } from '../../application/map-layers';
 import { storyMediaCredit } from '../../application/media-source-credit';
 import { flagIconUrl } from '../../application/country-flag';
 import type { Story } from '../../domain/story';
@@ -497,7 +499,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     }
     const map = new Map({
       container: host.current,
-      style: styleForLayer(DEFAULT_MAP_LAYER),
+      style: basemapFor(DEFAULT_MAP_LAYER).style,
       center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat],
       zoom: COUNTRY_ZOOM,
       pitch: GLOBE_VIEW.pitch,
@@ -555,7 +557,12 @@ export function GlobalStageMap({ stories, onClose }: Props) {
       return;
     }
     const activeIdSnapshot = activeId;
-    map.setStyle(styleForLayer(basemap));
+    const next = basemapFor(basemap);
+    const transform = next.transform;
+    map.setStyle(
+      next.style,
+      transform ? { transformStyle: (_previous, incoming) => transform(incoming) } : undefined,
+    );
     map.once('style.load', () => {
       ensureMeasureLine(map);
       const source = map.getSource('measure-line') as GeoJSONSource | undefined;
@@ -636,7 +643,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
               >
                 ×
               </button>
-              {tourCard.images[0] ? <img src={tourCard.images[0]} alt="" /> : null}
+              {tourCard.images[0] ? <img loading="lazy" decoding="async" src={tourCard.images[0]} alt="" /> : null}
               <p className="event-card-date">{formatLocaleDate(tourCard.date, locale)}</p>
               <h3>{tourCard.kind === 'home' ? copy.mogadishuHome : tourCard.title}</h3>
               <p className="event-card-place">
