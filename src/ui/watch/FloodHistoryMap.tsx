@@ -120,9 +120,9 @@ function SwipeClip({ ratio }: { ratio: number }) {
  */
 /** Label size in px at zoom 5, and the largest it grows to. */
 const LABEL_SIZE: Record<AdminLevel, { base: number; max: number }> = {
-  state: { base: 10, max: 16 },
-  region: { base: 9, max: 14 },
-  district: { base: 8, max: 13 },
+  state: { base: 9, max: 14 },
+  region: { base: 8, max: 12 },
+  district: { base: 7.5, max: 11 },
 };
 
 function AdminLabels({ data, level, listed }: { data: Collection; level: AdminLevel; listed: Set<string> }) {

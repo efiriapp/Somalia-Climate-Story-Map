@@ -3969,20 +3969,6 @@ body.has-fullscreen-map .autoplay-scroll {
   transform: translate(-50%, -50%);
   white-space: nowrap;
   font-weight: 700;
-  color: #1f1f1d;
-  text-shadow:
-    0 0 3px #fff,
-    0 0 3px #fff,
-    0 0 2px #fff;
+  color: #000;
   pointer-events: none;
-}
-
-.admin-label-state span {
-  color: var(--forest);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.admin-label-district span {
-  color: #3d3d3a;
 }
