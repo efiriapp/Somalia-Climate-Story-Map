@@ -118,11 +118,20 @@ function SwipeClip({ ratio }: { ratio: number }) {
  * for every district from zoom 8; further out only for districts in the
  * flooded-area list, so the map does not fill with text.
  */
+/** Label size in px at zoom 5, and the largest it grows to. */
+const LABEL_SIZE: Record<AdminLevel, { base: number; max: number }> = {
+  state: { base: 10, max: 16 },
+  region: { base: 9, max: 14 },
+  district: { base: 8, max: 13 },
+};
+
 function AdminLabels({ data, level, listed }: { data: Collection; level: AdminLevel; listed: Set<string> }) {
   const map = useMap();
   const [zoom, setZoom] = useState(map.getZoom());
   useMapEvents({ zoomend: () => setZoom(map.getZoom()) });
   const all = level !== 'district' || zoom >= 8;
+  // Small bold names that grow as the map is zoomed in.
+  const size = Math.min(LABEL_SIZE[level].max, LABEL_SIZE[level].base + Math.max(0, zoom - 5) * 1.5);
   return (
     <>
       {data.features.map((feature) => {
@@ -130,10 +139,10 @@ function AdminLabels({ data, level, listed }: { data: Collection; level: AdminLe
         if (lx === undefined || ly === undefined || (!all && !listed.has(id))) return null;
         const icon = L.divIcon({
           className: `admin-label admin-label-${level}`,
-          html: `<span>${name.replace(/[&<>"]/g, '')}</span>`,
+          html: `<span style="font-size:${size}px">${name.replace(/[&<>"]/g, '')}</span>`,
           iconSize: [0, 0],
         });
-        return <Marker key={`${level}-${id}`} position={[ly, lx]} icon={icon} interactive={false} keyboard={false} />;
+        return <Marker key={`${level}-${id}-${size}`} position={[ly, lx]} icon={icon} interactive={false} keyboard={false} />;
       })}
     </>
   );

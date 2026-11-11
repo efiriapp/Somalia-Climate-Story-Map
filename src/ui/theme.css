@@ -3978,17 +3978,11 @@ body.has-fullscreen-map .autoplay-scroll {
 }
 
 .admin-label-state span {
-  font-size: 0.95rem;
   color: var(--forest);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.admin-label-region span {
-  font-size: 0.8rem;
-}
-
 .admin-label-district span {
-  font-size: 0.7rem;
-  font-weight: 600;
+  color: #3d3d3a;
 }

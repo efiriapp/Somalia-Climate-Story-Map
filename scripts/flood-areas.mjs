@@ -45,7 +45,8 @@ const STATE = {
   'South West Administration': { id: 'south-west', name: 'South West' },
   'Jubaland Administration': { id: 'jubaland', name: 'Jubaland' },
   Banadir: { id: 'banadir', name: 'Banadir' },
-  'Somaliland-Puntland Border Claims': { id: 'border-claims', name: 'Somaliland–Puntland border claims' },
+  // UNOCHA's 'border claims' area is administered by North Eastern State (SSC-Khatumo).
+  'Somaliland-Puntland Border Claims': { id: 'north-eastern', name: 'North Eastern' },
 };
 
 const shp = (level) => {
