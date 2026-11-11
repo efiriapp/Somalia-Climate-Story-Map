@@ -1,6 +1,8 @@
 import type { Screen } from '../../application/route';
+import charcoalWatch from '../../assets/nav-icons/charcoal-watch.svg';
 import climateImpact from '../../assets/nav-icons/climate-impact.svg';
 import droughtWatch from '../../assets/nav-icons/drought-watch.svg';
+import deforestationWatch from '../../assets/nav-icons/deforestation-watch.svg';
 import floodWatch from '../../assets/nav-icons/flood-watch.svg';
 import globalStage from '../../assets/nav-icons/global-stage.svg';
 import research from '../../assets/nav-icons/research.svg';
@@ -16,6 +18,8 @@ export const NAV_ICON_SRC: Record<Screen, string> = {
   'climate-impact': climateImpact,
   'flood-watch': floodWatch,
   'drought-watch': droughtWatch,
+  'charcoal-watch': charcoalWatch,
+  'deforestation-watch': deforestationWatch,
   'global-stage': globalStage,
 };
 
