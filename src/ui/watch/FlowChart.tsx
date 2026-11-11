@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useState, type KeyboardEvent, type PointerEvent } from 'react';
 import type { FlowPoint } from '../../application/flood-watch';
 import { STATUS_COLOR } from './StatusBadge';
+import { formatNumber, niceStep, useChartWidth } from './chart-scale';
 
 type Props = {
   points: FlowPoint[];
@@ -18,34 +19,13 @@ const TEXT_SECONDARY = '#52514e';
 const HEIGHT = 190;
 const PAD = { top: 22, right: 14, bottom: 26, left: 46 };
 
-const niceStep = (max: number): number => {
-  const raw = max / 3;
-  const power = 10 ** Math.floor(Math.log10(raw));
-  const unit = raw / power;
-  return (unit <= 1 ? 1 : unit <= 2 ? 2 : unit <= 5 ? 5 : 10) * power;
-};
-
-const formatNumber = (value: number): string =>
-  value >= 10_000 ? `${Math.round(value / 1000)}K` : Math.round(value).toLocaleString('en');
-
 /**
  * One-series line chart of river flow: past 30 days and the 16-day forecast,
  * with the station's 90th/98th percentile flow marked as reference lines.
  */
 export function FlowChart({ points, p90, p98, labels, formatDate, summary }: Props) {
-  const wrap = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(560);
+  const { ref: wrap, width } = useChartWidth();
   const [active, setActive] = useState<number | null>(null);
-
-  useEffect(() => {
-    const element = wrap.current;
-    if (!element || typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) setWidth(Math.max(260, Math.round(entry.contentRect.width)));
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
 
   if (points.length < 2) return null;
 

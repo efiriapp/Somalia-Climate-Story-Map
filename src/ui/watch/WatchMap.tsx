@@ -30,12 +30,14 @@ type Props = {
   selectedId?: string | null;
   /** Called when a marker is clicked. */
   onSelect?: (id: string) => void;
+  /** Extra map layers (tiles, boundaries) drawn under the points. */
+  children?: ReactNode;
   /** When true, the map zooms to the points; when false it shows all of Somalia. */
   fitToPoints?: boolean;
 };
 
 /** Somalia overview map: status-coloured markers, full width, with full screen and home. */
-export function WatchMap({ points, label, controls, side, selectedId, onSelect, fitToPoints }: Props) {
+export function WatchMap({ points, label, controls, side, selectedId, onSelect, fitToPoints, children }: Props) {
   const { copy } = useLocale();
   const wrap = useRef<HTMLDivElement>(null);
   const fullscreen = useFullscreen(wrap);
@@ -52,6 +54,7 @@ export function WatchMap({ points, label, controls, side, selectedId, onSelect, 
             selectionKey={`${fitToPoints}:${points.map((point) => point.id).join(',')}`}
             maxZoom={9}
           />
+          {children}
           {points.map((point) => {
             const chosen = point.id === selectedId;
             // A tooltip cannot switch to permanent after it is created, so the

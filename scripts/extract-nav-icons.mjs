@@ -23,7 +23,7 @@ export const NAV_ICONS = {
   'global-stage': 'globe-showing-europe-africa',
   'flood-watch': 'water-wave',
   'drought-watch': 'desert',
-  'charcoal-deforestation-watch': 'wood',
+  'forest-watch': 'evergreen-tree',
 };
 
 mkdirSync(outDir, { recursive: true });

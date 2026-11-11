@@ -38,8 +38,8 @@ const StoryDetail = lazy(() =>
 const FloodWatchPage = lazy(() =>
   import('./watch/FloodWatchPage').then((module) => ({ default: module.FloodWatchPage })),
 );
-const PlannedWatchPage = lazy(() =>
-  import('./watch/PlannedWatchPage').then((module) => ({ default: module.PlannedWatchPage })),
+const ForestWatchPage = lazy(() =>
+  import('./watch/ForestWatchPage').then((module) => ({ default: module.ForestWatchPage })),
 );
 const DroughtWatchPage = lazy(() =>
   import('./watch/DroughtWatchPage').then((module) => ({ default: module.DroughtWatchPage })),
@@ -160,7 +160,7 @@ export default function App() {
     'climate-impact': copy.climateImpact,
     'flood-watch': copy.floodWatch,
     'drought-watch': copy.droughtWatch,
-    'charcoal-deforestation-watch': copy.charcoalWatch,
+    'forest-watch': copy.forestWatch,
     'global-stage': copy.globalStage,
   };
 
@@ -325,12 +325,12 @@ export default function App() {
           </button>
           <button
             type="button"
-            className={screen === 'charcoal-deforestation-watch' ? 'active' : ''}
-            aria-current={screen === 'charcoal-deforestation-watch' ? 'page' : undefined}
-            onClick={() => openScreen('charcoal-deforestation-watch')}
+            className={screen === 'forest-watch' ? 'active' : ''}
+            aria-current={screen === 'forest-watch' ? 'page' : undefined}
+            onClick={() => openScreen('forest-watch')}
           >
-            <NavIcon screen="charcoal-deforestation-watch" />
-            {copy.charcoalWatch}
+            <NavIcon screen="forest-watch" />
+            {copy.forestWatch}
           </button>
         </nav>
       </header>
@@ -354,8 +354,8 @@ export default function App() {
         <FloodWatchPage />
       ) : screen === 'drought-watch' ? (
         <DroughtWatchPage />
-      ) : screen === 'charcoal-deforestation-watch' ? (
-        <PlannedWatchPage title={copy.charcoalWatch} intro={copy.charcoalWatchIntro} />
+      ) : screen === 'forest-watch' ? (
+        <ForestWatchPage />
       ) : screen === 'global-stage' ? (
         <GlobalStageMap stories={localizedCatalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (

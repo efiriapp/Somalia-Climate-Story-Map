@@ -13,6 +13,8 @@ const MAP_HOSTS = [
   'https://elevation-tiles-prod.s3.amazonaws.com',
   // Plain image tiles for browsers without WebGL2.
   'https://tile.openstreetmap.org',
+  // Forest Watch: Global Forest Watch forest change tiles (CC BY 4.0).
+  'https://tiles.globalforestwatch.org',
 ];
 
 /** Live data for Flood Watch and Drought Watch (free, non-commercial, CC BY 4.0). */

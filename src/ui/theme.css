@@ -3901,3 +3901,81 @@ body.has-fullscreen-map .autoplay-scroll {
   place-items: center;
   color: var(--forest);
 }
+
+/* Forest Watch: layer list and boundaries in the map's side panel */
+.forest-side h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: var(--forest);
+}
+
+.forest-side label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.forest-side .legend-key {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.forest-side fieldset {
+  margin: 12px 0 0;
+  padding: 10px 0 0;
+  border: 0;
+  border-top: 1px solid #e4e4e0;
+}
+
+.forest-side legend {
+  padding: 0;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #3d3d3a;
+}
+
+/* Forest Watch: yearly loss chart by state, region or district */
+.forest-trend {
+  margin-top: 32px;
+}
+
+.forest-trend-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+
+.forest-trend-controls .flood-state-levels {
+  margin: 0;
+  min-width: 260px;
+}
+
+.forest-place {
+  display: grid;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #3d3d3a;
+}
+
+.forest-place select {
+  min-width: 240px;
+  padding: 7px 10px;
+  border: 1px solid #c9d3cf;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.forest-trend-total {
+  margin: 14px 0 0;
+  color: #3d3d3a;
+}

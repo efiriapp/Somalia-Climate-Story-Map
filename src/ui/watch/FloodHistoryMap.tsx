@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
-import { CircleMarker, GeoJSON, MapContainer, Marker, Pane, ScaleControl, Tooltip, useMap, useMapEvents } from 'react-leaflet';
+import { CircleMarker, GeoJSON, MapContainer, Pane, ScaleControl, Tooltip, useMap } from 'react-leaflet';
 import type { Feature, FeatureCollection } from 'geojson';
 import L, { type PathOptions } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -25,6 +25,7 @@ import { useLocale } from '../chrome/LocaleContext';
 import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { MapHomeControl } from '../map/MapHomeControl';
 import { FitSelection } from '../map/FitSelection';
+import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { SOMALIA_BOUNDS, type LatLngBoundsTuple } from '../../application/resolve-map-view';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
 import { useWatchFile, useWatchFiles, useWatchManifest } from '../useWatchData';
@@ -38,18 +39,6 @@ const FLOOD_BLUE = COMPARE_COLORS.a;
 const PLAIN = '#cfe6f2';
 const RIVER = '#1b4f8a';
 const GAUGE = '#d03b3b';
-
-/** Admin boundary outlines: states bold, regions thin, districts finest. */
-const ADMIN_STYLE: Record<AdminLevel, PathOptions> = {
-  state: { color: '#063D39', weight: 2, dashArray: '7 4', opacity: 0.85, fill: false },
-  region: { color: '#3d3d3a', weight: 1.2, opacity: 0.7, fill: false },
-  district: { color: '#6b6a66', weight: 0.7, dashArray: '2 3', opacity: 0.7, fill: false },
-};
-const ADMIN_FILE: Record<AdminLevel, string> = {
-  state: 'admin-states.geojson',
-  region: 'admin-regions.geojson',
-  district: 'admin-districts.geojson',
-};
 
 /**
  * Swipe compare, as in Esri's swipe widget: Flood A's pane is clipped to the
@@ -79,41 +68,6 @@ function SwipeClip({ ratio }: { ratio: number }) {
     };
   }, [map, ratio]);
   return null;
-}
-
-/**
- * Names of the states, regions or districts on show. District names appear
- * for every district from zoom 8; further out only for districts in the
- * flooded-area list, so the map does not fill with text.
- */
-/** Label size in px at zoom 5, and the largest it grows to. */
-const LABEL_SIZE: Record<AdminLevel, { base: number; max: number }> = {
-  state: { base: 9, max: 14 },
-  region: { base: 8, max: 12 },
-  district: { base: 7.5, max: 11 },
-};
-
-function AdminLabels({ data, level, listed }: { data: Collection; level: AdminLevel; listed: Set<string> }) {
-  const map = useMap();
-  const [zoom, setZoom] = useState(map.getZoom());
-  useMapEvents({ zoomend: () => setZoom(map.getZoom()) });
-  const all = level !== 'district' || zoom >= 8;
-  // Small bold names that grow as the map is zoomed in.
-  const size = Math.min(LABEL_SIZE[level].max, LABEL_SIZE[level].base + Math.max(0, zoom - 5) * 1.5);
-  return (
-    <>
-      {data.features.map((feature) => {
-        const { id, name, lx, ly } = (feature.properties ?? {}) as { id: string; name: string; lx?: number; ly?: number };
-        if (lx === undefined || ly === undefined || (!all && !listed.has(id))) return null;
-        const icon = L.divIcon({
-          className: `admin-label admin-label-${level}`,
-          html: `<span style="font-size:${size}px">${name.replace(/[&<>"]/g, '')}</span>`,
-          iconSize: [0, 0],
-        });
-        return <Marker key={`${level}-${id}-${size}`} position={[ly, lx]} icon={icon} interactive={false} keyboard={false} />;
-      })}
-    </>
-  );
 }
 
 function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' | 'states' }) {
@@ -349,20 +303,12 @@ export function FloodHistoryMap() {
           ) : null}
 
           {boundary && ready[ADMIN_FILE[boundary]] ? (
-            <>
-              <GeoJSON
-                key={boundary}
-                data={ready[ADMIN_FILE[boundary]]!}
-                style={ADMIN_STYLE[boundary]}
-                onEachFeature={(feature, layer) => layer.bindTooltip(String(feature.properties?.name ?? ''), { sticky: true })}
-              />
-              <AdminLabels
-                key={`labels-${boundary}`}
-                data={ready[ADMIN_FILE[boundary]]!}
-                level={boundary}
-                listed={boundary === level ? listed : new Set()}
-              />
-            </>
+            <AdminBoundaries
+              key={boundary}
+              level={boundary}
+              data={ready[ADMIN_FILE[boundary]]!}
+              listed={boundary === level ? listed : undefined}
+            />
           ) : null}
 
           {comparing ? (
