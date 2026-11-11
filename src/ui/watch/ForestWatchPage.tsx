@@ -4,6 +4,7 @@ import type { Feature, FeatureCollection } from 'geojson';
 import {
   FOREST_LAYERS,
   LOSS_YEARS,
+  lossByUnit,
   type ForestLayerId,
   type ForestLoss,
 } from '../../application/forest-watch';
@@ -12,6 +13,7 @@ import { useLocale } from '../chrome/LocaleContext';
 import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { ClipToOutline } from '../map/ClipToOutline';
 import { LossTrend } from './LossTrend';
+import { AreaPanel } from './AreaPanel';
 import { useWatchFile } from '../useWatchData';
 import { WatchMap } from './WatchMap';
 import { WatchSources, type WatchSource } from './WatchSources';
@@ -92,9 +94,23 @@ export function ForestWatchPage() {
             {year(to, setTo, copy.forestTo)}
           </div>
         }
+        sideBeside
         side={
+          lossData ? (
+            <AreaPanel
+              title={copy.forestLoss}
+              color={FOREST_LAYERS[0]!.color}
+              level={level}
+              onLevel={pickLevel}
+              rows={lossByUnit(lossData, level, from, to)}
+              subtitle={`${Math.min(from, to)}–${Math.max(from, to)}`}
+              onPick={(id) => setPlace((current) => (current === id ? null : id))}
+              selectedId={place}
+            />
+          ) : null
+        }
+        legend={
           <div className="forest-side">
-            <h3>{copy.forestLayers}</h3>
             {FOREST_LAYERS.map((layer) => (
               <label key={layer.id} className="forest-layer">
                 <input
@@ -107,22 +123,18 @@ export function ForestWatchPage() {
                 {layer.id === 'loss' ? ` ${Math.min(from, to)}–${Math.max(from, to)}` : ''}
               </label>
             ))}
-            <fieldset>
-              <legend>{copy.layerBoundaries}</legend>
-              {(
-                [
-                  [null, copy.boundaryNone],
-                  ['state', copy.layerStates],
-                  ['region', copy.layerRegions],
-                  ['district', copy.layerDistricts],
-                ] as const
-              ).map(([key, title]) => (
-                <label key={key ?? 'none'}>
-                  <input type="radio" name="forest-boundary" checked={boundary === key} onChange={() => pickBoundary(key)} />
-                  {title}
-                </label>
-              ))}
-            </fieldset>
+            <label className="forest-boundary">
+              <span>{copy.layerBoundaries}</span>
+              <select
+                value={boundary ?? ''}
+                onChange={(event) => pickBoundary((event.target.value || null) as AdminLevel | null)}
+              >
+                <option value="">{copy.boundaryNone}</option>
+                <option value="state">{copy.layerStates}</option>
+                <option value="region">{copy.layerRegions}</option>
+                <option value="district">{copy.layerDistricts}</option>
+              </select>
+            </label>
           </div>
         }
       >
@@ -145,13 +157,7 @@ export function ForestWatchPage() {
         {boundary && admin ? <AdminBoundaries key={boundary} level={boundary} data={admin} /> : null}
       </WatchMap>
       {lossData ? (
-        <LossTrend
-          data={lossData}
-          level={level}
-          place={place}
-          onLevel={pickLevel}
-          onPlace={setPlace}
-        />
+        <LossTrend data={lossData} level={level} place={place} onPlace={setPlace} />
       ) : null}
       <WatchSources sources={SOURCES} />
     </article>

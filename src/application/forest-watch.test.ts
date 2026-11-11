@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CONTENT_SECURITY_POLICY } from '../../deploy/headers.mjs';
-import { FOREST_LAYERS, LOSS_YEARS, lossSeries, lossTileUrl, rankUnits } from './forest-watch';
+import { FOREST_LAYERS, LOSS_YEARS, lossByUnit, lossSeries, lossTileUrl, rankUnits } from './forest-watch';
 
 describe('tree cover loss tiles (Global Forest Watch)', () => {
   it('asks GFW for loss between two years at 30% canopy', () => {
@@ -100,5 +100,35 @@ describe('prepared forest loss file', () => {
         expect(data.levels[level].loss[unit.id]).toHaveLength(years);
       }
     }
+  });
+});
+
+describe('lossByUnit', () => {
+  const data = {
+    generated: '',
+    method: '',
+    firstYear: 2001,
+    lastYear: 2003,
+    total: [5, 7, 9],
+    levels: {
+      state: {
+        units: [
+          { id: 'jubaland', name: 'Jubaland' },
+          { id: 'south-west', name: 'South West' },
+          { id: 'banadir', name: 'Banadir' },
+        ],
+        loss: { jubaland: [1, 2, 3], 'south-west': [4, 0, 0], banadir: [0, 0, 0] },
+      },
+      region: { units: [], loss: {} },
+      district: { units: [], loss: {} },
+    },
+  };
+
+  it('adds up loss in the chosen years, largest first, without places that lost none', () => {
+    expect(lossByUnit(data, 'state', 2001, 2003)).toEqual([
+      { id: 'jubaland', name: 'Jubaland', ha: 6 },
+      { id: 'south-west', name: 'South West', ha: 4 },
+    ]);
+    expect(lossByUnit(data, 'state', 2002, 2003)).toEqual([{ id: 'jubaland', name: 'Jubaland', ha: 5 }]);
   });
 });

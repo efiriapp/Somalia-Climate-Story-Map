@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { COMPARE_COLORS, type AdminLevel, type UnitArea } from '../../application/flood-history';
 import { useLocale } from '../chrome/LocaleContext';
 import galmudug from '../../assets/state-flags/galmudug.svg';
@@ -13,7 +14,30 @@ export const STATE_FLAGS: Record<string, string> = {
   'south-west': southWest,
 };
 
+/** A row: a button when places can be picked, otherwise plain content. */
+function Row({
+  id,
+  onPick,
+  selected,
+  children,
+}: {
+  id: string;
+  onPick?: (id: string) => void;
+  selected: boolean;
+  children: ReactNode;
+}) {
+  if (!onPick) return <>{children}</>;
+  return (
+    <button type="button" className="flood-state-pick" aria-pressed={selected} onClick={() => onPick(id)}>
+      {children}
+    </button>
+  );
+}
+
 type Props = {
+  title: string;
+  /** Bar colour (the map layer's colour); compare mode uses blue and orange. */
+  color?: string;
   level: AdminLevel;
   onLevel: (level: AdminLevel) => void;
   rows: UnitArea[];
@@ -21,11 +45,28 @@ type Props = {
   subtitle: string;
   /** In compare mode: labels for the two floods (A in blue, B in orange). */
   compare?: { a: string; b: string };
-  onClose: () => void;
+  onClose?: () => void;
+  /** When given, rows are buttons that choose a place. */
+  onPick?: (id: string) => void;
+  selectedId?: string | null;
 };
 
-/** Side panel: flooded hectares by state, region or district, with flags and bars. */
-export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, onClose }: Props) {
+/**
+ * Side panel beside a map: hectares by state, region or district, with state
+ * flags and bars (flooded area, forest loss...).
+ */
+export function AreaPanel({
+  title,
+  color = COMPARE_COLORS.a,
+  level,
+  onLevel,
+  rows,
+  subtitle,
+  compare,
+  onClose,
+  onPick,
+  selectedId,
+}: Props) {
   const { copy } = useLocale();
   const max = Math.max(1, ...rows.map((row) => Math.max(row.ha, row.b ?? 0)));
   const ha = (value: number) => `${Math.round(value).toLocaleString('en')} ${copy.hectares}`;
@@ -38,14 +79,16 @@ export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, onClo
   ];
 
   return (
-    <aside className="flood-state-side" aria-label={copy.stateArea}>
+    <aside className="flood-state-side" aria-label={title}>
       <div className="flood-state-head">
-        <h3>{copy.stateArea}</h3>
-        <button type="button" onClick={onClose} aria-label={copy.mapClose}>
-          ×
-        </button>
+        <h3>{title}</h3>
+        {onClose ? (
+          <button type="button" onClick={onClose} aria-label={copy.mapClose}>
+            ×
+          </button>
+        ) : null}
       </div>
-      <div className="flood-state-levels" role="tablist" aria-label={copy.stateArea}>
+      <div className="flood-state-levels" role="tablist" aria-label={title}>
         {levels.map(([id, text]) => (
           <button key={id} type="button" role="tab" aria-selected={level === id} onClick={() => onLevel(id)}>
             {text}
@@ -74,7 +117,8 @@ export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, onClo
       {rows.length ? (
         <ul className="flood-state-list" role="tabpanel">
           {rows.map((row) => (
-            <li key={row.id}>
+            <li key={row.id} className={row.id === selectedId ? 'is-selected' : undefined}>
+              <Row id={row.id} onPick={onPick} selected={row.id === selectedId}>
               <div className="flood-state-name">
                 {level === 'state' ? (
                   STATE_FLAGS[row.id] ? (
@@ -87,7 +131,7 @@ export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, onClo
                 {!compare ? <span className="flood-state-value">{ha(row.ha)}</span> : null}
               </div>
               <div className="flood-state-bar" title={ha(row.ha)}>
-                <span style={{ width: width(row.ha), background: COMPARE_COLORS.a }} />
+                <span style={{ width: width(row.ha), background: compare ? COMPARE_COLORS.a : color }} />
               </div>
               {compare ? (
                 <>
@@ -98,6 +142,7 @@ export function FloodStatePanel({ level, onLevel, rows, subtitle, compare, onClo
                   <span className="flood-state-value">{ha(row.b ?? 0)}</span>
                 </>
               ) : null}
+              </Row>
             </li>
           ))}
         </ul>

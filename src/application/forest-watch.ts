@@ -84,8 +84,18 @@ export const lossSeries = (data: ForestLoss, level: keyof ForestLoss['levels'], 
   return values.map((ha, i) => ({ year: data.firstYear + i, ha }));
 };
 
-/** Places of one level with their total loss, most first. */
-export const rankUnits = (data: ForestLoss, level: keyof ForestLoss['levels']) =>
-  data.levels[level].units
-    .map((unit) => ({ ...unit, ha: (data.levels[level].loss[unit.id] ?? []).reduce((sum, v) => sum + v, 0) }))
+/** Places of one level with their loss in the chosen years, most first; none-lost places left out. */
+export const lossByUnit = (data: ForestLoss, level: keyof ForestLoss['levels'], from: number, to: number) => {
+  const [start, end] = [Math.min(from, to) - data.firstYear, Math.max(from, to) - data.firstYear];
+  return data.levels[level].units
+    .map((unit) => ({
+      ...unit,
+      ha: (data.levels[level].loss[unit.id] ?? []).slice(start, end + 1).reduce((sum, v) => sum + v, 0),
+    }))
+    .filter((unit) => unit.ha > 0)
     .sort((a, b) => b.ha - a.ha);
+};
+
+/** Places of one level with their total loss over all years, most first. */
+export const rankUnits = (data: ForestLoss, level: keyof ForestLoss['levels']) =>
+  lossByUnit(data, level, data.firstYear, data.lastYear);

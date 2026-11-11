@@ -29,7 +29,7 @@ import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { SOMALIA_BOUNDS, type LatLngBoundsTuple } from '../../application/resolve-map-view';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
 import { useWatchFile, useWatchFiles, useWatchManifest } from '../useWatchData';
-import { FloodStatePanel } from './FloodStatePanel';
+import { AreaPanel } from './AreaPanel';
 
 type Panel = 'layers' | 'compare' | null;
 type Collection = FeatureCollection & { features: Feature[] };
@@ -488,7 +488,8 @@ export function FloodHistoryMap() {
         </div>
 
         {areasOpen && byAdmin ? (
-          <FloodStatePanel
+          <AreaPanel
+            title={copy.stateArea}
             level={level}
             onLevel={pickLevel}
             rows={areaRows}

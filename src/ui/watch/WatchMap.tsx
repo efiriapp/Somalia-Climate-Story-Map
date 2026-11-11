@@ -30,6 +30,10 @@ type Props = {
   selectedId?: string | null;
   /** Called when a marker is clicked. */
   onSelect?: (id: string) => void;
+  /** Optional legend or layer list on the map (bottom-left). */
+  legend?: ReactNode;
+  /** Side panel beside the map (2/3 map, 1/3 panel) instead of over it. */
+  sideBeside?: boolean;
   /** Extra map layers (tiles, boundaries) drawn under the points. */
   children?: ReactNode;
   /** When true, the map zooms to the points; when false it shows all of Somalia. */
@@ -37,13 +41,29 @@ type Props = {
 };
 
 /** Somalia overview map: status-coloured markers, full width, with full screen and home. */
-export function WatchMap({ points, label, controls, side, selectedId, onSelect, fitToPoints, children }: Props) {
+export function WatchMap({
+  points,
+  label,
+  controls,
+  side,
+  legend,
+  sideBeside,
+  selectedId,
+  onSelect,
+  fitToPoints,
+  children,
+}: Props) {
   const { copy } = useLocale();
   const wrap = useRef<HTMLDivElement>(null);
   const fullscreen = useFullscreen(wrap);
 
   return (
-    <div className={side ? 'watch-map map-bleed has-side' : 'watch-map map-bleed'} role="region" aria-label={label} ref={wrap}>
+    <div
+      className={['watch-map map-bleed', side ? 'has-side' : '', side && sideBeside ? 'side-beside' : ''].join(' ').trim()}
+      role="region"
+      aria-label={label}
+      ref={wrap}
+    >
       <div className="watch-map-stage">
         <MapContainer bounds={SOMALIA_BOUNDS} minZoom={4} maxZoom={12} scrollWheelZoom={false}>
           <LeafletRasterBasemap />
@@ -92,6 +112,7 @@ export function WatchMap({ points, label, controls, side, selectedId, onSelect, 
           })}
         </MapContainer>
         {controls ? <div className="map-overlay-controls">{controls}</div> : null}
+        {legend ? <div className="map-overlay-legend">{legend}</div> : null}
         <div className="map-corner-tools">
           <FullscreenButton
             on={fullscreen.on}
@@ -100,7 +121,7 @@ export function WatchMap({ points, label, controls, side, selectedId, onSelect, 
           />
         </div>
       </div>
-      {side ? <aside className="watch-map-side">{side}</aside> : null}
+      {side ? sideBeside ? side : <aside className="watch-map-side">{side}</aside> : null}
     </div>
   );
 }
