@@ -149,7 +149,6 @@ export function FloodWatchPage() {
           hint: statusHint[status],
         }))}
       />
-      <p className="watch-how">{copy.floodHowToRead}</p>
       <WatchStatusMessage state={state} />
 
       {readings.length ? (
@@ -227,7 +226,6 @@ export function FloodWatchPage() {
                       </li>
                     ))}
                   </ul>
-                  <p className="watch-how">{copy.townPickHint}</p>
                 </div>
               )
             }

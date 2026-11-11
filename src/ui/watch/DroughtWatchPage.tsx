@@ -138,7 +138,6 @@ export function DroughtWatchPage() {
           hint: hint[status],
         }))}
       />
-      <p className="watch-how">{copy.droughtHowToRead}</p>
       <WatchStatusMessage state={observed} />
 
       {readings.length ? (

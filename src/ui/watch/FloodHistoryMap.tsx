@@ -551,7 +551,7 @@ export function FloodHistoryMap() {
                 ? copy.floodCompare
                 : single
                   ? label(single)
-                  : `${filtered.length} ${copy.floodsShown}`
+                  : copy.floodTotal
             }
             compare={
               comparing && a && b
@@ -594,7 +594,6 @@ export function FloodHistoryMap() {
                     </select>
                   </label>
                 ))}
-                <p className="watch-how">{copy.swipeHint}</p>
                 <button
                   type="button"
                   className="active"
@@ -682,11 +681,6 @@ export function FloodHistoryMap() {
       </div>
 
       <div className="flood-summary" aria-live="polite">
-        {many ? (
-          <p>
-            <strong>{filtered.length}</strong> {copy.floodsShown}
-          </p>
-        ) : null}
         {!comparing && !filtered.length ? <p>{copy.floodNone}</p> : null}
         {!comparing && single ? (
           <dl className="watch-figures">
