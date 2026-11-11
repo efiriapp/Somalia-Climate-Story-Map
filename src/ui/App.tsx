@@ -154,8 +154,7 @@ export default function App() {
     'climate-impact': copy.climateImpact,
     'flood-watch': copy.floodWatch,
     'drought-watch': copy.droughtWatch,
-    'charcoal-watch': copy.charcoalWatch,
-    'deforestation-watch': copy.deforestationWatch,
+    'charcoal-deforestation-watch': copy.charcoalWatch,
     'global-stage': copy.globalStage,
   };
 
@@ -320,21 +319,12 @@ export default function App() {
           </button>
           <button
             type="button"
-            className={screen === 'charcoal-watch' ? 'active' : ''}
-            aria-current={screen === 'charcoal-watch' ? 'page' : undefined}
-            onClick={() => openScreen('charcoal-watch')}
+            className={screen === 'charcoal-deforestation-watch' ? 'active' : ''}
+            aria-current={screen === 'charcoal-deforestation-watch' ? 'page' : undefined}
+            onClick={() => openScreen('charcoal-deforestation-watch')}
           >
-            <NavIcon screen="charcoal-watch" />
+            <NavIcon screen="charcoal-deforestation-watch" />
             {copy.charcoalWatch}
-          </button>
-          <button
-            type="button"
-            className={screen === 'deforestation-watch' ? 'active' : ''}
-            aria-current={screen === 'deforestation-watch' ? 'page' : undefined}
-            onClick={() => openScreen('deforestation-watch')}
-          >
-            <NavIcon screen="deforestation-watch" />
-            {copy.deforestationWatch}
           </button>
         </nav>
       </header>
@@ -358,10 +348,8 @@ export default function App() {
         <FloodWatchPage />
       ) : screen === 'drought-watch' ? (
         <DroughtWatchPage />
-      ) : screen === 'charcoal-watch' ? (
-        <PlannedWatchPage key="charcoal" title={copy.charcoalWatch} intro={copy.charcoalWatchIntro} />
-      ) : screen === 'deforestation-watch' ? (
-        <PlannedWatchPage key="deforestation" title={copy.deforestationWatch} intro={copy.deforestationWatchIntro} />
+      ) : screen === 'charcoal-deforestation-watch' ? (
+        <PlannedWatchPage title={copy.charcoalWatch} intro={copy.charcoalWatchIntro} />
       ) : screen === 'global-stage' ? (
         <GlobalStageMap stories={localizedCatalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (

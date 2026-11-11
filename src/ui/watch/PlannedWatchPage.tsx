@@ -8,7 +8,7 @@ type Props = {
 };
 
 /**
- * Charcoal Watch and Deforestation Watch: same layout as the other watch
+ * Charcoal & Deforestation Watch: same layout as the other watch
  * pages (title, intro, full-width Somalia map, sources). Data and map layers
  * are added later; until then the map shows Somalia only.
  */

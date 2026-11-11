@@ -7,8 +7,7 @@ export type Screen =
   | 'climate-impact'
   | 'flood-watch'
   | 'drought-watch'
-  | 'charcoal-watch'
-  | 'deforestation-watch'
+  | 'charcoal-deforestation-watch'
   | 'global-stage';
 
 /** Everything needed to rebuild a page from its address. */
@@ -28,8 +27,7 @@ export const SCREENS: readonly Screen[] = [
   'climate-impact',
   'flood-watch',
   'drought-watch',
-  'charcoal-watch',
-  'deforestation-watch',
+  'charcoal-deforestation-watch',
   'global-stage',
 ];
 const HAZARDS: readonly ClimateHazardId[] = ['floods', 'droughts', 'heat-waves', 'el-nino', 'la-nina'];
