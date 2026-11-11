@@ -24,18 +24,14 @@ import type { MapLayerId } from '../../application/map-layers';
 import { useLocale } from '../chrome/LocaleContext';
 import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { MapHomeControl } from '../map/MapHomeControl';
+import { FitSelection } from '../map/FitSelection';
+import { SOMALIA_BOUNDS, type LatLngBoundsTuple } from '../../application/resolve-map-view';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
 import { useWatchFile, useWatchFiles, useWatchManifest } from '../useWatchData';
 import { FloodStatePanel } from './FloodStatePanel';
 
 type Panel = 'layers' | 'compare' | null;
 type Collection = FeatureCollection & { features: Feature[] };
-
-/** Opening view: the whole of Somalia, with its states and the river valleys. */
-const FLOOD_BOUNDS: [[number, number], [number, number]] = [
-  [-1.8, 40.9],
-  [12.1, 51.5],
-];
 
 const FARMLAND = '#1baf7a';
 const FLOOD_BLUE = COMPARE_COLORS.a;
@@ -54,34 +50,6 @@ const ADMIN_FILE: Record<AdminLevel, string> = {
   region: 'admin-regions.geojson',
   district: 'admin-districts.geojson',
 };
-
-/**
- * Zooms to the floods on show whenever the selection changes. With every
- * flood on (the default), the map keeps the whole-Somalia view instead.
- */
-function FitToFloods({ data, selectionKey, home }: { data: Collection[]; selectionKey: string; home: boolean }) {
-  const map = useMap();
-  const lastKey = useRef<string | null>(null);
-  useEffect(() => {
-    const changed = lastKey.current !== null && lastKey.current !== selectionKey;
-    lastKey.current = selectionKey;
-    if (home) {
-      // The map opens at this view already; come back to it when the
-      // selection returns to all floods (not while files are loading).
-      if (changed) map.fitBounds(FLOOD_BOUNDS, { animate: true });
-      return;
-    }
-    if (!data.length) return;
-    const bounds = L.latLngBounds([]);
-    for (const collection of data) {
-      const layerBounds = L.geoJSON(collection).getBounds();
-      if (layerBounds.isValid()) bounds.extend(layerBounds);
-    }
-    if (bounds.isValid()) map.fitBounds(bounds, { padding: [24, 24], maxZoom: 11 });
-    // Refit only when the selection changes or its files finish loading.
-  }, [map, selectionKey, data.length, home]);
-  return null;
-}
 
 /**
  * Swipe compare, as in Esri's swipe widget: Flood A's pane is clipped to the
@@ -304,6 +272,22 @@ export function FloodHistoryMap() {
       : areaByUnit(byAdmin, level, filtered.map((event) => event.id));
   const listed = new Set(areaRows.map((row) => row.id));
 
+  // All floods on (the default) keeps the whole-Somalia view; otherwise zoom to the floods shown.
+  const home = !comparing && period === 'all' && hidden.size === 0;
+  const floodBounds = useMemo((): LatLngBoundsTuple | null => {
+    const box = L.latLngBounds([]);
+    for (const event of shown) {
+      const collection = ready[event.file];
+      if (collection) box.extend(L.geoJSON(collection).getBounds());
+    }
+    return box.isValid()
+      ? [
+          [box.getSouth(), box.getWest()],
+          [box.getNorth(), box.getEast()],
+        ]
+      : null;
+  }, [shown, ready]);
+
   const periods = floodPeriods(events);
   const newestFirst = [...events].reverse();
   const allOn = hidden.size === 0;
@@ -352,10 +336,10 @@ export function FloodHistoryMap() {
 
       <div className={areasOpen && byAdmin ? 'flood-map-wrap map-bleed has-areas' : 'flood-map-wrap map-bleed'} ref={outer}>
         <div className="flood-map-stage" ref={wrap}>
-        <MapContainer bounds={FLOOD_BOUNDS} minZoom={5} maxZoom={13} scrollWheelZoom={false} preferCanvas>
+        <MapContainer bounds={SOMALIA_BOUNDS} minZoom={5} maxZoom={13} scrollWheelZoom={false} preferCanvas>
           <LeafletRasterBasemap basemap={basemap} />
           <MapAutoResize />
-          <MapHomeControl label={copy.mapHome} bounds={FLOOD_BOUNDS} />
+          <MapHomeControl label={copy.mapHome} />
           {show.plain && ready['flood-plain-2013-2023.geojson'] ? (
             <GeoJSON
               key="plain"
@@ -418,10 +402,9 @@ export function FloodHistoryMap() {
                 );
               })
             : null}
-          <FitToFloods
-            data={shown.map((event) => ready[event.file]).filter((c): c is Collection => !!c)}
+          <FitSelection
+            bounds={home ? null : floodBounds}
             selectionKey={`${comparing}:${shown.map((event) => event.id).join(',')}`}
-            home={!comparing && period === 'all' && hidden.size === 0}
           />
           <ScaleControl position="bottomleft" imperial={false} />
         </MapContainer>

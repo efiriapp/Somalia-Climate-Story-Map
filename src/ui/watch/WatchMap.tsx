@@ -1,10 +1,11 @@
-import { useEffect, useRef, type ReactNode } from 'react';
-import { CircleMarker, MapContainer, Tooltip, useMap } from 'react-leaflet';
-import L from 'leaflet';
+import { useRef, type ReactNode } from 'react';
+import { CircleMarker, MapContainer, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
 import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { MapHomeControl } from '../map/MapHomeControl';
+import { FitSelection } from '../map/FitSelection';
+import { SOMALIA_BOUNDS, boundsOf } from '../../application/resolve-map-view';
 import { useLocale } from '../chrome/LocaleContext';
 import { STATUS_COLOR, type StatusTone } from './StatusBadge';
 
@@ -18,12 +19,6 @@ export type WatchMapPoint = {
   detail: string;
 };
 
-/** South-west and north-east corners of Somalia, so the whole country fits. */
-const SOMALIA_BOUNDS: [[number, number], [number, number]] = [
-  [-1.8, 40.9],
-  [12.1, 51.5],
-];
-
 type Props = {
   points: WatchMapPoint[];
   label: string;
@@ -35,29 +30,9 @@ type Props = {
   selectedId?: string | null;
   /** Called when a marker is clicked. */
   onSelect?: (id: string) => void;
-  /** When true, the map zooms to the points shown whenever they change. */
+  /** When true, the map zooms to the points; when false it shows all of Somalia. */
   fitToPoints?: boolean;
 };
-
-/** Zooms to the shown points: one point at town zoom, several to fit them all. */
-function FitPoints({ points }: { points: WatchMapPoint[] }) {
-  const map = useMap();
-  const key = points.map((point) => point.id).join(',');
-  useEffect(() => {
-    if (!points.length) return;
-    if (points.length === 1) {
-      map.setView([points[0]!.lat, points[0]!.lng], 9, { animate: true });
-      return;
-    }
-    map.fitBounds(L.latLngBounds(points.map((p) => [p.lat, p.lng] as [number, number])), {
-      padding: [60, 60],
-      maxZoom: 8,
-      animate: true,
-    });
-    // Refit only when the set of points changes.
-  }, [map, key]);
-  return null;
-}
 
 /** Somalia overview map: status-coloured markers, full width, with full screen and home. */
 export function WatchMap({ points, label, controls, side, selectedId, onSelect, fitToPoints }: Props) {
@@ -71,8 +46,12 @@ export function WatchMap({ points, label, controls, side, selectedId, onSelect, 
         <MapContainer bounds={SOMALIA_BOUNDS} minZoom={4} maxZoom={12} scrollWheelZoom={false}>
           <LeafletRasterBasemap />
           <MapAutoResize />
-          <MapHomeControl label={copy.mapHome} bounds={SOMALIA_BOUNDS} />
-          {fitToPoints ? <FitPoints points={points} /> : null}
+          <MapHomeControl label={copy.mapHome} />
+          <FitSelection
+            bounds={fitToPoints ? boundsOf(points) : null}
+            selectionKey={`${fitToPoints}:${points.map((point) => point.id).join(',')}`}
+            maxZoom={9}
+          />
           {points.map((point) => {
             const chosen = point.id === selectedId;
             // A tooltip cannot switch to permanent after it is created, so the

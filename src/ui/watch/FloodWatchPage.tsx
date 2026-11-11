@@ -156,7 +156,7 @@ export function FloodWatchPage() {
         <>
           <WatchMap
             label={copy.watchMap}
-            fitToPoints
+            fitToPoints={river !== 'all' || !!chosen}
             points={onMap.map((reading) => ({
               id: reading.station.id,
               name: name(reading),

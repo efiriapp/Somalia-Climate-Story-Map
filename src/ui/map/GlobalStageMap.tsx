@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { AttributionControl, Map, Marker, NavigationControl, type GeoJSONSource } from 'maplibre-gl';
+import { AttributionControl, Map, Marker, NavigationControl, type GeoJSONSource, type IControl } from 'maplibre-gl';
+import { HOME_ICON } from './MapHomeControl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 // Registers the worker URL; kept here so MapLibre only loads with this lazy page.
 import '../../application/maplibre-worker';
@@ -138,6 +139,30 @@ const storyJumpFromSomalia = (map: Map, to: LngLat, onDone: () => void) => {
       afterEase(LAND_MS, onDone);
     });
   });
+};
+
+/** Home button (same house icon as the Leaflet maps): back to Somalia. */
+const homeControl = (label: string): IControl => {
+  let box: HTMLDivElement | null = null;
+  return {
+    onAdd(map: Map) {
+      box = document.createElement('div');
+      box.className = 'maplibregl-ctrl maplibregl-ctrl-group map-home-control';
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.title = label;
+      button.setAttribute('aria-label', label);
+      button.innerHTML = HOME_ICON;
+      button.addEventListener('click', () =>
+        map.flyTo({ center: [SOMALIA_HOME.lng, SOMALIA_HOME.lat], zoom: COUNTRY_ZOOM, pitch: 0, bearing: 0, essential: true }),
+      );
+      box.appendChild(button);
+      return box;
+    },
+    onRemove() {
+      box?.remove();
+    },
+  };
 };
 
 export function GlobalStageMap({ stories, onClose }: Props) {
@@ -514,6 +539,7 @@ export function GlobalStageMap({ stories, onClose }: Props) {
     });
     map.setPadding(STAGE_PADDING);
     map.addControl(new NavigationControl({ visualizePitch: false, showCompass: false }), 'top-right');
+    map.addControl(homeControl(copyRef.current.mapHome), 'top-right');
     map.addControl(new AttributionControl({ compact: true }), 'bottom-left');
     mapRef.current = map;
     basemapReady.current = false;

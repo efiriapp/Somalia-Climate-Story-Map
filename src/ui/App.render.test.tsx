@@ -123,27 +123,23 @@ describe('Stories with ICE at Global Stage', () => {
     expect(navButton(CHROME.en.stories)).toBeTruthy();
   });
 
-  it('lists ICE stories and Global Stage events together, with a filter', async () => {
+  it('shows ICE at Global Stage as one normal card, with no category buttons', () => {
     render(<App />);
-    const labels = () => [...document.querySelectorAll('.story-card .story-type')].map((el) => el.textContent);
-    expect(labels()).toContain(CHROME.en.story);
-    expect(labels()).toContain(CHROME.en.globalStage);
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: CHROME.en.globalStage }));
-    });
-    expect(new Set(labels())).toEqual(new Set([CHROME.en.globalStage]));
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: CHROME.en.storiesIce }));
-    });
-    expect(new Set(labels())).toEqual(new Set([CHROME.en.story]));
+    const cards = [...document.querySelectorAll('.story-card')];
+    const stage = cards.filter((card) => card.querySelector('.story-type')?.textContent === CHROME.en.globalStage);
+    expect(stage).toHaveLength(1);
+    expect(stage[0]!.textContent).toContain(CHROME.en.globalStageTitle);
+    expect(cards.length).toBeGreaterThan(1);
+    expect(document.querySelector('.story-kind, .globe-banner')).toBeNull();
   });
 
-  it('opens the globe from the Stories banner', async () => {
+  it('opens the globe from the Global Stage card', async () => {
     render(<App />);
+    const card = [...document.querySelectorAll<HTMLButtonElement>('.story-card')].find((el) =>
+      el.textContent?.includes(CHROME.en.globalStageTitle),
+    )!;
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: `${CHROME.en.globalStageOpen} →` }));
+      fireEvent.click(card);
       await new Promise((resolve) => setTimeout(resolve, 20));
     });
     expect(window.location.hash).toBe('#/en/global-stage');
