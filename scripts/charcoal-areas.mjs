@@ -7,8 +7,8 @@
  * Sources/Data/Characol/SOM_Proposed_Charcoal_Production_Areas.zip.
  *
  * Writes to public/data/watch/:
- *   charcoal-areas.geojson   the areas, by kind (export / local / studied)
- *   charcoal-export-places.geojson  where each potential export area is
+ *   charcoal-areas.geojson   each area: kind (export / local / studied), size
+ *                            and location (districts, region)
  *   charcoal-by-admin.json   hectares of each kind in every state, region
  *                            and district (equal-area projection)
  */
@@ -30,39 +30,38 @@ const source = shapefileFrom(join(DIR, `${NAME}.zip`), join(DIR, 'unzipped'), NA
 const KIND = `kind = /export/i.test(Name) ? 'export' : /local/i.test(Name) ? 'local' : 'studied'`;
 const KINDS = ['export', 'local', 'studied'];
 
-// Map layer: one shape per kind, simplified.
-const layer = await mapshaper.applyCommands(
-  `-i "${source}" encoding=utf8 -proj wgs84 -each "${KIND}" -filter-fields kind -dissolve2 kind ` +
-    `-simplify interval=150 keep-shapes -o format=geojson precision=0.0001 out.json`,
-);
-writeFileSync(join(OUT, 'charcoal-areas.geojson'), layer['out.json']);
-
-// Where each potential export area is: the districts it covers (largest share
-// first, at least 10% of the area) and the region of the main one.
-const exportArea = `-i "${source}" encoding=utf8 name=charcoal -proj "${LAEA}" -each "${KIND}" -filter "kind === 'export'" -each "aid=this.id, ha=Math.round(this.area / 10000)" -filter-fields aid,ha`;
-const labelPoints = JSON.parse(
-  (await mapshaper.applyCommands(`${exportArea} -points inner -proj wgs84 -o format=geojson precision=0.0001 out.json`))['out.json'],
+// Map layer: each area on its own, with its kind, size and location (the
+// districts it covers, largest share first and at least 10% of the area, and
+// the region of the main one), shown when the area is tapped.
+const areas = `-i "${source}" encoding=utf8 name=charcoal -proj "${LAEA}" -each "${KIND}" -each "aid=this.id, ha=Math.round(this.area / 10000)" -filter-fields kind,aid,ha`;
+const layer = JSON.parse(
+  (
+    await mapshaper.applyCommands(
+      `${areas} -proj wgs84 -simplify interval=150 keep-shapes -o format=geojson precision=0.0001 out.json`,
+    )
+  )['out.json'],
 );
 const overlap = JSON.parse(
   (
     await mapshaper.applyCommands(
-      `${exportArea} -i "${shp('district')}" encoding=utf8 name=units -proj "${LAEA}" -each "district=String(admin2Name), region=String(admin1Name)" -filter-fields district,region ` +
+      `${areas} -i "${shp('district')}" encoding=utf8 name=units -proj "${LAEA}" -each "district=String(admin2Name), region=String(admin1Name)" -filter-fields district,region ` +
         `-union target=charcoal,units -filter "aid !== null && aid !== undefined && !!district" -each "a=this.area" -o format=json out.json`,
     )
   )['out.json'],
 );
-for (const point of labelPoints.features) {
-  const { aid, ha } = point.properties;
+for (const area of layer.features) {
+  const { kind, aid, ha } = area.properties;
   const parts = overlap.filter((row) => row.aid === aid).sort((x, y) => y.a - x.a);
   const total = parts.reduce((sum, row) => sum + row.a, 0);
   const main = parts.filter((row) => row.a >= total * 0.1);
-  point.properties = {
+  area.properties = {
+    kind,
     ha,
     districts: (main.length ? main : parts.slice(0, 1)).map((row) => row.district),
     region: parts[0]?.region ?? '',
   };
 }
-writeFileSync(join(OUT, 'charcoal-export-places.geojson'), JSON.stringify(labelPoints));
+writeFileSync(join(OUT, 'charcoal-areas.geojson'), JSON.stringify(layer));
 
 // Hectares of each kind in every unit of every level.
 const levels = {};

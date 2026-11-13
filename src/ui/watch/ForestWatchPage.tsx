@@ -20,6 +20,7 @@ import { CHARCOAL_KINDS, ForestLayerList, ForestLegend, charcoalOn, type ForestL
 import { useWatchFile } from '../useWatchData';
 import { WatchMap } from './WatchMap';
 import { WatchSources, type WatchSource } from './WatchSources';
+import { STATE_FLAG_SOURCES } from './stateFlags';
 
 const YEARS = Array.from({ length: LOSS_YEARS.last - LOSS_YEARS.first + 1 }, (_, i) => LOSS_YEARS.first + i);
 
@@ -29,6 +30,7 @@ const SOURCES: WatchSource[] = [
     text: 'Charcoal production areas (potential export, proposed local consumption, study area 2011–2017): FAO SWALIM, PROSCAL, 2018. Areas by place: ICE calculation (equal-area projection, UNOCHA boundaries).',
     url: 'https://spatial.faoswalim.org/layers/geonode:SOM_Proposed_Charcoal_Production_Areas',
   },
+  ...STATE_FLAG_SOURCES,
   {
     text: 'Map tiles: Global Forest Watch, World Resources Institute.',
     url: 'https://www.globalforestwatch.org/',

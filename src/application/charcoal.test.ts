@@ -46,16 +46,16 @@ describe('charcoalByUnit', () => {
   });
 });
 
-describe('export area locations', () => {
-  it('names the districts and region of each potential export area', () => {
-    const places = JSON.parse(readFileSync(join(process.cwd(), 'public/data/watch/charcoal-export-places.geojson'), 'utf8'));
-    // SWALIM's layer has 4 potential export areas.
-    expect(places.features).toHaveLength(4);
-    for (const place of places.features) {
-      expect(place.geometry.type).toBe('Point');
-      expect(place.properties.districts.length).toBeGreaterThan(0);
-      expect(place.properties.region).toBeTruthy();
-      expect(place.properties.ha).toBeGreaterThan(0);
+describe('charcoal areas on the map', () => {
+  it('has each area with its kind, size and location (districts, region) for its popup', () => {
+    const areas = JSON.parse(readFileSync(join(process.cwd(), 'public/data/watch/charcoal-areas.geojson'), 'utf8'));
+    // SWALIM's layer: 4 export areas, 8 local consumption areas and the study area.
+    const count = (kind: string) => areas.features.filter((f: { properties: { kind: string } }) => f.properties.kind === kind).length;
+    expect([count('export'), count('local'), count('studied')]).toEqual([4, 8, 1]);
+    for (const area of areas.features) {
+      expect(area.properties.ha).toBeGreaterThan(0);
+      expect(area.properties.districts.length).toBeGreaterThan(0);
+      expect(area.properties.region).toBeTruthy();
     }
   });
 });

@@ -2,18 +2,7 @@ import type { ReactNode } from 'react';
 import { COMPARE_COLORS, type AdminLevel, type UnitArea } from '../../application/flood-history';
 import { useLocale } from '../chrome/LocaleContext';
 import { formatKm2 } from '../../application/area';
-import galmudug from '../../assets/state-flags/galmudug.svg';
-import hirshabelle from '../../assets/state-flags/hirshabelle.svg';
-import jubaland from '../../assets/state-flags/jubaland.svg';
-import southWest from '../../assets/state-flags/south-west.svg';
-
-/** State flags from Wikimedia Commons (credited in the page sources). */
-export const STATE_FLAGS: Record<string, string> = {
-  galmudug,
-  hirshabelle,
-  jubaland,
-  'south-west': southWest,
-};
+import { STATE_FLAGS } from './stateFlags';
 
 /** A row: a button when places can be picked, otherwise plain content. */
 function Row({
