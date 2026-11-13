@@ -22,6 +22,7 @@ import {
 import { formatLocaleDate } from '../../application/locale';
 import type { MapLayerId } from '../../application/map-layers';
 import { useLocale } from '../chrome/LocaleContext';
+import { formatKm2 } from '../../application/area';
 import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { MapHomeControl } from '../map/MapHomeControl';
 import { FitSelection } from '../map/FitSelection';
@@ -203,7 +204,7 @@ export function FloodHistoryMap() {
 
   const areaOf = (event: FloodEvent | undefined) =>
     event && ready[event.file] ? floodArea(ready[event.file]!.features) : null;
-  const ha = (value: number) => `${Math.round(value).toLocaleString('en')} ${copy.hectares}`;
+  const area = (value: number) => `${formatKm2(value)} ${copy.km2}`;
   const singleArea = areaOf(single);
   const typed = singleArea?.farmland !== null && singleArea?.farmland !== undefined;
   const areaA = areaOf(a);
@@ -608,17 +609,17 @@ export function FloodHistoryMap() {
           <dl className="watch-figures">
             <div>
               <dt>{label(single)}</dt>
-              <dd>{singleArea ? ha(singleArea.total) : '–'}</dd>
+              <dd>{singleArea ? area(singleArea.total) : '–'}</dd>
             </div>
             {typed ? (
               <>
                 <div>
                   <dt>{copy.floodedFarmland}</dt>
-                  <dd>{ha(singleArea!.farmland!)}</dd>
+                  <dd>{area(singleArea!.farmland!)}</dd>
                 </div>
                 <div>
                   <dt>{copy.floodedOther}</dt>
-                  <dd>{ha(singleArea!.other!)}</dd>
+                  <dd>{area(singleArea!.other!)}</dd>
                 </div>
               </>
             ) : null}
@@ -637,13 +638,13 @@ export function FloodHistoryMap() {
                 <th scope="row">
                   <span className="swatch" style={{ background: COMPARE_COLORS.a }} aria-hidden="true" /> {copy.floodCompareA} (←): {label(a)}
                 </th>
-                <td>{areaA ? ha(areaA.total) : '–'}</td>
+                <td>{areaA ? area(areaA.total) : '–'}</td>
               </tr>
               <tr>
                 <th scope="row">
                   <span className="swatch" style={{ background: COMPARE_COLORS.b }} aria-hidden="true" /> {copy.floodCompareB} (→): {label(b)}
                 </th>
-                <td>{areaB ? ha(areaB.total) : '–'}</td>
+                <td>{areaB ? area(areaB.total) : '–'}</td>
               </tr>
               {areaA && areaB ? (
                 <tr>
@@ -651,7 +652,7 @@ export function FloodHistoryMap() {
                   <td>
                     {(() => {
                       const { diff, percent } = compareAreas(areaA.total, areaB.total);
-                      return `${diff >= 0 ? '+' : '−'}${ha(Math.abs(diff))}${percent !== null ? ` (${percent >= 0 ? '+' : '−'}${Math.abs(percent)}%)` : ''}`;
+                      return `${diff >= 0 ? '+' : '−'}${area(Math.abs(diff))}${percent !== null ? ` (${percent >= 0 ? '+' : '−'}${Math.abs(percent)}%)` : ''}`;
                     })()}
                   </td>
                 </tr>

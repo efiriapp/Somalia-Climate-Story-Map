@@ -1,9 +1,9 @@
 import { useState, type KeyboardEvent } from 'react';
-import type { LossPoint } from '../../application/forest-watch';
 import { formatNumber, niceStep, useChartWidth } from './chart-scale';
 
 type Props = {
-  points: LossPoint[];
+  /** One value per year, already in `unit`. */
+  points: { year: number; value: number }[];
   color: string;
   unit: string;
   /** Short description for screen readers. */
@@ -14,7 +14,7 @@ const GRID = '#e4e4e0';
 const HEIGHT = 220;
 const PAD = { top: 26, right: 10, bottom: 24, left: 44 };
 
-/** Bar chart of hectares lost per year, with a hover/keyboard readout. */
+/** Bar chart of area lost per year, with a hover/keyboard readout. */
 export function LossChart({ points, color, unit, summary }: Props) {
   const { ref, width } = useChartWidth();
   const [active, setActive] = useState<number | null>(null);
@@ -22,7 +22,8 @@ export function LossChart({ points, color, unit, summary }: Props) {
 
   const plotW = width - PAD.left - PAD.right;
   const plotH = HEIGHT - PAD.top - PAD.bottom;
-  const max = Math.max(1, ...points.map((p) => p.ha)) * 1.05;
+  // Small areas (a district's yearly loss can be under 1 km²) still fill the chart.
+  const max = (Math.max(0, ...points.map((p) => p.value)) || 1) * 1.05;
   const step = niceStep(max);
   const yMax = Math.ceil(max / step) * step;
   const ticks = Array.from({ length: Math.round(yMax / step) + 1 }, (_, i) => i * step);
@@ -73,7 +74,7 @@ export function LossChart({ points, color, unit, summary }: Props) {
         ))}
         {points.map((point, i) => (
           <g key={point.year}>
-            <path d={bar(i, point.ha)} fill={color} fillOpacity={active === null || active === i ? 1 : 0.45} />
+            <path d={bar(i, point.value)} fill={color} fillOpacity={active === null || active === i ? 1 : 0.45} />
             {/* Hit area: the whole column, wider than the bar. */}
             <rect
               x={PAD.left + i * slot}
@@ -95,11 +96,11 @@ export function LossChart({ points, color, unit, summary }: Props) {
       {shown ? (
         <div
           className="chart-tooltip"
-          style={{ left: Math.min(Math.max(x(active!) + barW / 2, 70), width - 70), top: y(shown.ha) - 6 }}
+          style={{ left: Math.min(Math.max(x(active!) + barW / 2, 70), width - 70), top: y(shown.value) - 6 }}
           role="status"
         >
           <strong>
-            {formatNumber(shown.ha)} {unit}
+            {formatNumber(shown.value)} {unit}
           </strong>
           <span>{shown.year}</span>
         </div>

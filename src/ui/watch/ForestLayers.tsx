@@ -1,11 +1,16 @@
 import type { ReactNode } from 'react';
-import { CHARCOAL_COLORS } from '../../application/charcoal';
+import { CHARCOAL_COLORS, type CharcoalKind } from '../../application/charcoal';
 import { FOREST_LAYERS, type ForestLayerId } from '../../application/forest-watch';
 import type { AdminLevel } from '../../application/flood-history';
 import { useLocale } from '../chrome/LocaleContext';
 import { CharcoalGlyph } from '../map/charcoalIcon';
 
-export type ForestLayerState = Record<ForestLayerId | 'charcoal', boolean>;
+export type ForestLayerState = Record<ForestLayerId | CharcoalKind, boolean>;
+
+export const CHARCOAL_KINDS: CharcoalKind[] = ['export', 'local', 'studied'];
+
+/** True when any charcoal layer is on. */
+export const charcoalOn = (on: ForestLayerState) => CHARCOAL_KINDS.some((kind) => on[kind]);
 
 const Swatch = ({ color, dashed }: { color: string; dashed?: boolean }) => (
   <span
@@ -15,19 +20,21 @@ const Swatch = ({ color, dashed }: { color: string; dashed?: boolean }) => (
   />
 );
 
-function useNames(years: string) {
+/** Name and colour key of every layer. */
+function useLayers(years: string): Record<keyof ForestLayerState, { name: string; key: ReactNode }> {
   const { copy } = useLocale();
+  const forest = (id: ForestLayerId) => <Swatch color={FOREST_LAYERS.find((l) => l.id === id)!.color} />;
   return {
-    loss: `${copy.forestLoss} ${years}`,
-    cover: copy.forestCover,
-    gain: copy.forestGain,
-    charcoal: copy.charcoalLayer,
-  } satisfies Record<keyof ForestLayerState, string>;
+    loss: { name: `${copy.forestLoss} ${years}`, key: forest('loss') },
+    cover: { name: copy.forestCover, key: forest('cover') },
+    gain: { name: copy.forestGain, key: forest('gain') },
+    export: { name: copy.charcoalExport, key: <CharcoalGlyph color={CHARCOAL_COLORS.export} /> },
+    local: { name: copy.charcoalLocal, key: <CharcoalGlyph color={CHARCOAL_COLORS.local} /> },
+    studied: { name: copy.charcoalStudied, key: <Swatch color={CHARCOAL_COLORS.studied} dashed /> },
+  };
 }
 
-const keyFor = (id: ForestLayerId): ReactNode => <Swatch color={FOREST_LAYERS.find((l) => l.id === id)!.color} />;
-
-/** Layer list for the map's layers button: tick the layers to show, choose boundaries. */
+/** Layer list for the map's layers button: forest layers, the three charcoal layers, boundaries. */
 export function ForestLayerList({
   on,
   onToggle,
@@ -42,22 +49,21 @@ export function ForestLayerList({
   onBoundary: (level: AdminLevel | null) => void;
 }) {
   const { copy } = useLocale();
-  const names = useNames(years);
-  const rows: [keyof ForestLayerState, ReactNode][] = [
-    ['loss', keyFor('loss')],
-    ['cover', keyFor('cover')],
-    ['gain', keyFor('gain')],
-    ['charcoal', <CharcoalGlyph key="g" color={CHARCOAL_COLORS.export} />],
-  ];
+  const layers = useLayers(years);
+  const row = (id: keyof ForestLayerState) => (
+    <label key={id}>
+      <input type="checkbox" checked={on[id]} onChange={() => onToggle(id)} />
+      {layers[id].key}
+      {layers[id].name}
+    </label>
+  );
   return (
     <div className="forest-side">
-      {rows.map(([id, key]) => (
-        <label key={id}>
-          <input type="checkbox" checked={on[id]} onChange={() => onToggle(id)} />
-          {key}
-          {names[id]}
-        </label>
-      ))}
+      {(['loss', 'cover', 'gain'] as const).map(row)}
+      <fieldset className="forest-group">
+        <legend>{copy.charcoalLayer}</legend>
+        {CHARCOAL_KINDS.map(row)}
+      </fieldset>
       <label className="forest-boundary">
         <span>{copy.layerBoundaries}</span>
         <select value={boundary ?? ''} onChange={(event) => onBoundary((event.target.value || null) as AdminLevel | null)}>
@@ -73,25 +79,15 @@ export function ForestLayerList({
 
 /** Legend on the map: only the layers that are shown. */
 export function ForestLegend({ on, years }: { on: ForestLayerState; years: string }) {
-  const { copy } = useLocale();
-  const names = useNames(years);
-  const items: [string, ReactNode, string][] = [
-    ...(['loss', 'cover', 'gain'] as const).filter((id) => on[id]).map((id): [string, ReactNode, string] => [id, keyFor(id), names[id]]),
-    ...(on.charcoal
-      ? ([
-          ['export', <CharcoalGlyph key="e" color={CHARCOAL_COLORS.export} />, copy.charcoalExport],
-          ['local', <CharcoalGlyph key="l" color={CHARCOAL_COLORS.local} />, copy.charcoalLocal],
-          ['studied', <Swatch key="s" color={CHARCOAL_COLORS.studied} dashed />, copy.charcoalStudied],
-        ] as [string, ReactNode, string][])
-      : []),
-  ];
-  if (!items.length) return null;
+  const layers = useLayers(years);
+  const shown = (Object.keys(layers) as (keyof ForestLayerState)[]).filter((id) => on[id]);
+  if (!shown.length) return null;
   return (
     <ul className="forest-legend">
-      {items.map(([id, key, text]) => (
+      {shown.map((id) => (
         <li key={id}>
-          {key}
-          {text}
+          {layers[id].key}
+          {layers[id].name}
         </li>
       ))}
     </ul>

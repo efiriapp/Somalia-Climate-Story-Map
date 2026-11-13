@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { COMPARE_COLORS, type AdminLevel, type UnitArea } from '../../application/flood-history';
 import { useLocale } from '../chrome/LocaleContext';
+import { formatKm2 } from '../../application/area';
 import galmudug from '../../assets/state-flags/galmudug.svg';
 import hirshabelle from '../../assets/state-flags/hirshabelle.svg';
 import jubaland from '../../assets/state-flags/jubaland.svg';
@@ -60,7 +61,7 @@ type Props = {
 };
 
 /**
- * Side panel beside a map: hectares by state, region or district, with state
+ * Side panel beside a map: area (km²) by state, region or district, with state
  * flags and bars (flooded area, forest loss...).
  */
 export function AreaPanel({
@@ -83,7 +84,7 @@ export function AreaPanel({
   const { copy } = useLocale();
   const pair = compareColors;
   const max = Math.max(1, ...rows.map((row) => Math.max(row.ha, row.b ?? 0)));
-  const ha = (value: number) => `${Math.round(value).toLocaleString('en')} ${copy.hectares}`;
+  const area = (value: number) => `${formatKm2(value)} ${copy.km2}`;
   const width = (value: number) => `${value > 0 ? Math.max(1.5, (value / max) * 100) : 0}%`;
   const total = rows.reduce((sum, row) => sum + row.ha, 0);
   const levels: [AdminLevel, string][] = [
@@ -123,7 +124,7 @@ export function AreaPanel({
         {!compare && rows.length ? (
           <>
             {' · '}
-            <strong>{ha(total)}</strong>
+            <strong>{area(total)}</strong>
           </>
         ) : null}
       </p>
@@ -151,18 +152,18 @@ export function AreaPanel({
                   )
                 ) : null}
                 <strong>{row.name}</strong>
-                {!compare ? <span className="flood-state-value">{ha(row.ha)}</span> : null}
+                {!compare ? <span className="flood-state-value">{area(row.ha)}</span> : null}
               </div>
-              <div className="flood-state-bar" title={ha(row.ha)}>
+              <div className="flood-state-bar" title={area(row.ha)}>
                 <span style={{ width: width(row.ha), background: compare ? pair.a : color }} />
               </div>
               {compare ? (
                 <>
-                  <span className="flood-state-value">{ha(row.ha)}</span>
-                  <div className="flood-state-bar" title={ha(row.b ?? 0)}>
+                  <span className="flood-state-value">{area(row.ha)}</span>
+                  <div className="flood-state-bar" title={area(row.b ?? 0)}>
                     <span style={{ width: width(row.b ?? 0), background: pair.b }} />
                   </div>
-                  <span className="flood-state-value">{ha(row.b ?? 0)}</span>
+                  <span className="flood-state-value">{area(row.b ?? 0)}</span>
                 </>
               ) : null}
               </Row>

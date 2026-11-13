@@ -45,3 +45,17 @@ describe('charcoalByUnit', () => {
     }
   });
 });
+
+describe('export area locations', () => {
+  it('names the districts and region of each potential export area', () => {
+    const places = JSON.parse(readFileSync(join(process.cwd(), 'public/data/watch/charcoal-export-places.geojson'), 'utf8'));
+    // SWALIM's layer has 4 potential export areas.
+    expect(places.features).toHaveLength(4);
+    for (const place of places.features) {
+      expect(place.geometry.type).toBe('Point');
+      expect(place.properties.districts.length).toBeGreaterThan(0);
+      expect(place.properties.region).toBeTruthy();
+      expect(place.properties.ha).toBeGreaterThan(0);
+    }
+  });
+});

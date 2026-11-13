@@ -11,5 +11,8 @@ describe('chart scale', () => {
   it('writes large numbers short', () => {
     expect(formatNumber(1234)).toBe('1,234');
     expect(formatNumber(25_400)).toBe('25K');
+    // Small values (e.g. km² of forest lost in a year) keep their decimals.
+    expect(formatNumber(0.5)).toBe('0.5');
+    expect(formatNumber(2.25)).toBe('2.25');
   });
 });

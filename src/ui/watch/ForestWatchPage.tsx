@@ -16,7 +16,7 @@ import { AreaPanel } from './AreaPanel';
 import { CHARCOAL_COLORS, charcoalByUnit, type CharcoalByAdmin } from '../../application/charcoal';
 import { MapDialog, MapToggleButton } from '../map/MapToggleButton';
 import { CharcoalLayer } from './CharcoalLayer';
-import { ForestLayerList, ForestLegend, type ForestLayerState } from './ForestLayers';
+import { CHARCOAL_KINDS, ForestLayerList, ForestLegend, charcoalOn, type ForestLayerState } from './ForestLayers';
 import { useWatchFile } from '../useWatchData';
 import { WatchMap } from './WatchMap';
 import { WatchSources, type WatchSource } from './WatchSources';
@@ -49,7 +49,14 @@ export function ForestWatchPage() {
   const { copy } = useLocale();
   const [from, setFrom] = useState<number>(LOSS_YEARS.first);
   const [to, setTo] = useState<number>(LOSS_YEARS.last);
-  const [on, setOn] = useState<ForestLayerState>({ loss: true, cover: true, gain: false, charcoal: false });
+  const [on, setOn] = useState<ForestLayerState>({
+    loss: true,
+    cover: true,
+    gain: false,
+    export: false,
+    local: false,
+    studied: false,
+  });
   const [boundary, setBoundary] = useState<AdminLevel | null>('state');
   // The panel's level follows the boundaries on the map (state when none).
   const [level, setLevel] = useState<AdminLevel>('state');
@@ -78,15 +85,17 @@ export function ForestWatchPage() {
       setPlace(null);
     }
   };
-  // Turning charcoal on also shows its areas in the panel; off goes back to loss.
+  // Turning charcoal on shows its areas in the panel; all charcoal off goes back to loss.
   const toggleLayer = (id: keyof ForestLayerState) => {
-    const next = !on[id];
-    setOn((current) => ({ ...current, [id]: next }));
-    if (id === 'charcoal') setTopic(next ? 'charcoal' : 'loss');
+    const next = { ...on, [id]: !on[id] };
+    setOn(next);
+    if ((CHARCOAL_KINDS as string[]).includes(id) && charcoalOn(next) !== charcoalOn(on)) {
+      setTopic(charcoalOn(next) ? 'charcoal' : 'loss');
+    }
   };
   const pickTopic = (id: string) => {
     setTopic(id as 'loss' | 'charcoal');
-    if (id === 'charcoal') setOn((current) => ({ ...current, charcoal: true }));
+    if (id === 'charcoal' && !charcoalOn(on)) setOn((current) => ({ ...current, export: true, local: true }));
   };
   const topics = [
     { id: 'loss', label: copy.forestLoss },
@@ -175,7 +184,7 @@ export function ForestWatchPage() {
           )}
         </Pane>
         {outline ? <ClipToOutline pane="forest" outline={outline} /> : null}
-        {on.charcoal ? <CharcoalLayer /> : null}
+        {charcoalOn(on) ? <CharcoalLayer kinds={on} /> : null}
         {boundary && admin ? <AdminBoundaries key={boundary} level={boundary} data={admin} /> : null}
       </WatchMap>
       <WatchSources sources={SOURCES} />
