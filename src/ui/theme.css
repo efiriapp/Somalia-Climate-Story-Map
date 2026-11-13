@@ -4058,3 +4058,18 @@ body.has-fullscreen-map .autoplay-scroll {
   font-size: 0.82rem;
   color: #3d3d3a;
 }
+
+/* Rank of each place in the area panel (1 = largest) */
+.flood-state-rank {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--forest);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

@@ -58,7 +58,7 @@ export function AreaPanel({
   color = COMPARE_COLORS.a,
   level,
   onLevel,
-  rows,
+  rows: unsorted,
   subtitle,
   compare,
   compareColors = COMPARE_COLORS,
@@ -72,6 +72,8 @@ export function AreaPanel({
 }: Props) {
   const { copy } = useLocale();
   const pair = compareColors;
+  // Largest first (both bars together), numbered 1, 2, 3...
+  const rows = [...unsorted].sort((x, y) => y.ha + (y.b ?? 0) - (x.ha + (x.b ?? 0)));
   const max = Math.max(1, ...rows.map((row) => Math.max(row.ha, row.b ?? 0)));
   const area = (value: number) => `${formatKm2(value)} ${copy.km2}`;
   const width = (value: number) => `${value > 0 ? Math.max(1.5, (value / max) * 100) : 0}%`;
@@ -128,11 +130,14 @@ export function AreaPanel({
         </p>
       ) : null}
       {rows.length ? (
-        <ul className="flood-state-list" role="tabpanel">
-          {rows.map((row) => (
+        <ol className="flood-state-list" role="tabpanel">
+          {rows.map((row, i) => (
             <li key={row.id} className={row.id === selectedId ? 'is-selected' : undefined}>
               <Row id={row.id} onPick={onPick} selected={row.id === selectedId}>
               <div className="flood-state-name">
+                <span className="flood-state-rank" aria-hidden="true">
+                  {i + 1}
+                </span>
                 {level === 'state' ? (
                   STATE_FLAGS[row.id] ? (
                     <img src={STATE_FLAGS[row.id]} alt="" width={30} height={20} loading="lazy" />
@@ -158,7 +163,7 @@ export function AreaPanel({
               </Row>
             </li>
           ))}
-        </ul>
+        </ol>
       ) : (
         <p className="flood-state-sub">{copy.floodNone}</p>
       )}
