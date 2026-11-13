@@ -8,7 +8,6 @@
  *
  * Writes to public/data/watch/:
  *   charcoal-areas.geojson   the areas, by kind (export / local / studied)
- *   charcoal-sites.geojson   a marker point in each export or local area
  *   charcoal-by-admin.json   hectares of each kind in every state, region
  *                            and district (equal-area projection)
  */
@@ -36,14 +35,6 @@ const layer = await mapshaper.applyCommands(
     `-simplify interval=150 keep-shapes -o format=geojson precision=0.0001 out.json`,
 );
 writeFileSync(join(OUT, 'charcoal-areas.geojson'), layer['out.json']);
-
-// Map markers: a point inside each export or local area, with its size.
-const sites = await mapshaper.applyCommands(
-  `-i "${source}" encoding=utf8 -proj "${LAEA}" -each "${KIND}" -filter "kind !== 'studied'" ` +
-    `-each "ha=Math.round(this.area / 10000)" -filter-fields kind,ha -points inner -proj wgs84 ` +
-    `-o format=geojson precision=0.0001 out.json`,
-);
-writeFileSync(join(OUT, 'charcoal-sites.geojson'), sites['out.json']);
 
 // Hectares of each kind in every unit of every level.
 const levels = {};

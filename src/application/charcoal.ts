@@ -13,10 +13,10 @@ export type CharcoalByAdmin = {
   >;
 };
 
-/** Map colours: export darker, local lighter, studied area as an outline. */
+/** Map colours: red areas, export darker, local lighter; the study area as an outline. */
 export const CHARCOAL_COLORS: Record<CharcoalKind, string> = {
-  export: '#6b3d1f',
-  local: '#c9853f',
+  export: '#b3261e',
+  local: '#f07a6a',
   studied: '#3d3d3a',
 };
 
