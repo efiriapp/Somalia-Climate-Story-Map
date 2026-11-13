@@ -3463,6 +3463,15 @@ html[dir='rtl'] .autoplay-scroll select {
   top: 10px;
   inset-inline-end: 10px;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Side panel button: dark when the panel is open */
+.map-corner-tools .map-panel-toggle.active {
+  background: var(--forest);
+  color: #fff;
 }
 
 .map-fullscreen-button,
@@ -3974,43 +3983,15 @@ body.has-fullscreen-map .autoplay-scroll {
   background: #f0f5f3;
 }
 
-/* Forest Watch: yearly loss chart by state, region or district */
+/* Forest Watch: yearly loss chart in the side panel, under the bars */
 .forest-trend {
-  margin-top: 32px;
-}
-
-.forest-trend-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  gap: 12px;
-}
-
-.forest-trend-controls .flood-state-levels {
-  margin: 0;
-  min-width: 260px;
-}
-
-.forest-place {
-  display: grid;
-  gap: 4px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #3d3d3a;
-}
-
-.forest-place select {
-  min-width: 240px;
-  padding: 7px 10px;
-  border: 1px solid #c9d3cf;
-  border-radius: 8px;
-  background: #fff;
-  font: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e4e4e0;
 }
 
 .forest-trend-total {
-  margin: 14px 0 0;
+  margin: 0;
+  font-size: 0.85rem;
   color: #3d3d3a;
 }

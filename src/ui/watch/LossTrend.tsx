@@ -1,4 +1,4 @@
-import { FOREST_LAYERS, lossSeries, rankUnits, type ForestLoss } from '../../application/forest-watch';
+import { FOREST_LAYERS, lossSeries, type ForestLoss } from '../../application/forest-watch';
 import type { AdminLevel } from '../../application/flood-history';
 import { useLocale } from '../chrome/LocaleContext';
 import { LossChart } from './LossChart';
@@ -8,11 +8,10 @@ type Props = {
   level: AdminLevel;
   /** Chosen state, region or district; null for all of Somalia. */
   place: string | null;
-  onPlace: (place: string | null) => void;
 };
 
-/** Tree cover loss by year for Somalia or one state, region or district. */
-export function LossTrend({ data, level, place, onPlace }: Props) {
+/** Tree cover loss by year, in the side panel under the bars: Somalia or the chosen place. */
+export function LossTrend({ data, level, place }: Props) {
   const { copy } = useLocale();
   const series = lossSeries(data, level, place);
   const name = place ? (data.levels[level].units.find((unit) => unit.id === place)?.name ?? '') : copy.forestSomalia;
@@ -20,23 +19,9 @@ export function LossTrend({ data, level, place, onPlace }: Props) {
   const ha = (value: number) => `${Math.round(value).toLocaleString('en')} ${copy.hectares}`;
 
   return (
-    <section className="forest-trend" aria-label={copy.forestTrend}>
-      <h2>{copy.forestTrend}</h2>
-      <div className="forest-trend-controls">
-        <label className="forest-place">
-          <span>{copy.forestPlace}</span>
-          <select value={place ?? ''} onChange={(event) => onPlace(event.target.value || null)}>
-            <option value="">{copy.forestSomalia}</option>
-            {rankUnits(data, level).map((unit) => (
-              <option key={unit.id} value={unit.id}>
-                {unit.name} · {ha(unit.ha)}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+    <div className="forest-trend">
       <p className="forest-trend-total">
-        {name} · {copy.floodTotal} {data.firstYear}–{data.lastYear}: <strong>{ha(total)}</strong>
+        <strong>{name}</strong> · {data.firstYear}–{data.lastYear}: <strong>{ha(total)}</strong>
       </p>
       <LossChart
         points={series}
@@ -57,6 +42,6 @@ export function LossTrend({ data, level, place, onPlace }: Props) {
           </tbody>
         </table>
       </details>
-    </section>
+    </div>
   );
 }

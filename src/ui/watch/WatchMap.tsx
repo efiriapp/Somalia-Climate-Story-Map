@@ -30,6 +30,8 @@ type Props = {
   selectedId?: string | null;
   /** Called when a marker is clicked. */
   onSelect?: (id: string) => void;
+  /** Extra map buttons under the full screen button (top-right). */
+  tools?: ReactNode;
   /** Optional legend or layer list on the map (bottom-left). */
   legend?: ReactNode;
   /** Side panel beside the map (2/3 map, 1/3 panel) instead of over it. */
@@ -47,6 +49,7 @@ export function WatchMap({
   controls,
   side,
   legend,
+  tools,
   sideBeside,
   selectedId,
   onSelect,
@@ -119,6 +122,7 @@ export function WatchMap({
             onToggle={fullscreen.toggle}
             labels={{ enter: copy.mapFullscreen, exit: copy.mapFullscreenExit }}
           />
+          {tools}
         </div>
       </div>
       {side ? sideBeside ? side : <aside className="watch-map-side">{side}</aside> : null}

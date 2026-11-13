@@ -25,6 +25,7 @@ import { useLocale } from '../chrome/LocaleContext';
 import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { MapHomeControl } from '../map/MapHomeControl';
 import { FitSelection } from '../map/FitSelection';
+import { PanelToggleButton } from '../map/PanelToggleButton';
 import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { SOMALIA_BOUNDS, type LatLngBoundsTuple } from '../../application/resolve-map-view';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
@@ -70,7 +71,7 @@ function SwipeClip({ ratio }: { ratio: number }) {
   return null;
 }
 
-function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' | 'states' }) {
+function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' }) {
   const paths: Record<typeof name, ReactNode> = {
     calendar: (
       <>
@@ -95,11 +96,6 @@ function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eye
       <>
         <path d="M2 12s3.6-7 10-7c2 0 3.7.7 5.1 1.6M22 12s-3.6 7-10 7c-2 0-3.7-.7-5.1-1.6" />
         <path d="m3 3 18 18" />
-      </>
-    ),
-    states: (
-      <>
-        <path d="M4 20V10M10 20V4M16 20v-7M21 20H3" />
       </>
     ),
     compare: (
@@ -379,16 +375,7 @@ export function FloodHistoryMap() {
             onToggle={fullscreen.toggle}
             labels={{ enter: copy.mapFullscreen, exit: copy.mapFullscreenExit }}
           />
-          <button
-            type="button"
-            aria-pressed={areasOpen}
-            aria-label={copy.stateArea}
-            title={copy.stateArea}
-            className={areasOpen ? 'active' : ''}
-            onClick={() => setAreasOpen((open) => !open)}
-          >
-            <Icon name="states" />
-          </button>
+          <PanelToggleButton on={areasOpen} onToggle={() => setAreasOpen((open) => !open)} label={copy.stateArea} />
           <button
             type="button"
             aria-pressed={comparing}

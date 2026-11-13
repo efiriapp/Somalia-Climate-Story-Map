@@ -49,6 +49,8 @@ type Props = {
   /** When given, rows are buttons that choose a place. */
   onPick?: (id: string) => void;
   selectedId?: string | null;
+  /** More content under the bars (e.g. a yearly chart). */
+  children?: ReactNode;
 };
 
 /**
@@ -66,6 +68,7 @@ export function AreaPanel({
   onClose,
   onPick,
   selectedId,
+  children,
 }: Props) {
   const { copy } = useLocale();
   const max = Math.max(1, ...rows.map((row) => Math.max(row.ha, row.b ?? 0)));
@@ -149,6 +152,7 @@ export function AreaPanel({
       ) : (
         <p className="flood-state-sub">{copy.floodNone}</p>
       )}
+      {children}
     </aside>
   );
 }

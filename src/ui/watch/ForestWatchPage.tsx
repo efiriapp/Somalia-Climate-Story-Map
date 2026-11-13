@@ -14,6 +14,7 @@ import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { ClipToOutline } from '../map/ClipToOutline';
 import { LossTrend } from './LossTrend';
 import { AreaPanel } from './AreaPanel';
+import { PanelToggleButton } from '../map/PanelToggleButton';
 import { useWatchFile } from '../useWatchData';
 import { WatchMap } from './WatchMap';
 import { WatchSources, type WatchSource } from './WatchSources';
@@ -46,6 +47,7 @@ export function ForestWatchPage() {
   // The chart's level follows the boundaries on the map (state when none).
   const [level, setLevel] = useState<AdminLevel>('state');
   const [place, setPlace] = useState<string | null>(null);
+  const [panelOpen, setPanelOpen] = useState(true);
   const pickLevel = (next: AdminLevel) => {
     setLevel(next);
     setBoundary(next);
@@ -95,8 +97,11 @@ export function ForestWatchPage() {
           </div>
         }
         sideBeside
+        tools={
+          <PanelToggleButton on={panelOpen} onToggle={() => setPanelOpen((open) => !open)} label={copy.forestLoss} />
+        }
         side={
-          lossData ? (
+          lossData && panelOpen ? (
             <AreaPanel
               title={copy.forestLoss}
               color={FOREST_LAYERS[0]!.color}
@@ -106,7 +111,10 @@ export function ForestWatchPage() {
               subtitle={`${Math.min(from, to)}–${Math.max(from, to)}`}
               onPick={(id) => setPlace((current) => (current === id ? null : id))}
               selectedId={place}
-            />
+              onClose={() => setPanelOpen(false)}
+            >
+              <LossTrend data={lossData} level={level} place={place} />
+            </AreaPanel>
           ) : null
         }
         legend={
@@ -156,9 +164,6 @@ export function ForestWatchPage() {
         {outline ? <ClipToOutline pane="forest" outline={outline} /> : null}
         {boundary && admin ? <AdminBoundaries key={boundary} level={boundary} data={admin} /> : null}
       </WatchMap>
-      {lossData ? (
-        <LossTrend data={lossData} level={level} place={place} onPlace={setPlace} />
-      ) : null}
       <WatchSources sources={SOURCES} />
     </article>
   );
