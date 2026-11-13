@@ -39,3 +39,28 @@ describe('AreaPanel ranking', () => {
     expect(ranks()).toEqual(['1', '2']);
   });
 });
+
+describe('AreaPanel sections', () => {
+  it('shows each section (e.g. export and local charcoal) as its own ranked list', () => {
+    render(
+      <LocaleProvider locale="en" setLocale={() => undefined}>
+        <AreaPanel
+          title="Charcoal"
+          level="state"
+          onLevel={() => undefined}
+          subtitle=""
+          sections={[
+            { title: 'Export', color: '#b3261e', rows: [{ id: 'a', name: 'A', ha: 100 }, { id: 'b', name: 'B', ha: 900 }] },
+            { title: 'Local', color: '#f07a6a', rows: [{ id: 'c', name: 'C', ha: 50 }] },
+          ]}
+        />
+      </LocaleProvider>,
+    );
+    const sections = [...document.querySelectorAll('.area-section')];
+    expect(sections.map((s) => s.querySelector('h4')?.textContent)).toEqual(['Export10 km²', 'Local0.5 km²']);
+    const listed = (s: Element) =>
+      [...s.querySelectorAll('li')].map((li) => `${li.querySelector('.flood-state-rank')?.textContent}. ${li.querySelector('strong')?.textContent}`);
+    expect(listed(sections[0]!)).toEqual(['1. B', '2. A']);
+    expect(listed(sections[1]!)).toEqual(['1. C']);
+  });
+});

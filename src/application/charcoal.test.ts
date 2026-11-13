@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { charcoalByUnit, type CharcoalByAdmin } from './charcoal';
+import { charcoalRanking, type CharcoalByAdmin } from './charcoal';
 
 const data: CharcoalByAdmin = {
   generated: '',
@@ -25,24 +25,20 @@ const data: CharcoalByAdmin = {
   },
 };
 
-describe('charcoalByUnit', () => {
-  it('gives export (ha) and local (b) per place, most charcoal area first', () => {
-    expect(charcoalByUnit(data, 'state')).toEqual([
-      { id: 'puntland', name: 'Puntland', ha: 0, b: 2000 },
-      { id: 'jubaland', name: 'Jubaland', ha: 70, b: 0 },
-    ]);
-  });
-
-  it('leaves out places with only the studied area', () => {
-    expect(charcoalByUnit(data, 'state').map((row) => row.id)).not.toContain('banadir');
-  });
-
-  it('matches the prepared file', () => {
+describe('prepared charcoal file', () => {
+  it('lists an area record for every place', () => {
     const file = JSON.parse(readFileSync(join(process.cwd(), 'public/data/watch/charcoal-by-admin.json'), 'utf8'));
     expect(file.kinds).toEqual(['export', 'local', 'studied']);
     for (const level of ['state', 'region', 'district']) {
       for (const unit of file.levels[level].units) expect(file.levels[level].areas[unit.id]).toBeDefined();
     }
+  });
+});
+
+describe('charcoalRanking', () => {
+  it('ranks places by one kind of area, largest first, leaving out places without it', () => {
+    expect(charcoalRanking(data, 'state', 'export')).toEqual([{ id: 'jubaland', name: 'Jubaland', ha: 70 }]);
+    expect(charcoalRanking(data, 'state', 'local')).toEqual([{ id: 'puntland', name: 'Puntland', ha: 2000 }]);
   });
 });
 

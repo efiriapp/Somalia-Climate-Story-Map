@@ -20,14 +20,11 @@ export const CHARCOAL_COLORS: Record<CharcoalKind, string> = {
   studied: '#3d3d3a',
 };
 
-/**
- * Rows for the side panel: export hectares in `ha`, local in `b`, most
- * charcoal area first. Places with only the studied area are left out.
- */
-export const charcoalByUnit = (data: CharcoalByAdmin, level: AdminLevel): UnitArea[] => {
+/** Places ranked by one kind of charcoal area (e.g. potential export), largest first; places without it left out. */
+export const charcoalRanking = (data: CharcoalByAdmin, level: AdminLevel, kind: CharcoalKind): UnitArea[] => {
   const { units, areas } = data.levels[level];
   return units
-    .map((unit) => ({ id: unit.id, name: unit.name, ha: areas[unit.id]?.export ?? 0, b: areas[unit.id]?.local ?? 0 }))
-    .filter((row) => row.ha + row.b > 0)
-    .sort((x, y) => y.ha + y.b - (x.ha + x.b));
+    .map((unit) => ({ id: unit.id, name: unit.name, ha: areas[unit.id]?.[kind] ?? 0 }))
+    .filter((row) => row.ha > 0)
+    .sort((x, y) => y.ha - x.ha);
 };

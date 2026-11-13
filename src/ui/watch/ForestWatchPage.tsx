@@ -13,7 +13,7 @@ import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { ClipToOutline } from '../map/ClipToOutline';
 import { LossTrend } from './LossTrend';
 import { AreaPanel } from './AreaPanel';
-import { CHARCOAL_COLORS, charcoalByUnit, type CharcoalByAdmin } from '../../application/charcoal';
+import { CHARCOAL_COLORS, charcoalRanking, type CharcoalByAdmin } from '../../application/charcoal';
 import { MapDialog, MapToggleButton } from '../map/MapToggleButton';
 import { CharcoalLayer } from './CharcoalLayer';
 import { CHARCOAL_KINDS, ForestLayerList, ForestLegend, charcoalOn, type ForestLayerState } from './ForestLayers';
@@ -63,9 +63,9 @@ export function ForestWatchPage() {
   // The panel's level follows the boundaries on the map (state when none).
   const [level, setLevel] = useState<AdminLevel>('state');
   const [place, setPlace] = useState<string | null>(null);
-  const [panelOpen, setPanelOpen] = useState(true);
+  // Side panel: tree cover loss or charcoal areas (one map button each), or closed.
+  const [panel, setPanel] = useState<'loss' | 'charcoal' | null>('loss');
   const [layersOpen, setLayersOpen] = useState(false);
-  const [topic, setTopic] = useState<'loss' | 'charcoal'>('loss');
 
   const { data: lossData } = useWatchFile<ForestLoss>('forest-loss.json');
   const { data: charcoal } = useWatchFile<CharcoalByAdmin>('charcoal-by-admin.json');
@@ -87,23 +87,22 @@ export function ForestWatchPage() {
       setPlace(null);
     }
   };
-  // Turning charcoal on shows its areas in the panel; all charcoal off goes back to loss.
+  // Turning charcoal on opens its panel; all charcoal off goes back to tree cover loss.
   const toggleLayer = (id: keyof ForestLayerState) => {
     const next = { ...on, [id]: !on[id] };
     setOn(next);
     if ((CHARCOAL_KINDS as string[]).includes(id) && charcoalOn(next) !== charcoalOn(on)) {
-      setTopic(charcoalOn(next) ? 'charcoal' : 'loss');
+      setPanel((current) => (charcoalOn(next) ? 'charcoal' : current === 'charcoal' ? 'loss' : current));
     }
   };
-  const pickTopic = (id: string) => {
-    setTopic(id as 'loss' | 'charcoal');
-    if (id === 'charcoal' && !charcoalOn(on)) setOn((current) => ({ ...current, export: true, local: true }));
+  // A panel button opens its panel, or closes it when it is already open.
+  const togglePanel = (which: 'loss' | 'charcoal') => {
+    setPanel((current) => (current === which ? null : which));
+    if (which === 'charcoal' && panel !== 'charcoal' && !charcoalOn(on)) {
+      setOn((current) => ({ ...current, export: true, local: true }));
+    }
   };
-  const topics = [
-    { id: 'loss', label: copy.forestLoss },
-    { id: 'charcoal', label: copy.charcoalLayer },
-  ];
-  const panelCommon = { topics, topic, onTopic: pickTopic, level, onLevel: pickLevel, onClose: () => setPanelOpen(false) };
+  const panelCommon = { level, onLevel: pickLevel, onClose: () => setPanel(null) };
   const year = (value: number, set: (next: number) => void, text: string) => (
     <label>
       <span>{text}</span>
@@ -132,7 +131,8 @@ export function ForestWatchPage() {
         }
         tools={
           <>
-            <MapToggleButton icon="chart" on={panelOpen} onToggle={() => setPanelOpen((open) => !open)} label={copy.forestLoss} />
+            <MapToggleButton icon="forest" on={panel === 'loss'} onToggle={() => togglePanel('loss')} label={copy.forestLoss} />
+            <MapToggleButton icon="charcoal" on={panel === 'charcoal'} onToggle={() => togglePanel('charcoal')} label={copy.charcoalLayer} />
             <MapToggleButton icon="layers" on={layersOpen} onToggle={() => setLayersOpen((open) => !open)} label={copy.mapLayers} />
           </>
         }
@@ -146,16 +146,17 @@ export function ForestWatchPage() {
         legend={<ForestLegend on={on} years={years} />}
         sideBeside
         side={
-          !panelOpen ? null : topic === 'charcoal' && charcoal ? (
+          panel === 'charcoal' && charcoal ? (
             <AreaPanel
               {...panelCommon}
               title={copy.charcoalLayer}
-              rows={charcoalByUnit(charcoal, level)}
               subtitle="FAO SWALIM, 2018"
-              compare={{ a: copy.charcoalExport, b: copy.charcoalLocal }}
-              compareColors={{ a: CHARCOAL_COLORS.export, b: CHARCOAL_COLORS.local }}
+              sections={[
+                { title: copy.charcoalExport, color: CHARCOAL_COLORS.export, rows: charcoalRanking(charcoal, level, 'export') },
+                { title: copy.charcoalLocal, color: CHARCOAL_COLORS.local, rows: charcoalRanking(charcoal, level, 'local') },
+              ]}
             />
-          ) : lossData ? (
+          ) : panel === 'loss' && lossData ? (
             <AreaPanel
               {...panelCommon}
               title={copy.forestLoss}
