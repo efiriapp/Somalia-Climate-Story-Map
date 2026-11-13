@@ -32,6 +32,8 @@ type Props = {
   onSelect?: (id: string) => void;
   /** Extra map buttons under the full screen button (top-right). */
   tools?: ReactNode;
+  /** A box over the map, e.g. the layer list (top-right, beside the buttons). */
+  overlay?: ReactNode;
   /** Optional legend or layer list on the map (bottom-left). */
   legend?: ReactNode;
   /** Side panel beside the map (2/3 map, 1/3 panel) instead of over it. */
@@ -49,6 +51,7 @@ export function WatchMap({
   controls,
   side,
   legend,
+  overlay,
   tools,
   sideBeside,
   selectedId,
@@ -116,6 +119,7 @@ export function WatchMap({
         </MapContainer>
         {controls ? <div className="map-overlay-controls">{controls}</div> : null}
         {legend ? <div className="map-overlay-legend">{legend}</div> : null}
+        {overlay}
         <div className="map-corner-tools">
           <FullscreenButton
             on={fullscreen.on}

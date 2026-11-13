@@ -45,3 +45,16 @@ describe('charcoalByUnit', () => {
     }
   });
 });
+
+describe('charcoal sites (map markers)', () => {
+  it('has one point inside each export or local area, with its size', () => {
+    const sites = JSON.parse(readFileSync(join(process.cwd(), 'public/data/watch/charcoal-sites.geojson'), 'utf8'));
+    // SWALIM's layer: 4 export and 8 local areas (the study area has no marker).
+    expect(sites.features).toHaveLength(12);
+    for (const site of sites.features) {
+      expect(site.geometry.type).toBe('Point');
+      expect(['export', 'local']).toContain(site.properties.kind);
+      expect(site.properties.ha).toBeGreaterThan(0);
+    }
+  });
+});

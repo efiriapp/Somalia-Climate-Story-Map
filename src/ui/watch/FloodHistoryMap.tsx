@@ -25,7 +25,7 @@ import { useLocale } from '../chrome/LocaleContext';
 import { FullscreenButton, MapAutoResize, useFullscreen } from '../map/MapFullscreen';
 import { MapHomeControl } from '../map/MapHomeControl';
 import { FitSelection } from '../map/FitSelection';
-import { PanelToggleButton } from '../map/PanelToggleButton';
+import { MapDialog, MapToggleButton } from '../map/MapToggleButton';
 import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { SOMALIA_BOUNDS, type LatLngBoundsTuple } from '../../application/resolve-map-view';
 import { LeafletRasterBasemap } from '../map/LeafletRasterBasemap';
@@ -71,19 +71,13 @@ function SwipeClip({ ratio }: { ratio: number }) {
   return null;
 }
 
-function Icon({ name }: { name: 'calendar' | 'layers' | 'compare' | 'eye' | 'eyeOff' }) {
+function Icon({ name }: { name: 'calendar' | 'compare' | 'eye' | 'eyeOff' }) {
   const paths: Record<typeof name, ReactNode> = {
     calendar: (
       <>
         <rect x="3.5" y="5" width="17" height="15" rx="2" />
         <path d="M3.5 10h17M8 3v4M16 3v4" />
         <path d="M8 14h2M12 14h2M16 14h0.01M8 17h2M12 17h2" />
-      </>
-    ),
-    layers: (
-      <>
-        <path d="m12 3 9 5-9 5-9-5 9-5Z" />
-        <path d="m3 13 9 5 9-5" />
       </>
     ),
     eye: (
@@ -375,7 +369,7 @@ export function FloodHistoryMap() {
             onToggle={fullscreen.toggle}
             labels={{ enter: copy.mapFullscreen, exit: copy.mapFullscreenExit }}
           />
-          <PanelToggleButton on={areasOpen} onToggle={() => setAreasOpen((open) => !open)} label={copy.stateArea} />
+          <MapToggleButton icon="chart" on={areasOpen} onToggle={() => setAreasOpen((open) => !open)} label={copy.stateArea} />
           <button
             type="button"
             aria-pressed={comparing}
@@ -390,16 +384,12 @@ export function FloodHistoryMap() {
           >
             <Icon name="compare" />
           </button>
-          <button
-            type="button"
-            aria-expanded={panel === 'layers'}
-            aria-label={copy.mapLayers}
-            title={copy.mapLayers}
-            className={panel === 'layers' ? 'active' : ''}
-            onClick={() => setPanel((open) => (open === 'layers' ? null : 'layers'))}
-          >
-            <Icon name="layers" />
-          </button>
+          <MapToggleButton
+            icon="layers"
+            on={panel === 'layers'}
+            onToggle={() => setPanel((open) => (open === 'layers' ? null : 'layers'))}
+            label={copy.mapLayers}
+          />
         </div>
 
         {comparing ? (
@@ -497,13 +487,11 @@ export function FloodHistoryMap() {
         ) : null}
 
         {panel ? (
-          <div className="flood-map-panel" role="dialog" aria-label={panel === 'compare' ? copy.floodCompare : copy.mapLayers}>
-            <div className="flood-map-panel-head">
-              <strong>{panel === 'compare' ? copy.floodCompare : copy.mapLayers}</strong>
-              <button type="button" onClick={() => setPanel(null)} aria-label={copy.mapClose}>
-                ×
-              </button>
-            </div>
+          <MapDialog
+            title={panel === 'compare' ? copy.floodCompare : copy.mapLayers}
+            closeLabel={copy.mapClose}
+            onClose={() => setPanel(null)}
+          >
 
             {panel === 'compare' ? (
               <div className="flood-compare-form">
@@ -609,7 +597,7 @@ export function FloodHistoryMap() {
                 </fieldset>
               </div>
             ) : null}
-          </div>
+          </MapDialog>
         ) : null}
 
       </div>
