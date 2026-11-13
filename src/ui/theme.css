@@ -3995,3 +3995,12 @@ body.has-fullscreen-map .autoplay-scroll {
   font-size: 0.85rem;
   color: #3d3d3a;
 }
+
+/* Area panel topic switch (e.g. tree cover loss / charcoal areas) */
+.flood-state-levels.area-topics {
+  margin-bottom: 0;
+}
+
+.flood-state-levels.area-topics button[aria-selected='true'] {
+  background: #3d3d3a;
+}

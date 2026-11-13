@@ -10,6 +10,9 @@ import { ROOT } from './flood-events.mjs';
 
 const BOUNDARIES = join(ROOT, 'Sources', 'Data', 'boundaries');
 const UNZIPPED = join(BOUNDARIES, 'unzipped');
+/** Equal-area projection centred on Somalia (WGS 84): areas measured in it are true ground areas. */
+export const LAEA = '+proj=laea +lat_0=5 +lon_0=46 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs';
+
 export const LEVELS = {
   state: { zip: 'SOM_Adminbnda_Adm1_States_UNOCHA', id: 'Name', name: 'Name' },
   region: { zip: 'SOM_Adminbnda_Adm2_Regions_UNOCHA', id: 'admin1Pcod', name: 'admin1Name' },
@@ -29,16 +32,23 @@ export const STATE = {
   'Somaliland-Puntland Border Claims': { id: 'north-eastern', name: 'North Eastern' },
 };
 
-export const shp = (level) => {
-  const { zip } = LEVELS[level];
-  const file = join(UNZIPPED, zip, `${zip}.shp`);
+/**
+ * Path of `name`.shp from a zipped shapefile, unzipping it into `folder` the
+ * first time. Fails fast when the zip is missing.
+ */
+export const shapefileFrom = (archive, folder, name) => {
+  const file = join(folder, `${name}.shp`);
   if (!existsSync(file)) {
-    const archive = join(BOUNDARIES, `${zip}.zip`);
     if (!existsSync(archive)) throw new Error(`Missing ${archive}`);
-    mkdirSync(join(UNZIPPED, zip), { recursive: true });
+    mkdirSync(folder, { recursive: true });
     // tar reads zip files on Windows 10+, macOS and most Linux systems.
-    execFileSync('tar', ['-xf', archive, '-C', join(UNZIPPED, zip)]);
+    execFileSync('tar', ['-xf', archive, '-C', folder]);
   }
   return file;
+};
+
+export const shp = (level) => {
+  const { zip } = LEVELS[level];
+  return shapefileFrom(join(BOUNDARIES, `${zip}.zip`), join(UNZIPPED, zip), zip);
 };
 

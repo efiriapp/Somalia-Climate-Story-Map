@@ -20,13 +20,12 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { FLOOD_EVENTS, ROOT, SRC } from './flood-events.mjs';
-import { LEVELS, STATE, shp } from './admin-boundaries.mjs';
+import { LAEA, LEVELS, STATE, shp } from './admin-boundaries.mjs';
 
 const require = createRequire(import.meta.url);
 const mapshaper = require('mapshaper');
 
 const OUT = join(ROOT, 'public', 'data', 'watch');
-const LAEA = '+proj=laea +lat_0=5 +lon_0=46 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs';
 
 // Boundaries: one unit id and name per feature; outlines for the map.
 const units = {};

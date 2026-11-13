@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pane, TileLayer } from 'react-leaflet';
+import { GeoJSON, Pane, TileLayer } from 'react-leaflet';
 import type { Feature, FeatureCollection } from 'geojson';
 import {
   FOREST_LAYERS,
@@ -14,6 +14,7 @@ import { ADMIN_FILE, AdminBoundaries } from '../map/AdminBoundaries';
 import { ClipToOutline } from '../map/ClipToOutline';
 import { LossTrend } from './LossTrend';
 import { AreaPanel } from './AreaPanel';
+import { CHARCOAL_COLORS, charcoalByUnit, type CharcoalByAdmin, type CharcoalKind } from '../../application/charcoal';
 import { PanelToggleButton } from '../map/PanelToggleButton';
 import { useWatchFile } from '../useWatchData';
 import { WatchMap } from './WatchMap';
@@ -23,6 +24,10 @@ const YEARS = Array.from({ length: LOSS_YEARS.last - LOSS_YEARS.first + 1 }, (_,
 
 const SOURCES: WatchSource[] = [
   ...FOREST_LAYERS.map((layer) => ({ text: `${layer.source} ${layer.licence}.`, url: layer.sourceUrl })),
+  {
+    text: 'Charcoal production areas (potential export, proposed local consumption, study area 2011–2017): FAO SWALIM, PROSCAL, 2018. Areas by place: ICE calculation (equal-area projection, UNOCHA boundaries).',
+    url: 'https://spatial.faoswalim.org/layers/geonode:SOM_Proposed_Charcoal_Production_Areas',
+  },
   {
     text: 'Map tiles: Global Forest Watch, World Resources Institute.',
     url: 'https://www.globalforestwatch.org/',
@@ -48,6 +53,18 @@ export function ForestWatchPage() {
   const [level, setLevel] = useState<AdminLevel>('state');
   const [place, setPlace] = useState<string | null>(null);
   const [panelOpen, setPanelOpen] = useState(true);
+  // The panel shows tree cover loss or charcoal areas; the charcoal layer is on with its topic.
+  const [topic, setTopic] = useState<'loss' | 'charcoal'>('loss');
+  const showCharcoal = topic === 'charcoal';
+  const { data: charcoal } = useWatchFile<CharcoalByAdmin>('charcoal-by-admin.json');
+  const { data: charcoalMap } = useWatchFile<FeatureCollection & { features: Feature[] }>(
+    showCharcoal ? 'charcoal-areas.geojson' : null,
+  );
+  const charcoalName: Record<CharcoalKind, string> = {
+    export: copy.charcoalExport,
+    local: copy.charcoalLocal,
+    studied: copy.charcoalStudied,
+  };
   const pickLevel = (next: AdminLevel) => {
     setLevel(next);
     setBoundary(next);
@@ -65,6 +82,10 @@ export function ForestWatchPage() {
   const { data: admin } = useWatchFile<FeatureCollection & { features: Feature[] }>(
     boundary ? ADMIN_FILE[boundary] : null,
   );
+  const topics = [
+    { id: 'loss', label: copy.forestLoss },
+    { id: 'charcoal', label: copy.charcoalLayer },
+  ];
   const names: Record<ForestLayerId, string> = {
     loss: copy.forestLoss,
     cover: copy.forestCover,
@@ -101,9 +122,26 @@ export function ForestWatchPage() {
           <PanelToggleButton on={panelOpen} onToggle={() => setPanelOpen((open) => !open)} label={copy.forestLoss} />
         }
         side={
-          lossData && panelOpen ? (
+          panelOpen && showCharcoal && charcoal ? (
+            <AreaPanel
+              title={copy.charcoalLayer}
+              topics={topics}
+              topic={topic}
+              onTopic={(id) => setTopic(id as 'loss' | 'charcoal')}
+              level={level}
+              onLevel={pickLevel}
+              rows={charcoalByUnit(charcoal, level)}
+              subtitle="FAO SWALIM, 2018"
+              compare={{ a: copy.charcoalExport, b: copy.charcoalLocal }}
+              compareColors={{ a: CHARCOAL_COLORS.export, b: CHARCOAL_COLORS.local }}
+              onClose={() => setPanelOpen(false)}
+            />
+          ) : lossData && panelOpen ? (
             <AreaPanel
               title={copy.forestLoss}
+              topics={topics}
+              topic={topic}
+              onTopic={(id) => setTopic(id as 'loss' | 'charcoal')}
               color={FOREST_LAYERS[0]!.color}
               level={level}
               onLevel={pickLevel}
@@ -131,6 +169,11 @@ export function ForestWatchPage() {
                 {layer.id === 'loss' ? ` ${Math.min(from, to)}–${Math.max(from, to)}` : ''}
               </label>
             ))}
+            <label>
+              <input type="checkbox" checked={showCharcoal} onChange={() => setTopic(showCharcoal ? 'loss' : 'charcoal')} />
+              <span className="legend-key" style={{ background: CHARCOAL_COLORS.export }} aria-hidden="true" />
+              {copy.charcoalLayer}
+            </label>
             <label className="forest-boundary">
               <span>{copy.layerBoundaries}</span>
               <select
@@ -162,6 +205,21 @@ export function ForestWatchPage() {
           )}
         </Pane>
         {outline ? <ClipToOutline pane="forest" outline={outline} /> : null}
+        {showCharcoal && charcoalMap ? (
+          <GeoJSON
+            key="charcoal"
+            data={charcoalMap}
+            style={(feature) => {
+              const kind = feature?.properties?.kind as CharcoalKind;
+              return kind === 'studied'
+                ? { color: CHARCOAL_COLORS.studied, weight: 1.5, dashArray: '5 4', fill: false }
+                : { color: CHARCOAL_COLORS[kind], weight: 1, fillColor: CHARCOAL_COLORS[kind], fillOpacity: 0.5 };
+            }}
+            onEachFeature={(feature, layer) =>
+              layer.bindTooltip(charcoalName[feature.properties?.kind as CharcoalKind] ?? '', { sticky: true })
+            }
+          />
+        ) : null}
         {boundary && admin ? <AdminBoundaries key={boundary} level={boundary} data={admin} /> : null}
       </WatchMap>
       <WatchSources sources={SOURCES} />

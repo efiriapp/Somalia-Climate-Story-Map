@@ -19,7 +19,8 @@
     "watch:baselines": "node ./scripts/fetch-watch-baselines.mjs",
     "data:prepare": "node --max-old-space-size=8192 ./scripts/prepare-watch-data.mjs && npm run -s data:areas",
     "data:areas": "node --max-old-space-size=8192 ./scripts/flood-areas.mjs",
-    "data:forest": "node --max-old-space-size=8192 ./scripts/forest-loss.mjs"
+    "data:forest": "node --max-old-space-size=8192 ./scripts/forest-loss.mjs",
+    "data:charcoal": "node ./scripts/charcoal-areas.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",

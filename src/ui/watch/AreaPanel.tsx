@@ -43,8 +43,14 @@ type Props = {
   rows: UnitArea[];
   /** What the figures cover, e.g. one flood's name or "16 floods". */
   subtitle: string;
-  /** In compare mode: labels for the two floods (A in blue, B in orange). */
+  /** Two bars per place (e.g. flood A and B): their labels... */
   compare?: { a: string; b: string };
+  /** ...and colours (blue and orange unless given). */
+  compareColors?: { a: string; b: string };
+  /** Optional switch between topics shown above the level tabs. */
+  topics?: { id: string; label: string }[];
+  topic?: string;
+  onTopic?: (id: string) => void;
   onClose?: () => void;
   /** When given, rows are buttons that choose a place. */
   onPick?: (id: string) => void;
@@ -65,12 +71,17 @@ export function AreaPanel({
   rows,
   subtitle,
   compare,
+  compareColors = COMPARE_COLORS,
+  topics,
+  topic,
+  onTopic,
   onClose,
   onPick,
   selectedId,
   children,
 }: Props) {
   const { copy } = useLocale();
+  const pair = compareColors;
   const max = Math.max(1, ...rows.map((row) => Math.max(row.ha, row.b ?? 0)));
   const ha = (value: number) => `${Math.round(value).toLocaleString('en')} ${copy.hectares}`;
   const width = (value: number) => `${value > 0 ? Math.max(1.5, (value / max) * 100) : 0}%`;
@@ -91,6 +102,15 @@ export function AreaPanel({
           </button>
         ) : null}
       </div>
+      {topics && onTopic ? (
+        <div className="flood-state-levels area-topics" role="tablist" aria-label={title}>
+          {topics.map((item) => (
+            <button key={item.id} type="button" role="tab" aria-selected={topic === item.id} onClick={() => onTopic(item.id)}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="flood-state-levels" role="tablist" aria-label={title}>
         {levels.map(([id, text]) => (
           <button key={id} type="button" role="tab" aria-selected={level === id} onClick={() => onLevel(id)}>
@@ -110,10 +130,10 @@ export function AreaPanel({
       {compare ? (
         <p className="flood-state-keys">
           <span>
-            <span className="swatch" style={{ background: COMPARE_COLORS.a }} aria-hidden="true" /> {compare.a}
+            <span className="swatch" style={{ background: pair.a }} aria-hidden="true" /> {compare.a}
           </span>
           <span>
-            <span className="swatch" style={{ background: COMPARE_COLORS.b }} aria-hidden="true" /> {compare.b}
+            <span className="swatch" style={{ background: pair.b }} aria-hidden="true" /> {compare.b}
           </span>
         </p>
       ) : null}
@@ -134,13 +154,13 @@ export function AreaPanel({
                 {!compare ? <span className="flood-state-value">{ha(row.ha)}</span> : null}
               </div>
               <div className="flood-state-bar" title={ha(row.ha)}>
-                <span style={{ width: width(row.ha), background: compare ? COMPARE_COLORS.a : color }} />
+                <span style={{ width: width(row.ha), background: compare ? pair.a : color }} />
               </div>
               {compare ? (
                 <>
                   <span className="flood-state-value">{ha(row.ha)}</span>
                   <div className="flood-state-bar" title={ha(row.b ?? 0)}>
-                    <span style={{ width: width(row.b ?? 0), background: COMPARE_COLORS.b }} />
+                    <span style={{ width: width(row.b ?? 0), background: pair.b }} />
                   </div>
                   <span className="flood-state-value">{ha(row.b ?? 0)}</span>
                 </>
