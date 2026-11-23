@@ -7,3 +7,21 @@ coverage
 .vscode/*
 !.vscode/extensions.json
 public/maplibre/
+
+# Local env overrides (see .env.example)
+.env
+.env.*
+!.env.example
+
+# Scratch files from content extraction scripts
+.tmp-docs/
+.tmp-research-*.json
+
+# Manual upload bundle (npm run package)
+site-upload.zip
+
+# Local caches for data scripts (npm run watch:baselines)
+.cache/
+
+# Unzipped source data (large; regenerate from the zips in Sources/Data)
+Sources/Data/extracted/

@@ -19,7 +19,7 @@ export const CLIMATE_HUB_SO = {
 export const FOOTER_SO = {
   institute: 'Machadka Cimilada iyo Deegaanka (ICE)',
   university: 'Jaamacadda SIMAD',
-  platform: 'Barnaamijka Sheekaynta Xogta Cimilada Soomaaliyeed',
+  platform: 'Barnaamijka Xogta Cimilada iyo Sheekaynta Soomaaliyeed',
   comment:
     'Sheekooyinka, cilmi-baarista, iyo bogagga ICE ee Marxaladda Caalamiga ee barnaamijkan waa qayb ka mid ah taxanaha sheekaynta cimilada ee Machadka ICE. Waxay iftiimiyaan dadka Soomaaliyeed, xogta, iyo tallaabada cimilada si dadweynuhu u barto.',
   copyright: '© 2026 Machadka Cimilada iyo Deegaanka (ICE), Jaamacadda SIMAD. Dhammaan xuquuqdu waa la xafiday.',

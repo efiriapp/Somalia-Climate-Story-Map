@@ -8,8 +8,11 @@
   --line: #d9e2de;
   --white: #ffffff;
   --chip: #e8f5ee;
+  /* ICE brand leaf green (from the ICE logo): highlighted title line and the
+     current menu pill, on the dark ICE green header. */
+  --accent: #38c080;
   --control: #ececec;
-  font-family: Inter, system-ui, 'Segoe UI', sans-serif;
+  font-family: Inter, 'Noto Sans Arabic', system-ui, 'Segoe UI', sans-serif;
   color: var(--ink);
   background: var(--white);
 }
@@ -41,72 +44,192 @@ select {
   font: inherit;
 }
 
+/* Site header: fixed to the top and always the same size (it does not react
+   to scrolling). Dark ICE green with a frosted-glass ("mirror") finish and a
+   faint tinted ICE photo (Lower Juba); content passing underneath shows
+   blurred through the glass. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  isolation: isolate;
+  background-color: rgba(6, 61, 57, 0.94);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  color: var(--white);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('/images/header-bg.webp') center 60% / cover no-repeat;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+/* A soft highlight along the top edge gives the glass its sheen. */
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  pointer-events: none;
+}
+
+/* Browsers without backdrop blur get a solid bar so text stays readable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header {
+    background-color: rgba(6, 61, 57, 0.97);
+  }
+}
+
 .topbar {
   container-type: inline-size;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.1rem;
-  padding: 0.7rem 1.2rem;
-  background: var(--forest);
-  border-bottom: 1px solid var(--leaf);
+  gap: 1.4rem;
+  padding: 0.9rem clamp(16px, 3vw, 2.5rem) 0.35rem;
+  background: transparent;
 }
 
 .topbar-logo {
-  height: 96px;
+  height: 80px;
   width: auto;
-  max-width: 280px;
   object-fit: contain;
   object-position: left center;
-  background: #fff;
-  border-radius: 10px;
-  padding: 0.2rem 0.45rem;
+  flex: none;
 }
 
-.topbar-logo.ice {
-  max-width: 340px;
-  object-position: right center;
+/* Combined SIMAD + ICE web logo: transparent, white wordmark, made for the
+   green header, so it sits directly on the bar with no white box. */
+.topbar-brand {
+  max-width: min(32vw, 290px);
+}
+
+.topbar .nav-language {
+  flex: none;
 }
 
 .topbar-title {
   flex: 1;
   min-width: 0;
-  text-align: center;
   color: #fff;
   font-weight: 900;
-  font-size: clamp(1.45rem, 5.6cqi, 3.55rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.15rem, 3.4cqi, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  /* Center the framed title as one block, sized from its own space. */
+  display: flex;
+  justify-content: center;
+  container-type: inline-size;
+}
+
+/* Both lines share one starting edge (left in English and Somali, right in
+   Arabic) and one font size, scaled so the language's longest line fits
+   (--title-chars is set from the text). */
+.topbar-title-text {
+  --title-chars: 21;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  font-size: clamp(1.05rem, calc(100cqi / (var(--title-chars) * 0.72)), 2.35rem);
+}
+
+.topbar-title-line {
+  /* Wrap only when a line does not fit; wrapped rows keep the same edge. */
   text-wrap: balance;
 }
 
+.topbar-title-line.accent {
+  color: var(--accent);
+}
+
+/* Pill menu inside the header: current page filled yellow, others outlined. */
 .nav {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 0.4rem;
-  background: var(--forest);
-  padding: 0 1.5rem;
-  min-height: 48px;
-  overflow-x: auto;
+  gap: 10px;
+  padding: 0.45rem clamp(16px, 3vw, 2.5rem) 0.95rem;
+  background: transparent;
   direction: ltr;
 }
 
-.nav button {
-  background: transparent;
-  border: 0;
+.nav > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
   color: var(--white);
+  padding: 0.5rem 1.05rem;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 0.85rem 0.9rem;
-  cursor: pointer;
   white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.nav button.active,
-.nav button:hover {
-  background: var(--leaf);
+.nav > button:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav > button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--forest);
+}
+
+.nav > button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Phones and tablets: logo and language toggle on top, title below, and a
+   swipeable single row of pills. */
+@media (max-width: 900px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.6rem 16px 0.3rem;
+  }
+
+  .topbar-logo {
+    height: 44px;
+    max-width: 52%;
+    min-width: 0;
+  }
+
+  .topbar .nav-language-track {
+    width: 9.6rem;
+  }
+
+  .topbar-title {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .nav {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0.4rem 16px 0.8rem;
+    scrollbar-width: thin;
+  }
+
 }
 
 .nav-language {
@@ -2449,9 +2572,14 @@ html[dir='rtl'] .autoplay-scroll select {
   margin-bottom: 0.9rem;
 }
 
-.site-footer-brand img {
-  height: 42px;
+.site-footer-brand {
+  flex-wrap: wrap;
+}
+
+.site-footer-logo {
+  height: 64px;
   width: auto;
+  max-width: 100%;
 }
 
 .site-footer-brand p {
@@ -2470,4 +2598,1500 @@ html[dir='rtl'] .autoplay-scroll select {
 
 .site-footer a {
   color: var(--mint);
+}
+
+/* Lazy page loading and per-page error fallback */
+.page-loading {
+  padding: 48px 16px;
+  text-align: center;
+  color: #4b5b58;
+}
+
+.page-error {
+  text-align: center;
+}
+
+/* Media citations (photos: TASL, videos: APA 7) */
+.media-citation {
+  margin: 6px 0 20px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #4b5b58;
+  overflow-wrap: anywhere;
+}
+
+.media-sources {
+  margin: 32px 0 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(6, 61, 57, 0.15);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #3d4b48;
+}
+
+.media-sources h2 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+
+.media-sources ol {
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+.media-sources li {
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.media-kind {
+  font-weight: 700;
+}
+
+.media-sources-note {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #5d6b68;
+}
+
+.event-card-credit {
+  margin: 4px 0 0;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  opacity: 0.8;
+}
+
+/* Menu icons (Fluent Emoji, MIT) */
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+/* Flood Watch and Drought Watch */
+.watch-page {
+  max-width: 1080px;
+}
+
+.watch-intro {
+  font-size: 1.05rem;
+}
+
+.watch-disclaimer {
+  margin: 12px 0 16px;
+  padding: 10px 14px;
+  border-inline-start: 4px solid #fab219;
+  background: #fff8e6;
+  color: #3d3a2f;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.watch-how,
+.watch-season {
+  color: #52514e;
+  font-size: 0.9rem;
+}
+
+.watch-message {
+  padding: 18px;
+  text-align: center;
+  color: #52514e;
+}
+
+.watch-message-error {
+  color: #8a2b2b;
+}
+
+.status-legend {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 0.86rem;
+  color: #3d4b48;
+}
+
+.status-legend li {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 340px;
+}
+
+.status-legend .status-icon {
+  margin-top: 2px;
+  flex: none;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  background: #f3f3f0;
+  color: #0b0b0b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.watch-map {
+  margin: 18px 0 8px;
+}
+
+.watch-map .leaflet-container {
+  height: 380px;
+  border-radius: 12px;
+}
+
+.watch-group h2 {
+  margin-top: 28px;
+}
+
+.watch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 16px;
+}
+
+.watch-card {
+  border: 1px solid #e4e4e0;
+  border-radius: 12px;
+  padding: 14px 16px 10px;
+  background: #fff;
+  min-width: 0;
+}
+
+.watch-card-head,
+.rain-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.watch-card h3,
+.rain-row h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.watch-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 28px;
+  margin: 10px 0 4px;
+}
+
+.watch-figures dt {
+  font-size: 0.78rem;
+  color: #52514e;
+}
+
+.watch-figures dd {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0b0b0b;
+}
+
+.watch-figures dd span,
+.watch-figures dd small {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #52514e;
+  margin-inline-start: 4px;
+}
+
+.flow-chart {
+  position: relative;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.flow-chart svg {
+  display: block;
+  overflow: visible;
+  /* Time runs left to right in every language; without this, Arabic pages
+     flip SVG text anchors and push labels past the chart edge. */
+  direction: ltr;
+}
+
+.flow-chart svg:focus-visible {
+  outline: 2px solid #2a78d6;
+  outline-offset: 2px;
+}
+
+.chart-axis,
+.chart-label {
+  font-size: 11px;
+  fill: #52514e;
+}
+
+.chart-tooltip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+  font-size: 0.8rem;
+  color: #52514e;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.chart-tooltip strong {
+  font-size: 0.95rem;
+  color: #0b0b0b;
+}
+
+.rain-list {
+  list-style: none;
+  margin: 18px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 14px;
+}
+
+.rain-row {
+  border: 1px solid #e4e4e0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fff;
+}
+
+.rain-meter {
+  position: relative;
+  height: 10px;
+  margin: 12px 0 8px;
+  border-radius: 999px;
+  background: #ecece8;
+  overflow: hidden;
+}
+
+.rain-meter-fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-start-end-radius: 4px;
+  border-end-end-radius: 4px;
+}
+
+.rain-meter-mark {
+  position: absolute;
+  inset-block: -2px;
+  width: 2px;
+  background: #0b0b0b;
+}
+
+.rain-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 6px 0 0;
+  font-size: 0.86rem;
+  color: #52514e;
+}
+
+.rain-figures strong {
+  color: #0b0b0b;
+}
+
+.watch-table {
+  margin: 20px 0;
+}
+
+.watch-table summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.watch-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.86rem;
+}
+
+.watch-table th,
+.watch-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e4e4e0;
+  text-align: start;
+}
+
+.watch-table {
+  overflow-x: auto;
+}
+
+/* "Open the globe" button on a Global Stage story */
+.globe-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: var(--forest);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Flood Watch: past floods map */
+.flood-history {
+  margin-top: 36px;
+}
+
+.flood-map-wrap {
+  position: relative;
+  margin: 14px 0 10px;
+}
+
+/* The map and its on-map controls; panels may sit outside it on phones. */
+.flood-map-stage {
+  position: relative;
+}
+
+.flood-map-wrap .leaflet-container {
+  height: 520px;
+  border-radius: 12px;
+}
+
+.flood-map-tools {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.flood-map-tools button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(6, 61, 57, 0.2);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--forest);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.flood-map-tools button.active,
+.flood-map-tools button:hover {
+  background: var(--forest);
+  color: #fff;
+}
+
+.flood-map-panel {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 58px;
+  z-index: 1000;
+  width: min(320px, calc(100% - 76px));
+  max-height: calc(100% - 20px);
+  overflow-y: auto;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+  font-size: 0.88rem;
+}
+
+.flood-map-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.flood-map-panel-head button {
+  border: 0;
+  background: transparent;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #52514e;
+}
+
+.flood-compare-form > button {
+  border: 1px solid #c9d3cf;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--forest);
+  padding: 5px 11px;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.flood-compare-form > button.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: #fff;
+}
+
+.flood-compare-form,
+.flood-layers {
+  display: grid;
+  gap: 10px;
+}
+
+.flood-compare-form label {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 4px 8px;
+  font-weight: 700;
+}
+
+.flood-compare-form select {
+  grid-column: 1 / -1;
+  padding: 6px 8px;
+  border: 1px solid #c9d3cf;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.flood-layers label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flood-layers fieldset {
+  border: 0;
+  border-top: 1px solid #ecece8;
+  padding: 8px 0 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.flood-layers legend {
+  font-weight: 700;
+  padding: 0;
+}
+
+.swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  vertical-align: -2px;
+}
+
+.flood-map-legend {
+  position: absolute;
+  bottom: 30px;
+  inset-inline-start: 10px;
+  z-index: 1000;
+  max-width: min(320px, calc(100% - 20px));
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+  font-size: 0.78rem;
+  color: #0b0b0b;
+  display: grid;
+  gap: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legend-key {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.legend-key.legend-line {
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legend-key.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-inline: 2px;
+}
+
+.legend-ramp {
+  width: 200px;
+  max-width: 100%;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend-ramp-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #52514e;
+}
+
+.flood-map-loading {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  margin: 0;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  font-size: 0.82rem;
+  color: #52514e;
+}
+
+.flood-summary {
+  margin-bottom: 12px;
+}
+
+.flood-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.flood-compare-table th,
+.flood-compare-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #e4e4e0;
+  text-align: start;
+}
+
+.flood-compare-table td {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .flood-map-wrap .leaflet-container {
+    height: 440px;
+  }
+
+  .flood-map-legend {
+    bottom: 26px;
+    font-size: 0.72rem;
+  }
+}
+
+/* Past floods map: date filter (calendar icon + compact dropdown) */
+.flood-date-filter {
+  position: absolute;
+  top: 10px;
+  left: 54px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 120px);
+  padding: 4px 6px 4px 10px;
+  border: 1px solid rgba(6, 61, 57, 0.2);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--forest);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.flood-date-filter select {
+  min-width: 0;
+  max-width: 230px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--forest);
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
+.flood-date-filter.is-disabled {
+  opacity: 0.55;
+}
+
+/* Swipe compare (Esri-style): draggable divider over the map */
+.swipe-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
+  width: 0;
+  border-left: 3px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.swipe-handle {
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  width: 37px;
+  height: 37px;
+  margin-top: -18px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--forest);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: ew-resize;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.swipe-handle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.swipe-labels {
+  position: absolute;
+  top: 58px;
+  left: 10px;
+  right: 10px;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+  direction: ltr;
+}
+
+.swipe-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 48%;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0b0b0b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The map keeps left-to-right geometry in every language, so A stays left. */
+.flood-map-wrap {
+  direction: ltr;
+}
+
+.flood-map-wrap .flood-map-panel,
+.flood-map-wrap .flood-map-legend {
+  direction: inherit;
+}
+
+[dir='rtl'] .flood-map-wrap .flood-map-panel,
+[dir='rtl'] .flood-map-wrap .flood-map-legend,
+[dir='rtl'] .flood-map-wrap .flood-date-filter select {
+  direction: rtl;
+}
+
+@media (max-width: 640px) {
+  .flood-date-filter select {
+    max-width: 150px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Flood Watch: River and Town dropdowns; one chart for the chosen town */
+.station-picker {
+  display: grid;
+  gap: 12px;
+}
+
+.station-selects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.station-selects label {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 200px;
+  max-width: 320px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #52514e;
+}
+
+.station-selects select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #c9d3cf;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--forest);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Phones: panels sit under the map so the map and the swipe stay visible. */
+@media (max-width: 700px) {
+  .flood-map-panel {
+    position: static;
+    width: 100%;
+    max-height: none;
+    margin-top: 10px;
+    box-shadow: none;
+    border: 1px solid #e4e4e0;
+  }
+}
+
+/* Layers panel: one eye icon shows or hides every flood */
+.flood-layer-list legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.flood-layer-toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #c9d3cf;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--forest);
+  cursor: pointer;
+}
+
+.flood-layer-toggle:hover {
+  background: var(--forest);
+  color: #fff;
+}
+
+/* Layers panel: every flood as a tick box, grouped by year */
+.flood-layer-list {
+  display: grid;
+  gap: 4px;
+}
+
+.flood-layer-list label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.legend-empty {
+  color: #52514e;
+  max-width: 220px;
+}
+
+
+
+/* Full-width maps (edge to edge on the page, minus the page scrollbar) */
+.map-bleed {
+  position: relative;
+  width: calc(100vw - var(--sbw, 0px));
+  max-width: none;
+  margin-inline: calc(50% - (100vw - var(--sbw, 0px)) / 2);
+}
+
+.map-bleed .leaflet-container {
+  border-radius: 0;
+}
+
+/* On-map controls (top-left, beside the zoom buttons) */
+.map-overlay-controls {
+  position: absolute;
+  top: 10px;
+  left: 54px;
+  z-index: 1000;
+  max-width: calc(100% - 120px);
+}
+
+.station-selects-overlay {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  gap: 8px;
+}
+
+.station-selects-overlay label {
+  flex: 1 1 150px;
+  max-width: 220px;
+  font-size: 0.72rem;
+}
+
+.station-selects-overlay select {
+  padding: 6px 8px;
+  font-size: 0.86rem;
+}
+
+/* Top-right map buttons (full screen, and the flood map tools) */
+.map-corner-tools {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Side panel button: dark when the panel is open */
+.map-corner-tools .map-panel-toggle.active {
+  background: var(--forest);
+  color: #fff;
+}
+
+.map-fullscreen-button,
+.map-corner-tools button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(6, 61, 57, 0.2);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--forest);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.map-fullscreen-button:hover,
+.map-fullscreen-button[aria-pressed='true'] {
+  background: var(--forest);
+  color: #fff;
+}
+
+/* Full screen: the map fills the screen (native Fullscreen API or fallback) */
+.map-bleed:fullscreen,
+.map-bleed.is-fullscreen {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-bleed.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  width: 100vw;
+  height: 100dvh;
+}
+
+.watch-map:fullscreen .leaflet-container,
+.watch-map.is-fullscreen .leaflet-container {
+  height: 100%;
+  flex: 1;
+}
+
+.flood-map-wrap:fullscreen .flood-map-stage,
+.flood-map-wrap.is-fullscreen .flood-map-stage {
+  flex: 1;
+}
+
+.flood-map-wrap:fullscreen .leaflet-container,
+.flood-map-wrap.is-fullscreen .leaflet-container {
+  height: 100%;
+}
+
+.flood-map-wrap:fullscreen .flood-map-panel,
+.flood-map-wrap.is-fullscreen .flood-map-panel {
+  position: absolute;
+  margin: 0;
+  width: min(320px, calc(100% - 76px));
+  max-height: calc(100% - 20px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+
+body.has-fullscreen-map #root {
+  overflow: hidden;
+}
+
+body.has-fullscreen-map .autoplay-scroll {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .map-overlay-controls {
+    left: 50px;
+    max-width: calc(100% - 104px);
+  }
+
+  .station-selects-overlay label {
+    flex-basis: 100%;
+  }
+}
+
+/* Taller full-width maps: scale with the screen height */
+.watch-map .leaflet-container,
+.flood-map-wrap .leaflet-container {
+  height: clamp(440px, 74vh, 780px);
+}
+
+.watch-map-stage {
+  position: relative;
+}
+
+/* Side panel on the live river map (right side; under the map on phones) */
+.watch-map-side {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  bottom: 34px;
+  z-index: 1000;
+  width: min(420px, 42%);
+  overflow-y: auto;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+
+.watch-map-side .watch-card {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.side-back {
+  margin-bottom: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--leaf);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.side-list h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.side-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.side-list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e4e4e0;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.side-list button:hover {
+  border-color: var(--forest);
+}
+
+.side-list-name {
+  flex: 1;
+  font-weight: 700;
+  color: #0b0b0b;
+}
+
+.side-list-value {
+  font-size: 0.85rem;
+  color: #52514e;
+  white-space: nowrap;
+}
+
+/* Town name labels on the map */
+.leaflet-tooltip.map-label {
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 0.78rem;
+  color: #0b0b0b;
+}
+
+.leaflet-tooltip.map-label-chosen {
+  font-size: 0.85rem;
+  background: var(--forest);
+  color: #fff;
+}
+
+.leaflet-tooltip.map-label-chosen::before {
+  border-top-color: var(--forest);
+}
+
+/* Home button under the zoom buttons */
+.map-home-control a {
+  display: grid !important;
+  place-items: center;
+  color: var(--forest) !important;
+}
+
+/* Full screen: the stage with the map fills the height */
+.watch-map:fullscreen .watch-map-stage,
+.watch-map.is-fullscreen .watch-map-stage {
+  flex: 1;
+}
+
+.watch-map:fullscreen .watch-map-stage .leaflet-container,
+.watch-map.is-fullscreen .watch-map-stage .leaflet-container {
+  height: 100%;
+}
+
+@media (max-width: 760px) {
+  .watch-map .leaflet-container,
+  .flood-map-wrap .leaflet-container {
+    height: clamp(380px, 64vh, 560px);
+  }
+
+  .watch-map-side {
+    position: static;
+    width: auto;
+    margin: 10px 16px 0;
+    box-shadow: none;
+    border: 1px solid #e4e4e0;
+  }
+}
+
+/* Map (2/3) and area panel (1/3) side by side: past floods, Forest Watch */
+.flood-map-wrap.has-areas,
+.watch-map.side-beside {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.flood-state-side {
+  position: relative;
+  min-height: 0;
+  max-height: clamp(440px, 74vh, 780px);
+  overflow-y: auto;
+  padding: 14px 16px;
+  border: 1px solid #e4e4e0;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 0.88rem;
+}
+
+/* Layers / compare dialog stays over the map, not over the panel. */
+.flood-map-wrap.has-areas .flood-map-panel {
+  inset-inline-end: calc((100% - 12px) / 3 + 12px + 58px);
+}
+
+.flood-state-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.flood-state-head h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--forest);
+}
+
+.flood-state-head button {
+  border: 0;
+  background: transparent;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #52514e;
+}
+
+.flood-state-levels {
+  display: flex;
+  margin: 10px 0 6px;
+  border: 1px solid #d6d5d0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.flood-state-levels button {
+  flex: 1;
+  padding: 6px 4px;
+  border: 0;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #3d3d3a;
+  cursor: pointer;
+}
+
+.flood-state-levels button + button {
+  border-inline-start: 1px solid #d6d5d0;
+}
+
+.flood-state-levels button[aria-selected='true'] {
+  background: var(--forest);
+  color: #fff;
+}
+
+.flood-state-sub {
+  margin: 4px 0 8px;
+  color: #52514e;
+}
+
+.flood-state-keys {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: #3d3d3a;
+}
+
+.flood-state-keys .swatch,
+.flood-state-side .swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+.flood-state-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.flood-state-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.flood-state-name img,
+.flood-state-noflag {
+  width: 30px;
+  height: 20px;
+  flex: none;
+  /* Whole flag (or Banadir's coat of arms) visible, never cropped */
+  object-fit: contain;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+  background: #e4e4e0;
+}
+
+.flood-state-name strong {
+  flex: 1;
+  color: #0b0b0b;
+}
+
+.flood-state-value {
+  display: block;
+  font-size: 0.8rem;
+  color: #3d3d3a;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.flood-state-name .flood-state-value {
+  display: inline;
+}
+
+.flood-state-bar {
+  height: 10px;
+  border-radius: 0 4px 4px 0;
+  background: #eeede9;
+  overflow: hidden;
+}
+
+.flood-state-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+}
+
+[dir='rtl'] .flood-state-bar,
+[dir='rtl'] .flood-state-bar span {
+  border-radius: 4px 0 0 4px;
+}
+
+.flood-map-wrap .flood-map-panel {
+  z-index: 1001;
+}
+
+
+.flood-map-wrap.has-areas:fullscreen,
+.flood-map-wrap.has-areas.is-fullscreen {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  padding: 12px;
+}
+
+.flood-map-wrap.has-areas:fullscreen .flood-state-side,
+.flood-map-wrap.has-areas.is-fullscreen .flood-state-side {
+  max-height: none;
+}
+
+/* Phones and small tablets: panel under the map */
+@media (max-width: 900px) {
+  .flood-map-wrap.has-areas,
+  .watch-map.side-beside {
+    display: block;
+  }
+
+  .flood-state-side {
+    max-height: none;
+    margin: 10px 16px 0;
+  }
+
+  .flood-map-wrap.has-areas .flood-map-panel {
+    inset-inline-end: 58px;
+  }
+}
+
+/* Names of states, regions and districts on the past floods map */
+.admin-label {
+  width: 0;
+  height: 0;
+  overflow: visible;
+}
+
+.admin-label span {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-weight: 700;
+  color: #000;
+  pointer-events: none;
+}
+
+/* Home button on the MapLibre globe: same look as the Leaflet one */
+.maplibregl-ctrl.map-home-control button {
+  display: grid;
+  place-items: center;
+  color: var(--forest);
+}
+
+/* Forest Watch: layer list and boundaries in a legend box on the map */
+.map-overlay-legend {
+  position: absolute;
+  inset-inline-start: 10px;
+  bottom: 30px;
+  z-index: 1000;
+  max-width: min(300px, calc(100% - 20px));
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+
+.forest-side label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.forest-side .legend-key {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.forest-side .forest-boundary {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #e4e4e0;
+  font-weight: 700;
+}
+
+.forest-boundary select {
+  margin-inline-start: auto;
+  padding: 4px 6px;
+  border: 1px solid #c9d3cf;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  font-weight: 600;
+}
+
+/* Area panel rows that choose a place (Forest Watch) */
+.flood-state-pick {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  margin: -6px -8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  box-sizing: content-box;
+}
+
+.flood-state-pick:hover {
+  border-color: #c9d3cf;
+}
+
+.flood-state-pick[aria-pressed='true'] {
+  border-color: var(--forest);
+  background: #f0f5f3;
+}
+
+/* Forest Watch: yearly loss chart in the side panel, under the bars */
+.forest-trend {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e4e4e0;
+}
+
+.forest-trend-total {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #3d3d3a;
+}
+
+/* Area panel sections (e.g. potential export / local consumption charcoal) */
+.area-section {
+  margin-top: 12px;
+}
+
+.area-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+  color: #1f1f1d;
+}
+
+.area-section h4 .swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.area-section-total {
+  margin-inline-start: auto;
+  font-weight: 600;
+  color: #3d3d3a;
+}
+
+.area-section + .area-section {
+  padding-top: 10px;
+  border-top: 1px solid #e4e4e0;
+}
+
+/* Forest Watch legend: only the layers on the map */
+.forest-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: #1f1f1d;
+}
+
+.forest-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.forest-legend .legend-key {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex: none;
+  box-sizing: border-box;
+}
+
+/* Popup of a charcoal area: kind, districts, region and size */
+.charcoal-popup {
+  display: grid;
+  gap: 2px;
+  font-size: 0.82rem;
+  color: #3d3d3a;
+}
+
+.charcoal-popup strong {
+  color: #7a1912;
+  font-size: 0.88rem;
+}
+
+/* Charcoal group in the layer list */
+.forest-side .forest-group {
+  margin: 8px 0 0;
+  padding: 6px 0 0;
+  border: 0;
+  border-top: 1px solid #e4e4e0;
+}
+
+.forest-side .forest-group legend {
+  padding: 0;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #3d3d3a;
+}
+
+/* Rank of each place in the area panel (1 = largest) */
+.flood-state-rank {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--forest);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }

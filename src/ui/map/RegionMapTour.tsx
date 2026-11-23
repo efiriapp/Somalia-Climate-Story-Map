@@ -23,6 +23,7 @@ import { useOptionalAutoplay } from '../chrome/AutoplayContext';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from '../catalog/MediaSourceCredit';
 import { LeafletRasterBasemap } from './LeafletRasterBasemap';
+import { MapHomeControl } from './MapHomeControl';
 import { MapBasemapControl } from './MapBasemapControl';
 
 type Props = {
@@ -265,6 +266,7 @@ export function RegionMapTour({ story }: Props) {
           whenReady={() => scrollPageToTop()}
         >
           <LeafletRasterBasemap basemap={basemap} />
+          <MapHomeControl label={copy.mapHome} />
           <JumpOnStop stop={activeStop ?? null} onHome={onHome} onArrive={onArrive} />
           {stops.map((stop) => (
             <Marker
@@ -303,7 +305,7 @@ export function RegionMapTour({ story }: Props) {
         </div>
         {sliderOpen && activeStop ? (
           <aside className="region-slide-card" aria-label={activeStop.title}>
-            {activeStop.images[0] ? <img src={activeStop.images[0]} alt="" /> : null}
+            {activeStop.images[0] ? <img loading="lazy" decoding="async" src={activeStop.images[0]} alt="" /> : null}
             <h3>{activeStop.title}</h3>
             <p>{activeStop.description}</p>
             <MediaSourceCredit credit={storyMediaCredit(story)} />

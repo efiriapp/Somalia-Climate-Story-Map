@@ -5,7 +5,6 @@ import { scrollPageToTop } from '../../application/scroll-page-top';
 import {
   climateMediaCredit,
   formatMediaSourceCredit,
-  videoEmbedCredit,
 } from '../../application/media-source-credit';
 import { hazardTitle } from '../../application/locale';
 import { localizeClimateHub, localizeClimatePage } from '../../application/localize-content';
@@ -16,9 +15,11 @@ import {
   type RelatedTarget,
 } from '../../application/related-links';
 import { videoEmbedSrc } from '../../application/youtube-embed';
+import { citeVideo, mediaSourceList } from '../../application/citations';
 import { AutoplayScroll } from '../chrome/AutoplayScroll';
 import { useLocale } from '../chrome/LocaleContext';
 import { MediaSourceCredit } from './MediaSourceCredit';
+import { MediaSources, VideoCitation } from './MediaSources';
 import { RelatedLinks } from './RelatedLinks';
 
 type Props = {
@@ -36,7 +37,7 @@ function StorySpread({ images, className }: { images: string[]; className: strin
   return (
     <div className={`story-spread ${className}${images.length === 1 ? ' story-spread-single' : ''}`}>
       {images.map((src) => (
-        <img key={src} src={src} alt="" />
+        <img loading="lazy" decoding="async" key={src} src={src} alt="" />
       ))}
     </div>
   );
@@ -123,11 +124,12 @@ export function ClimateImpactPage({
               <div className="story-video">
                 <iframe title={video.title} src={embedSrc} allowFullScreen />
               </div>
-              <MediaSourceCredit credit={videoEmbedCredit(video.title, video.outlet)} />
+              <VideoCitation citation={citeVideo(video.url, video.title)} />
             </div>
           ) : null;
         })}
         {onOpenRelated ? <RelatedLinks links={pageLinks} onOpen={onOpenRelated} /> : null}
+        <MediaSources entries={mediaSourceList(page.images, page.videos)} />
         <MediaSourceCredit credit={climateMediaCredit(page)} />
       </article>
     );
@@ -146,7 +148,7 @@ export function ClimateImpactPage({
             className="climate-impact-card"
             onClick={() => onSelect(item.id)}
           >
-            {item.images[0] ? <img src={item.images[0]} alt="" /> : null}
+            {item.images[0] ? <img loading="lazy" decoding="async" src={item.images[0]} alt="" /> : null}
             <p className="story-type">{copy.climateImpact}</p>
             <h2>{hazardTitle(item.id, copy)}</h2>
             <p>{item.lede}</p>
@@ -154,6 +156,12 @@ export function ClimateImpactPage({
         ))}
       </div>
       {onOpenRelated ? <RelatedLinks links={hubLinks} onOpen={onOpenRelated} /> : null}
+      <MediaSources
+        entries={mediaSourceList(
+          pages.flatMap((item) => (item.images[0] ? [item.images[0]] : [])),
+          [],
+        )}
+      />
       <MediaSourceCredit credit={{ text: formatMediaSourceCredit('ICE Institute') }} />
     </article>
   );

@@ -1,8 +1,8 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useLayoutEffect, useMemo, useState, type CSSProperties } from 'react';
 import { flagIconUrl } from '../application/country-flag';
 import { filterCatalog } from '../application/filter-catalog';
 import { chromeCopy, formatLocaleDate, type Locale } from '../application/locale';
-import { localizeAbout, localizeStory } from '../application/localize-content';
+import { localizeStory } from '../application/localize-content';
 import { storyMediaCredit } from '../application/media-source-credit';
 import {
   labelForRelatedTarget,
@@ -17,29 +17,55 @@ import { AutoplayScroll } from './chrome/AutoplayScroll';
 import { LocaleProvider } from './chrome/LocaleContext';
 import { AutoplayProvider } from './chrome/AutoplayContext';
 import { SiteFooter } from './chrome/SiteFooter';
-import { StoryDetail } from './catalog/StoryDetail';
+import { ErrorBoundary } from './chrome/ErrorBoundary';
 import { StoryList } from './catalog/StoryList';
+import { GLOBAL_STAGE_CARD_ID, withGlobalStageCard } from '../application/global-stage-card';
 import { ClimateImpactPage } from './catalog/ClimateImpactPage';
 import { MediaSourceCredit } from './catalog/MediaSourceCredit';
+import { MediaSources } from './catalog/MediaSources';
+import { mediaSourceList, storyImages } from '../application/citations';
 import { RelatedLinks } from './catalog/RelatedLinks';
-import { GlobalStageMap } from './map/GlobalStageMap';
 import type { ClimateHazardId } from '../content/climate-impact';
+import { NavIcon } from './chrome/NavIcon';
 
-type Screen = 'about' | 'research' | 'stories' | 'climate-impact' | 'global-stage';
+// Map pages load on demand so MapLibre and Leaflet stay out of the first download.
+const GlobalStageMap = lazy(() =>
+  import('./map/GlobalStageMap').then((module) => ({ default: module.GlobalStageMap })),
+);
+const StoryDetail = lazy(() =>
+  import('./catalog/StoryDetail').then((module) => ({ default: module.StoryDetail })),
+);
+const FloodWatchPage = lazy(() =>
+  import('./watch/FloodWatchPage').then((module) => ({ default: module.FloodWatchPage })),
+);
+const ForestWatchPage = lazy(() =>
+  import('./watch/ForestWatchPage').then((module) => ({ default: module.ForestWatchPage })),
+);
+const DroughtWatchPage = lazy(() =>
+  import('./watch/DroughtWatchPage').then((module) => ({ default: module.DroughtWatchPage })),
+);
+import type { Screen } from '../application/route';
+import { useHashRoute } from './useHashRoute';
+import { usePageMeta } from './usePageMeta';
 
-const catalogTypeFor = (screen: Screen): ContentType =>
-  screen === 'research' ? 'research-story' : 'ice-story';
+/** Stories shows ICE stories and ICE at Global Stage events together. */
+const catalogTypesFor = (screen: Screen): ContentType[] =>
+  screen === 'research' ? ['research-story'] : ['ice-story', 'global-stage'];
+
 
 export default function App() {
   const [draft, setDraft] = useState<FilterCriteria>(defaultFilterCriteria);
   const [applied, setApplied] = useState<FilterCriteria>(defaultFilterCriteria);
   const [advancedOpen, setAdvancedOpen] = useState(true);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [impactHazard, setImpactHazard] = useState<ClimateHazardId | null>(null);
-  const [screen, setScreen] = useState<Screen>('stories');
-  const [locale, setLocale] = useState<Locale>('en');
+  const [route, navigate] = useHashRoute();
+  const { screen, locale } = route;
+  const selectedId = route.storyId;
+  const impactHazard = route.hazard;
+  const go = (patch: Partial<typeof route>) => navigate({ ...route, ...patch });
+  const setLocale = (next: Locale) => go({ locale: next });
+  const setSelectedId = (id: string | null) => go({ storyId: id });
+  const setImpactHazard = (id: ClimateHazardId | null) => go({ hazard: id });
   const copy = chromeCopy(locale);
-  const about = localizeAbout(locale);
   const ukFlagSrc = flagIconUrl('United Kingdom');
   const soFlagSrc = flagIconUrl('Somalia');
   const saFlagSrc = flagIconUrl('Saudi Arabia');
@@ -49,10 +75,22 @@ export default function App() {
     [locale],
   );
   const scoped = useMemo(
-    () => localizedCatalog.filter((story) => story.type === catalogTypeFor(screen)),
+    () =>
+      localizedCatalog.filter((story) => catalogTypesFor(screen).includes(story.type)),
     [localizedCatalog, screen],
   );
-  const matches = useMemo(() => filterCatalog(scoped, applied), [scoped, applied]);
+  const matches = useMemo(() => {
+    const found = filterCatalog(scoped, applied);
+    // Stories page: ICE at Global Stage is one card that opens the globe.
+    return screen === 'stories'
+      ? withGlobalStageCard(found, {
+          title: copy.globalStageTitle,
+          summary: copy.globalStageBanner,
+          image: '/images/global-stage/global-stage-map.jpg',
+          place: (count) => `${count} ${copy.globalStageEvents}`,
+        })
+      : found;
+  }, [scoped, applied, screen, copy.globalStageTitle, copy.globalStageBanner, copy.globalStageEvents]);
   const detail = selectedId ? localizedCatalog.find((story) => story.id === selectedId) : undefined;
 
   useLayoutEffect(() => {
@@ -65,10 +103,34 @@ export default function App() {
     document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
   }, [locale]);
 
+  // Full-width maps size themselves to the page minus its scrollbar (--sbw).
+  useLayoutEffect(() => {
+    const scroller = document.getElementById('root');
+    if (!scroller) return;
+    const measure = () =>
+      document.documentElement.style.setProperty('--sbw', `${scroller.offsetWidth - scroller.clientWidth}px`);
+    measure();
+    // The scrollbar appears once content grows (data loading), so re-measure on size changes.
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
+    observer?.observe(scroller);
+    if (scroller.firstElementChild) observer?.observe(scroller.firstElementChild);
+    window.addEventListener('resize', measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [screen]);
+
+  // On phones the pill menu scrolls sideways: keep the current page's pill in view.
+  useLayoutEffect(() => {
+    const menu = document.querySelector<HTMLElement>('.nav');
+    const active = menu?.querySelector<HTMLElement>('button.active');
+    if (!menu || !active || menu.scrollWidth <= menu.clientWidth) return;
+    menu.scrollLeft = active.offsetLeft - (menu.clientWidth - active.offsetWidth) / 2;
+  }, [screen]);
+
   const openScreen = (next: Screen) => {
-    setScreen(next);
-    setSelectedId(null);
-    setImpactHazard(null);
+    go({ screen: next, storyId: null, hazard: null });
   };
 
   const relatedStoryTitle = (id: string) =>
@@ -76,23 +138,38 @@ export default function App() {
 
   const openRelated = (target: RelatedTarget) => {
     if (target.kind === 'hub') {
-      setSelectedId(null);
-      setScreen('climate-impact');
-      setImpactHazard(null);
+      go({ screen: 'climate-impact', storyId: null, hazard: null });
       return;
     }
     if (target.kind === 'hazard') {
-      setSelectedId(null);
-      setScreen('climate-impact');
-      setImpactHazard(target.id);
+      go({ screen: 'climate-impact', storyId: null, hazard: target.id });
       return;
     }
     const story = localizedCatalog.find((item) => item.id === target.id);
     if (!story) return;
-    setImpactHazard(null);
-    setSelectedId(story.id);
-    setScreen(story.type === 'research-story' ? 'research' : 'stories');
+    go({
+      screen: story.type === 'research-story' ? 'research' : 'stories',
+      storyId: story.id,
+      hazard: null,
+    });
   };
+
+  const screenTitle: Record<Screen, string> = {
+    research: copy.research,
+    stories: copy.stories,
+    'climate-impact': copy.climateImpact,
+    'flood-watch': copy.floodWatch,
+    'drought-watch': copy.droughtWatch,
+    'forest-watch': copy.forestWatch,
+    'global-stage': copy.globalStage,
+  };
+
+  usePageMeta({
+    platform: copy.platform,
+    title: detail?.title ?? (screen === 'stories' ? undefined : screenTitle[screen]),
+    description: detail?.summary,
+    image: detail?.images[0],
+  });
 
   const researchRelatedLinks = detail
     ? relatedTargetsForStory(detail.id).map((target) => ({
@@ -109,128 +186,163 @@ export default function App() {
     <LocaleProvider locale={locale} setLocale={setLocale}>
     <AutoplayProvider>
     <div>
-      <header className="topbar">
-        <img className="topbar-logo" src="/logos/simad.webp" alt="SIMAD University" />
-        <div className="topbar-title">{copy.platform}</div>
-        <img className="topbar-logo ice" src="/logos/ice-mark.png" alt="Institute of Climate and Environment" />
-      </header>
-      <nav className="nav" aria-label="Primary">
-        <button
-          type="button"
-          className={screen === 'about' ? 'active' : ''}
-          onClick={() => openScreen('about')}
-        >
-          {copy.about}
-        </button>
-        <button
-          type="button"
-          className={screen === 'research' ? 'active' : ''}
-          onClick={() => openScreen('research')}
-        >
-          {copy.research}
-        </button>
-        <button
-          type="button"
-          className={screen === 'stories' ? 'active' : ''}
-          onClick={() => openScreen('stories')}
-        >
-          {copy.stories}
-        </button>
-        <button
-          type="button"
-          className={screen === 'climate-impact' ? 'active' : ''}
-          onClick={() => openScreen('climate-impact')}
-        >
-          {copy.climateImpact}
-        </button>
-        <button
-          type="button"
-          className={screen === 'global-stage' ? 'active' : ''}
-          onClick={() => openScreen('global-stage')}
-        >
-          {copy.globalStage}
-        </button>
-        <div
-          className={`nav-language is-${locale}`}
-          role="group"
-          aria-label={copy.languageToggleLabel}
-        >
-          <span className="nav-language-track" aria-hidden="true">
-            <span className="nav-language-thumb" />
-          </span>
-          <button
-            type="button"
-            className="nav-language-option nav-language-en"
-            aria-pressed={locale === 'en'}
-            aria-label={copy.languageEnglish}
-            onClick={() => setLocale('en')}
+      <header className="site-header">
+        <div className="topbar">
+          <img
+            className="topbar-logo topbar-brand"
+            src="/logos/simad-ice-web.webp"
+            alt="SIMAD University · Institute of Climate and Environment"
+            width={760}
+            height={225}
+          />
+          <div className="topbar-title" role="heading" aria-level={1} aria-label={copy.platform}>
+            <span
+              className="topbar-title-text"
+              aria-hidden="true"
+              style={
+                {
+                  '--title-chars': Math.max(...copy.platformLines.map((line) => line.length)),
+                } as CSSProperties
+              }
+            >
+              {copy.platformLines.map((line, index) => (
+                <span className={index === 0 ? 'topbar-title-line' : 'topbar-title-line accent'} key={line}>
+                  {line}
+                </span>
+              ))}
+            </span>
+          </div>
+          <div
+            className={`nav-language is-${locale}`}
+            role="group"
+            aria-label={copy.languageToggleLabel}
           >
-            <span className="nav-language-label" aria-hidden="true">EN</span>
-            {ukFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-en"
-                src={ukFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
-          </button>
-          <button
-            type="button"
-            className="nav-language-option nav-language-so"
-            aria-pressed={locale === 'so'}
-            aria-label={copy.languageSomali}
-            onClick={() => setLocale('so')}
-          >
-            <span className="nav-language-label" aria-hidden="true">SO</span>
-            {soFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-so"
-                src={soFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
-          </button>
-          <button
-            type="button"
-            className="nav-language-option nav-language-ar"
-            aria-pressed={locale === 'ar'}
-            aria-label={copy.languageArabic}
-            onClick={() => setLocale('ar')}
-          >
-            <span className="nav-language-label" aria-hidden="true">AR</span>
-            {saFlagSrc ? (
-              <img
-                className="nav-language-flag nav-language-flag-ar"
-                src={saFlagSrc}
-                alt=""
-                width={32}
-                height={22}
-              />
-            ) : null}
-          </button>
-          <span className="visually-hidden">{copy.languageToggle}</span>
+            <span className="nav-language-track" aria-hidden="true">
+              <span className="nav-language-thumb" />
+            </span>
+            <button
+              type="button"
+              className="nav-language-option nav-language-en"
+              aria-pressed={locale === 'en'}
+              aria-label={copy.languageEnglish}
+              onClick={() => setLocale('en')}
+            >
+              <span className="nav-language-label" aria-hidden="true">EN</span>
+              {ukFlagSrc ? (
+                <img
+                  className="nav-language-flag nav-language-flag-en"
+                  src={ukFlagSrc}
+                  alt=""
+                  width={32}
+                  height={22}
+                />
+              ) : null}
+            </button>
+            <button
+              type="button"
+              className="nav-language-option nav-language-so"
+              aria-pressed={locale === 'so'}
+              aria-label={copy.languageSomali}
+              onClick={() => setLocale('so')}
+            >
+              <span className="nav-language-label" aria-hidden="true">SO</span>
+              {soFlagSrc ? (
+                <img
+                  className="nav-language-flag nav-language-flag-so"
+                  src={soFlagSrc}
+                  alt=""
+                  width={32}
+                  height={22}
+                />
+              ) : null}
+            </button>
+            <button
+              type="button"
+              className="nav-language-option nav-language-ar"
+              aria-pressed={locale === 'ar'}
+              aria-label={copy.languageArabic}
+              onClick={() => setLocale('ar')}
+            >
+              <span className="nav-language-label" aria-hidden="true">AR</span>
+              {saFlagSrc ? (
+                <img
+                  className="nav-language-flag nav-language-flag-ar"
+                  src={saFlagSrc}
+                  alt=""
+                  width={32}
+                  height={22}
+                />
+              ) : null}
+            </button>
+            <span className="visually-hidden">{copy.languageToggle}</span>
+          </div>
         </div>
-      </nav>
+        <nav className="nav" aria-label="Primary">
+          <button
+            type="button"
+            className={screen === 'research' ? 'active' : ''}
+            aria-current={screen === 'research' ? 'page' : undefined}
+            onClick={() => openScreen('research')}
+          >
+            <NavIcon screen="research" />
+            {copy.research}
+          </button>
+          <button
+            type="button"
+            className={screen === 'stories' ? 'active' : ''}
+            aria-current={screen === 'stories' ? 'page' : undefined}
+            onClick={() => openScreen('stories')}
+          >
+            <NavIcon screen="stories" />
+            {copy.stories}
+          </button>
+          <button
+            type="button"
+            className={screen === 'climate-impact' ? 'active' : ''}
+            aria-current={screen === 'climate-impact' ? 'page' : undefined}
+            onClick={() => openScreen('climate-impact')}
+          >
+            <NavIcon screen="climate-impact" />
+            {copy.climateImpact}
+          </button>
+          <button
+            type="button"
+            className={screen === 'flood-watch' ? 'active' : ''}
+            aria-current={screen === 'flood-watch' ? 'page' : undefined}
+            onClick={() => openScreen('flood-watch')}
+          >
+            <NavIcon screen="flood-watch" />
+            {copy.floodWatch}
+          </button>
+          <button
+            type="button"
+            className={screen === 'drought-watch' ? 'active' : ''}
+            aria-current={screen === 'drought-watch' ? 'page' : undefined}
+            onClick={() => openScreen('drought-watch')}
+          >
+            <NavIcon screen="drought-watch" />
+            {copy.droughtWatch}
+          </button>
+          <button
+            type="button"
+            className={screen === 'forest-watch' ? 'active' : ''}
+            aria-current={screen === 'forest-watch' ? 'page' : undefined}
+            onClick={() => openScreen('forest-watch')}
+          >
+            <NavIcon screen="forest-watch" />
+            {copy.forestWatch}
+          </button>
+        </nav>
+      </header>
 
-      {screen === 'about' ? (
-        <article className="detail about-ice" aria-label={copy.about}>
-          <AutoplayScroll />
-          <h1>{copy.about}</h1>
-          {about.paragraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-          ))}
-          <p>
-            <strong>{copy.moreInfo}</strong>{' '}
-            <a href={about.website} target="_blank" rel="noreferrer">
-              {about.website}
-            </a>
-          </p>
-        </article>
-      ) : screen === 'climate-impact' ? (
+      <ErrorBoundary
+        resetKey={`${screen}/${selectedId ?? ''}/${impactHazard ?? ''}`}
+        title={copy.pageErrorTitle}
+        message={copy.pageErrorMessage}
+        retryLabel={copy.pageErrorRetry}
+      >
+      <Suspense fallback={<p className="page-loading" role="status">{copy.pageLoading}</p>}>
+      {screen === 'climate-impact' ? (
         <ClimateImpactPage
           selectedId={impactHazard}
           onSelect={setImpactHazard}
@@ -238,6 +350,12 @@ export default function App() {
           onOpenRelated={openRelated}
           relatedStoryTitle={relatedStoryTitle}
         />
+      ) : screen === 'flood-watch' ? (
+        <FloodWatchPage />
+      ) : screen === 'drought-watch' ? (
+        <DroughtWatchPage />
+      ) : screen === 'forest-watch' ? (
+        <ForestWatchPage />
       ) : screen === 'global-stage' ? (
         <GlobalStageMap stories={localizedCatalog} onClose={() => openScreen('stories')} />
       ) : detail && (detail.type === 'ice-story' || detail.chapters) ? (
@@ -253,7 +371,13 @@ export default function App() {
           <button className="back" type="button" onClick={() => setSelectedId(null)}>
             {copy.backCatalog}
           </button>
-          <p className="story-type">{detail.type === 'research-story' ? copy.researchLabel : copy.story}</p>
+          <p className="story-type">
+            {detail.type === 'research-story'
+              ? copy.researchLabel
+              : detail.type === 'global-stage'
+                ? copy.globalStage
+                : copy.story}
+          </p>
           <h1>{detail.title}</h1>
           {detail.images[0] ? <img src={detail.images[0]} alt="" /> : null}
           <p className="story-meta">
@@ -269,7 +393,16 @@ export default function App() {
               </a>
             </p>
           ) : null}
+          {detail.type === 'global-stage' ? (
+            <p>
+              <button className="globe-link" type="button" onClick={() => openScreen('global-stage')}>
+                <NavIcon screen="global-stage" />
+                {copy.globalStageOpen}
+              </button>
+            </p>
+          ) : null}
           <RelatedLinks links={researchRelatedLinks} onOpen={openRelated} />
+          <MediaSources entries={mediaSourceList(storyImages(detail), [], detail)} />
           <MediaSourceCredit credit={storyMediaCredit(detail)} />
         </article>
       ) : (
@@ -319,12 +452,18 @@ export default function App() {
           <StoryList
             stories={matches}
             selectedId={selectedId}
-            onSelect={setSelectedId}
-            typeLabel={screen === 'research' ? copy.researchLabel : copy.story}
+            onSelect={(id) => (id === GLOBAL_STAGE_CARD_ID ? openScreen('global-stage') : setSelectedId(id))}
+            typeLabel={
+              screen === 'research'
+                ? copy.researchLabel
+                : (story) => (story.type === 'global-stage' ? copy.globalStage : copy.story)
+            }
             layout="grid"
           />
         </>
       )}
+      </Suspense>
+      </ErrorBoundary>
       {screen === 'global-stage' ? null : <SiteFooter />}
     </div>
     </AutoplayProvider>

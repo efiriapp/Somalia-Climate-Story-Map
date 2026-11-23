@@ -8,6 +8,8 @@ import type { MapView } from '../../application/resolve-map-view';
 import type { Story } from '../../domain/story';
 import { useOptionalAutoplay } from '../chrome/AutoplayContext';
 import { LeafletRasterBasemap } from './LeafletRasterBasemap';
+import { MapHomeControl } from './MapHomeControl';
+import { useLocale } from '../chrome/LocaleContext';
 import { MapBasemapControl } from './MapBasemapControl';
 
 const pinIcon = L.divIcon({
@@ -29,6 +31,7 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
   const viewKey = `${view.center.lat}-${view.center.lng}-${view.zoom}`;
   const [basemap, setBasemap] = useState<MapLayerId>(DEFAULT_MAP_LAYER);
   const [layersOpen, setLayersOpen] = useState(false);
+  const { copy } = useLocale();
   const autoplay = useOptionalAutoplay();
 
   const pauseAutoplay = () => autoplay?.pause();
@@ -43,6 +46,7 @@ export function MapPane({ stories, view, selectedId, onSelect }: Props) {
         minZoom={1}
       >
         <LeafletRasterBasemap basemap={basemap} />
+        <MapHomeControl label={copy.mapHome} />
         {[...groups.values()].flatMap((group) =>
           group.map((story) => {
             const point = displayLocation(story, group);

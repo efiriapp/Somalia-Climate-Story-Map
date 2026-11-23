@@ -34,7 +34,7 @@ export function GlobalStagePage({ stories }: Props) {
           {story.images.length > 0 ? (
             <div className="global-stage-gallery">
               {story.images.map((src) => (
-                <img key={src} src={src} alt="" />
+                <img loading="lazy" decoding="async" key={src} src={src} alt="" />
               ))}
             </div>
           ) : null}

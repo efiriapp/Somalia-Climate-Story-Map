@@ -1,5 +1,6 @@
 import type { Locale } from './locale';
 import { EXTRA_LABELS } from './locale';
+import { withImageCredit } from './image-credits';
 import { aboutIce } from '../content/about-ice';
 import {
   climateImpactHub,
@@ -121,11 +122,14 @@ export const localizeClimatePage = (page: ClimateImpactPage, locale: Locale): Cl
   return page;
 };
 
-export const localizeStory = (story: Story, locale: Locale): Story => {
+const translateStory = (story: Story, locale: Locale): Story => {
   if (locale === 'so') return applyStoryPack(story, STORY_SO[story.id] as StorySo | undefined, 'so');
   if (locale === 'ar') return applyStoryPack(story, STORY_AR[story.id] as StoryAr | undefined, 'ar');
   return story;
 };
+
+export const localizeStory = (story: Story, locale: Locale): Story =>
+  withImageCredit(translateStory(story, locale), locale);
 
 export const localizeFooter = (locale: Locale) => {
   if (locale === 'so') return { ...siteFooter, ...FOOTER_SO };

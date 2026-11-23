@@ -7,8 +7,15 @@ export function SiteFooter() {
   return (
     <footer className="site-footer" role="contentinfo">
       <div className="site-footer-brand">
-        <img src="/logos/ice-mark.png" alt="" />
-        <img src="/logos/simad.webp" alt="" />
+        <img
+          className="site-footer-logo"
+          loading="lazy"
+          decoding="async"
+          src="/logos/simad-ice-web.webp"
+          alt="SIMAD University · Institute of Climate and Environment"
+          width={760}
+          height={225}
+        />
         <div>
           <strong>{footer.institute}</strong>
           <p>{footer.university}</p>

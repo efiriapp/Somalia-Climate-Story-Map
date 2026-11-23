@@ -23,4 +23,10 @@ describe('SiteFooter', () => {
     expect(app).toMatch(/catalog[\s\S]*SiteFooter|SiteFooter[\s\S]*catalog/);
     expect(globalStage).not.toContain('SiteFooter');
   });
+
+  it('shows the combined SIMAD + ICE web logo instead of the old separate logos', () => {
+    expect(source).toContain('src="/logos/simad-ice-web.webp"');
+    expect(source).not.toContain('/logos/ice-mark.png');
+    expect(source).not.toContain('/logos/simad.webp');
+  });
 });

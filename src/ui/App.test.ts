@@ -6,24 +6,25 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'App.tsx'), 'utf8');
 
 describe('platform topbar', () => {
-  it('places the platform title between the SIMAD and ICE logos', () => {
-    expect(source).toContain('src="/logos/simad.webp"');
-    expect(source).toContain('src="/logos/ice-mark.png"');
+  it('shows the combined SIMAD + ICE logo, then the title, then the language switcher', () => {
+    expect(source).toContain('src="/logos/simad-ice-web.webp"');
+    expect(source).not.toContain('src="/logos/simad.webp"');
+    expect(source).not.toContain('src="/logos/ice-mark.png"');
     expect(source).toContain('copy.platform');
     expect(source).not.toContain('Climate Story Map | Somalia');
     expect(source).toMatch(
-      /topbar-logo[\s\S]+topbar-title[\s\S]+copy.platform[\s\S]+topbar-logo ice/,
+      /topbar-brand[\s\S]+topbar-title[\s\S]+copy.platform[\s\S]+nav-language is-[\s\S]+<\/header>/,
     );
   });
 
-  it('places About, Research, Stories, Climate Impact, then ICE at Global Stage as a full-screen globe', () => {
-    expect(source).toContain('copy.about');
+  it('menu runs Research, Stories, Climate Impact, Flood Watch, Drought Watch; Global Stage opens from Stories', () => {
+    expect(source).not.toContain("openScreen('about')");
     expect(source).toContain('copy.research');
     expect(source).toContain('copy.stories');
     expect(source).toContain('copy.climateImpact');
     expect(source).toContain('copy.globalStage');
     expect(source).toMatch(
-      /copy.about[\s\S]+copy.research[\s\S]+copy.stories[\s\S]+copy.climateImpact[\s\S]+copy.globalStage/,
+      /copy.research[\s\S]+copy.stories[\s\S]+copy.climateImpact[\s\S]+copy.floodWatch[\s\S]+copy.droughtWatch/,
     );
     expect(source).toContain("openScreen('global-stage')");
     expect(source).toContain("openScreen('climate-impact')");
@@ -31,13 +32,13 @@ describe('platform topbar', () => {
     expect(source).toContain('GlobalStageMap');
     expect(source).toContain('AutoplayProvider');
     expect(source).not.toContain('GlobalStagePage');
-    expect(source).toContain("openScreen('about')");
     expect(source).toContain("openScreen('research')");
-    expect(source).toContain('localizeAbout');
+    expect(source).not.toContain('localizeAbout');
     expect(source).toContain("'research-story'");
     expect(source).toContain('nav-language');
     expect(source).toContain('chromeCopy');
-    expect(source.indexOf("openScreen('global-stage')")).toBeLessThan(source.indexOf('nav-language'));
+    // The language switcher lives in the header, before the page menu.
+    expect(source.indexOf('nav-language')).toBeLessThan(source.indexOf('<nav className="nav"'));
     expect(source).toContain('flagIconUrl');
     expect(source).toContain("flagIconUrl('Somalia')");
     expect(source).toContain("flagIconUrl('United Kingdom')");
@@ -87,9 +88,9 @@ describe('platform topbar', () => {
 
   it('opens related climate hazards and stories through a shared openRelated handler', () => {
     expect(source).toContain('openRelated');
-    expect(source).toContain("setScreen('climate-impact')");
-    expect(source).toContain('setImpactHazard(target.id)');
-    expect(source).toContain("setScreen(story.type === 'research-story' ? 'research' : 'stories')");
+    expect(source).toContain("go({ screen: 'climate-impact', storyId: null, hazard: target.id })");
+    expect(source).toContain("screen: story.type === 'research-story' ? 'research' : 'stories'");
+    expect(source).toContain('useHashRoute');
     expect(source).toContain('RelatedLinks');
     expect(source).toContain('relatedTargetsForStory');
   });
@@ -99,5 +100,15 @@ describe('platform topbar', () => {
     expect(source).toMatch(
       /onChange=\{\(event\) => \{\s*const next = \{ \.\.\.draft, query: event\.target\.value \};\s*setDraft\(next\);\s*setApplied\(next\);/,
     );
+  });
+});
+
+describe('platform title lines', () => {
+  it('splits the title into two lines that read as the full name in every language', async () => {
+    const { CHROME } = await import('../application/locale');
+    for (const locale of ['en', 'so', 'ar'] as const) {
+      expect(CHROME[locale].platformLines).toHaveLength(2);
+      expect(CHROME[locale].platformLines.join(' ')).toBe(CHROME[locale].platform);
+    }
   });
 });
